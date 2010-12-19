@@ -21,10 +21,20 @@
     <ClInclude Include="include\ProtoZed\Animation\Easing.h" />
     <ClInclude Include="include\ProtoZed\Application.h" />
     <ClInclude Include="include\ProtoZed\AppState.h" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\allocator.hpp" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\bindtmpl.hpp" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\config.hpp" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\delegate.h" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\delegatetmpl.h" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\delegatetmpl.hpp" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\get_pointer.hpp" />
+    <ClInclude Include="include\ProtoZed\FastDelegate\make_delegatetmpl.hpp" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
     <ClInclude Include="include\ProtoZed\AssetManager.h" />
+    <ClInclude Include="include\ProtoZed\ParticleSystem\Modifier.h" />
+    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +47,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetManager.cpp" />
+    <ClCompile Include="src\ParticleSystem\ParticleSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{33587181-C106-42CE-A151-D0C2FA1A8DDD}</ProjectGuid>
@@ -78,7 +89,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>include;Y:\SDK\SFML\include;Y:\SDK\fastdelegate\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;Y:\SDK\SFML\include;Y:\SDK\boost</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

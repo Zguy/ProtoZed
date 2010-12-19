@@ -19,7 +19,7 @@
 #ifndef AnimationGroup_h__
 #define AnimationGroup_h__
 
-#include "Animation.h"
+#include "AnimationBase.h"
 
 namespace PZ
 {

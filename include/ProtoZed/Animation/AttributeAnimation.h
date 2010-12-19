@@ -19,7 +19,7 @@
 #ifndef AttributeAnimation_h__
 #define AttributeAnimation_h__
 
-#include "Animation.h"
+#include "AnimationBase.h"
 #include "Easing.h"
 
 namespace PZ

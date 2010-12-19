@@ -21,7 +21,7 @@
 
 #include <memory>
 
-#include <delegate.h>
+#include "ProtoZed/FastDelegate/delegate.h"
 
 #include "Animable.h"
 
