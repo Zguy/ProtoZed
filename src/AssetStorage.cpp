@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/AssetManager.h"
+#include "ProtoZed/AssetStorage.h"
 
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Font.hpp>
@@ -24,26 +24,14 @@
 
 namespace PZ
 {
-	//TODO: Make these dynamic
+	// sf::Image
 	template<>
-	std::string AssetManager<sf::Image>::GetDataFolder()
+	std::string AssetStorage<sf::Image>::GetDataFolder()
 	{
 		return "data/images/";
 	}
 	template<>
-	std::string AssetManager<sf::Font>::GetDataFolder()
-	{
-		return "data/fonts/";
-	}
-	template<>
-	std::string AssetManager<sf::SoundBuffer>::GetDataFolder()
-	{
-		return "data/sounds/";
-	}
-
-	// sf::Image
-	/*template<>
-	bool AssetManager<sf::Image>::PreloadAsset(const std::string &filename)
+	bool AssetStorage<sf::Image>::PreloadAsset(const std::string &filename)
 	{
 		if (assets.find(filename) == assets.end())
 		{
@@ -58,11 +46,16 @@ namespace PZ
 			}
 		}
 		return true;
-	}*/
+	}
 
 	// sf::Font
-	/*template<>
-	bool AssetManager<sf::Font>::PreloadAsset(const std::string &filename)
+	template<>
+	std::string AssetStorage<sf::Font>::GetDataFolder()
+	{
+		return "data/fonts/";
+	}
+	template<>
+	bool AssetStorage<sf::Font>::PreloadAsset(const std::string &filename)
 	{
 		if (assets.find(filename) == assets.end())
 		{
@@ -77,11 +70,16 @@ namespace PZ
 			}
 		}
 		return true;
-	}*/
+	}
 
 	// sf::SoundBuffer
-	/*template<>
-	bool AssetManager<sf::SoundBuffer>::PreloadAsset(const std::string &filename)
+	template<>
+	std::string AssetStorage<sf::SoundBuffer>::GetDataFolder()
+	{
+		return "data/sounds/";
+	}
+	template<>
+	bool AssetStorage<sf::SoundBuffer>::PreloadAsset(const std::string &filename)
 	{
 		if (assets.find(filename) == assets.end())
 		{
@@ -96,5 +94,5 @@ namespace PZ
 			}
 		}
 		return true;
-	}*/
+	}
 }

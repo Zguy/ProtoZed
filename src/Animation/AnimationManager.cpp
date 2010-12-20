@@ -83,6 +83,7 @@ namespace PZ
 	}
 	bool AnimationManager::AddAnimationFromXML(const std::string &animationName, const std::string &filename)
 	{
+		// Not implemented yet
 		return false;
 	}
 	bool AnimationManager::RemoveAnimation(const std::string &animationName)
@@ -109,7 +110,7 @@ namespace PZ
 			return NULL;
 	}
 
-	AnimationBase *AnimationManager::RunAnimation(const std::string &animationName, AnimablePtr object)
+	AnimationBase *AnimationManager::RunAnimation(const std::string &animationName, Animable *object)
 	{
 		AnimationBase *original = GetAnimationFromName(animationName);
 
@@ -126,7 +127,7 @@ namespace PZ
 		}
 	}
 
-	void AnimationManager::RunAnimationDirect(AnimationBase *animation, AnimablePtr object)
+	void AnimationManager::RunAnimationDirect(AnimationBase *animation, Animable *object)
 	{
 		p->animations.push_back(animation);
 		animation->Start(object);

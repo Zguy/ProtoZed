@@ -48,10 +48,6 @@ namespace PZ
 	class AppStateManagerImpl
 	{
 	public:
-		AppStateManagerImpl(AppStateManager *i) : i(i)
-		{
-		}
-
 		AppState *getNewStateByName(const std::string &stateName)
 		{
 			return appStateFactory.Create(stateName);
@@ -118,8 +114,6 @@ namespace PZ
 			}
 		}
 
-		AppStateManager *i;
-
 		StateStack stateStack;
 		//StateMap   states;
 		TodoQueue  todoQueue;
@@ -128,7 +122,7 @@ namespace PZ
 
 	AppStateManager::AppStateManager()
 	{
-		p = new AppStateManagerImpl(this);
+		p = new AppStateManagerImpl;
 	}
 
 	AppStateManager::~AppStateManager()

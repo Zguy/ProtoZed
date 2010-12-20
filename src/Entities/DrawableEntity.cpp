@@ -16,52 +16,35 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/AnimableDrawable.h"
+#include "ProtoZed/Entities/DrawableEntity.h"
 
 namespace PZ
 {
-	AnimableDrawable::AnimableDrawable(sf::Drawable &drawable) : drawable(drawable)
+	DrawableEntity::DrawableEntity(const std::string &name, Entity *parent) : Entity(name, parent), drawable(NULL)
 	{
 
 	}
-	AnimableDrawable::~AnimableDrawable()
+	DrawableEntity::~DrawableEntity()
 	{
-
+		if (HasDrawable())
+			delete drawable;
 	}
 
-	bool AnimableDrawable::SupportAttribute(Attribute attribute)
-	{
-		bool support = false;
-		switch (attribute)
-		{
-		case X        : support = true; break;
-		case Y        : support = true; break;
-		case SCALE_X  : support = true; break;
-		case SCALE_Y  : support = true; break;
-		case ROTATION : support = true; break;
-		case COLOR_R  : support = true; break;
-		case COLOR_G  : support = true; break;
-		case COLOR_B  : support = true; break;
-		case ALPHA    : support = true; break;
-		}
-		return support;
-	}
-
-	void AnimableDrawable::SetAttribute(Attribute attribute, float value)
+	void DrawableEntity::SetAttribute(Attribute attribute, float value)
 	{
 		if (attribute == X)
-			drawable.SetPosition(value, drawable.GetPosition().y);
+			SetX(value);
 		else if (attribute == Y)
-			drawable.SetPosition(drawable.GetPosition().x, value);
+			SetY(value);
 		else if (attribute == SCALE_X)
-			drawable.SetScale(value, drawable.GetScale().y);
+			SetScaleX(value);
 		else if (attribute == SCALE_Y)
-			drawable.SetScale(drawable.GetScale().x, value);
+			SetScaleY(value);
 		else if (attribute == ROTATION)
-			drawable.SetRotation(value);
+			SetRotation(value);
 		else if ((attribute == COLOR_R)||(attribute == COLOR_G)||(attribute == COLOR_B)||(attribute == ALPHA))
 		{
-			sf::Color color = drawable.GetColor();
+			sf::Color color = GetColor();
 			if (attribute == COLOR_R)
 				color.r = static_cast<sf::Uint8>(value);
 			else if (attribute == COLOR_G)
@@ -70,30 +53,52 @@ namespace PZ
 				color.b = static_cast<sf::Uint8>(value);
 			else if (attribute == ALPHA)
 				color.a = static_cast<sf::Uint8>(value);
-			drawable.SetColor(color);
+			SetColor(color);
 		}
 	}
-	float AnimableDrawable::GetAttribute(Attribute attribute)
+	float DrawableEntity::GetAttribute(Attribute attribute)
 	{
 		if (attribute == X)
-			return drawable.GetPosition().x;
+			return GetLocalPosition().x;
 		else if (attribute == Y)
-			return drawable.GetPosition().y;
+			return GetLocalPosition().y;
 		else if (attribute == SCALE_X)
-			return drawable.GetScale().x;
+			return GetScale().x;
 		else if (attribute == SCALE_Y)
-			return drawable.GetScale().y;
+			return GetScale().y;
 		else if (attribute == ROTATION)
-			return drawable.GetRotation();
+			return GetRotation();
 		else if (attribute == COLOR_R)
-			return drawable.GetColor().r;
+			return GetColor().r;
 		else if (attribute == COLOR_G)
-			return drawable.GetColor().g;
+			return GetColor().g;
 		else if (attribute == COLOR_B)
-			return drawable.GetColor().b;
+			return GetColor().b;
 		else if (attribute == ALPHA)
-			return drawable.GetColor().a;
+			return GetColor().a;
 		else
 			return 0.f;
+	}
+
+	bool DrawableEntity::OnMessage(MessagePtr message)
+	{
+		if (message->message == MessageID::POSITION_UPDATED)
+		{
+			drawable->SetPosition(GetGlobalPosition());
+
+			return true;
+		}
+		else if (message->message == MessageID::DRAW)
+		{
+			if (HasDrawable())
+			{
+				DrawMessage *drawMessage = static_cast<DrawMessage*>(message.get());
+				drawMessage->window.Draw(*drawable);
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

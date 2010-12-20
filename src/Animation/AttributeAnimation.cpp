@@ -28,7 +28,7 @@ namespace PZ
 		AttributeAnimationImpl() : object(NULL), startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
 		{}
 
-		AnimablePtr object;
+		Animable *object;
 		float startValue;
 
 		float totalTime;
@@ -182,20 +182,13 @@ namespace PZ
 		return new AttributeAnimation(*this);
 	}
 
-	bool AttributeAnimation::StartImpl(AnimablePtr object)
+	bool AttributeAnimation::StartImpl(Animable *object)
 	{
-		if (object->SupportAttribute(p->attribute))
-		{
-			p->object      = object;
-			p->startValue  = object->GetAttribute(p->attribute);
-			p->currentTime = -p->delay;
+		p->object      = object;
+		p->startValue  = object->GetAttribute(p->attribute);
+		p->currentTime = -p->delay;
 
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return true;
 	}
 
 	void AttributeAnimation::AddTime(float deltaTime)

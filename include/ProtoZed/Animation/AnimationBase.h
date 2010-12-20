@@ -53,7 +53,7 @@ namespace PZ
 		AnimationBase(AnimationProperties *properties);
 		virtual ~AnimationBase();
 
-		void Start(AnimablePtr object);
+		void Start(Animable *object);
 		void Stop();
 
 		void Pause(bool pause = true);
@@ -68,7 +68,7 @@ namespace PZ
 		inline State GetState() { return state; }
 
 	protected:
-		virtual bool StartImpl(AnimablePtr object) = 0;
+		virtual bool StartImpl(Animable *object) = 0;
 
 		virtual void AddTime(float deltaTime) = 0;
 

@@ -77,7 +77,7 @@ namespace PZ
 		virtual AnimationBase *GetCopy();
 
 	protected:
-		virtual bool StartImpl(AnimablePtr object);
+		virtual bool StartImpl(Animable *object);
 
 		virtual void AddTime(float deltaTime);
 

@@ -24,6 +24,8 @@
 
 #include "ProtoZed/AppStateManager.h"
 
+#include "ProtoZed/Entities/DrawableEntity.h"
+
 #include "ProtoZed/Animation/AnimationGroup.h"
 #include "ProtoZed/Animation/AttributeAnimation.h"
 
@@ -42,6 +44,9 @@ namespace PZ
 				return true;
 
 			window.Create(videoMode, appName, 6UL, params);
+
+			entityManager.RegisterEntity<Entity>("Entity");
+			entityManager.RegisterEntity<DrawableEntity>("DrawableEntity");
 
 			animationManager.RegisterAnimationType<AnimationGroup>("AnimationGroup");
 			animationManager.RegisterAnimationType<AttributeAnimation>("AttributeAnimation");
@@ -69,6 +74,7 @@ namespace PZ
 			{
 				if (event.Type == sf::Event::Closed)
 					running = false;
+				else
 				if (stateManager.GetCurrentState() != NULL)
 				{
 					if (event.Type == sf::Event::KeyPressed)
@@ -89,12 +95,13 @@ namespace PZ
 
 		sf::RenderWindow window;
 
-		AppStateManager stateManager;
+		AppStateManager  stateManager;
+		AnimationManager animationManager;
+		EntityManager    entityManager;
 
-		AnimationManager   animationManager;
-		ImageManager       imageManager;
-		FontManager        fontManager;
-		SoundBufferManager soundBufferManager;
+		ImageStorage       imageStorage;
+		FontStorage        fontStorage;
+		SoundBufferStorage soundBufferStorage;
 	};
 
 	Application::Application() : p(new ApplicationImpl)
@@ -132,7 +139,8 @@ namespace PZ
 					p->stateManager.PopState();
 				}
 
-				state->Draw(p->window);
+				// Draw drawable entities
+				p->entityManager.GetRootEntity()->HandleMessage(MessagePtr(new DrawMessage(p->window)));
 			}
 
 			p->window.Display();
@@ -152,58 +160,33 @@ namespace PZ
 		p->running = false;
 	}
 
-	/*AppState *Application::GetStateByName(const std::string &stateName)
+	const sf::Input &Application::GetInput()
 	{
-		return p->stateManager.GetStateByName(stateName);
+		return p->window.GetInput();
 	}
-	void Application::AddState(const std::string &stateName, AppState *state)
-	{
-		p->stateManager.AddState(stateName, state);
-	}
-	void Application::RemoveState(const std::string &stateName)
-	{
-		p->stateManager.RemoveState(stateName);
-	}
-	void Application::ChangeState(const std::string &stateName, StringMap *const options)
-	{
-		p->stateManager.ChangeState(stateName, options);
-	}
-	void Application::PushState(const std::string &stateName, StringMap *const options)
-	{
-		p->stateManager.PushState(stateName, options);
-	}
-	void Application::PopState()
-	{
-		p->stateManager.PopState();
-	}*/
-
 	AppStateManager &Application::GetStateManager()
 	{
 		return p->stateManager;
 	}
-	sf::RenderWindow &Application::GetRenderWindow()
+	EntityManager &Application::GetEntityManager()
 	{
-		return p->window;
-	}
-	const sf::Input &Application::GetInput()
-	{
-		return p->window.GetInput();
+		return p->entityManager;
 	}
 	AnimationManager &Application::GetAnimationManager()
 	{
 		return p->animationManager;
 	}
-	ImageManager &Application::GetImageManager()
+	ImageStorage &Application::GetImageStorage()
 	{
-		return p->imageManager;
+		return p->imageStorage;
 	}
-	FontManager  &Application::GetFontManager()
+	FontStorage  &Application::GetFontStorage()
 	{
-		return p->fontManager;
+		return p->fontStorage;
 	}
-	SoundBufferManager &Application::GetSoundBufferManager()
+	SoundBufferStorage &Application::GetSoundBufferStorage()
 	{
-		return p->soundBufferManager;
+		return p->soundBufferStorage;
 	}
 
 	void Application::LogMessage(const std::string &message)

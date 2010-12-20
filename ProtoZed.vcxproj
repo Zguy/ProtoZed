@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ProtoZed\Animation\Animable.h" />
-    <ClInclude Include="include\ProtoZed\AnimableDrawable.h" />
     <ClInclude Include="include\ProtoZed\Animation\Animation.h" />
     <ClInclude Include="include\ProtoZed\Animation\AnimationBase.h" />
     <ClInclude Include="include\ProtoZed\Animation\AttributeAnimation.h" />
@@ -21,6 +20,10 @@
     <ClInclude Include="include\ProtoZed\Animation\Easing.h" />
     <ClInclude Include="include\ProtoZed\Application.h" />
     <ClInclude Include="include\ProtoZed\AppState.h" />
+    <ClInclude Include="include\ProtoZed\AssetStorage.h" />
+    <ClInclude Include="include\ProtoZed\Entities\DrawableEntity.h" />
+    <ClInclude Include="include\ProtoZed\Entity.h" />
+    <ClInclude Include="include\ProtoZed\EntityManager.h" />
     <ClInclude Include="include\ProtoZed\FastDelegate\allocator.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\bindtmpl.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\config.hpp" />
@@ -32,13 +35,11 @@
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
-    <ClInclude Include="include\ProtoZed\AssetManager.h" />
     <ClInclude Include="include\ProtoZed\ParticleSystem\Modifier.h" />
     <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AnimableDrawable.cpp" />
     <ClCompile Include="src\Animation\AnimationBase.cpp" />
     <ClCompile Include="src\Animation\AttributeAnimation.cpp" />
     <ClCompile Include="src\Animation\AnimationGroup.cpp" />
@@ -46,7 +47,10 @@
     <ClCompile Include="src\Animation\Easing.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
-    <ClCompile Include="src\AssetManager.cpp" />
+    <ClCompile Include="src\AssetStorage.cpp" />
+    <ClCompile Include="src\Entities\DrawableEntity.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\ParticleSystem\ParticleSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -107,7 +111,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>include\ProtoZed;C:\SDK\SFML\include;C:\SDK\fastdelegate\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;Y:\SDK\SFML\include;Y:\SDK\boost</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

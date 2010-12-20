@@ -22,7 +22,7 @@
 #include <map>
 #include <string>
 
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
 
 namespace PZ
 {
@@ -37,7 +37,6 @@ namespace PZ
 		{}
 
 		virtual bool Update(float deltaTime) = 0;
-		virtual void Draw(sf::RenderWindow &window) = 0;
 
 		virtual void Start(StringMap *const options) { started = true; }
 		virtual void Stop() { started = false; }

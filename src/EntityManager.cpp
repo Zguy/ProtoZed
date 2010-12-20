@@ -16,57 +16,48 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/Animation/AnimationBase.h"
+#include "ProtoZed/EntityManager.h"
 
 namespace PZ
 {
-	AnimationBase::AnimationBase() : state(NOT_STARTED)
+	class EntityManagerImpl
 	{
+	public:
+		Entity *rootEntity;
 
-	}
-	AnimationBase::AnimationBase(AnimationProperties *properties) : state(NOT_STARTED)
-	{
+		EntityFactory entityFactory;
+	};
 
-	}
-	AnimationBase::~AnimationBase()
+	EntityManager::EntityManager()
 	{
+		p = new EntityManagerImpl;
 
+		p->rootEntity = new Entity("RootEntity", NULL);
 	}
+	EntityManager::~EntityManager()
+	{
+		delete p->rootEntity;
 
-	void AnimationBase::Start(Animable *object)
-	{
-		if (state == NOT_STARTED)
-		{
-			if (StartImpl(object))
-				state = STARTED;
-			else
-				state = FINISHED;
-		}
-	}
-	void AnimationBase::Stop()
-	{
-		state = FINISHED;
+		delete p;
 	}
 
-	void AnimationBase::Pause(bool pause)
+	bool EntityManager::UnregisterEntity(const std::string &entityName)
 	{
-		if (pause)
-		{
-			if (state == RUNNING)
-			{
-				state = PAUSED;
-			}
-		}
-		else
-		{
-			if (state == PAUSED)
-			{
-				state = RUNNING;
-			}
-		}
+		return p->entityFactory.Unregister(entityName);
 	}
-	void AnimationBase::Resume()
+
+	Entity *EntityManager::GetNewEntity(const std::string &entityName, const std::string name, Entity *parent)
 	{
-		Pause(false);
+		return p->entityFactory.Create(entityName, name, parent);
+	}
+
+	Entity *const EntityManager::GetRootEntity()
+	{
+		return p->rootEntity;
+	}
+
+	EntityFactory &EntityManager::getEntityFactory()
+	{
+		return p->entityFactory;
 	}
 }

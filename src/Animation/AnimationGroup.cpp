@@ -30,7 +30,7 @@ namespace PZ
 		AnimationGroupImpl() : object(NULL), async(false)
 		{}
 
-		AnimablePtr object;
+		Animable *object;
 
 		bool async;
 
@@ -86,7 +86,7 @@ namespace PZ
 		return new AnimationGroup(*this);
 	}
 
-	bool AnimationGroup::StartImpl(AnimablePtr object)
+	bool AnimationGroup::StartImpl(Animable *object)
 	{
 		p->object = object;
 
@@ -134,7 +134,7 @@ namespace PZ
 					if (p->animations.empty())
 					{
 						state     = FINISHED;
-						p->object.reset();
+						p->object = NULL;
 					}
 				}
 			}

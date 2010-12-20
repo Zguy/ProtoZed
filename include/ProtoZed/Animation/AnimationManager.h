@@ -62,8 +62,8 @@ namespace PZ
 
 		AnimationBase *GetAnimationFromName(const std::string &animationName);
 
-		AnimationBase *RunAnimation(const std::string &animationName, AnimablePtr object);
-		void RunAnimationDirect(AnimationBase *animation, AnimablePtr object);
+		AnimationBase *RunAnimation(const std::string &animationName, Animable *object);
+		void RunAnimationDirect(AnimationBase *animation, Animable *object);
 
 		void Step(float deltaTime);
 	private:

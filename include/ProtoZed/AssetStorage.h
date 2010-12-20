@@ -16,8 +16,8 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef AssetManager_h__
-#define AssetManager_h__
+#ifndef AssetStorage_h__
+#define AssetStorage_h__
 
 #include <map>
 #include <string>
@@ -25,12 +25,12 @@
 namespace PZ
 {
 	template<typename T>
-	class AssetManager
+	class AssetStorage
 	{
 	public:
-		AssetManager()
+		AssetStorage()
 		{}
-		~AssetManager()
+		~AssetStorage()
 		{
 			while (!assets.empty())
 			{
@@ -51,27 +51,13 @@ namespace PZ
 	};
 
 	template<typename T>
-	bool AssetManager<T>::PreloadAsset(const std::string &filename)
-	{
-		if (assets.find(filename) == assets.end())
-		{
-			T asset;
-			if (asset.LoadFromFile(GetDataFolder()+filename))
-				assets[filename] = asset;
-			else
-				return false;
-		}
-		return true;
-	}
-
-	template<typename T>
-	void AssetManager<T>::UnloadAsset(const std::string &filename)
+	void AssetStorage<T>::UnloadAsset(const std::string &filename)
 	{
 		assets.erase(filename);
 	}
 
 	template<typename T>
-	const T &AssetManager<T>::GetAsset(const std::string &filename)
+	const T &AssetStorage<T>::GetAsset(const std::string &filename)
 	{
 		if (PreloadAsset(filename))
 			return assets[filename];
@@ -80,4 +66,4 @@ namespace PZ
 	}
 }
 
-#endif // AssetManager_h__
+#endif // AssetStorage_h__

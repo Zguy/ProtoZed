@@ -28,14 +28,15 @@
 
 #include "Singleton.h"
 #include "AppStateManager.h"
-#include "AssetManager.h"
+#include "EntityManager.h"
+#include "AssetStorage.h"
 #include "Animation/AnimationManager.h"
 
 namespace PZ
 {
-	typedef AssetManager<sf::Image>       ImageManager;
-	typedef AssetManager<sf::Font>        FontManager;
-	typedef AssetManager<sf::SoundBuffer> SoundBufferManager;
+	typedef AssetStorage<sf::Image>       ImageStorage;
+	typedef AssetStorage<sf::Font>        FontStorage;
+	typedef AssetStorage<sf::SoundBuffer> SoundBufferStorage;
 
 	class ApplicationImpl;
 
@@ -49,13 +50,13 @@ namespace PZ
 
 		void RequestShutdown();
 
-		AppStateManager    &GetStateManager();
-		sf::RenderWindow   &GetRenderWindow();
 		const sf::Input    &GetInput();
+		AppStateManager    &GetStateManager();
+		EntityManager      &GetEntityManager();
 		AnimationManager   &GetAnimationManager();
-		ImageManager       &GetImageManager();
-		FontManager        &GetFontManager();
-		SoundBufferManager &GetSoundBufferManager();
+		ImageStorage       &GetImageStorage();
+		FontStorage        &GetFontStorage();
+		SoundBufferStorage &GetSoundBufferStorage();
 
 		void LogMessage(const std::string &message);
 
