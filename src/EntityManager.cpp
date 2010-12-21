@@ -20,44 +20,25 @@
 
 namespace PZ
 {
-	class EntityManagerImpl
-	{
-	public:
-		Entity *rootEntity;
-
-		EntityFactory entityFactory;
-	};
-
 	EntityManager::EntityManager()
 	{
-		p = new EntityManagerImpl;
-
-		p->rootEntity = new Entity("RootEntity", NULL);
 	}
 	EntityManager::~EntityManager()
 	{
-		delete p->rootEntity;
-
-		delete p;
 	}
 
 	bool EntityManager::UnregisterEntity(const std::string &entityName)
 	{
-		return p->entityFactory.Unregister(entityName);
+		return entityFactory.Unregister(entityName);
 	}
 
 	Entity *EntityManager::GetNewEntity(const std::string &entityName, const std::string name, Entity *parent)
 	{
-		return p->entityFactory.Create(entityName, name, parent);
+		return entityFactory.Create(entityName, name, parent);
 	}
 
-	Entity *const EntityManager::GetRootEntity()
+	void EntityManager::DeleteEntity(Entity *entity)
 	{
-		return p->rootEntity;
-	}
-
-	EntityFactory &EntityManager::getEntityFactory()
-	{
-		return p->entityFactory;
+		delete entity;
 	}
 }

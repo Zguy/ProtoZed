@@ -24,6 +24,9 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#define WEAK_SHARED_PTR(T) typedef std::shared_ptr<T> T ## Ptr; \
+	                         typedef std::weak_ptr<T> T ## WeakPtr;
+
 namespace PZ
 {
 	namespace MessageID
@@ -51,20 +54,20 @@ namespace PZ
 		virtual ~Entity();
 
 		void ChangeParent(Entity *newParent);
-		inline bool HasParent() { return (parent != NULL); }
-		inline Entity *GetParent() { return parent; }
+		inline bool HasParent() const { return (parent != NULL); }
+		inline Entity *GetParent() const { return parent; }
 
 		bool AddChild(Entity *child);
 		bool RemoveChild(Entity *child);
 
-		inline const EntityList &GetChildren() { return children; }
-		Entity *GetChildByIndex(unsigned int index);
-		Entity *GetChildByName(const std::string name);
+		inline const EntityList &GetChildren() const { return children; }
+		Entity *GetChildByIndex(unsigned int index) const;
+		Entity *GetChildByName(const std::string name) const;
 
-		inline const std::string &GetName() { return name; }
+		inline const std::string &GetName() const { return name; }
 
-		const sf::Vector2f &GetLocalPosition();
-		const sf::Vector2f GetGlobalPosition();
+		const sf::Vector2f &GetLocalPosition() const;
+		const sf::Vector2f GetGlobalPosition() const;
 
 		void SetLocalPosition(const sf::Vector2f &pos);
 		void SetLocalPosition(float x, float y);
@@ -85,6 +88,8 @@ namespace PZ
 		std::string name;
 		sf::Vector2f position;
 	};
+
+	WEAK_SHARED_PTR(Entity)
 }
 
 #endif // Entity_h__

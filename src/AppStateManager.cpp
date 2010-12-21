@@ -238,7 +238,7 @@ namespace PZ
 		return p->stateStack.empty();
 	}
 
-	AppState *AppStateManager::GetCurrentState()
+	AppState *AppStateManager::GetCurrentState() const
 	{
 		if (!p->stateStack.empty())
 			return p->stateStack.top();
@@ -246,7 +246,7 @@ namespace PZ
 			return NULL;
 	}
 
-	AppStateFactory &AppStateManager::getAppStateFactory()
+	AppStateFactory &AppStateManager::getAppStateFactory() const
 	{
 		return p->appStateFactory;
 	}

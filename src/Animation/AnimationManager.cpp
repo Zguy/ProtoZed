@@ -59,12 +59,12 @@ namespace PZ
 		return p->animationFactory.Unregister(animationType);
 	}
 
-	AnimationBase *AnimationManager::GetNewAnimation(const std::string &animationType, AnimationProperties *properties)
+	AnimationBase *AnimationManager::GetNewAnimation(const std::string &animationType, AnimationProperties *properties) const
 	{
 		return p->animationFactory.Create(animationType, properties);
 	}
 
-	bool AnimationManager::HasAnimation(const std::string &animationName)
+	bool AnimationManager::HasAnimation(const std::string &animationName) const
 	{
 		return (GetAnimationFromName(animationName) != NULL);
 	}
@@ -102,7 +102,7 @@ namespace PZ
 		}
 	}
 
-	AnimationBase *AnimationManager::GetAnimationFromName(const std::string &animationName)
+	AnimationBase *AnimationManager::GetAnimationFromName(const std::string &animationName) const
 	{
 		if (p->animationMap.find(animationName) != p->animationMap.end())
 			return p->animationMap[animationName];
@@ -110,7 +110,7 @@ namespace PZ
 			return NULL;
 	}
 
-	AnimationBase *AnimationManager::RunAnimation(const std::string &animationName, Animable *object)
+	AnimationBase *AnimationManager::RunAnimation(const std::string &animationName, AnimablePtr object)
 	{
 		AnimationBase *original = GetAnimationFromName(animationName);
 
@@ -127,7 +127,7 @@ namespace PZ
 		}
 	}
 
-	void AnimationManager::RunAnimationDirect(AnimationBase *animation, Animable *object)
+	void AnimationManager::RunAnimationDirect(AnimationBase *animation, AnimablePtr object)
 	{
 		p->animations.push_back(animation);
 		animation->Start(object);
@@ -156,6 +156,11 @@ namespace PZ
 				delete animation;
 				it = p->animations.erase(it);
 			}
+			else if (animation->GetState() == AnimationBase::STOPPED)
+			{
+				delete animation;
+				it = p->animations.erase(it);
+			}
 			else
 			{
 				++it;
@@ -163,7 +168,7 @@ namespace PZ
 		}
 	}
 
-	AnimationFactory &AnimationManager::getAnimationFactory()
+	AnimationFactory &AnimationManager::getAnimationFactory() const
 	{
 		return p->animationFactory;
 	}

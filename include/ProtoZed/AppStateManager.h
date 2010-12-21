@@ -61,12 +61,12 @@ namespace PZ
 
 		bool IsEmpty();
 
-		AppState *GetCurrentState();
+		AppState *GetCurrentState() const;
 
 	private:
 		AppStateManagerImpl *p;
 
-		AppStateFactory &getAppStateFactory();
+		AppStateFactory &getAppStateFactory() const;
 	};
 }
 

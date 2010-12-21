@@ -96,8 +96,8 @@ namespace PZ
 		sf::RenderWindow window;
 
 		AppStateManager  stateManager;
-		AnimationManager animationManager;
 		EntityManager    entityManager;
+		AnimationManager animationManager;
 
 		ImageStorage       imageStorage;
 		FontStorage        fontStorage;
@@ -140,7 +140,7 @@ namespace PZ
 				}
 
 				// Draw drawable entities
-				p->entityManager.GetRootEntity()->HandleMessage(MessagePtr(new DrawMessage(p->window)));
+				state->GetRootEntity()->HandleMessage(MessagePtr(new DrawMessage(p->window)));
 			}
 
 			p->window.Display();
@@ -160,31 +160,32 @@ namespace PZ
 		p->running = false;
 	}
 
-	const sf::Input &Application::GetInput()
+	const sf::Input &Application::GetInput() const
 	{
 		return p->window.GetInput();
 	}
-	AppStateManager &Application::GetStateManager()
+	AppStateManager &Application::GetStateManager() const
 	{
 		return p->stateManager;
 	}
-	EntityManager &Application::GetEntityManager()
+	EntityManager &Application::GetEntityManager() const
 	{
 		return p->entityManager;
 	}
-	AnimationManager &Application::GetAnimationManager()
+	AnimationManager &Application::GetAnimationManager() const
 	{
 		return p->animationManager;
 	}
-	ImageStorage &Application::GetImageStorage()
+
+	ImageStorage &Application::GetImageStorage() const
 	{
 		return p->imageStorage;
 	}
-	FontStorage  &Application::GetFontStorage()
+	FontStorage  &Application::GetFontStorage() const
 	{
 		return p->fontStorage;
 	}
-	SoundBufferStorage &Application::GetSoundBufferStorage()
+	SoundBufferStorage &Application::GetSoundBufferStorage() const
 	{
 		return p->soundBufferStorage;
 	}

@@ -16,6 +16,7 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
+// Reference: http://scottbilas.com/publications/gem-singleton/
 #ifndef Singleton_h__
 #define Singleton_h__
 
@@ -29,31 +30,34 @@ namespace PZ
 	public:
 		Singleton()
 		{
-			assert(!ms_singleton);
-			int offset = (int)(T*)1 - (int)(Singleton <T>*)(T*)1;
-			ms_singleton = (T*)((int)this + offset);
+			assert(!singleton);
+#if defined(_MSC_VER) && _MSC_VER < 1200
+			int offset = (int)(T*)1 - (int)(Singleton<T>*)(T*)1;
+			singleton = (T*)((int)this + offset);
+#else
+			singleton = static_cast<T*>(this);
+#endif
 		}
 		~Singleton()
 		{
-			assert(ms_singleton);
-			ms_singleton=0;
+			assert(singleton);
+			singleton = NULL;
 		}
 		static T &GetSingleton()
 		{
-			assert(ms_singleton);
-			return *ms_singleton;
+			assert(singleton);
+			return *singleton;
 		}
 		static T *GetSingletonPtr()
 		{
-			assert(ms_singleton);
-			return ms_singleton;
+			return singleton;
 		}
 
 	private:
-		static T *ms_singleton;
+		static T *singleton;
 	};
 	
-	template<typename T> T *Singleton <T>::ms_singleton = 0;
+	template<typename T> T *Singleton<T>::singleton = 0;
 }
 
 #endif // Singleton_h__

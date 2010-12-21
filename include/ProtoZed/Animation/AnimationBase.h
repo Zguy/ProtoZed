@@ -46,6 +46,7 @@ namespace PZ
 			STARTED,
 			RUNNING,
 			PAUSED,
+			STOPPED,
 			FINISHED
 		};
 
@@ -53,22 +54,22 @@ namespace PZ
 		AnimationBase(AnimationProperties *properties);
 		virtual ~AnimationBase();
 
-		void Start(Animable *object);
+		void Start(AnimablePtr object);
 		void Stop();
 
 		void Pause(bool pause = true);
 		void Resume();
-		inline bool IsPaused() { return (state == PAUSED); }
+		inline bool IsPaused() const { return (state == PAUSED); }
 
 		virtual AnimationBase *GetCopy() = 0;
 
 		inline void SetStartCallback(AnimationCallback &callback) { onStart = callback; }
 		inline void SetFinishedCallback(AnimationCallback &callback) { onFinished = callback; }
 
-		inline State GetState() { return state; }
+		inline State GetState() const { return state; }
 
 	protected:
-		virtual bool StartImpl(Animable *object) = 0;
+		virtual bool StartImpl(AnimablePtr object) = 0;
 
 		virtual void AddTime(float deltaTime) = 0;
 

@@ -29,8 +29,8 @@
 #include "Singleton.h"
 #include "AppStateManager.h"
 #include "EntityManager.h"
-#include "AssetStorage.h"
 #include "Animation/AnimationManager.h"
+#include "AssetStorage.h"
 
 namespace PZ
 {
@@ -50,13 +50,14 @@ namespace PZ
 
 		void RequestShutdown();
 
-		const sf::Input    &GetInput();
-		AppStateManager    &GetStateManager();
-		EntityManager      &GetEntityManager();
-		AnimationManager   &GetAnimationManager();
-		ImageStorage       &GetImageStorage();
-		FontStorage        &GetFontStorage();
-		SoundBufferStorage &GetSoundBufferStorage();
+		const sf::Input    &GetInput() const;
+		AppStateManager    &GetStateManager() const;
+		EntityManager      &GetEntityManager() const;
+		AnimationManager   &GetAnimationManager() const;
+
+		ImageStorage       &GetImageStorage() const;
+		FontStorage        &GetFontStorage() const;
+		SoundBufferStorage &GetSoundBufferStorage() const;
 
 		void LogMessage(const std::string &message);
 

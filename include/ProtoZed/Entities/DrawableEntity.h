@@ -54,9 +54,9 @@ namespace PZ
 		DrawableEntity(const std::string &name, Entity *parent = NULL);
 		~DrawableEntity();
 
-		inline bool HasDrawable() { return (drawable != NULL); }
+		inline bool HasDrawable() const { return (drawable != NULL); }
 		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; }
-		inline sf::Drawable *GetDrawable() { return drawable; }
+		inline sf::Drawable *GetDrawable() const { return drawable; }
 
 		// Pretend we're a sf::Drawable
 		// Note: We should probably check if drawable is NULL
@@ -99,7 +99,7 @@ namespace PZ
 
 		// Animable
 		virtual void SetAttribute(Attribute attribute, float value);
-		virtual float GetAttribute(Attribute attribute);
+		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
 		virtual bool OnMessage(MessagePtr message);
@@ -107,6 +107,8 @@ namespace PZ
 	private:
 		sf::Drawable *drawable;
 	};
+
+	WEAK_SHARED_PTR(DrawableEntity)
 }
 
 #endif // DrawableEntity_h__

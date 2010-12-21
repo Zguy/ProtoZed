@@ -43,7 +43,7 @@ namespace PZ
 		const T &GetAsset(const std::string &filename);
 
 	private:
-		std::string GetDataFolder();
+		std::string GetDataFolder() const;
 
 		typedef std::map<std::string, T> AssetMap;
 		AssetMap assets;

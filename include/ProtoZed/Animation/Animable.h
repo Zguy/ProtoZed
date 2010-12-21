@@ -34,8 +34,11 @@ namespace PZ
 		{}
 
 		virtual void SetAttribute(Attribute attribute, float value) = 0;
-		virtual float GetAttribute(Attribute attribute) = 0;
+		virtual float GetAttribute(Attribute attribute) const = 0;
 	};
+
+	typedef std::shared_ptr<Animable> AnimablePtr;
+	typedef std::weak_ptr<Animable>   AnimableWeakPtr;
 }
 
 #endif // Animable_h__

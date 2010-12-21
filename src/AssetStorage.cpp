@@ -26,7 +26,7 @@ namespace PZ
 {
 	// sf::Image
 	template<>
-	std::string AssetStorage<sf::Image>::GetDataFolder()
+	std::string AssetStorage<sf::Image>::GetDataFolder() const
 	{
 		return "data/images/";
 	}
@@ -50,7 +50,7 @@ namespace PZ
 
 	// sf::Font
 	template<>
-	std::string AssetStorage<sf::Font>::GetDataFolder()
+	std::string AssetStorage<sf::Font>::GetDataFolder() const
 	{
 		return "data/fonts/";
 	}
@@ -74,7 +74,7 @@ namespace PZ
 
 	// sf::SoundBuffer
 	template<>
-	std::string AssetStorage<sf::SoundBuffer>::GetDataFolder()
+	std::string AssetStorage<sf::SoundBuffer>::GetDataFolder() const
 	{
 		return "data/sounds/";
 	}

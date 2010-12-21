@@ -24,6 +24,9 @@
 
 #include <SFML/Window/Event.hpp>
 
+//#include "Application.h"
+#include "Entity.h"
+
 namespace PZ
 {
 	typedef std::map<std::string, std::string> StringMap;
@@ -31,18 +34,22 @@ namespace PZ
 	class AppState
 	{
 	public:
-		AppState() : started(false)
-		{}
+		AppState() : started(false)//, rootEntity(Application::GetSingleton().GetEntityManager().GetNewEntity("Entity", "RootEntity", NULL))
+		{
+			rootEntity = new Entity("RootEntity", NULL);
+		}
 		virtual ~AppState()
-		{}
+		{
+			delete rootEntity;
+		}
 
 		virtual bool Update(float deltaTime) = 0;
 
 		virtual void Start(StringMap *const options) { started = true; }
 		virtual void Stop() { started = false; }
 
-		virtual void Pause() {};
-		virtual void Resume() {};
+		virtual void Pause() {}
+		virtual void Resume() {}
 
 		virtual void OnKeyDown(const sf::Event::KeyEvent &keyEvent) {}
 		virtual void OnKeyUp(const sf::Event::KeyEvent &keyEvent) {}
@@ -50,13 +57,18 @@ namespace PZ
 		virtual void OnMouseUp(const sf::Event::MouseButtonEvent &mouseButtonEvent) {}
 		virtual void OnMouseMove(const sf::Event::MouseMoveEvent &mouseMoveEvent) {}
 
-		virtual void LoadAssets() {};
-		virtual void UnloadAssets() {};
+		virtual void LoadAssets() {}
+		virtual void UnloadAssets() {}
 
-		inline bool IsStarted() { return started; }
+		inline Entity *const GetRootEntity() const { return rootEntity; }
+
+		inline bool IsStarted() const { return started; }
 
 	protected:
 		bool started;
+
+	private:
+		Entity *rootEntity;
 	};
 }
 

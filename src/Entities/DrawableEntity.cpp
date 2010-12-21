@@ -26,8 +26,8 @@ namespace PZ
 	}
 	DrawableEntity::~DrawableEntity()
 	{
-		if (HasDrawable())
-			delete drawable;
+ 		if (HasDrawable())
+ 			delete drawable;
 	}
 
 	void DrawableEntity::SetAttribute(Attribute attribute, float value)
@@ -56,7 +56,7 @@ namespace PZ
 			SetColor(color);
 		}
 	}
-	float DrawableEntity::GetAttribute(Attribute attribute)
+	float DrawableEntity::GetAttribute(Attribute attribute) const
 	{
 		if (attribute == X)
 			return GetLocalPosition().x;

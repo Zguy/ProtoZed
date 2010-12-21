@@ -28,93 +28,93 @@ namespace PZ
 	namespace Easing
 	{
 		/**** LINEAR ****/
-		float Linear::easeNone(float t, float b, float c, float d)
+		float Linear::easeNone(float t, float b, float c, float d) const
 		{
 			return c*t/d + b;
 		}
-		float Linear::easeIn(float t, float b, float c, float d)
+		float Linear::easeIn(float t, float b, float c, float d) const
 		{
 			return c*t/d + b;
 		}
-		float Linear::easeOut(float t, float b, float c, float d)
+		float Linear::easeOut(float t, float b, float c, float d) const
 		{
 			return c*t/d + b;
 		}
-		float Linear::easeInOut(float t, float b, float c, float d)
+		float Linear::easeInOut(float t, float b, float c, float d) const
 		{
 			return c*t/d + b;
 		}
 
 		/**** SINE ****/
-		float Sine::easeIn(float t, float b, float c, float d)
+		float Sine::easeIn(float t, float b, float c, float d) const
 		{
 			return -c * std::cos(t/d * (M_PI_2)) + c + b;
 		}
-		float Sine::easeOut(float t, float b, float c, float d)
+		float Sine::easeOut(float t, float b, float c, float d) const
 		{
 			return c * std::sin(t/d * (M_PI_2)) + b;
 		}
 
-		float Sine::easeInOut(float t, float b, float c, float d)
+		float Sine::easeInOut(float t, float b, float c, float d) const
 		{
 			return -c/2 * (std::cos(M_PI*t/d) - 1) + b;
 		}
 
 		/**** QUINT ****/
-		float Quint::easeIn(float t, float b, float c, float d)
+		float Quint::easeIn(float t, float b, float c, float d) const
 		{
 			return c*(t/=d)*t*t*t*t + b;
 		}
-		float Quint::easeOut(float t, float b, float c, float d)
+		float Quint::easeOut(float t, float b, float c, float d) const
 		{
 			return c*((t=t/d-1)*t*t*t*t + 1) + b;
 		}
-		float Quint::easeInOut(float t, float b, float c, float d)
+		float Quint::easeInOut(float t, float b, float c, float d) const
 		{
 			if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
 			return c/2*((t-=2)*t*t*t*t + 2) + b;
 		}
 
 		/**** QUART ****/
-		float Quart::easeIn(float t, float b, float c, float d)
+		float Quart::easeIn(float t, float b, float c, float d) const
 		{
 			return c*(t/=d)*t*t*t + b;
 		}
-		float Quart::easeOut(float t, float b, float c, float d)
+		float Quart::easeOut(float t, float b, float c, float d) const
 		{
 			return -c * ((t=t/d-1)*t*t*t - 1) + b;
 		}
-		float Quart::easeInOut(float t, float b, float c, float d)
+		float Quart::easeInOut(float t, float b, float c, float d) const
 		{
 			if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
 			return -c/2 * ((t-=2)*t*t*t - 2) + b;
 		}
 
 		/**** QUAD ****/
-		float Quad::easeIn (float t, float b, float c, float d)
+		float Quad::easeIn (float t, float b, float c, float d) const
 		{
 			return c*(t/=d)*t + b;
 		}
-		float Quad::easeOut(float t, float b, float c, float d)
+		float Quad::easeOut(float t, float b, float c, float d) const
 		{
 			return -c *(t/=d)*(t-2) + b;
 		}
-		float Quad::easeInOut(float t, float b, float c, float d)
+		float Quad::easeInOut(float t, float b, float c, float d) const
 		{
 			if ((t/=d/2) < 1) return ((c/2)*(t*t)) + b;
 			return -c/2 * (((t-2)*(--t)) - 1) + b;
 		}
 
 		/**** EXPO ****/
-		float Expo::easeIn(float t, float b, float c, float d)
+		float Expo::easeIn(float t, float b, float c, float d) const
 		{
 			return (t==0) ? b : c * std::pow(2, 10 * (t/d - 1)) + b;
 		}
-		float Expo::easeOut(float t, float b, float c, float d)
+		float Expo::easeOut(float t, float b, float c, float d) const
 		{
 			return (t==d) ? b+c : c * (-std::pow(2, -10 * t/d) + 1) + b;
 		}
-		float Expo::easeInOut(float t, float b, float c, float d)
+		float Expo::easeInOut(float t, float b, float c, float d) const
 		{
 			if (t==0) return b;
 			if (t==d) return b+c;
@@ -123,7 +123,7 @@ namespace PZ
 		}
 
 		/****  ELASTIC ****/
-		float Elastic::easeIn(float t, float b, float c, float d)
+		float Elastic::easeIn(float t, float b, float c, float d) const
 		{
 			if (t==0) return b;  if ((t/=d)==1) return b+c;
 			float p=d*.3f;
@@ -132,7 +132,7 @@ namespace PZ
 			float postFix =a*std::pow(2,10*(t-=1));
 			return -(postFix * std::sin((t*d-s)*(2*M_PI)/p )) + b;
 		}
-		float Elastic::easeOut(float t, float b, float c, float d)
+		float Elastic::easeOut(float t, float b, float c, float d) const
 		{
 			if (t==0) return b;  if ((t/=d)==1) return b+c;
 			float p=d*.3f;
@@ -140,7 +140,7 @@ namespace PZ
 			float s=p/4;
 			return (a*std::pow(2,-10*t) * std::sin( (t*d-s)*(2*M_PI)/p ) + c + b);
 		}
-		float Elastic::easeInOut(float t, float b, float c, float d)
+		float Elastic::easeInOut(float t, float b, float c, float d) const
 		{
 			if (t==0) return b;  if ((t/=d/2)==2) return b+c;
 			float p=d*(.3f*1.5f);
@@ -157,42 +157,42 @@ namespace PZ
 		}
 
 		/****  CUBIC ****/
-		float Cubic::easeIn(float t, float b, float c, float d)
+		float Cubic::easeIn(float t, float b, float c, float d) const
 		{
 			return c*(t/=d)*t*t + b;
 		}
-		float Cubic::easeOut(float t, float b, float c, float d)
+		float Cubic::easeOut(float t, float b, float c, float d) const
 		{
 			return c*((t=t/d-1)*t*t + 1) + b;
 		}
 
-		float Cubic::easeInOut(float t, float b, float c, float d)
+		float Cubic::easeInOut(float t, float b, float c, float d) const
 		{
 			if ((t/=d/2) < 1) return c/2*t*t*t + b;
 			return c/2*((t-=2)*t*t + 2) + b;
 		}
 
 		/*** CIRC ***/
-		float Circ::easeIn(float t, float b, float c, float d)
+		float Circ::easeIn(float t, float b, float c, float d) const
 		{
 			return -c * (std::sqrt(1 - (t/=d)*t) - 1) + b;
 		}
-		float Circ::easeOut(float t, float b, float c, float d)
+		float Circ::easeOut(float t, float b, float c, float d) const
 		{
 			return c * std::sqrt(1 - (t=t/d-1)*t) + b;
 		}
-		float Circ::easeInOut(float t, float b, float c, float d)
+		float Circ::easeInOut(float t, float b, float c, float d) const
 		{
 			if ((t/=d/2) < 1) return -c/2 * (std::sqrt(1 - t*t) - 1) + b;
 			return c/2 * (std::sqrt(1 - t*(t-=2)) + 1) + b;
 		}
 
 		/****  BOUNCE ****/
-		float Bounce::easeIn(float t, float b, float c, float d)
+		float Bounce::easeIn(float t, float b, float c, float d) const
 		{
 			return c - easeOut(d-t, 0, c, d) + b;
 		}
-		float Bounce::easeOut(float t, float b, float c, float d)
+		float Bounce::easeOut(float t, float b, float c, float d) const
 		{
 			if ((t/=d) < (1/2.75f))
 			{
@@ -214,50 +214,30 @@ namespace PZ
 				return c*(7.5625f*(postFix)*t + .984375f) + b;
 			}
 		}
-		float Bounce::easeInOut(float t, float b, float c, float d)
+		float Bounce::easeInOut(float t, float b, float c, float d) const
 		{
 			if (t < d/2) return easeIn(t*2, 0, c, d) * .5f + b;
 			else return easeOut(t*2-d, 0, c, d) * .5f + c*.5f + b;
 		}
 
 		/**** BACK *****/
-		float Back::easeIn(float t, float b, float c, float d)
+		float Back::easeIn(float t, float b, float c, float d) const
 		{
 			float s = 1.70158f;
 			float postFix = t/=d;
 			return c*(postFix)*t*((s+1)*t - s) + b;
 		}
-		float Back::easeOut(float t, float b, float c, float d)
+		float Back::easeOut(float t, float b, float c, float d) const
 		{
 			float s = 1.70158f;
 			return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 		}
-		float Back::easeInOut(float t,float b, float c, float d)
+		float Back::easeInOut(float t,float b, float c, float d) const
 		{
 			float s = 1.70158f;
 			if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525f))+1)*t - s)) + b;
 			float postFix = t-=2;
 			return c/2*((postFix)*t*(((s*=(1.525f))+1)*t + s) + 2) + b;
-		}
-
-		Easing *GetFunctionFromEnum(Transition transition)
-		{
-			Easing *function = NULL;
-			switch (transition)
-			{
-			case LINEAR  : function = &fLinear;  break;
-			case SINE    : function = &fSine;    break;
-			case QUINT   : function = &fQuint;   break;
-			case QUART   : function = &fQuart;   break;
-			case QUAD    : function = &fQuad;    break;
-			case EXPO    : function = &fExpo;    break;
-			case ELASTIC : function = &fElastic; break;
-			case CUBIC   : function = &fCubic;   break;
-			case CIRC    : function = &fCirc;    break;
-			case BOUNCE  : function = &fBounce;  break;
-			case BACK    : function = &fBack;    break;
-			}
-			return function;
 		}
 	}
 }

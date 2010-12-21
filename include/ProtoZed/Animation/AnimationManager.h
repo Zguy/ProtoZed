@@ -47,29 +47,29 @@ namespace PZ
 		}
 		bool UnregisterAnimationType(const std::string &animationType);
 
-		AnimationBase *GetNewAnimation(const std::string &animationType, AnimationProperties *properties = NULL);
+		AnimationBase *GetNewAnimation(const std::string &animationType, AnimationProperties *properties = NULL) const;
 		template<class T>
-		T *GetNewAnimation(const std::string &animationType, AnimationProperties *properties = NULL)
+		T *GetNewAnimation(const std::string &animationType, AnimationProperties *properties = NULL) const
 		{
 			return static_cast<T*>(GetNewAnimation(animationType, properties));
 		}
 
-		bool HasAnimation(const std::string &animationName);
+		bool HasAnimation(const std::string &animationName) const;
 		
 		bool AddAnimation(const std::string &animationName, AnimationBase *animation);
 		bool AddAnimationFromXML(const std::string &animationName, const std::string &filename);
 		bool RemoveAnimation(const std::string &animationName);
 
-		AnimationBase *GetAnimationFromName(const std::string &animationName);
+		AnimationBase *GetAnimationFromName(const std::string &animationName) const;
 
-		AnimationBase *RunAnimation(const std::string &animationName, Animable *object);
-		void RunAnimationDirect(AnimationBase *animation, Animable *object);
+		AnimationBase *RunAnimation(const std::string &animationName, AnimablePtr object);
+		void RunAnimationDirect(AnimationBase *animation, AnimablePtr object);
 
 		void Step(float deltaTime);
 	private:
 		AnimationManagerImpl *p;
 
-		AnimationFactory &getAnimationFactory();
+		AnimationFactory &getAnimationFactory() const;
 	};
 }
 

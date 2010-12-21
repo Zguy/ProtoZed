@@ -26,8 +26,6 @@ namespace PZ
 {
 	typedef ::ObjectFactory<Entity*(const std::string&, Entity*), std::string> EntityFactory;
 
-	class EntityManagerImpl;
-
 	class EntityManager
 	{
 	public:
@@ -37,7 +35,7 @@ namespace PZ
 		template<class T>
 		bool RegisterEntity(const std::string &entityName)
 		{
-			return getEntityFactory().Register<T>(entityName);
+			return entityFactory.Register<T>(entityName);
 		}
 		bool UnregisterEntity(const std::string &entityName);
 
@@ -48,12 +46,10 @@ namespace PZ
 			return static_cast<T*>(GetNewEntity(entityName, name, parent));
 		}
 
-		Entity *const GetRootEntity();
+		void DeleteEntity(Entity *entity);
 
 	private:
-		EntityManagerImpl *p;
-
-		EntityFactory &getEntityFactory();
+		EntityFactory entityFactory;
 	};
 }
 

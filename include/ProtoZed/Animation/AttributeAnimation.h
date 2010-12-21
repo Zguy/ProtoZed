@@ -64,20 +64,20 @@ namespace PZ
 		void SetRepeat(int repeat);
 		void SetPingPoing(bool pingpong);
 
-		Animable::Attribute GetAttribute();
-		float               GetGoal();
-		bool                GetRelativeGoal();
-		Easing::Transition  GetTransition();
-		Easing::Equation    GetEquation();
-		float               GetTime();
-		float               GetDelay();
-		int                 GetRepeat();
-		bool                GetPingPong();
+		Animable::Attribute GetAttribute()    const;
+		float               GetGoal()         const;
+		bool                GetRelativeGoal() const;
+		Easing::Transition  GetTransition()   const;
+		Easing::Equation    GetEquation()     const;
+		float               GetTime()         const;
+		float               GetDelay()        const;
+		int                 GetRepeat()       const;
+		bool                GetPingPong()     const;
 
 		virtual AnimationBase *GetCopy();
 
 	protected:
-		virtual bool StartImpl(Animable *object);
+		virtual bool StartImpl(AnimablePtr object);
 
 		virtual void AddTime(float deltaTime);
 

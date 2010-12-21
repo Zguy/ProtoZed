@@ -25,10 +25,10 @@ namespace PZ
 	class AttributeAnimationImpl
 	{
 	public:
-		AttributeAnimationImpl() : object(NULL), startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
+		AttributeAnimationImpl() : /*object(NULL),*/ startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
 		{}
 
-		Animable *object;
+		AnimableWeakPtr object;
 		float startValue;
 
 		float totalTime;
@@ -140,39 +140,39 @@ namespace PZ
 		p->pingpong = pingpong;
 	}
 
-	Animable::Attribute AttributeAnimation::GetAttribute()
+	Animable::Attribute AttributeAnimation::GetAttribute() const
 	{
 		return p->attribute;
 	}
-	float AttributeAnimation::GetGoal()
+	float AttributeAnimation::GetGoal() const
 	{
 		return p->goal;
 	}
-	bool AttributeAnimation::GetRelativeGoal()
+	bool AttributeAnimation::GetRelativeGoal() const
 	{
 		return p->relativeGoal;
 	}
-	Easing::Transition AttributeAnimation::GetTransition()
+	Easing::Transition AttributeAnimation::GetTransition() const
 	{
 		return p->transitionEnum;
 	}
-	Easing::Equation AttributeAnimation::GetEquation()
+	Easing::Equation AttributeAnimation::GetEquation() const
 	{
 		return p->equation;
 	}
-	float AttributeAnimation::GetTime()
+	float AttributeAnimation::GetTime() const
 	{
 		return p->totalTime;
 	}
-	float AttributeAnimation::GetDelay()
+	float AttributeAnimation::GetDelay() const
 	{
 		return p->delay;
 	}
-	int AttributeAnimation::GetRepeat()
+	int AttributeAnimation::GetRepeat() const
 	{
 		return p->repeat;
 	}
-	bool AttributeAnimation::GetPingPong()
+	bool AttributeAnimation::GetPingPong() const
 	{
 		return p->pingpong;
 	}
@@ -182,7 +182,7 @@ namespace PZ
 		return new AttributeAnimation(*this);
 	}
 
-	bool AttributeAnimation::StartImpl(Animable *object)
+	bool AttributeAnimation::StartImpl(AnimablePtr object)
 	{
 		p->object      = object;
 		p->startValue  = object->GetAttribute(p->attribute);
@@ -193,15 +193,22 @@ namespace PZ
 
 	void AttributeAnimation::AddTime(float deltaTime)
 	{
+		if (p->object.expired())
+		{
+			state = STOPPED;
+			return;
+		}
+
 		if (state == RUNNING)
 		{
+			AnimablePtr object = p->object.lock();
 			p->currentTime += deltaTime;
 
 			float goal = (p->relativeGoal ? (p->startValue + p->goal) : p->goal);
 
 			if (p->currentTime > 0.f)
 			{
-				float newValue = p->object->GetAttribute(p->attribute);
+				float newValue = object->GetAttribute(p->attribute);
 
 				switch (p->equation)
 				{
@@ -210,15 +217,14 @@ namespace PZ
 				case Easing::EASE_IN_OUT : newValue = p->transition->easeInOut(p->currentTime, p->startValue, (goal - p->startValue), p->totalTime); break;
 				}
 
-				p->object->SetAttribute(p->attribute, newValue);
+				object->SetAttribute(p->attribute, newValue);
 			}
 			if (p->currentTime >= p->totalTime)
 			{
 				if ((p->repeat != -1)&&(--p->repeat <= 0))
 				{
-					state     = FINISHED;
-					p->object->SetAttribute(p->attribute, goal);
-					p->object = NULL;
+					state = FINISHED;
+					object->SetAttribute(p->attribute, goal);
 				}
 				else
 				{
@@ -236,10 +242,6 @@ namespace PZ
 					}
 				}
 			}
-		}
-		else if (state == FINISHED)
-		{
-			p->object = NULL;
 		}
 	}
 }

@@ -35,8 +35,8 @@
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
-    <ClInclude Include="include\ProtoZed\ParticleSystem\Modifier.h" />
-    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="include\ProtoZed\ParticleSystem\Particle.h" />
+    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleGroup.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
@@ -51,7 +51,6 @@
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />
-    <ClCompile Include="src\ParticleSystem\ParticleSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{33587181-C106-42CE-A151-D0C2FA1A8DDD}</ProjectGuid>

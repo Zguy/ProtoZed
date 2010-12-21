@@ -88,7 +88,7 @@ namespace PZ
 		return found;
 	}
 
-	Entity *Entity::GetChildByIndex(unsigned int index)
+	Entity *Entity::GetChildByIndex(unsigned int index) const
 	{
 		if (index < children.size())
 		{
@@ -99,9 +99,9 @@ namespace PZ
 			return NULL;
 		}
 	}
-	Entity *Entity::GetChildByName(const std::string name)
+	Entity *Entity::GetChildByName(const std::string name) const
 	{
-		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
 			if ((*it)->GetName() == name)
 				return (*it);
@@ -109,11 +109,11 @@ namespace PZ
 		return NULL;
 	}
 
-	const sf::Vector2f &Entity::GetLocalPosition()
+	const sf::Vector2f &Entity::GetLocalPosition() const
 	{
 		return position;
 	}
-	const sf::Vector2f Entity::GetGlobalPosition()
+	const sf::Vector2f Entity::GetGlobalPosition() const
 	{
 		if (HasParent())
 			return parent->GetGlobalPosition() + position;
