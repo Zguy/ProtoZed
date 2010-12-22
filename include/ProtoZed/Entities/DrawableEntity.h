@@ -51,7 +51,7 @@ namespace PZ
 			COLOR_R,COLOR_G,COLOR_B,ALPHA
 		};
 
-		DrawableEntity(const std::string &name, Entity *parent = NULL);
+		DrawableEntity(const std::string &name);
 		~DrawableEntity();
 
 		inline bool HasDrawable() const { return (drawable != NULL); }

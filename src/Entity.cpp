@@ -20,12 +20,9 @@
 
 namespace PZ
 {
-	Entity::Entity(const std::string &name, Entity *_parent) : parent(NULL), name(name), position(0.f,0.f)
+	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f)
 	{
-		if (_parent != NULL)
-		{
-			_parent->AddChild(this);
-		}
+		id = UniqueIDGenerator::GetNextID();
 	}
 	Entity::~Entity()
 	{
@@ -37,30 +34,16 @@ namespace PZ
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			(*it)->parent = NULL;
-			delete (*it);
 		}
 		children.clear();
 	}
 
-	void Entity::ChangeParent(Entity *newParent)
-	{
-		if (HasParent())
-			parent->RemoveChild(this);
-
-		if (newParent != NULL)
-			newParent->AddChild(this);
-	}
-
 	bool Entity::AddChild(EntityPtr child)
-	{
-		return AddChild(child.get());
-	}
-	bool Entity::AddChild(Entity *child)
 	{
 		bool found = false;
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 		{
-			if (*(*it) == *child)
+			if ((*(*it) == *child)||((*it)->GetName() == child->GetName()))
 			{
 				found = true;
 				break;
@@ -96,7 +79,7 @@ namespace PZ
 		return found;
 	}
 
-	Entity *Entity::GetChildByIndex(unsigned int index) const
+	EntityPtr Entity::GetChildByIndex(unsigned int index) const
 	{
 		if (index < children.size())
 		{
@@ -107,7 +90,7 @@ namespace PZ
 			return NULL;
 		}
 	}
-	Entity *Entity::GetChildByName(const std::string name) const
+	EntityPtr Entity::GetChildByName(const std::string name) const
 	{
 		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
@@ -192,6 +175,6 @@ namespace PZ
 
 	bool Entity::operator==(const Entity &other)
 	{
-		return name == other.name;
+		return id == other.id;
 	}
 }

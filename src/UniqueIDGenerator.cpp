@@ -16,29 +16,14 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/EntityManager.h"
+#include "ProtoZed/UniqueIDGenerator.h"
 
 namespace PZ
 {
-	EntityManager::EntityManager()
-	{
-	}
-	EntityManager::~EntityManager()
-	{
-	}
+	UniqueID UniqueIDGenerator::currentID = 0;
 
-	bool EntityManager::UnregisterEntity(const std::string &entityName)
+	const UniqueID UniqueIDGenerator::GetNextID()
 	{
-		return entityFactory.Unregister(entityName);
-	}
-
-	Entity *EntityManager::GetNewEntity(const std::string &entityName, const std::string name, Entity *parent)
-	{
-		return entityFactory.Create(entityName, name, parent);
-	}
-
-	void EntityManager::DeleteEntity(Entity *entity)
-	{
-		delete entity;
+		return currentID++;
 	}
 }

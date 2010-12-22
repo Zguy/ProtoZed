@@ -20,7 +20,7 @@
 
 namespace PZ
 {
-	DrawableEntity::DrawableEntity(const std::string &name, Entity *parent) : Entity(name, parent), drawable(NULL)
+	DrawableEntity::DrawableEntity(const std::string &name) : Entity(name), drawable(NULL)
 	{
 
 	}

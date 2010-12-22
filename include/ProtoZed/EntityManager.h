@@ -24,29 +24,37 @@
 
 namespace PZ
 {
-	typedef ::ObjectFactory<Entity*(const std::string&, Entity*), std::string> EntityFactory;
+	typedef ::ObjectFactory<Entity*(const std::string&), std::string> EntityFactory;
 
 	class EntityManager
 	{
 	public:
-		EntityManager();
-		~EntityManager();
+		EntityManager()
+		{}
+		~EntityManager()
+		{}
 
 		template<class T>
 		bool RegisterEntity(const std::string &entityName)
 		{
 			return entityFactory.Register<T>(entityName);
 		}
-		bool UnregisterEntity(const std::string &entityName);
-
-		Entity *GetNewEntity(const std::string &entityName, const std::string name, Entity *parent = NULL);
-		template<class T>
-		T *GetNewEntity(const std::string &entityName, const std::string name, Entity *parent = NULL)
+		bool UnregisterEntity(const std::string &entityName)
 		{
-			return static_cast<T*>(GetNewEntity(entityName, name, parent));
+			return entityFactory.Unregister(entityName);
 		}
 
-		void DeleteEntity(Entity *entity);
+		EntityPtr GetNewEntity(const std::string &entityName, const std::string name)
+		{
+			EntityPtr entity(entityFactory.Create(entityName, name));
+			return entity;
+		}
+		template<class T>
+		std::shared_ptr<T> GetNewEntity(const std::string &entityName, const std::string name)
+		{
+			EntityPtr entity = GetNewEntity(entityName, name);
+			return std::static_pointer_cast<T, Entity>(entity);
+		}
 
 	private:
 		EntityFactory entityFactory;

@@ -60,7 +60,6 @@ namespace PZ
 		{
 			stateManager.PopAllStack();
 			stateManager.Update();
-			//stateManager.DeleteAllStates();
 
 			window.Close();
 

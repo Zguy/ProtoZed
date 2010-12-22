@@ -39,6 +39,7 @@
     <ClInclude Include="include\ProtoZed\ParticleSystem\Particle.h" />
     <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleGroup.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
+    <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\AnimationBase.cpp" />
@@ -51,7 +52,7 @@
     <ClCompile Include="src\AssetStorage.cpp" />
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
-    <ClCompile Include="src\EntityManager.cpp" />
+    <ClCompile Include="src\UniqueIDGenerator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{33587181-C106-42CE-A151-D0C2FA1A8DDD}</ProjectGuid>

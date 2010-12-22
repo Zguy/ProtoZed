@@ -24,6 +24,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include "ProtoZed/UniqueIDGenerator.h"
+
 #define WEAK_SHARED_PTR(T) typedef std::shared_ptr<T> T ## Ptr; \
 	                         typedef std::weak_ptr<T> T ## WeakPtr;
 
@@ -45,27 +47,24 @@ namespace PZ
 	typedef std::shared_ptr<Message> MessagePtr;
 
 	class Entity;
-	typedef std::vector<Entity*> EntityList;
 	WEAK_SHARED_PTR(Entity)
+	typedef std::vector<EntityPtr> EntityList;
 
 	class Entity
 	{
 	public:
-		Entity(const std::string &name, Entity *_parent = NULL);
+		Entity(const std::string &name);
 		virtual ~Entity();
 
-		void ChangeParent(Entity *newParent);
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
 
 		bool AddChild(EntityPtr child);
-		bool AddChild(Entity *child);
 		bool RemoveChild(EntityPtr child);
-		bool RemoveChild(Entity *child);
 
 		inline const EntityList &GetChildren() const { return children; }
-		Entity *GetChildByIndex(unsigned int index) const;
-		Entity *GetChildByName(const std::string name) const;
+		EntityPtr GetChildByIndex(unsigned int index) const;
+		EntityPtr GetChildByName(const std::string name) const;
 
 		inline const std::string &GetName() const { return name; }
 
@@ -82,9 +81,13 @@ namespace PZ
 		bool operator==(const Entity &other);
 
 	protected:
+		bool RemoveChild(Entity *child);
+
 		virtual bool OnMessage(MessagePtr message) { return false; }
 
 	private:
+		UniqueID id;
+
 		Entity *parent;
 		EntityList children;
 

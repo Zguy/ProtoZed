@@ -115,7 +115,6 @@ namespace PZ
 		}
 
 		StateStack stateStack;
-		//StateMap   states;
 		TodoQueue  todoQueue;
 		AppStateFactory appStateFactory;
 	};
@@ -128,7 +127,6 @@ namespace PZ
 	AppStateManager::~AppStateManager()
 	{
 		p->popAllStack();
-		//DeleteAllStates();
 
 		delete p;
 	}
@@ -155,47 +153,6 @@ namespace PZ
 	{
 		return p->appStateFactory.Unregister(stateName);
 	}
-
-	/*void AppStateManager::AddState(const std::string &stateName, AppState *state)
-	{
-		if (p->states.find(stateName) == p->states.end())
-			p->states[stateName] = state;
-	}
-
-	void AppStateManager::RemoveState(const std::string &stateName)
-	{
-		StateMap::iterator it = p->states.find(stateName);
-		if (it != p->states.end())
-		{
-			delete (*it).second;
-			p->states.erase(it);
-		}
-	}
-
-	void AppStateManager::DeleteAllStates()
-	{
-		for (StateMap::iterator it = p->states.begin(); it != p->states.end(); ++it)
-			delete (*it).second;
-		p->states.clear();
-	}
-
-	AppState *AppStateManager::GetStateByName(const std::string &stateName)
-	{
-		StateMap::iterator it = p->states.find(stateName);
-		if (it != p->states.end())
-			return (*it).second;
-		else
-			return NULL;
-	}
-
-	StateList AppStateManager::GetAllStates()
-	{
-		StateList list;
-		for (StateMap::iterator it = p->states.begin(); it != p->states.end(); ++it)
-			list.push_back((*it).second);
-
-		return list;
-	}*/
 
 	void AppStateManager::ChangeState(const std::string &stateName, StringMap *const options)
 	{
@@ -250,4 +207,5 @@ namespace PZ
 	{
 		return p->appStateFactory;
 	}
+
 }

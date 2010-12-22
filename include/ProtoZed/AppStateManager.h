@@ -47,12 +47,6 @@ namespace PZ
 			return getAppStateFactory().Register<T>(stateName);
 		}
 		bool UnregisterState(const std::string &stateName);
-		//void AddState(const std::string &stateName, AppState *state);
-		//void RemoveState(const std::string &stateName);
-		//void DeleteAllStates();
-
-		/*AppState *GetStateByName(const std::string &stateName);
-		StateList GetAllStates();*/
 
 		void ChangeState(const std::string &stateName, StringMap *const options = NULL);
 		void PushState(const std::string &stateName, StringMap *const options = NULL);

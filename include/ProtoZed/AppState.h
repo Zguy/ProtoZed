@@ -36,7 +36,7 @@ namespace PZ
 	public:
 		AppState() : started(false)//, rootEntity(Application::GetSingleton().GetEntityManager().GetNewEntity("Entity", "RootEntity", NULL))
 		{
-			rootEntity = new Entity("RootEntity", NULL);
+			rootEntity = new Entity("RootEntity");
 		}
 		virtual ~AppState()
 		{
