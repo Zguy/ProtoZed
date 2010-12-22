@@ -21,6 +21,7 @@
     <ClInclude Include="include\ProtoZed\Application.h" />
     <ClInclude Include="include\ProtoZed\AppState.h" />
     <ClInclude Include="include\ProtoZed\AssetStorage.h" />
+    <ClInclude Include="include\ProtoZed\Convert.h" />
     <ClInclude Include="include\ProtoZed\Entities\DrawableEntity.h" />
     <ClInclude Include="include\ProtoZed\Entity.h" />
     <ClInclude Include="include\ProtoZed\EntityManager.h" />

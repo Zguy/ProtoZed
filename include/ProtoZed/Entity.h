@@ -46,6 +46,7 @@ namespace PZ
 
 	class Entity;
 	typedef std::vector<Entity*> EntityList;
+	WEAK_SHARED_PTR(Entity)
 
 	class Entity
 	{
@@ -57,7 +58,9 @@ namespace PZ
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
 
+		bool AddChild(EntityPtr child);
 		bool AddChild(Entity *child);
+		bool RemoveChild(EntityPtr child);
 		bool RemoveChild(Entity *child);
 
 		inline const EntityList &GetChildren() const { return children; }
@@ -88,8 +91,6 @@ namespace PZ
 		std::string name;
 		sf::Vector2f position;
 	};
-
-	WEAK_SHARED_PTR(Entity)
 }
 
 #endif // Entity_h__

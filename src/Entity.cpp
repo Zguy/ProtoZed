@@ -51,6 +51,10 @@ namespace PZ
 			newParent->AddChild(this);
 	}
 
+	bool Entity::AddChild(EntityPtr child)
+	{
+		return AddChild(child.get());
+	}
 	bool Entity::AddChild(Entity *child)
 	{
 		bool found = false;
@@ -70,6 +74,10 @@ namespace PZ
 		}
 
 		return !found;
+	}
+	bool Entity::RemoveChild(EntityPtr child)
+	{
+		return RemoveChild(child.get());
 	}
 	bool Entity::RemoveChild(Entity *child)
 	{
