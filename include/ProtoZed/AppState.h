@@ -24,7 +24,6 @@
 
 #include <SFML/Window/Event.hpp>
 
-//#include "Application.h"
 #include "Entity.h"
 
 namespace PZ
@@ -34,14 +33,8 @@ namespace PZ
 	class AppState
 	{
 	public:
-		AppState() : started(false)//, rootEntity(Application::GetSingleton().GetEntityManager().GetNewEntity("Entity", "RootEntity", NULL))
-		{
-			rootEntity = new Entity("RootEntity");
-		}
-		virtual ~AppState()
-		{
-			delete rootEntity;
-		}
+		AppState();
+		virtual ~AppState();
 
 		virtual bool Update(float deltaTime) = 0;
 
@@ -60,7 +53,7 @@ namespace PZ
 		virtual void LoadAssets() {}
 		virtual void UnloadAssets() {}
 
-		inline Entity *const GetRootEntity() const { return rootEntity; }
+		inline EntityPtr GetRootEntity() const { return rootEntity; }
 
 		inline bool IsStarted() const { return started; }
 
@@ -68,7 +61,7 @@ namespace PZ
 		bool started;
 
 	private:
-		Entity *rootEntity;
+		EntityPtr rootEntity;
 	};
 }
 

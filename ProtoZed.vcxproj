@@ -48,6 +48,7 @@
     <ClCompile Include="src\Animation\AnimationManager.cpp" />
     <ClCompile Include="src\Animation\Easing.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\AppState.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
