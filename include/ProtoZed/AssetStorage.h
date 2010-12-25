@@ -38,17 +38,28 @@ namespace PZ
 			}
 		}
 
+		inline const std::string &GetDataFolder() const { return dataFolder; }
+		void SetDataFolder(const std::string &folder);
+
 		bool PreloadAsset(const std::string &filename);
 		void UnloadAsset(const std::string &filename);
 		const T &GetAsset(const std::string &filename);
 
 	private:
-		std::string GetDataFolder() const;
-
+		std::string dataFolder;
 		typedef std::map<std::string, T> AssetMap;
 		AssetMap assets;
 		T nullAsset;
 	};
+
+	template<typename T>
+	void PZ::AssetStorage<T>::SetDataFolder(const std::string &folder)
+	{
+		if (folder.back() != '/' && folder.back() != '\\')
+			dataFolder = folder + '/';
+		else
+			dataFolder = folder;
+	}
 
 	template<typename T>
 	void AssetStorage<T>::UnloadAsset(const std::string &filename)

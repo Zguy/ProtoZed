@@ -26,11 +26,6 @@ namespace PZ
 {
 	// sf::Image
 	template<>
-	std::string AssetStorage<sf::Image>::GetDataFolder() const
-	{
-		return "data/images/";
-	}
-	template<>
 	bool AssetStorage<sf::Image>::PreloadAsset(const std::string &filename)
 	{
 		if (assets.find(filename) == assets.end())
@@ -50,11 +45,6 @@ namespace PZ
 
 	// sf::Font
 	template<>
-	std::string AssetStorage<sf::Font>::GetDataFolder() const
-	{
-		return "data/fonts/";
-	}
-	template<>
 	bool AssetStorage<sf::Font>::PreloadAsset(const std::string &filename)
 	{
 		if (assets.find(filename) == assets.end())
@@ -73,11 +63,6 @@ namespace PZ
 	}
 
 	// sf::SoundBuffer
-	template<>
-	std::string AssetStorage<sf::SoundBuffer>::GetDataFolder() const
-	{
-		return "data/sounds/";
-	}
 	template<>
 	bool AssetStorage<sf::SoundBuffer>::PreloadAsset(const std::string &filename)
 	{
