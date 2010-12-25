@@ -52,7 +52,9 @@ namespace PZ
 
 		if (!found)
 		{
+			sf::Vector2f oldPos = child->GetGlobalPosition();
 			child->parent = this;
+			child->SetGlobalPosition(oldPos);
 			children.push_back(child);
 		}
 
@@ -138,8 +140,9 @@ namespace PZ
 	{
 		if (HasParent())
 		{
-			position.x = x - parent->GetGlobalPosition().x;
-			position.y = y - parent->GetGlobalPosition().y;
+			sf::Vector2f parentPos = parent->GetGlobalPosition();
+			position.x = x - parentPos.x;
+			position.y = y - parentPos.y;
 		}
 		else
 		{

@@ -19,8 +19,8 @@
 #ifndef EntityManager_h__
 #define EntityManager_h__
 
-#include "Entity.h"
-#include "ObjectFactory/ObjectFactory.h"
+#include <ProtoZed/Entity.h>
+#include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 namespace PZ
 {

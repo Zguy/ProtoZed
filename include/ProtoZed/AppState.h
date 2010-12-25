@@ -24,7 +24,7 @@
 
 #include <SFML/Window/Event.hpp>
 
-#include "Entity.h"
+#include <ProtoZed/Entity.h>
 
 namespace PZ
 {

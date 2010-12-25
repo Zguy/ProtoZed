@@ -19,7 +19,7 @@
 #ifndef AnimationGroup_h__
 #define AnimationGroup_h__
 
-#include "AnimationBase.h"
+#include <ProtoZed/Animation/AnimationBase.h>
 
 namespace PZ
 {

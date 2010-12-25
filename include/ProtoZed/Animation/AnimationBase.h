@@ -21,9 +21,9 @@
 
 #include <memory>
 
-#include "ProtoZed/FastDelegate/delegate.h"
+#include <ProtoZed/FastDelegate/delegate.h>
 
-#include "Animable.h"
+#include <ProtoZed/Animation/Animable.h>
 
 namespace PZ
 {

@@ -26,11 +26,11 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 
-#include "Singleton.h"
-#include "AppStateManager.h"
-#include "EntityManager.h"
-#include "Animation/AnimationManager.h"
-#include "AssetStorage.h"
+#include <ProtoZed/Singleton.h>
+#include <ProtoZed/AppStateManager.h>
+#include <ProtoZed/EntityManager.h>
+#include <ProtoZed/Animation/AnimationManager.h>
+#include <ProtoZed/AssetStorage.h>
 
 namespace PZ
 {

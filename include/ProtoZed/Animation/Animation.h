@@ -19,11 +19,11 @@
 #ifndef Animation_h__
 #define Animation_h__
 
-#include "Animable.h"
-#include "AnimationBase.h"
-#include "AnimationManager.h"
-#include "AnimationGroup.h"
-#include "AttributeAnimation.h"
-#include "Easing.h"
+#include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Animation/AnimationBase.h>
+#include <ProtoZed/Animation/AnimationManager.h>
+#include <ProtoZed/Animation/AnimationGroup.h>
+#include <ProtoZed/Animation/AttributeAnimation.h>
+#include <ProtoZed/Animation/Easing.h>
 
 #endif // Animation_h__

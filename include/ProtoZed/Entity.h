@@ -24,7 +24,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include "ProtoZed/UniqueIDGenerator.h"
+#include <ProtoZed/UniqueIDGenerator.h>
 
 #define WEAK_SHARED_PTR(T) typedef std::shared_ptr<T> T ## Ptr; \
 	                         typedef std::weak_ptr<T> T ## WeakPtr;

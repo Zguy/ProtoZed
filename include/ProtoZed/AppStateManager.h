@@ -24,8 +24,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "AppState.h"
-#include "ObjectFactory/ObjectFactory.h"
+#include <ProtoZed/AppState.h>
+#include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 namespace PZ
 {

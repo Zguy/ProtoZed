@@ -19,8 +19,8 @@
 #ifndef AttributeAnimation_h__
 #define AttributeAnimation_h__
 
-#include "AnimationBase.h"
-#include "Easing.h"
+#include <ProtoZed/Animation/AnimationBase.h>
+#include <ProtoZed/Animation/Easing.h>
 
 namespace PZ
 {

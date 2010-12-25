@@ -21,9 +21,9 @@
 
 #include <string>
 
-#include "Animable.h"
+#include <ProtoZed/Animation/Animable.h>
 
-#include "ProtoZed/ObjectFactory/ObjectFactory.h"
+#include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 namespace PZ
 {

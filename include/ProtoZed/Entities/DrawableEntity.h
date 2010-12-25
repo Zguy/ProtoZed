@@ -22,8 +22,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
-#include "../Entity.h"
-#include "../Animation/Animable.h"
+#include <ProtoZed/Entity.h>
+#include <ProtoZed/Animation/Animable.h>
 
 namespace PZ
 {
