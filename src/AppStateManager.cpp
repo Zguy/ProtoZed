@@ -100,7 +100,7 @@ namespace PZ
 			}
 		}
 
-		void popAllStack()
+		void popAllStates()
 		{
 			while (!stateStack.empty())
 			{
@@ -126,7 +126,7 @@ namespace PZ
 
 	AppStateManager::~AppStateManager()
 	{
-		p->popAllStack();
+		p->popAllStates();
 
 		delete p;
 	}
@@ -141,7 +141,7 @@ namespace PZ
 			case Todo::CHANGE  : p->changeState(entry.stateName, entry.options); break;
 			case Todo::PUSH    : p->pushState(entry.stateName, entry.options);   break;
 			case Todo::POP     : p->popState();                                  break;
-			case Todo::POP_ALL : p->popAllStack();                               break;
+			case Todo::POP_ALL : p->popAllStates();                               break;
 			}
 			if (entry.options != NULL)
 				delete entry.options;
@@ -181,7 +181,7 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void AppStateManager::PopAllStack()
+	void AppStateManager::PopAllStates()
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::POP_ALL;

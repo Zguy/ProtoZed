@@ -20,10 +20,15 @@
 
 namespace PZ
 {
-	UniqueID UniqueIDGenerator::currentID = 0;
-
-	const UniqueID UniqueIDGenerator::GetNextID()
+	const UniqueID UniqueIDGenerator::GetNextID(const std::string &category)
 	{
-		return currentID++;
+		if (currentID.find(category) == currentID.end())
+		{
+			currentID[category] = 0;
+		}
+
+		return currentID[category]++;
 	}
+
+	std::map<std::string, UniqueID> UniqueIDGenerator::currentID;
 }

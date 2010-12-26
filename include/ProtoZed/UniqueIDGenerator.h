@@ -19,6 +19,9 @@
 #ifndef UniqueIDGenerator_h__
 #define UniqueIDGenerator_h__
 
+#include <map>
+#include <string>
+
 namespace PZ
 {
 	typedef unsigned int UniqueID;
@@ -30,10 +33,10 @@ namespace PZ
 		~UniqueIDGenerator();
 
 	public:
-		static const UniqueID GetNextID();
+		static const UniqueID GetNextID(const std::string &category = "");
 
 	private:
-		static UniqueID currentID;
+		static std::map<std::string, UniqueID> currentID;
 	};
 }
 

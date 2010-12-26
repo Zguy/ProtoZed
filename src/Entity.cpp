@@ -22,7 +22,7 @@ namespace PZ
 {
 	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f)
 	{
-		id = UniqueIDGenerator::GetNextID();
+		id = UniqueIDGenerator::GetNextID("Entity");
 	}
 	Entity::~Entity()
 	{

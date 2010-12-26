@@ -51,7 +51,7 @@ namespace PZ
 		void ChangeState(const std::string &stateName, StringMap *const options = NULL);
 		void PushState(const std::string &stateName, StringMap *const options = NULL);
 		void PopState();
-		void PopAllStack();
+		void PopAllStates();
 
 		bool IsEmpty();
 

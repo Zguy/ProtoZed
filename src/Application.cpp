@@ -58,7 +58,7 @@ namespace PZ
 
 		void shutdown()
 		{
-			stateManager.PopAllStack();
+			stateManager.PopAllStates();
 			stateManager.Update();
 
 			window.Close();
