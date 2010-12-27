@@ -27,10 +27,8 @@ namespace PZ
 	class AnimationGroupImpl
 	{
 	public:
-		AnimationGroupImpl() : /*object(NULL),*/ async(false)
+		AnimationGroupImpl() : async(false)
 		{}
-
-		AnimableWeakPtr object;
 
 		bool async;
 
@@ -86,20 +84,19 @@ namespace PZ
 		return new AnimationGroup(*this);
 	}
 
-	bool AnimationGroup::StartImpl(AnimablePtr object)
+	bool AnimationGroup::StartImpl()
 	{
-		p->object = object;
-
+		AnimablePtr animable = object.lock();
 		if (p->async)
 		{
 			for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
 			{
-				(*it)->Start(object);
+				(*it)->Start(animable);
 			}
 		}
 		else
 		{
-			p->animations.front()->Start(object);
+			p->animations.front()->Start(animable);
 		}
 
 		return true;
@@ -153,7 +150,7 @@ namespace PZ
 					p->animations.pop_front();
 
 					if (!p->animations.empty())
-						p->animations.front()->Start(p->object.lock());
+						p->animations.front()->Start(object.lock());
 				}
 
 				if (p->animations.empty())

@@ -142,7 +142,7 @@ namespace PZ
 			if (animation->GetState() == AnimationBase::STARTED)
 			{
 				if (!animation->onStart.empty())
-					animation->onStart();
+					animation->onStart(animation);
 				animation->state = AnimationBase::RUNNING;
 			}
 
@@ -152,7 +152,7 @@ namespace PZ
 			if (animation->GetState() == AnimationBase::FINISHED)
 			{
 				if (!animation->onFinished.empty())
-					animation->onFinished();
+					animation->onFinished(animation);
 				delete animation;
 				it = p->animations.erase(it);
 			}

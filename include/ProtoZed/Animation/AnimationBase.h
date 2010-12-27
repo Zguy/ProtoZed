@@ -32,7 +32,7 @@ namespace PZ
 	};
 
 	class AnimationBase;
-	typedef fd::delegate0<void> AnimationCallback;
+	typedef fd::delegate1<void, AnimationBase*> AnimationCallback;
 
 	class AnimationBase
 	{
@@ -54,7 +54,7 @@ namespace PZ
 		AnimationBase(AnimationProperties *properties);
 		virtual ~AnimationBase();
 
-		void Start(AnimablePtr object);
+		void Start(AnimablePtr animable);
 		void Stop();
 
 		void Pause(bool pause = true);
@@ -66,12 +66,16 @@ namespace PZ
 		inline void SetStartCallback(AnimationCallback &callback) { onStart = callback; }
 		inline void SetFinishedCallback(AnimationCallback &callback) { onFinished = callback; }
 
+		inline AnimablePtr GetAnimable() { return object.lock(); }
+
 		inline State GetState() const { return state; }
 
 	protected:
-		virtual bool StartImpl(AnimablePtr object) = 0;
+		virtual bool StartImpl() = 0;
 
 		virtual void AddTime(float deltaTime) = 0;
+
+		AnimableWeakPtr object;
 
 		State state;
 

@@ -25,10 +25,9 @@ namespace PZ
 	class AttributeAnimationImpl
 	{
 	public:
-		AttributeAnimationImpl() : /*object(NULL),*/ startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
+		AttributeAnimationImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
 		{}
 
-		AnimableWeakPtr object;
 		float startValue;
 
 		float totalTime;
@@ -182,10 +181,9 @@ namespace PZ
 		return new AttributeAnimation(*this);
 	}
 
-	bool AttributeAnimation::StartImpl(AnimablePtr object)
+	bool AttributeAnimation::StartImpl()
 	{
-		p->object      = object;
-		p->startValue  = object->GetAttribute(p->attribute);
+		p->startValue  = object.lock()->GetAttribute(p->attribute);
 		p->currentTime = -p->delay;
 
 		return true;
@@ -193,7 +191,7 @@ namespace PZ
 
 	void AttributeAnimation::AddTime(float deltaTime)
 	{
-		if (p->object.expired())
+		if (object.expired())
 		{
 			state = STOPPED;
 			return;
@@ -201,14 +199,14 @@ namespace PZ
 
 		if (state == RUNNING)
 		{
-			AnimablePtr object = p->object.lock();
+			AnimablePtr animable = object.lock();
 			p->currentTime += deltaTime;
 
 			float goal = (p->relativeGoal ? (p->startValue + p->goal) : p->goal);
 
 			if (p->currentTime > 0.f)
 			{
-				float newValue = object->GetAttribute(p->attribute);
+				float newValue = animable->GetAttribute(p->attribute);
 
 				switch (p->equation)
 				{
@@ -217,14 +215,14 @@ namespace PZ
 				case Easing::EASE_IN_OUT : newValue = p->transition->easeInOut(p->currentTime, p->startValue, (goal - p->startValue), p->totalTime); break;
 				}
 
-				object->SetAttribute(p->attribute, newValue);
+				animable->SetAttribute(p->attribute, newValue);
 			}
 			if (p->currentTime >= p->totalTime)
 			{
 				if ((p->repeat != -1)&&(--p->repeat <= 0))
 				{
 					state = FINISHED;
-					object->SetAttribute(p->attribute, goal);
+					animable->SetAttribute(p->attribute, goal);
 				}
 				else
 				{

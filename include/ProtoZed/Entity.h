@@ -21,6 +21,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <SFML/System/Vector2.hpp>
 

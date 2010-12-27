@@ -33,11 +33,12 @@ namespace PZ
 
 	}
 
-	void AnimationBase::Start(AnimablePtr object)
+	void AnimationBase::Start(AnimablePtr animable)
 	{
 		if (state == NOT_STARTED)
 		{
-			if (StartImpl(object))
+			object = animable;
+			if (StartImpl())
 				state = STARTED;
 			else
 				state = STOPPED;
