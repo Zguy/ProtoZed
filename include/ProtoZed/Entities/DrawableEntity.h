@@ -31,6 +31,7 @@ namespace PZ
 	{
 		static const std::string DRAW = "Draw";
 	}
+
 	struct DrawMessage : public Message
 	{
 		DrawMessage(sf::RenderWindow &window) : Message(MessageID::DRAW), window(window)
@@ -55,7 +56,7 @@ namespace PZ
 		~DrawableEntity();
 
 		inline bool HasDrawable() const { return (drawable != NULL); }
-		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; }
+		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; drawable->SetPosition(GetGlobalPosition()); }
 		inline sf::Drawable *GetDrawable() const { return drawable; }
 
 		// Pretend we're a sf::Drawable

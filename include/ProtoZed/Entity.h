@@ -33,6 +33,7 @@ namespace PZ
 {
 	namespace MessageID
 	{
+		static const std::string UPDATE           = "Update";
 		static const std::string POSITION_UPDATED = "PositionUpdated";
 	}
 
@@ -45,6 +46,14 @@ namespace PZ
 		bool childrenFirst; // Only applicable if bubble is true
 	};
 	typedef std::shared_ptr<Message> MessagePtr;
+
+	struct UpdateMessage : public Message
+	{
+		UpdateMessage(float deltaTime) : Message(MessageID::UPDATE), deltaTime(deltaTime)
+		{}
+
+		float deltaTime;
+	};
 
 	class Entity;
 	WEAK_SHARED_PTR(Entity)

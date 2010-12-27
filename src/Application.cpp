@@ -138,6 +138,9 @@ namespace PZ
 					p->stateManager.PopState();
 				}
 
+				// Update entities
+				state->GetRootEntity()->HandleMessage(MessagePtr(new UpdateMessage(deltaTime)));
+
 				// Draw drawable entities
 				state->GetRootEntity()->HandleMessage(MessagePtr(new DrawMessage(p->window)));
 			}

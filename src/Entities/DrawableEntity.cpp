@@ -84,7 +84,8 @@ namespace PZ
 	{
 		if (message->message == MessageID::POSITION_UPDATED)
 		{
-			drawable->SetPosition(GetGlobalPosition());
+			if (HasDrawable())
+				drawable->SetPosition(GetGlobalPosition());
 
 			return true;
 		}
@@ -99,6 +100,6 @@ namespace PZ
 			}
 		}
 
-		return false;
+		return Entity::OnMessage(message);
 	}
 }
