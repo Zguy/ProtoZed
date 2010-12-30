@@ -27,11 +27,19 @@ namespace PZ
 	namespace Convert
 	{
 		template<typename T>
-		std::string ToString(T value)
+		std::string ToString(const T &value)
 		{
 			std::stringstream sstr;
 			sstr << value;
 			return sstr.str();
+		}
+		template<typename T>
+		T FromString(const std::string &str)
+		{
+			std::stringstream sstr(str);
+			T value;
+			sstr >> value;
+			return value;
 		}
 	}
 }
