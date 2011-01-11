@@ -49,7 +49,7 @@ namespace PZ
 		std::string dataFolder;
 		typedef std::map<std::string, T> AssetMap;
 		AssetMap assets;
-		T nullAsset;
+		static T nullAsset;
 	};
 
 	template<typename T>
