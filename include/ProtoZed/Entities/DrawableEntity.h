@@ -19,11 +19,11 @@
 #ifndef DrawableEntity_h__
 #define DrawableEntity_h__
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Animation/Animable.h>
+
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 
 namespace PZ
 {

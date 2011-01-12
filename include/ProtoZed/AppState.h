@@ -19,12 +19,12 @@
 #ifndef AppState_h__
 #define AppState_h__
 
-#include <map>
-#include <string>
+#include <ProtoZed/Entity.h>
 
 #include <SFML/Window/Event.hpp>
 
-#include <ProtoZed/Entity.h>
+#include <map>
+#include <string>
 
 namespace PZ
 {

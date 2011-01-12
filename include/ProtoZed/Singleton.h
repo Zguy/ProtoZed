@@ -21,6 +21,7 @@
 #define Singleton_h__
 
 #include <cassert>
+#include <cstdlib>
 
 namespace PZ
 {

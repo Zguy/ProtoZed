@@ -18,16 +18,16 @@
 */
 #include <ProtoZed/Application.h>
 
-#include <iostream>
-
-#include <SFML/Graphics.hpp>
-
 #include <ProtoZed/AppStateManager.h>
 
 #include <ProtoZed/Entities/DrawableEntity.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
 #include <ProtoZed/Animation/AttributeAnimation.h>
+
+#include <SFML/Graphics.hpp>
+
+#include <iostream>
 
 namespace PZ
 {

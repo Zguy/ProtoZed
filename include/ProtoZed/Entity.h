@@ -19,13 +19,13 @@
 #ifndef Entity_h__
 #define Entity_h__
 
-#include <string>
-#include <vector>
-#include <memory>
+#include <ProtoZed/UniqueIDGenerator.h>
 
 #include <SFML/System/Vector2.hpp>
 
-#include <ProtoZed/UniqueIDGenerator.h>
+#include <string>
+#include <vector>
+#include <memory>
 
 #define WEAK_SHARED_PTR(T) typedef std::shared_ptr<T> T ## Ptr; \
 	                         typedef std::weak_ptr<T> T ## WeakPtr;

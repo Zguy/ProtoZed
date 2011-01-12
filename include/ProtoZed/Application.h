@@ -19,18 +19,17 @@
 #ifndef Application_h__
 #define Application_h__
 
-#include <string>
-
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Audio/SoundBuffer.hpp>
-
 #include <ProtoZed/Singleton.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
+
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+
+#include <string>
 
 namespace PZ
 {

@@ -18,10 +18,10 @@
 */
 #include <ProtoZed/Animation/AnimationManager.h>
 
+#include <ProtoZed/Animation/AnimationBase.h>
+
 #include <map>
 #include <vector>
-
-#include <ProtoZed/Animation/AnimationBase.h>
 
 namespace PZ
 {

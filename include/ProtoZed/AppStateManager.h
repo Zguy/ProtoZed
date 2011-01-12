@@ -19,13 +19,13 @@
 #ifndef AppStateManager_h__
 #define AppStateManager_h__
 
-#include <vector>
-#include <string>
+#include <ProtoZed/AppState.h>
+#include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include <ProtoZed/AppState.h>
-#include <ProtoZed/ObjectFactory/ObjectFactory.h>
+#include <vector>
+#include <string>
 
 namespace PZ
 {

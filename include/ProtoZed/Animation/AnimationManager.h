@@ -19,11 +19,11 @@
 #ifndef AnimationManager_h__
 #define AnimationManager_h__
 
-#include <string>
-
 #include <ProtoZed/Animation/Animable.h>
 
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+
+#include <string>
 
 namespace PZ
 {

@@ -19,11 +19,11 @@
 #ifndef AnimationBase_h__
 #define AnimationBase_h__
 
-#include <memory>
+#include <ProtoZed/Animation/Animable.h>
 
 #include <ProtoZed/FastDelegate/delegate.h>
 
-#include <ProtoZed/Animation/Animable.h>
+#include <memory>
 
 namespace PZ
 {
