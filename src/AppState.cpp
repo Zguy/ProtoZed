@@ -16,9 +16,9 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/AppState.h"
+#include <ProtoZed/AppState.h>
 
-#include "ProtoZed/Application.h"
+#include <ProtoZed/Application.h>
 
 namespace PZ
 {

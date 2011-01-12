@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/AssetStorage.h"
+#include <ProtoZed/AssetStorage.h>
 
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Font.hpp>

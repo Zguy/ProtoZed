@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/Animation/Easing.h"
+#include <ProtoZed/Animation/Easing.h>
 
 #include <cmath>
 

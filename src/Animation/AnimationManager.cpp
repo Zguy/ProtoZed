@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ProtoZed/Animation/AnimationManager.h"
+#include <ProtoZed/Animation/AnimationManager.h>
 
 #include <map>
 #include <vector>
 
-#include "ProtoZed/Animation/AnimationBase.h"
+#include <ProtoZed/Animation/AnimationBase.h>
 
 namespace PZ
 {
