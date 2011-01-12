@@ -40,7 +40,7 @@ namespace PZ
 
 	struct Message
 	{
-		Message(const std::string message = "", bool bubble = true, bool childrenFirst = false) : message(message), bubble(bubble), childrenFirst(childrenFirst)
+		Message(const std::string &message = "", bool bubble = true, bool childrenFirst = false) : message(message), bubble(bubble), childrenFirst(childrenFirst)
 		{}
 		std::string message;
 		bool bubble;
