@@ -44,14 +44,11 @@ namespace PZ
 		bool                pingpong;
 	};
 
-	AttributeAnimation::AttributeAnimation()
+	AttributeAnimation::AttributeAnimation() : p(new AttributeAnimationImpl)
 	{
-		p = new AttributeAnimationImpl;
 	}
-	AttributeAnimation::AttributeAnimation(AnimationProperties *properties)
+	AttributeAnimation::AttributeAnimation(AnimationProperties *properties) : p(new AttributeAnimationImpl)
 	{
-		p = new AttributeAnimationImpl;
-
 		if (properties != NULL)
 		{
 			AttributeAnimationProperties *props = static_cast<AttributeAnimationProperties*>(properties);
@@ -67,10 +64,8 @@ namespace PZ
 			p->pingpong       = props->pingpong;
 		}
 	}
-	AttributeAnimation::AttributeAnimation(const AttributeAnimation &copy)
+	AttributeAnimation::AttributeAnimation(const AttributeAnimation &copy) : p(new AttributeAnimationImpl)
 	{
-		p = new AttributeAnimationImpl;
-
 		p->attribute      = copy.p->attribute;
 		p->goal           = copy.p->goal;
 		p->relativeGoal   = copy.p->relativeGoal;

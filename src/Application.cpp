@@ -21,6 +21,7 @@
 #include <ProtoZed/AppStateManager.h>
 
 #include <ProtoZed/Entities/DrawableEntity.h>
+#include <ProtoZed/Entities/SoundEntity.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
 #include <ProtoZed/Animation/AttributeAnimation.h>
@@ -47,6 +48,7 @@ namespace PZ
 
 			entityManager.RegisterEntity<Entity>("Entity");
 			entityManager.RegisterEntity<DrawableEntity>("DrawableEntity");
+			entityManager.RegisterEntity<SoundEntity>("SoundEntity");
 
 			animationManager.RegisterAnimationType<AnimationGroup>("AnimationGroup");
 			animationManager.RegisterAnimationType<AttributeAnimation>("AttributeAnimation");

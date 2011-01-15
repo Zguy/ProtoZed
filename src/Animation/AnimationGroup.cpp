@@ -35,24 +35,19 @@ namespace PZ
 		AnimationQueue animations;
 	};
 
-	AnimationGroup::AnimationGroup()
+	AnimationGroup::AnimationGroup() : p(new AnimationGroupImpl)
 	{
-		p = new AnimationGroupImpl;
 	}
-	AnimationGroup::AnimationGroup(AnimationProperties *properties)
+	AnimationGroup::AnimationGroup(AnimationProperties *properties) : p(new AnimationGroupImpl)
 	{
-		p = new AnimationGroupImpl;
-
 		if (properties != NULL)
 		{
 			AnimationGroupProperties *props = static_cast<AnimationGroupProperties*>(properties);
 			p->async = props->async;
 		}
 	}
-	AnimationGroup::AnimationGroup(const AnimationGroup &copy)
+	AnimationGroup::AnimationGroup(const AnimationGroup &copy) : p(new AnimationGroupImpl)
 	{
-		p = new AnimationGroupImpl;
-
 		p->async = copy.p->async;
 		for (AnimationQueue::iterator it = copy.p->animations.begin(); it != copy.p->animations.end(); ++it)
 			p->animations.push_back((*it)->GetCopy());

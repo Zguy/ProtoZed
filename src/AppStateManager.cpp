@@ -119,11 +119,9 @@ namespace PZ
 		AppStateFactory appStateFactory;
 	};
 
-	AppStateManager::AppStateManager()
+	AppStateManager::AppStateManager() : p(new AppStateManagerImpl)
 	{
-		p = new AppStateManagerImpl;
 	}
-
 	AppStateManager::~AppStateManager()
 	{
 		p->popAllStates();

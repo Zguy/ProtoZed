@@ -22,7 +22,6 @@ namespace PZ
 {
 	DrawableEntity::DrawableEntity(const std::string &name) : Entity(name), drawable(NULL)
 	{
-
 	}
 	DrawableEntity::~DrawableEntity()
 	{
@@ -82,6 +81,8 @@ namespace PZ
 
 	bool DrawableEntity::OnMessage(MessagePtr message)
 	{
+		bool handled = Entity::OnMessage(message);
+
 		if (message->message == MessageID::POSITION_UPDATED)
 		{
 			if (HasDrawable())
@@ -100,6 +101,6 @@ namespace PZ
 			}
 		}
 
-		return Entity::OnMessage(message);
+		return handled;
 	}
 }

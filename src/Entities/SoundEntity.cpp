@@ -16,55 +16,35 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Animation/AnimationBase.h>
+#include <ProtoZed/Entities/SoundEntity.h>
 
 namespace PZ
 {
-	AnimationBase::AnimationBase() : state(NOT_STARTED)
+	SoundEntity::SoundEntity(const std::string name) : Entity(name)
 	{
 	}
-	AnimationBase::AnimationBase(AnimationProperties *properties) : state(NOT_STARTED)
-	{
-	}
-	AnimationBase::~AnimationBase()
+	SoundEntity::~SoundEntity()
 	{
 	}
 
-	void AnimationBase::Start(AnimablePtr animable)
+	void SoundEntity::SetSoundBuffer(const sf::SoundBuffer &soundBuffer)
 	{
-		if (state == NOT_STARTED)
-		{
-			object = animable;
-			if (StartImpl())
-				state = STARTED;
-			else
-				state = STOPPED;
-		}
-	}
-	void AnimationBase::Stop()
-	{
-		state = STOPPED;
+		sound.SetBuffer(soundBuffer);
 	}
 
-	void AnimationBase::Pause(bool pause)
+	bool SoundEntity::OnMessage(MessagePtr message)
 	{
-		if (pause)
+		bool handled = Entity::OnMessage(message);
+
+		if (message->message == MessageID::POSITION_UPDATED)
 		{
-			if (state == RUNNING)
-			{
-				state = PAUSED;
-			}
+			sf::Vector2f entityPos = GetGlobalPosition();
+			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
+			sound.SetPosition(soundPos);
+
+			return true;
 		}
-		else
-		{
-			if (state == PAUSED)
-			{
-				state = RUNNING;
-			}
-		}
-	}
-	void AnimationBase::Resume()
-	{
-		Pause(false);
+
+		return handled;
 	}
 }

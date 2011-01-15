@@ -37,9 +37,8 @@ namespace PZ
 		AnimationFactory animationFactory;
 	};
 
-	AnimationManager::AnimationManager()
+	AnimationManager::AnimationManager() : p(new AnimationManagerImpl)
 	{
-		p = new AnimationManagerImpl;
 	}
 	AnimationManager::~AnimationManager()
 	{
