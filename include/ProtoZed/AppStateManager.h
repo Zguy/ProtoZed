@@ -22,8 +22,6 @@
 #include <ProtoZed/AppState.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include <vector>
 #include <string>
 

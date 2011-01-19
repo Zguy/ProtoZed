@@ -20,14 +20,20 @@
 #define SoundEntity_h__
 
 #include <ProtoZed/Entity.h>
+#include <ProtoZed/Animation/Animable.h>
 
 #include <SFML/Audio/Sound.hpp>
 
 namespace PZ
 {
-	class SoundEntity : public Entity
+	class SoundEntity : public Entity, public Animable
 	{
 	public:
+		enum // Animable attributes
+		{
+			VOLUME
+		};
+
 		SoundEntity(const std::string name);
 		~SoundEntity();
 
@@ -57,6 +63,10 @@ namespace PZ
 		inline sf::Sound::Status GetStatus() const { return sound.GetStatus(); }
 
 		inline float GetPlayingOffset() const { return sound.GetPlayingOffset(); }
+
+		// Animable
+		virtual void SetAttribute(Attribute attribute, float value);
+		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
 		virtual bool OnMessage(MessagePtr message);

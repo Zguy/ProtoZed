@@ -25,6 +25,7 @@
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
 
+#include <SFML/Window.hpp>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>

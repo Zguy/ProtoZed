@@ -43,9 +43,8 @@ namespace PZ
 	class DrawableEntity : public Entity, public Animable
 	{
 	public:
-		enum
+		enum // Animable attributes
 		{
-			NONE,
 			X,Y,
 			ROTATION,
 			SCALE_X,SCALE_Y,
