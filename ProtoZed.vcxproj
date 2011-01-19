@@ -98,7 +98,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include;C:\SDK\boost\boost_1_45_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -118,7 +118,7 @@
       </FunctionLevelLinking>
       <IntrinsicFunctions>
       </IntrinsicFunctions>
-      <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include;C:\SDK\boost\boost_1_45_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
