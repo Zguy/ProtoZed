@@ -24,6 +24,7 @@
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
+#include <ProtoZed/Entities/ListenerEntity.h>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Image.hpp>
@@ -54,6 +55,7 @@ namespace PZ
 		AppStateManager    &GetStateManager() const;
 		EntityManager      &GetEntityManager() const;
 		AnimationManager   &GetAnimationManager() const;
+		ListenerEntityPtr  &GetListenerEntity() const;
 
 		ImageStorage       &GetImageStorage() const;
 		FontStorage        &GetFontStorage() const;

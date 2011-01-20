@@ -53,6 +53,8 @@ namespace PZ
 		if (!found)
 		{
 			sf::Vector2f oldPos = child->GetGlobalPosition();
+			if (child->HasParent())
+				child->GetParent()->RemoveChild(child);
 			child->parent = this;
 			child->SetGlobalPosition(oldPos);
 			children.push_back(child);

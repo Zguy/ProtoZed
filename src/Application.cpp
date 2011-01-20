@@ -35,7 +35,7 @@ namespace PZ
 	class ApplicationImpl
 	{
 	public:
-		ApplicationImpl() : running(false)
+		ApplicationImpl() : running(false), listenerEntity(new ListenerEntity)
 		{
 		}
 
@@ -96,9 +96,10 @@ namespace PZ
 
 		sf::RenderWindow window;
 
-		AppStateManager  stateManager;
-		EntityManager    entityManager;
-		AnimationManager animationManager;
+		AppStateManager   stateManager;
+		EntityManager     entityManager;
+		AnimationManager  animationManager;
+		ListenerEntityPtr listenerEntity;
 
 		ImageStorage       imageStorage;
 		FontStorage        fontStorage;
@@ -179,6 +180,10 @@ namespace PZ
 	AnimationManager &Application::GetAnimationManager() const
 	{
 		return p->animationManager;
+	}
+	ListenerEntityPtr &Application::GetListenerEntity() const
+	{
+		return p->listenerEntity;
 	}
 
 	ImageStorage &Application::GetImageStorage() const

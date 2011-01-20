@@ -23,6 +23,7 @@
     <ClInclude Include="include\ProtoZed\AssetStorage.h" />
     <ClInclude Include="include\ProtoZed\Convert.h" />
     <ClInclude Include="include\ProtoZed\Entities\DrawableEntity.h" />
+    <ClInclude Include="include\ProtoZed\Entities\ListenerEntity.h" />
     <ClInclude Include="include\ProtoZed\Entities\SoundEntity.h" />
     <ClInclude Include="include\ProtoZed\Entity.h" />
     <ClInclude Include="include\ProtoZed\EntityManager.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
+    <ClCompile Include="src\Entities\ListenerEntity.cpp" />
     <ClCompile Include="src\Entities\SoundEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\UniqueIDGenerator.cpp" />
