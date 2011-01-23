@@ -16,37 +16,19 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Convert_h__
-#define Convert_h__
-
-#include <string>
-#include <sstream>
+#include <ProtoZed/Convert.h>
 
 namespace PZ
 {
-	static const float PI = 3.14159265358979323846f;
-
 	namespace Convert
 	{
-		template<typename T>
-		std::string ToString(const T &value)
+		float DegreesToRadians(float degrees)
 		{
-			std::stringstream sstr;
-			sstr << value;
-			return sstr.str();
+			return degrees * (PI / 180.f);
 		}
-		template<typename T>
-		T FromString(const std::string &str)
+		float RadiansToDegrees(float radians)
 		{
-			std::stringstream sstr(str);
-			T value;
-			sstr >> value;
-			return value;
+			return radians * (180.f / PI);
 		}
-
-		float DegreesToRadians(float degrees);
-		float RadiansToDegrees(float radians);
 	}
 }
-
-#endif // Convert_h__

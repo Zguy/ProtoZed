@@ -52,7 +52,7 @@ namespace PZ
 		};
 
 		DrawableEntity(const std::string &name);
-		~DrawableEntity();
+		virtual ~DrawableEntity();
 
 		inline bool HasDrawable() const { return (drawable != NULL); }
 		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; drawable->SetPosition(GetGlobalPosition()); }

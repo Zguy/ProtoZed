@@ -53,6 +53,7 @@
     <ClCompile Include="src\AppState.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
+    <ClCompile Include="src\Convert.cpp" />
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
     <ClCompile Include="src\Entities\ListenerEntity.cpp" />
     <ClCompile Include="src\Entities\SoundEntity.cpp" />

@@ -40,11 +40,18 @@ namespace PZ
 
 	struct Message
 	{
-		Message(const std::string &message = "", bool bubble = true, bool childrenFirst = false) : message(message), bubble(bubble), childrenFirst(childrenFirst)
+		enum Mode
+		{
+			STAY,  // Don't float or sink to any children
+			FLOAT, // Go to the leaf child and float up to the surface
+			SINK   // Sink down the leaf child
+		};
+
+		Message(const std::string &message = "", Mode mode = SINK) : message(message), mode(mode)
 		{}
 		std::string message;
-		bool bubble;
-		bool childrenFirst; // Only applicable if bubble is true
+
+		Mode mode;
 	};
 	typedef std::shared_ptr<Message> MessagePtr;
 

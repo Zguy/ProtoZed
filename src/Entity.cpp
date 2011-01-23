@@ -40,6 +40,9 @@ namespace PZ
 
 	bool Entity::AddChild(EntityPtr child)
 	{
+		if (*child == *this)
+			return false;
+
 		bool found = false;
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 		{
@@ -157,7 +160,7 @@ namespace PZ
 
 	bool Entity::HandleMessage(MessagePtr message)
 	{
-		if (message->bubble && message->childrenFirst)
+		if (message->mode == Message::FLOAT)
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
@@ -167,7 +170,7 @@ namespace PZ
 
 		bool handled = OnMessage(message);
 
-		if (message->bubble && !message->childrenFirst)
+		if (message->mode == Message::SINK)
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
