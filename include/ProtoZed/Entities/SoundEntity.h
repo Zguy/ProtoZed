@@ -26,14 +26,14 @@
 
 namespace PZ
 {
+	namespace Attributes
+	{
+		static const Animable::Attribute VOLUME = "VOLUME";
+	}
+
 	class SoundEntity : public Entity, public Animable
 	{
 	public:
-		enum // Animable attributes
-		{
-			VOLUME
-		};
-
 		SoundEntity(const std::string name);
 		~SoundEntity();
 
@@ -65,6 +65,7 @@ namespace PZ
 		inline float GetPlayingOffset() const { return sound.GetPlayingOffset(); }
 
 		// Animable
+		virtual bool HasAttribute(Attribute attribute);
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 

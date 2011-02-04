@@ -25,7 +25,7 @@ namespace PZ
 	class AttributeAnimationImpl
 	{
 	public:
-		AttributeAnimationImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
+		AttributeAnimationImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(""), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
 		{}
 
 		float startValue;
@@ -178,8 +178,15 @@ namespace PZ
 
 	bool AttributeAnimation::StartImpl()
 	{
-		p->startValue  = object.lock()->GetAttribute(p->attribute);
-		p->currentTime = -p->delay;
+		if (object.lock()->HasAttribute(p->attribute))
+		{
+			p->startValue  = object.lock()->GetAttribute(p->attribute);
+			p->currentTime = -p->delay;
+		}
+		else
+		{
+			state = STOPPED;
+		}
 
 		return true;
 	}

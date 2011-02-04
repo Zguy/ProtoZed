@@ -40,17 +40,22 @@ namespace PZ
 		sf::RenderWindow &window;
 	};
 
+	namespace Attributes
+	{
+		static const Animable::Attribute X        = "X";
+		static const Animable::Attribute Y        = "Y";
+		static const Animable::Attribute SCALE_X  = "SCALE_X";
+		static const Animable::Attribute SCALE_Y  = "SCALE_Y";
+		static const Animable::Attribute ROTATION = "ROTATION";
+		static const Animable::Attribute COLOR_R  = "COLOR_R";
+		static const Animable::Attribute COLOR_G  = "COLOR_G";
+		static const Animable::Attribute COLOR_B  = "COLOR_B";
+		static const Animable::Attribute ALPHA    = "ALPHA";
+	}
+
 	class DrawableEntity : public Entity, public Animable
 	{
 	public:
-		enum // Animable attributes
-		{
-			X,Y,
-			ROTATION,
-			SCALE_X,SCALE_Y,
-			COLOR_R,COLOR_G,COLOR_B,ALPHA
-		};
-
 		DrawableEntity(const std::string &name);
 		virtual ~DrawableEntity();
 
@@ -92,6 +97,7 @@ namespace PZ
 		inline void Rotate(float Angle) { drawable->Rotate(Angle); }
 
 		// Animable
+		virtual bool HasAttribute(Attribute attribute);
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 

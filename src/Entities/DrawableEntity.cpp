@@ -29,51 +29,63 @@ namespace PZ
  			delete drawable;
 	}
 
+	bool DrawableEntity::HasAttribute(Attribute attribute)
+	{
+		return ((attribute == Attributes::X)||
+						(attribute == Attributes::Y)||
+						(attribute == Attributes::SCALE_X)||
+						(attribute == Attributes::SCALE_Y)||
+						(attribute == Attributes::ROTATION)||
+						(attribute == Attributes::COLOR_R)||
+						(attribute == Attributes::COLOR_G)||
+						(attribute == Attributes::COLOR_B)||
+						(attribute == Attributes::ALPHA));
+	}
 	void DrawableEntity::SetAttribute(Attribute attribute, float value)
 	{
-		if (attribute == X)
+		if (attribute == Attributes::X)
 			SetX(value);
-		else if (attribute == Y)
+		else if (attribute == Attributes::Y)
 			SetY(value);
-		else if (attribute == SCALE_X)
+		else if (attribute == Attributes::SCALE_X)
 			SetScaleX(value);
-		else if (attribute == SCALE_Y)
+		else if (attribute == Attributes::SCALE_Y)
 			SetScaleY(value);
-		else if (attribute == ROTATION)
+		else if (attribute == Attributes::ROTATION)
 			SetRotation(value);
-		else if ((attribute == COLOR_R)||(attribute == COLOR_G)||(attribute == COLOR_B)||(attribute == ALPHA))
+		else if ((attribute == Attributes::COLOR_R)||(attribute == Attributes::COLOR_G)||(attribute == Attributes::COLOR_B)||(attribute == Attributes::ALPHA))
 		{
 			sf::Color color = GetColor();
-			if (attribute == COLOR_R)
+			if (attribute == Attributes::COLOR_R)
 				color.r = static_cast<sf::Uint8>(value);
-			else if (attribute == COLOR_G)
+			else if (attribute == Attributes::COLOR_G)
 				color.g = static_cast<sf::Uint8>(value);
-			else if (attribute == COLOR_B)
+			else if (attribute == Attributes::COLOR_B)
 				color.b = static_cast<sf::Uint8>(value);
-			else if (attribute == ALPHA)
+			else if (attribute == Attributes::ALPHA)
 				color.a = static_cast<sf::Uint8>(value);
 			SetColor(color);
 		}
 	}
 	float DrawableEntity::GetAttribute(Attribute attribute) const
 	{
-		if (attribute == X)
+		if (attribute == Attributes::X)
 			return GetLocalPosition().x;
-		else if (attribute == Y)
+		else if (attribute == Attributes::Y)
 			return GetLocalPosition().y;
-		else if (attribute == SCALE_X)
+		else if (attribute == Attributes::SCALE_X)
 			return GetScale().x;
-		else if (attribute == SCALE_Y)
+		else if (attribute == Attributes::SCALE_Y)
 			return GetScale().y;
-		else if (attribute == ROTATION)
+		else if (attribute == Attributes::ROTATION)
 			return GetRotation();
-		else if (attribute == COLOR_R)
+		else if (attribute == Attributes::COLOR_R)
 			return GetColor().r;
-		else if (attribute == COLOR_G)
+		else if (attribute == Attributes::COLOR_G)
 			return GetColor().g;
-		else if (attribute == COLOR_B)
+		else if (attribute == Attributes::COLOR_B)
 			return GetColor().b;
-		else if (attribute == ALPHA)
+		else if (attribute == Attributes::ALPHA)
 			return GetColor().a;
 		else
 			return 0.f;

@@ -32,14 +32,18 @@ namespace PZ
 		sound.SetBuffer(soundBuffer);
 	}
 
+	bool SoundEntity::HasAttribute(Attribute attribute)
+	{
+		return (attribute == Attributes::VOLUME);
+	}
 	void SoundEntity::SetAttribute(Attribute attribute, float value)
 	{
-		if (attribute == VOLUME)
+		if (attribute == Attributes::VOLUME)
 			SetVolume(value);
 	}
 	float SoundEntity::GetAttribute(Attribute attribute) const
 	{
-		if (attribute == VOLUME)
+		if (attribute == Attributes::VOLUME)
 			return GetVolume();
 		else
 			return 0.f;

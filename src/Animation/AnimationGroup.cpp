@@ -113,7 +113,7 @@ namespace PZ
 					if (animation->GetState() == RUNNING)
 						animation->AddTime(deltaTime);
 
-					if (animation->GetState() == FINISHED)
+					if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
 					{
 						delete (*it);
 						it = p->animations.erase(it);
@@ -139,7 +139,7 @@ namespace PZ
 				if (animation->GetState() == RUNNING)
 					animation->AddTime(deltaTime);
 
-				if (animation->GetState() == FINISHED)
+				if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
 				{
 					delete p->animations.front();
 					p->animations.pop_front();

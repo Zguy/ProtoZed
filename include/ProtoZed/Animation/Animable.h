@@ -19,6 +19,7 @@
 #ifndef Animable_h__
 #define Animable_h__
 
+#include <string>
 #include <memory>
 
 namespace PZ
@@ -26,13 +27,14 @@ namespace PZ
 	class Animable
 	{
 	public:
-		typedef unsigned int Attribute;
+		typedef std::string Attribute;
 
 		Animable()
 		{}
 		~Animable()
 		{}
 
+		virtual bool HasAttribute(Attribute attribute) = 0;
 		virtual void SetAttribute(Attribute attribute, float value) = 0;
 		virtual float GetAttribute(Attribute attribute) const = 0;
 	};
