@@ -61,9 +61,6 @@ namespace PZ
 		// Pretend we're a sf::Drawable
 		// Note: We should probably check if drawable is NULL
 		//       in every function, but I can't be bothered.
-		inline void SetX(float X) { SetLocalPosition(X, GetLocalPosition().y); }
-		inline void SetY(float Y) { SetLocalPosition(GetLocalPosition().x, Y); }
-
 		inline void SetScale(float ScaleX, float ScaleY) { drawable->SetScale(ScaleX, ScaleY); }
 		inline void SetScale(const sf::Vector2f& Scale) { drawable->SetScale(Scale); }
 
@@ -88,9 +85,6 @@ namespace PZ
 		inline const sf::Color& GetColor() const { return drawable->GetColor(); }
 
 		inline sf::Blend::Mode GetBlendMode() const { return drawable->GetBlendMode(); }
-
-		inline void Move(float OffsetX, float OffsetY) { SetLocalPosition(GetLocalPosition().x+OffsetX, GetLocalPosition().y+OffsetY); }
-		inline void Move(const sf::Vector2f& Offset) { SetLocalPosition(GetLocalPosition()+Offset); }
 
 		inline void Scale(float FactorX, float FactorY) { drawable->Scale(FactorX, FactorY); }
 		inline void Scale(const sf::Vector2f& Factor) { drawable->Scale(Factor); }

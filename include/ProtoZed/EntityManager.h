@@ -21,6 +21,8 @@
 
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+#include <ProtoZed/Convert.h>
+#include <ProtoZed/UniqueIDGenerator.h>
 
 namespace PZ
 {
@@ -44,13 +46,16 @@ namespace PZ
 			return entityFactory.Unregister(entityName);
 		}
 
-		EntityPtr GetNewEntity(const std::string &entityName, const std::string name)
+		EntityPtr GetNewEntity(const std::string &entityName, const std::string name = "")
 		{
-			EntityPtr entity(entityFactory.Create(entityName, name));
+			std::string fixName = name;
+			if (fixName.empty())
+				fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("Entity"));
+			EntityPtr entity(entityFactory.Create(entityName, fixName));
 			return entity;
 		}
 		template<class T>
-		std::shared_ptr<T> GetNewEntity(const std::string &entityName, const std::string name)
+		std::shared_ptr<T> GetNewEntity(const std::string &entityName, const std::string name = "")
 		{
 			EntityPtr entity = GetNewEntity(entityName, name);
 			return std::static_pointer_cast<T, Entity>(entity);

@@ -93,6 +93,12 @@ namespace PZ
 		void SetGlobalPosition(const sf::Vector2f &pos);
 		void SetGlobalPosition(float x, float y);
 
+		inline void SetX(float X) { SetLocalPosition(X, GetLocalPosition().y); }
+		inline void SetY(float Y) { SetLocalPosition(GetLocalPosition().x, Y); }
+
+		inline void Move(float OffsetX, float OffsetY) { SetLocalPosition(GetLocalPosition().x+OffsetX, GetLocalPosition().y+OffsetY); }
+		inline void Move(const sf::Vector2f& Offset) { SetLocalPosition(GetLocalPosition()+Offset); }
+
 		bool HandleMessage(MessagePtr message);
 
 		bool operator==(const Entity &other);
