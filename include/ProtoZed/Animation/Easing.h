@@ -19,8 +19,6 @@
 #ifndef Easing_h__
 #define Easing_h__
 
-#include <cstdlib>
-
 namespace PZ
 {
 	namespace Easing
@@ -149,22 +147,21 @@ namespace PZ
 
 		static Easing *GetFunctionFromEnum(Transition transition)
 		{
-			Easing *function = NULL;
 			switch (transition)
 			{
-			case LINEAR  : function = &fLinear;  break;
-			case SINE    : function = &fSine;    break;
-			case QUINT   : function = &fQuint;   break;
-			case QUART   : function = &fQuart;   break;
-			case QUAD    : function = &fQuad;    break;
-			case EXPO    : function = &fExpo;    break;
-			case ELASTIC : function = &fElastic; break;
-			case CUBIC   : function = &fCubic;   break;
-			case CIRC    : function = &fCirc;    break;
-			case BOUNCE  : function = &fBounce;  break;
-			case BACK    : function = &fBack;    break;
+			case LINEAR  : return &fLinear;  break;
+			case SINE    : return &fSine;    break;
+			case QUINT   : return &fQuint;   break;
+			case QUART   : return &fQuart;   break;
+			case QUAD    : return &fQuad;    break;
+			case EXPO    : return &fExpo;    break;
+			case ELASTIC : return &fElastic; break;
+			case CUBIC   : return &fCubic;   break;
+			case CIRC    : return &fCirc;    break;
+			case BOUNCE  : return &fBounce;  break;
+			case BACK    : return &fBack;    break;
+			default      : return 0;         break;
 			}
-			return function;
 		}
 	}
 }

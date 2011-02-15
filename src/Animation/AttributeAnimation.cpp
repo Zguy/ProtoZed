@@ -178,7 +178,7 @@ namespace PZ
 
 	bool AttributeAnimation::StartImpl()
 	{
-		if (object.lock()->HasAttribute(p->attribute))
+		if ((!object.expired())&&(object.lock()->HasAttribute(p->attribute)))
 		{
 			p->startValue  = object.lock()->GetAttribute(p->attribute);
 			p->currentTime = -p->delay;

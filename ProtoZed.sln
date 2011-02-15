@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProtoZed", "ProtoZed.vcxproj", "{33587181-C106-42CE-A151-D0C2FA1A8DDD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33587181-C106-42CE-A151-D0C2FA1A8DDD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33587181-C106-42CE-A151-D0C2FA1A8DDD}.Debug|Win32.Build.0 = Debug|Win32
+		{33587181-C106-42CE-A151-D0C2FA1A8DDD}.Release|Win32.ActiveCfg = Release|Win32
+		{33587181-C106-42CE-A151-D0C2FA1A8DDD}.Release|Win32.Build.0 = Release|Win32
+		{D255588D-975D-4F58-A5A4-2E7E26F82755}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D255588D-975D-4F58-A5A4-2E7E26F82755}.Debug|Win32.Build.0 = Debug|Win32
+		{D255588D-975D-4F58-A5A4-2E7E26F82755}.Release|Win32.ActiveCfg = Release|Win32
+		{D255588D-975D-4F58-A5A4-2E7E26F82755}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

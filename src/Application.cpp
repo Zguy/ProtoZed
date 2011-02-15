@@ -28,8 +28,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <iostream>
-
 namespace PZ
 {
 	class ApplicationImpl
@@ -44,6 +42,9 @@ namespace PZ
 			if (running)
 				return true;
 
+			logManager.OpenLog("ProtoZed");
+			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "Initializing ProtoZed...");
+
 			window.Create(videoMode, appName, 6UL, params);
 
 			entityManager.RegisterEntity<Entity>("Entity");
@@ -55,17 +56,23 @@ namespace PZ
 
 			running = true;
 
+			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "ProtoZed is running");
+
 			return true;
 		}
 
 		void shutdown()
 		{
+			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "Shutting down ProtoZed...");
+
 			stateManager.PopAllStates();
 			stateManager.Update();
 
 			window.Close();
 
 			running = false;
+
+			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "ProtoZed has stopped");
 		}
 
 		void handleInput() 
@@ -96,6 +103,7 @@ namespace PZ
 
 		sf::RenderWindow window;
 
+		LogManager        logManager;
 		AppStateManager   stateManager;
 		EntityManager     entityManager;
 		AnimationManager  animationManager;
@@ -169,6 +177,10 @@ namespace PZ
 	{
 		return p->window.GetInput();
 	}
+	LogManager &Application::GetLogManager() const
+	{
+		return p->logManager;
+	}
 	AppStateManager &Application::GetStateManager() const
 	{
 		return p->stateManager;
@@ -197,10 +209,5 @@ namespace PZ
 	SoundBufferStorage &Application::GetSoundBufferStorage() const
 	{
 		return p->soundBufferStorage;
-	}
-
-	void Application::LogMessage(const std::string &message)
-	{
-		std::cout << message << std::endl;
 	}
 }

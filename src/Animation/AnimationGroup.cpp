@@ -108,12 +108,23 @@ namespace PZ
 					AnimationBase *animation = *it;
 
 					if (animation->GetState() == STARTED)
+					{
+						if (!animation->onStart.empty())
+							animation->onStart(animation);
 						animation->state = RUNNING;
+					}
 
 					if (animation->GetState() == RUNNING)
 						animation->AddTime(deltaTime);
 
-					if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
+					if (animation->GetState() == FINISHED)
+					{
+						if (!animation->onFinished.empty())
+							animation->onFinished(animation);
+						delete (*it);
+						it = p->animations.erase(it);
+					}
+					else if (animation->GetState() == STOPPED)
 					{
 						delete (*it);
 						it = p->animations.erase(it);

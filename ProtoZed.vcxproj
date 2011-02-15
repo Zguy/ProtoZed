@@ -35,11 +35,15 @@
     <ClInclude Include="include\ProtoZed\FastDelegate\delegatetmpl.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\get_pointer.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\make_delegatetmpl.hpp" />
+    <ClInclude Include="include\ProtoZed\Helpers.h" />
+    <ClInclude Include="include\ProtoZed\Logging\Log.h" />
+    <ClInclude Include="include\ProtoZed\Logging\LogManager.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
     <ClInclude Include="include\ProtoZed\ParticleSystem\Particle.h" />
     <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleGroup.h" />
+    <ClInclude Include="include\ProtoZed\ProtoZed.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
     <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
   </ItemGroup>
@@ -58,6 +62,9 @@
     <ClCompile Include="src\Entities\ListenerEntity.cpp" />
     <ClCompile Include="src\Entities\SoundEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\Helpers.cpp" />
+    <ClCompile Include="src\Logging\Log.cpp" />
+    <ClCompile Include="src\Logging\LogManager.cpp" />
     <ClCompile Include="src\UniqueIDGenerator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -88,14 +95,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.lib</TargetExt>
-    <OutDir>$(SolutionDir)\ProtoZed\lib\</OutDir>
-    <IntDir>obj\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)\lib\</OutDir>
+    <IntDir>$(ProjectDir)\obj\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.lib</TargetExt>
-    <OutDir>$(SolutionDir)\ProtoZed\lib\</OutDir>
-    <IntDir>obj\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)\lib\</OutDir>
+    <IntDir>$(ProjectDir)\obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

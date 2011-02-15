@@ -22,6 +22,7 @@
 #include <ProtoZed/Singleton.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
+#include <ProtoZed/Logging/LogManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
 #include <ProtoZed/Entities/ListenerEntity.h>
@@ -52,6 +53,7 @@ namespace PZ
 		void RequestShutdown();
 
 		const sf::Input    &GetInput() const;
+		LogManager         &GetLogManager() const;
 		AppStateManager    &GetStateManager() const;
 		EntityManager      &GetEntityManager() const;
 		AnimationManager   &GetAnimationManager() const;
@@ -60,8 +62,6 @@ namespace PZ
 		ImageStorage       &GetImageStorage() const;
 		FontStorage        &GetFontStorage() const;
 		SoundBufferStorage &GetSoundBufferStorage() const;
-
-		void LogMessage(const std::string &message);
 
 	private:
 		ApplicationImpl *p;

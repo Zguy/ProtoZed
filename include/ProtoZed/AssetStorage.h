@@ -71,7 +71,7 @@ namespace PZ
 	const T &AssetStorage<T>::GetAsset(const std::string &filename)
 	{
 		if (PreloadAsset(filename))
-			return assets[filename];
+			return assets.at(filename);
 		else
 			return nullAsset;
 	}

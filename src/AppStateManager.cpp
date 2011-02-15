@@ -139,7 +139,7 @@ namespace PZ
 			case Todo::CHANGE  : p->changeState(entry.stateName, entry.options); break;
 			case Todo::PUSH    : p->pushState(entry.stateName, entry.options);   break;
 			case Todo::POP     : p->popState();                                  break;
-			case Todo::POP_ALL : p->popAllStates();                               break;
+			case Todo::POP_ALL : p->popAllStates();                              break;
 			}
 			if (entry.options != NULL)
 				delete entry.options;
