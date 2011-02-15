@@ -52,7 +52,7 @@ namespace PZ
 		else if (attribute == Attributes::SCALE_Y)
 			SetScaleY(value);
 		else if (attribute == Attributes::ROTATION)
-			SetRotation(value);
+			SetLocalRotation(value);
 		else if ((attribute == Attributes::COLOR_R)||(attribute == Attributes::COLOR_G)||(attribute == Attributes::COLOR_B)||(attribute == Attributes::ALPHA))
 		{
 			sf::Color color = GetColor();
@@ -78,7 +78,7 @@ namespace PZ
 		else if (attribute == Attributes::SCALE_Y)
 			return GetScale().y;
 		else if (attribute == Attributes::ROTATION)
-			return GetRotation();
+			return GetLocalRotation();
 		else if (attribute == Attributes::COLOR_R)
 			return GetColor().r;
 		else if (attribute == Attributes::COLOR_G)
@@ -98,7 +98,10 @@ namespace PZ
 		if (message->message == MessageID::POSITION_UPDATED)
 		{
 			if (HasDrawable())
+			{
 				drawable->SetPosition(GetGlobalPosition());
+				drawable->SetRotation(GetGlobalRotation());
+			}
 
 			return true;
 		}

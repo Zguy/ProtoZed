@@ -75,8 +75,6 @@ namespace PZ
 		inline void SetCenter(float CenterX, float CenterY) { drawable->SetCenter(CenterX, CenterY); }
 		inline void SetCenter(const sf::Vector2f& Center) { drawable->SetCenter(Center); }
 
-		inline void SetRotation(float Rotation) { drawable->SetRotation(Rotation); }
-
 		inline void SetColor(const sf::Color& Col) { drawable->SetColor(Col); }
 
 		inline void SetBlendMode(sf::Blend::Mode Mode) { drawable->SetBlendMode(Mode); }
@@ -85,16 +83,12 @@ namespace PZ
 
 		inline const sf::Vector2f& GetCenter() const { return drawable->GetCenter(); }
 
-		inline float GetRotation() const { return drawable->GetRotation(); }
-
 		inline const sf::Color& GetColor() const { return drawable->GetColor(); }
 
 		inline sf::Blend::Mode GetBlendMode() const { return drawable->GetBlendMode(); }
 
 		inline void Scale(float FactorX, float FactorY) { drawable->Scale(FactorX, FactorY); }
 		inline void Scale(const sf::Vector2f& Factor) { drawable->Scale(Factor); }
-
-		inline void Rotate(float Angle) { drawable->Rotate(Angle); }
 
 		// Animable
 		virtual bool HasAttribute(Attribute attribute);

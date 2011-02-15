@@ -93,11 +93,22 @@ namespace PZ
 		void SetGlobalPosition(const sf::Vector2f &pos);
 		void SetGlobalPosition(float x, float y);
 
-		inline void SetX(float X) { SetLocalPosition(X, GetLocalPosition().y); }
-		inline void SetY(float Y) { SetLocalPosition(GetLocalPosition().x, Y); }
+		inline void SetX(float x) { SetLocalPosition(x, GetLocalPosition().y); }
+		inline void SetY(float y) { SetLocalPosition(GetLocalPosition().x, y); }
 
-		inline void Move(float OffsetX, float OffsetY) { SetLocalPosition(GetLocalPosition().x+OffsetX, GetLocalPosition().y+OffsetY); }
-		inline void Move(const sf::Vector2f& Offset) { SetLocalPosition(GetLocalPosition()+Offset); }
+		inline void Move(float offsetX, float offsetY) { SetLocalPosition(GetLocalPosition().x+offsetX, GetLocalPosition().y+offsetY); }
+		inline void Move(const sf::Vector2f& offset) { SetLocalPosition(GetLocalPosition()+offset); }
+
+		float GetLocalRotation() const;
+		float GetGlobalRotation() const;
+
+		void SetLocalRotation(float rot);
+		void SetGlobalRotation(float rot);
+
+		inline void Rotate(float angle) { SetLocalRotation(GetLocalRotation()+angle); }
+
+		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
+		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
 
 		bool HandleMessage(MessagePtr message);
 
@@ -105,6 +116,8 @@ namespace PZ
 
 	protected:
 		bool RemoveChild(Entity *child);
+
+		void RecalculateLocalAxes();
 
 		virtual bool OnMessage(MessagePtr message) { return false; }
 
@@ -116,6 +129,9 @@ namespace PZ
 
 		std::string name;
 		sf::Vector2f position;
+		float rotation;
+		sf::Vector2f localXAxis;
+		sf::Vector2f localYAxis;
 	};
 }
 

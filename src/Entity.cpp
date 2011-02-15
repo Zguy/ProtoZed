@@ -18,9 +18,11 @@
 */
 #include <ProtoZed/Entity.h>
 
+#include <ProtoZed/Convert.h>
+
 namespace PZ
 {
-	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f)
+	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
 	{
 		id = UniqueIDGenerator::GetNextID("Entity");
 	}
@@ -114,9 +116,18 @@ namespace PZ
 	const sf::Vector2f Entity::GetGlobalPosition() const
 	{
 		if (HasParent())
-			return parent->GetGlobalPosition() + position;
+		{
+			const sf::Vector2f &parentXAxis = parent->GetLocalXAxis();
+			const sf::Vector2f &parentYAxis = parent->GetLocalYAxis();
+
+			const sf::Vector2f rotatedPos = position.x * parentXAxis + position.y * parentYAxis;
+
+			return parent->GetGlobalPosition() + rotatedPos;
+		}
 		else
+		{
 			return position;
+		}
 	}
 
 	void Entity::SetLocalPosition(const sf::Vector2f &pos)
@@ -135,9 +146,23 @@ namespace PZ
 	void Entity::SetGlobalPosition(const sf::Vector2f &pos)
 	{
 		if (HasParent())
-			position = pos - parent->GetGlobalPosition();
+		{
+			const float angle = -Convert::DegreesToRadians(-parent->GetGlobalRotation());
+			sf::Vector2f xAxis, yAxis;
+			xAxis.x = std::cos(angle);
+			xAxis.y = std::sin(angle);
+			yAxis.x = -xAxis.y;
+			yAxis.y = xAxis.x;
+
+			const sf::Vector2f aaPos = pos - parent->GetGlobalPosition();
+			const sf::Vector2f rotatedPos = aaPos.x * xAxis + aaPos.y * yAxis;
+
+			position = rotatedPos;
+		}
 		else
+		{
 			position = pos;
+		}
 
 		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
 	}
@@ -145,15 +170,45 @@ namespace PZ
 	{
 		if (HasParent())
 		{
-			sf::Vector2f parentPos = parent->GetGlobalPosition();
-			position.x = x - parentPos.x;
-			position.y = y - parentPos.y;
+			SetGlobalPosition(sf::Vector2f(x,y));
 		}
 		else
 		{
 			position.x = x;
 			position.y = y;
 		}
+
+		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+	}
+
+	float Entity::GetLocalRotation() const
+	{
+		return rotation;
+	}
+	float Entity::GetGlobalRotation() const
+	{
+		if (HasParent())
+			return parent->GetGlobalRotation() + rotation;
+		else
+			return rotation;
+	}
+
+	void Entity::SetLocalRotation(float rot)
+	{
+		rotation = rot;
+
+		RecalculateLocalAxes();
+
+		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+	}
+	void Entity::SetGlobalRotation(float rot)
+	{
+		if (HasParent())
+			rotation = rot - parent->GetGlobalRotation();
+		else
+			rotation = rot;
+
+		RecalculateLocalAxes();
 
 		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
 	}
@@ -184,5 +239,14 @@ namespace PZ
 	bool Entity::operator==(const Entity &other)
 	{
 		return id == other.id;
+	}
+
+	void Entity::RecalculateLocalAxes()
+	{
+		const float angle = -Convert::DegreesToRadians(GetGlobalRotation());
+		localXAxis.x = std::cos(angle);
+		localXAxis.y = std::sin(angle);
+		localYAxis.x = -localXAxis.y;
+		localYAxis.y = localXAxis.x;
 	}
 }
