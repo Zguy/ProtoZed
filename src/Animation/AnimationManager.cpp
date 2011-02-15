@@ -70,9 +70,9 @@ namespace PZ
 
 	bool AnimationManager::AddAnimation(const std::string &animationName, AnimationBase *animation)
 	{
-		if (GetAnimationFromName(animationName) == NULL)
+		if (!HasAnimation(animationName))
 		{
-			p->animationMap[animationName] = animation;
+			p->animationMap.insert(std::make_pair<std::string, AnimationBase*>(animationName, animation));
 			return true;
 		}
 		else
@@ -104,7 +104,7 @@ namespace PZ
 	AnimationBase *AnimationManager::GetAnimationFromName(const std::string &animationName) const
 	{
 		if (p->animationMap.find(animationName) != p->animationMap.end())
-			return p->animationMap[animationName];
+			return p->animationMap.at(animationName);
 		else
 			return NULL;
 	}
@@ -142,6 +142,7 @@ namespace PZ
 			{
 				if (!animation->onStart.empty())
 					animation->onStart(animation);
+
 				animation->state = AnimationBase::RUNNING;
 			}
 
@@ -152,6 +153,7 @@ namespace PZ
 			{
 				if (!animation->onFinished.empty())
 					animation->onFinished(animation);
+
 				delete animation;
 				it = p->animations.erase(it);
 			}

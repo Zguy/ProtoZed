@@ -57,9 +57,9 @@ namespace PZ
 		inline void Debug(Level level, const std::string &message) { Message(LT_DEBUG, level, message); }
 
 	private:
-		void setLogLevel(Log::Level level);
-
 		LogImpl *p;
+
+		void setLogLevel(Log::Level level);
 	};
 }
 
