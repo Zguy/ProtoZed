@@ -57,10 +57,9 @@ namespace PZ
 
 		inline bool IsStarted() const { return started; }
 
-	protected:
+	private:
 		bool started;
 
-	private:
 		EntityPtr rootEntity;
 	};
 }

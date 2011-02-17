@@ -14,7 +14,7 @@
     <ClInclude Include="include\ProtoZed\Animation\Animable.h" />
     <ClInclude Include="include\ProtoZed\Animation\Animation.h" />
     <ClInclude Include="include\ProtoZed\Animation\AnimationBase.h" />
-    <ClInclude Include="include\ProtoZed\Animation\AttributeAnimation.h" />
+    <ClInclude Include="include\ProtoZed\Animation\Tween.h" />
     <ClInclude Include="include\ProtoZed\Animation\AnimationGroup.h" />
     <ClInclude Include="include\ProtoZed\Animation\AnimationManager.h" />
     <ClInclude Include="include\ProtoZed\Animation\Easing.h" />
@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\AnimationBase.cpp" />
-    <ClCompile Include="src\Animation\AttributeAnimation.cpp" />
+    <ClCompile Include="src\Animation\Tween.cpp" />
     <ClCompile Include="src\Animation\AnimationGroup.cpp" />
     <ClCompile Include="src\Animation\AnimationManager.cpp" />
     <ClCompile Include="src\Animation\Easing.cpp" />

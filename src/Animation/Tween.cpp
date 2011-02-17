@@ -16,16 +16,16 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Animation/AttributeAnimation.h>
+#include <ProtoZed/Animation/Tween.h>
 
 #include <cstdlib>
 
 namespace PZ
 {
-	class AttributeAnimationImpl
+	class TweenImpl
 	{
 	public:
-		AttributeAnimationImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(""), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
+		TweenImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(""), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
 		{}
 
 		float startValue;
@@ -44,14 +44,14 @@ namespace PZ
 		bool                pingpong;
 	};
 
-	AttributeAnimation::AttributeAnimation() : p(new AttributeAnimationImpl)
+	Tween::Tween() : p(new TweenImpl)
 	{
 	}
-	AttributeAnimation::AttributeAnimation(AnimationProperties *properties) : p(new AttributeAnimationImpl)
+	Tween::Tween(AnimationProperties *properties) : p(new TweenImpl)
 	{
 		if (properties != NULL)
 		{
-			AttributeAnimationProperties *props = static_cast<AttributeAnimationProperties*>(properties);
+			TweenProperties *props = static_cast<TweenProperties*>(properties);
 			p->attribute      = props->attribute;
 			p->goal           = props->goal;
 			p->relativeGoal   = props->relativeGoal;
@@ -64,7 +64,7 @@ namespace PZ
 			p->pingpong       = props->pingpong;
 		}
 	}
-	AttributeAnimation::AttributeAnimation(const AttributeAnimation &copy) : p(new AttributeAnimationImpl)
+	Tween::Tween(const Tween &copy) : p(new TweenImpl)
 	{
 		p->attribute      = copy.p->attribute;
 		p->goal           = copy.p->goal;
@@ -77,12 +77,12 @@ namespace PZ
 		p->repeat         = copy.p->repeat;
 		p->pingpong       = copy.p->pingpong;
 	}
-	AttributeAnimation::~AttributeAnimation()
+	Tween::~Tween()
 	{
 		delete p;
 	}
 
-	void AttributeAnimation::SetAll(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay, int repeat, bool pingpong, bool relativeGoal)
+	void Tween::SetAll(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay, int repeat, bool pingpong, bool relativeGoal)
 	{
 		p->attribute      = attribute;
 		p->goal           = goal;
@@ -96,87 +96,87 @@ namespace PZ
 		p->pingpong       = pingpong;
 	}
 
-	void AttributeAnimation::SetAttribute(Animable::Attribute attribute)
+	void Tween::SetAttribute(Animable::Attribute attribute)
 	{
 		p->attribute = attribute;
 	}
-	void AttributeAnimation::SetGoal(float goal)
+	void Tween::SetGoal(float goal)
 	{
 		p->goal = goal;
 	}
-	void AttributeAnimation::SetRelativeGoal(bool relative)
+	void Tween::SetRelativeGoal(bool relative)
 	{
 		p->relativeGoal = relative;
 	}
-	void AttributeAnimation::SetTransition(Easing::Transition transition)
+	void Tween::SetTransition(Easing::Transition transition)
 	{
 		p->transitionEnum = transition;
 		p->transition = Easing::GetFunctionFromEnum(transition);
 	}
-	void AttributeAnimation::SetEquation(Easing::Equation equation)
+	void Tween::SetEquation(Easing::Equation equation)
 	{
 		p->equation = equation;
 	}
-	void AttributeAnimation::SetTime(float time)
+	void Tween::SetTime(float time)
 	{
 		p->totalTime = time;
 	}
-	void AttributeAnimation::SetDelay(float delay)
+	void Tween::SetDelay(float delay)
 	{
 		p->delay = delay;
 	}
-	void AttributeAnimation::SetRepeat(int repeat)
+	void Tween::SetRepeat(int repeat)
 	{
 		p->repeat = repeat;
 	}
-	void AttributeAnimation::SetPingPoing(bool pingpong)
+	void Tween::SetPingPoing(bool pingpong)
 	{
 		p->pingpong = pingpong;
 	}
 
-	Animable::Attribute AttributeAnimation::GetAttribute() const
+	Animable::Attribute Tween::GetAttribute() const
 	{
 		return p->attribute;
 	}
-	float AttributeAnimation::GetGoal() const
+	float Tween::GetGoal() const
 	{
 		return p->goal;
 	}
-	bool AttributeAnimation::GetRelativeGoal() const
+	bool Tween::GetRelativeGoal() const
 	{
 		return p->relativeGoal;
 	}
-	Easing::Transition AttributeAnimation::GetTransition() const
+	Easing::Transition Tween::GetTransition() const
 	{
 		return p->transitionEnum;
 	}
-	Easing::Equation AttributeAnimation::GetEquation() const
+	Easing::Equation Tween::GetEquation() const
 	{
 		return p->equation;
 	}
-	float AttributeAnimation::GetTime() const
+	float Tween::GetTime() const
 	{
 		return p->totalTime;
 	}
-	float AttributeAnimation::GetDelay() const
+	float Tween::GetDelay() const
 	{
 		return p->delay;
 	}
-	int AttributeAnimation::GetRepeat() const
+	int Tween::GetRepeat() const
 	{
 		return p->repeat;
 	}
-	bool AttributeAnimation::GetPingPong() const
+	bool Tween::GetPingPong() const
 	{
 		return p->pingpong;
 	}
 
-	AnimationBase *AttributeAnimation::GetCopy()
+	AnimationBase *Tween::GetCopy()
 	{
-		return new AttributeAnimation(*this);
+		return new Tween(*this);
 	}
 
-	bool AttributeAnimation::StartImpl()
+	bool Tween::StartImpl()
 	{
 		if ((!object.expired())&&(object.lock()->HasAttribute(p->attribute)))
 		{
@@ -191,7 +191,7 @@ namespace PZ
 		return true;
 	}
 
-	void AttributeAnimation::AddTime(float deltaTime)
+	void Tween::AddTime(float deltaTime)
 	{
 		if (object.expired())
 		{

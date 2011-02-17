@@ -23,7 +23,7 @@
 #include <ProtoZed/Animation/AnimationBase.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/Animation/AnimationGroup.h>
-#include <ProtoZed/Animation/AttributeAnimation.h>
+#include <ProtoZed/Animation/Tween.h>
 #include <ProtoZed/Animation/Easing.h>
 
 #endif // Animation_h__

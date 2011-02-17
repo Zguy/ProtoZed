@@ -24,7 +24,7 @@
 #include <ProtoZed/Entities/SoundEntity.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
-#include <ProtoZed/Animation/AttributeAnimation.h>
+#include <ProtoZed/Animation/Tween.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -52,7 +52,7 @@ namespace PZ
 			entityManager.RegisterEntity<SoundEntity>("SoundEntity");
 
 			animationManager.RegisterAnimationType<AnimationGroup>("AnimationGroup");
-			animationManager.RegisterAnimationType<AttributeAnimation>("AttributeAnimation");
+			animationManager.RegisterAnimationType<Tween>("Tween");
 
 			running = true;
 
@@ -127,6 +127,13 @@ namespace PZ
 		if (!p->boot(appName, videoMode, params))
 		{
 			return 1;
+		}
+
+		// Stabilize framerate before entering main loop
+		for (unsigned int i = 0; i < 10; ++i)
+		{
+			sf::Sleep(0.1f);
+			p->window.Display();
 		}
 
 		while (p->running)

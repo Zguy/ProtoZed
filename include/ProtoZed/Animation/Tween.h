@@ -16,18 +16,18 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef AttributeAnimation_h__
-#define AttributeAnimation_h__
+#ifndef Tween_h__
+#define Tween_h__
 
 #include <ProtoZed/Animation/AnimationBase.h>
 #include <ProtoZed/Animation/Easing.h>
 
 namespace PZ
 {
-	struct AttributeAnimationProperties : public AnimationProperties
+	struct TweenProperties : public AnimationProperties
 	{
 	public:
-		AttributeAnimationProperties(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false)
+		TweenProperties(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false)
 			: attribute(attribute), goal(goal), relativeGoal(relativeGoal), transition(transition), equation(equation), time(time), delay(delay), repeat(repeat), pingpong(pingpong)
 		{}
 
@@ -42,15 +42,15 @@ namespace PZ
 		bool                pingpong;
 	};
 
-	class AttributeAnimationImpl;
+	class TweenImpl;
 
-	class AttributeAnimation : public AnimationBase
+	class Tween : public AnimationBase
 	{
 	public:
-		AttributeAnimation();
-		AttributeAnimation(AnimationProperties *properties);
-		AttributeAnimation(const AttributeAnimation &copy);
-		virtual ~AttributeAnimation();
+		Tween();
+		Tween(AnimationProperties *properties);
+		Tween(const Tween &copy);
+		virtual ~Tween();
 
 		void SetAll(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false);
 
@@ -82,8 +82,8 @@ namespace PZ
 		virtual void AddTime(float deltaTime);
 
 	private:
-		AttributeAnimationImpl *p;
+		TweenImpl *p;
 	};
 }
 
-#endif // AttributeAnimation_h__
+#endif // Tween_h__
