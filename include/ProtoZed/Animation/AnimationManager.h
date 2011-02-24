@@ -57,7 +57,7 @@ namespace PZ
 		bool HasAnimation(const std::string &animationName) const;
 		
 		bool AddAnimation(const std::string &animationName, AnimationBase *animation);
-		bool AddAnimationFromXML(const std::string &animationName, const std::string &filename);
+		bool AddAnimationFromFile(const std::string &animationName, const std::string &filename);
 		bool RemoveAnimation(const std::string &animationName);
 
 		AnimationBase *GetAnimationFromName(const std::string &animationName) const;

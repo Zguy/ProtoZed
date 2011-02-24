@@ -80,7 +80,7 @@ namespace PZ
 			return false;
 		}
 	}
-	bool AnimationManager::AddAnimationFromXML(const std::string &animationName, const std::string &filename)
+	bool AnimationManager::AddAnimationFromFile(const std::string &animationName, const std::string &filename)
 	{
 		// Not implemented yet
 		return false;

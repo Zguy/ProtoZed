@@ -28,6 +28,7 @@
 
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Entities/DrawableEntity.h>
+#include <ProtoZed/Entities/SpritesheetEntity.h>
 #include <ProtoZed/Entities/SoundEntity.h>
 #include <ProtoZed/Entities/ListenerEntity.h>
 

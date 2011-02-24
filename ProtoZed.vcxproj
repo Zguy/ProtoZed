@@ -25,6 +25,7 @@
     <ClInclude Include="include\ProtoZed\Entities\DrawableEntity.h" />
     <ClInclude Include="include\ProtoZed\Entities\ListenerEntity.h" />
     <ClInclude Include="include\ProtoZed\Entities\SoundEntity.h" />
+    <ClInclude Include="include\ProtoZed\Entities\SpritesheetEntity.h" />
     <ClInclude Include="include\ProtoZed\Entity.h" />
     <ClInclude Include="include\ProtoZed\EntityManager.h" />
     <ClInclude Include="include\ProtoZed\FastDelegate\allocator.hpp" />
@@ -41,8 +42,9 @@
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
+    <ClInclude Include="include\ProtoZed\ParticleSystem\Emitter.h" />
     <ClInclude Include="include\ProtoZed\ParticleSystem\Particle.h" />
-    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleGroup.h" />
+    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="include\ProtoZed\ProtoZed.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
     <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
@@ -61,10 +63,13 @@
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
     <ClCompile Include="src\Entities\ListenerEntity.cpp" />
     <ClCompile Include="src\Entities\SoundEntity.cpp" />
+    <ClCompile Include="src\Entities\SpritesheetEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Helpers.cpp" />
     <ClCompile Include="src\Logging\Log.cpp" />
     <ClCompile Include="src\Logging\LogManager.cpp" />
+    <ClCompile Include="src\ParticleSystem\Emitter.cpp" />
+    <ClCompile Include="src\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="src\UniqueIDGenerator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
