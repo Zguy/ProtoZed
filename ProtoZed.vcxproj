@@ -37,6 +37,7 @@
     <ClInclude Include="include\ProtoZed\FastDelegate\get_pointer.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\make_delegatetmpl.hpp" />
     <ClInclude Include="include\ProtoZed\Helpers.h" />
+    <ClInclude Include="include\ProtoZed\InputManager.h" />
     <ClInclude Include="include\ProtoZed\Logging\Log.h" />
     <ClInclude Include="include\ProtoZed\Logging\LogManager.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
@@ -66,6 +67,7 @@
     <ClCompile Include="src\Entities\SpritesheetEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Helpers.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Logging\Log.cpp" />
     <ClCompile Include="src\Logging\LogManager.cpp" />
     <ClCompile Include="src\ParticleSystem\Emitter.cpp" />

@@ -25,7 +25,7 @@ namespace PZ
 {
 	namespace Helpers
 	{
-		sf::Vector2f GetForwardVector(float rotation, float length);
+		sf::Vector2f GetForwardVector(const float rotation, const float length);
 
 		float GetDistance(const sf::Vector2f &pointA, const sf::Vector2f &pointB);
 		float GetDistanceSquared(const sf::Vector2f &pointA, const sf::Vector2f &pointB);

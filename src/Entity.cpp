@@ -19,6 +19,7 @@
 #include <ProtoZed/Entity.h>
 
 #include <ProtoZed/Convert.h>
+#include <ProtoZed/Application.h>
 
 namespace PZ
 {
@@ -43,7 +44,10 @@ namespace PZ
 	bool Entity::AddChild(EntityPtr child)
 	{
 		if (*child == *this)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add itself as a child");
 			return false;
+		}
 
 		bool found = false;
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
@@ -64,6 +68,10 @@ namespace PZ
 			child->SetGlobalPosition(oldPos);
 			children.push_back(child);
 		}
+		else
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" already has child \""+child->GetName()+"\"");
+		}
 
 		return !found;
 	}
@@ -83,6 +91,11 @@ namespace PZ
 				found = true;
 				break;
 			}
+		}
+
+		if (!found)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent child \""+child->GetName()+"\"");
 		}
 
 		return found;
@@ -248,5 +261,17 @@ namespace PZ
 		localXAxis.y = std::sin(angle);
 		localYAxis.x = -localXAxis.y;
 		localYAxis.y = localXAxis.x;
+	}
+
+	bool Entity::OnMessage(MessagePtr message)
+	{
+		if (message->message == MessageID::POSITION_UPDATED)
+		{
+			RecalculateLocalAxes();
+
+			return true;
+		}
+
+		return false;
 	}
 }

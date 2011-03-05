@@ -59,6 +59,11 @@ namespace PZ
 			}
 		}
 
+		if (!found)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to set non-existent animation \""+name+"\"");
+		}
+
 		return found;
 	}
 	const std::string &SpritesheetEntity::GetAnimation() const

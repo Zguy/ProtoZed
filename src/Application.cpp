@@ -131,13 +131,6 @@ namespace PZ
 			return 1;
 		}
 
-		// Stabilize framerate before entering main loop
-		for (unsigned int i = 0; i < 10; ++i)
-		{
-			sf::Sleep(0.1f);
-			p->window.Display();
-		}
-
 		while (p->running)
 		{
 			float deltaTime = p->window.GetFrameTime();

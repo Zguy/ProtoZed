@@ -119,7 +119,7 @@ namespace PZ
 
 		void RecalculateLocalAxes();
 
-		virtual bool OnMessage(MessagePtr message) { return false; }
+		virtual bool OnMessage(MessagePtr message);
 
 	private:
 		UniqueID id;
