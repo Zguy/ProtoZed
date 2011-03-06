@@ -1,5 +1,5 @@
 /*
-	Copyright 2010 Johannes Häggqvist
+	Copyright 2010-2011 Johannes Häggqvist
 
 	This file is part of ProtoZed.
 
