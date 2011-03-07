@@ -76,8 +76,13 @@ namespace PZ
 
 		inline sf::Blend::Mode GetBlendMode() const { return sprite.GetBlendMode(); }
 
+		inline sf::Vector2f GetSize() const { return sprite.GetSize(); }
+
 		inline void Scale(float FactorX, float FactorY) { sprite.Scale(FactorX, FactorY); }
 		inline void Scale(const sf::Vector2f& Factor) { sprite.Scale(Factor); }
+
+		inline void Resize(float Width, float Height) { sprite.Resize(Width, Height); }
+		inline void Resize(const sf::Vector2f& Size) { sprite.Resize(Size); }
 
 		// Animable
 		virtual bool HasAttribute(Attribute attribute);

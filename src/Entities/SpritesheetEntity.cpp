@@ -20,6 +20,7 @@
 
 #include <ProtoZed/Entities/DrawableEntity.h>
 #include <ProtoZed/Application.h>
+#include <ProtoZed/Jzon.h>
 
 namespace PZ
 {
@@ -40,8 +41,31 @@ namespace PZ
 	}
 	bool SpritesheetEntity::SetSpritesheetFromFile(const std::string &filename)
 	{
-		// Not implemented yet
-		return false;
+		Jzon::Object root = Jzon::FileReader::ReadFile(filename)->AsObject();
+
+		SpritesheetDefinition def;
+		def.name   = root.Get("name").AsValue().AsString();
+		def.image  = root.Get("image").AsValue().AsString();
+		def.size.x = root.Get("width").AsValue().AsInt();
+		def.size.y = root.Get("height").AsValue().AsInt();
+
+		Jzon::Array &animationArray = root.Get("animations").AsArray();
+		for (Jzon::Array::Iterator it = animationArray.Begin(); it != animationArray.End(); ++it)
+		{
+			Jzon::Object &animationObject = (*it).AsObject();
+			SpritesheetAnimationDefinition aniDef;
+			aniDef.name = animationObject.Get("name").AsValue().AsString();
+			aniDef.from = animationObject.Get("start").AsValue().AsInt();
+			aniDef.to   = animationObject.Get("end").AsValue().AsInt();
+			aniDef.time = (float)animationObject.Get("time").AsValue().AsDouble();
+			aniDef.loop = animationObject.Get("loop").AsValue().AsBool();
+
+			def.animations.push_back(aniDef);
+		}
+
+		SetSpritesheet(def);
+
+		return true;
 	}
 
 	bool SpritesheetEntity::SetAnimation(const std::string &name)
@@ -173,7 +197,7 @@ namespace PZ
 	void SpritesheetEntity::setFrame(unsigned int frame)
 	{
 		SpritesheetAnimationDefinition &animation = spritesheetDef.animations.at(animationIndex);
-		if (frame < (animation.to - animation.from))
+		if (frame <= (animation.to - animation.from))
 		{
 			const unsigned int imageWidth = sprite.GetImage()->GetWidth();
 			const unsigned int imageHeight = sprite.GetImage()->GetHeight();
