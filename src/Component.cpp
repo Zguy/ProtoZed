@@ -16,41 +16,21 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Entities/ListenerEntity.h>
-
-#include <SFML/Audio/Listener.hpp>
+#include <ProtoZed/Component.h>
 
 namespace PZ
 {
-	ListenerEntity::ListenerEntity() : Entity("ListenerEntity")
+	Component::Component() : owner(NULL)
 	{
-	}
-	ListenerEntity::~ListenerEntity()
-	{
-	}
 
-	void ListenerEntity::SetGlobalVolume(float Volume)
-	{
-		sf::Listener::SetGlobalVolume(Volume);
 	}
-	float ListenerEntity::GetGlobalVolume() const
+	Component::~Component()
 	{
-		return sf::Listener::GetGlobalVolume();
+
 	}
 
-	bool ListenerEntity::OnMessage(Message &message)
+	void Component::HandleMessage(Message &message)
 	{
-		bool handled = Entity::OnMessage(message);
 
-		if (message.message == MessageID::POSITION_UPDATED)
-		{
-			sf::Vector2f entityPos = GetGlobalPosition();
-			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
-			sf::Listener::SetPosition(soundPos);
-
-			return true;
-		}
-
-		return handled;
 	}
 }

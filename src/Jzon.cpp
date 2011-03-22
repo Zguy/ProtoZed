@@ -26,6 +26,58 @@ THE SOFTWARE.
 
 namespace Jzon
 {
+	class FormatInterpreter
+	{
+	public:
+		FormatInterpreter(const Format &format) : format(format)
+		{
+			if (format.useTabs)
+			{
+				indentationChar = '\t';
+			}
+			else
+			{
+				for (unsigned int i = 0; i < format.indentSize; ++i)
+				{
+					indentationChar += ' ';
+				}
+			}
+
+			spacing = (format.spacing ? " " : "");
+			newline = (format.newline ? "\n" : spacing);
+		}
+
+		std::string GetIndentation(unsigned int level) const
+		{
+			if (!format.newline)
+				return "";
+			else
+			{
+				std::string ind;
+				for (unsigned int i = 0; i < level; ++i)
+				{
+					ind += indentationChar;
+				}
+				return ind;
+			}
+		}
+		
+		inline std::string GetNewline() const
+		{
+			return newline;
+		}
+		inline std::string GetSpacing() const
+		{
+			return spacing;
+		}
+
+	private:
+		const Format &format;
+		std::string indentationChar;
+		std::string newline;
+		std::string spacing;
+	};
+
 	Node::Node()
 	{
 	}
@@ -35,18 +87,24 @@ namespace Jzon
 
 	Object &Node::AsObject()
 	{
-		if (GetType() == T_OBJECT)
+		if (IsObject())
 			return static_cast<Object&>(*this);
+		else
+			throw TypeException();
 	}
 	Array &Node::AsArray()
 	{
-		if (GetType() == T_ARRAY)
+		if (IsArray())
 			return static_cast<Array&>(*this);
+		else
+			throw TypeException();
 	}
 	Value &Node::AsValue()
 	{
-		if (GetType() == T_VALUE)
+		if (IsValue())
 			return static_cast<Value&>(*this);
+		else
+			throw TypeException();
 	}
 
 	NodePtr Node::Read(const std::string &json)
@@ -291,15 +349,15 @@ namespace Jzon
 		return !(*this == other);
 	}
 
-	std::string Value::Write() const
+	std::string Value::Write(const Format &format, unsigned int level) const
 	{
 		std::string value;
 		if (type == VT_NULL)
-			value = "null";
+			value += "null";
 		else if (type == VT_STRING)
-			value = "\""+valueStr+"\"";
+			value += "\""+valueStr+"\"";
 		else
-			value = valueStr;
+			value += valueStr;
 		return value;
 	}
 	NodePtr Value::Read(const std::string &json)
@@ -412,11 +470,17 @@ namespace Jzon
 
 	Object::Iterator Object::Begin()
 	{
-		return Object::Iterator(&children.front());
+		if (children.size() > 0)
+			return Object::Iterator(&children.front());
+		else
+			return Object::Iterator(NULL);
 	}
 	Object::Iterator Object::End()
 	{
-		return Object::Iterator(&children.back()+1);
+		if (children.size() > 0)
+			return Object::Iterator(&children.back()+1);
+		else
+			return Object::Iterator(NULL);
 	}
 
 	Node &Object::Get(const std::string &name, Node &default) const
@@ -431,10 +495,12 @@ namespace Jzon
 		return default;
 	}
 
-	std::string Object::Write() const
+	std::string Object::Write(const Format &format, unsigned int level) const
 	{
+		FormatInterpreter fi(format);
+
 		std::string json;
-		json += "{";
+		json += "{" + fi.GetNewline();
 
 		for (ChildList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
@@ -442,11 +508,11 @@ namespace Jzon
 			Node &value = *(*it).second;
 
 			if (it != children.cbegin())
-				json += ",";
-			json += "\""+name+"\"" + ":" + value.Write();
+				json += "," + fi.GetNewline();
+			json += fi.GetIndentation(level+1) + "\""+name+"\"" + ":" + fi.GetSpacing() + value.Write(format, level+1);
 		}
 
-		json += "}";
+		json += fi.GetNewline() + fi.GetIndentation(level) + "}";
 		return json;
 	}
 	NodePtr Object::Read(const std::string &json)
@@ -486,8 +552,11 @@ namespace Jzon
 			{
 				if (((numOpen == 1 && !inString && c == ','))||(numOpen == 0))
 				{
-					NodePtr node = Node::Read(value);
-					object->Add(name, *node);
+					if (!value.empty())
+					{
+						NodePtr node = Node::Read(value);
+						object->Add(name, *node);
+					}
 
 					name.clear();
 					value.clear();
@@ -548,11 +617,17 @@ namespace Jzon
 
 	Array::Iterator Array::Begin()
 	{
-		return Array::Iterator(&children.front());
+		if (children.size() > 0)
+			return Array::Iterator(&children.front());
+		else
+			return Array::Iterator(NULL);
 	}
 	Array::Iterator Array::End()
 	{
-		return Array::Iterator(&children.back()+1);
+		if (children.size() > 0)
+			return Array::Iterator(&children.back()+1);
+		else
+			return Array::Iterator(NULL);
 	}
 
 	unsigned int Array::GetCount() const
@@ -567,21 +642,23 @@ namespace Jzon
 			return default;
 	}
 
-	std::string Array::Write() const
+	std::string Array::Write(const Format &format, unsigned int level) const
 	{
+		FormatInterpreter fi(format);
+
 		std::string json;
-		json += "[";
+		json += "[" + fi.GetNewline();
 
 		for (ChildList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
 			Node &value = *(*it);
 
 			if (it != children.cbegin())
-				json += ",";
-			json += value.Write();
+				json += "," + fi.GetNewline();
+			json += fi.GetIndentation(level+1) + value.Write(format, level+1);
 		}
 
-		json += "]";
+		json += fi.GetNewline() + fi.GetIndentation(level) + "]";
 		return json;
 	}
 	NodePtr Array::Read(const std::string &json)
@@ -610,8 +687,11 @@ namespace Jzon
 
 			if (((numOpen == 1 && !inString && c == ','))||(numOpen == 0))
 			{
-				NodePtr node = Node::Read(value);
-				array->Add(*node);
+				if (!value.empty())
+				{
+					NodePtr node = Node::Read(value);
+					array->Add(*node);
+				}
 
 				value.clear();
 			}
@@ -638,25 +718,25 @@ namespace Jzon
 	{
 	}
 
-	void FileWriter::WriteFile(const std::string &filename, Node &root)
+	void FileWriter::WriteFile(const std::string &filename, Node &root, const Format &format)
 	{
 		FileWriter writer;
-		writer.Write(filename, root);
+		writer.Write(filename, root, format);
 	}
-	void FileWriter::WriteFile(const std::string &filename, NodePtr root)
+	void FileWriter::WriteFile(const std::string &filename, NodePtr root, const Format &format)
 	{
-		WriteFile(filename, *root);
+		WriteFile(filename, *root, format);
 	}
 
-	void FileWriter::Write(const std::string &filename, Node &root)
+	void FileWriter::Write(const std::string &filename, Node &root, const Format &format)
 	{
 		std::fstream file(filename.c_str(), std::ios::out | std::ios::trunc);
-		file << root.Write();
+		file << root.Write(format);
 		file.close();
 	}
-	void FileWriter::Write(const std::string &filename, NodePtr root)
+	void FileWriter::Write(const std::string &filename, NodePtr root, const Format &format)
 	{
-		Write(filename, *root);
+		Write(filename, *root, format);
 	}
 
 

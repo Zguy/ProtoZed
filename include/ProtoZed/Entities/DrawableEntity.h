@@ -96,7 +96,7 @@ namespace PZ
 		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
-		virtual bool OnMessage(MessagePtr message);
+		virtual bool OnMessage(Message &message);
 
 	private:
 		sf::Drawable *drawable;

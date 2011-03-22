@@ -21,6 +21,7 @@
     <ClInclude Include="include\ProtoZed\Application.h" />
     <ClInclude Include="include\ProtoZed\AppState.h" />
     <ClInclude Include="include\ProtoZed\AssetStorage.h" />
+    <ClInclude Include="include\ProtoZed\Component.h" />
     <ClInclude Include="include\ProtoZed\Convert.h" />
     <ClInclude Include="include\ProtoZed\Entities\DrawableEntity.h" />
     <ClInclude Include="include\ProtoZed\Entities\ListenerEntity.h" />
@@ -61,6 +62,7 @@
     <ClCompile Include="src\AppState.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
+    <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\Convert.cpp" />
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
     <ClCompile Include="src\Entities\ListenerEntity.cpp" />

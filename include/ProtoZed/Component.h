@@ -16,28 +16,27 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ListenerEntity_h__
-#define ListenerEntity_h__
+#ifndef Component_h__
+#define Component_h__
 
 #include <ProtoZed/Entity.h>
 
 namespace PZ
 {
-	class ListenerEntity : public Entity
+	class Component
 	{
 	public:
-		ListenerEntity();
-		~ListenerEntity();
-
-		// sf::Listener functions
-		void SetGlobalVolume(float Volume);
-		float GetGlobalVolume() const;
-
-	protected:
-		virtual bool OnMessage(Message &message);
+		Component();
+		~Component();
+	
+		inline bool HasOwner() const { return (owner != NULL); }
+		inline EntityPtr GetOwner() const { return owner; }
+	
+		void HandleMessage(Message &message);
+	
+	private:
+		EntityPtr owner;
 	};
-
-	WEAK_SHARED_PTR(ListenerEntity)
 }
 
-#endif // ListenerEntity_h__
+#endif // Component_h__

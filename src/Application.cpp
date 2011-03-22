@@ -152,10 +152,10 @@ namespace PZ
 				}
 
 				// Update entities
-				state->GetRootEntity()->HandleMessage(MessagePtr(new UpdateMessage(deltaTime)));
+				state->GetRootEntity()->HandleMessage(UpdateMessage(deltaTime));
 
 				// Draw drawable entities
-				state->GetRootEntity()->HandleMessage(MessagePtr(new DrawMessage(p->window)));
+				state->GetRootEntity()->HandleMessage(DrawMessage(p->window));
 			}
 
 			p->window.Display();

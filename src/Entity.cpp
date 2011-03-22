@@ -20,6 +20,7 @@
 
 #include <ProtoZed/Convert.h>
 #include <ProtoZed/Application.h>
+#include <ProtoZed/Component.h>
 
 namespace PZ
 {
@@ -112,12 +113,20 @@ namespace PZ
 			return NULL;
 		}
 	}
-	EntityPtr Entity::GetChildByName(const std::string name) const
+	EntityPtr Entity::GetChildByName(const std::string name, bool recursive) const
 	{
-		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		const Entity *const parent = this;
+		for (EntityList::const_iterator it = parent->children.cbegin(); it != parent->children.cend(); ++it)
 		{
 			if ((*it)->GetName() == name)
 				return (*it);
+
+			if (recursive)
+			{
+				EntityPtr child = (*it)->GetChildByName(name, true);
+				if (child != NULL)
+					return child;
+			}
 		}
 		return NULL;
 	}
@@ -147,14 +156,14 @@ namespace PZ
 	{
 		position = pos;
 
-		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+		HandleMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetLocalPosition(float x, float y)
 	{
 		position.x = x;
 		position.y = y;
 
-		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+		HandleMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetGlobalPosition(const sf::Vector2f &pos)
 	{
@@ -177,7 +186,7 @@ namespace PZ
 			position = pos;
 		}
 
-		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+		HandleMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetGlobalPosition(float x, float y)
 	{
@@ -191,7 +200,7 @@ namespace PZ
 			position.y = y;
 		}
 
-		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+		HandleMessage(Message(MessageID::POSITION_UPDATED));
 	}
 
 	float Entity::GetLocalRotation() const
@@ -212,7 +221,7 @@ namespace PZ
 
 		RecalculateLocalAxes();
 
-		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+		HandleMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetGlobalRotation(float rot)
 	{
@@ -223,12 +232,12 @@ namespace PZ
 
 		RecalculateLocalAxes();
 
-		HandleMessage(MessagePtr(new Message(MessageID::POSITION_UPDATED)));
+		HandleMessage(Message(MessageID::POSITION_UPDATED));
 	}
 
-	bool Entity::HandleMessage(MessagePtr message)
+	bool Entity::HandleMessage(Message &message)
 	{
-		if (message->mode == Message::FLOAT)
+		if (message.mode == Message::FLOAT)
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
@@ -237,8 +246,13 @@ namespace PZ
 		}
 
 		bool handled = OnMessage(message);
+		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			ComponentPtr component = (*it);
+			component->HandleMessage(message);
+		}
 
-		if (message->mode == Message::SINK)
+		if (message.mode == Message::SINK)
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
@@ -263,9 +277,9 @@ namespace PZ
 		localYAxis.y = localXAxis.x;
 	}
 
-	bool Entity::OnMessage(MessagePtr message)
+	bool Entity::OnMessage(Message &message)
 	{
-		if (message->message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::POSITION_UPDATED)
 		{
 			RecalculateLocalAxes();
 

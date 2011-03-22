@@ -53,7 +53,7 @@ namespace PZ
 
 		Mode mode;
 	};
-	typedef std::shared_ptr<Message> MessagePtr;
+	//typedef std::shared_ptr<Message> MessagePtr;
 
 	struct UpdateMessage : public Message
 	{
@@ -66,6 +66,10 @@ namespace PZ
 	class Entity;
 	WEAK_SHARED_PTR(Entity)
 	typedef std::vector<EntityPtr> EntityList;
+
+	class Component;
+	WEAK_SHARED_PTR(Component)
+	typedef std::vector<ComponentPtr> ComponentList;
 
 	class Entity
 	{
@@ -81,7 +85,7 @@ namespace PZ
 
 		inline const EntityList &GetChildren() const { return children; }
 		EntityPtr GetChildByIndex(unsigned int index) const;
-		EntityPtr GetChildByName(const std::string name) const;
+		EntityPtr GetChildByName(const std::string name, bool recursive = false) const;
 
 		inline const std::string &GetName() const { return name; }
 
@@ -110,7 +114,7 @@ namespace PZ
 		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
 		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
 
-		bool HandleMessage(MessagePtr message);
+		bool HandleMessage(Message &message);
 
 		bool operator==(const Entity &other);
 
@@ -119,13 +123,15 @@ namespace PZ
 
 		void RecalculateLocalAxes();
 
-		virtual bool OnMessage(MessagePtr message);
+		virtual bool OnMessage(Message &message);
 
 	private:
 		UniqueID id;
 
 		Entity *parent;
 		EntityList children;
+
+		ComponentList components;
 
 		std::string name;
 		sf::Vector2f position;

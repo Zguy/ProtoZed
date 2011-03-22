@@ -157,14 +157,14 @@ namespace PZ
 			return 0.f;
 	}
 
-	bool SpritesheetEntity::OnMessage(MessagePtr message)
+	bool SpritesheetEntity::OnMessage(Message &message)
 	{
 		bool handled = Entity::OnMessage(message);
 
-		if (message->message == MessageID::UPDATE)
+		if (message.message == MessageID::UPDATE)
 		{
-			UpdateMessage *updateMessage = static_cast<UpdateMessage*>(message.get());
-			float deltaTime = updateMessage->deltaTime;
+			UpdateMessage &updateMessage = static_cast<UpdateMessage&>(message);
+			float deltaTime = updateMessage.deltaTime;
 
 			currentTime += deltaTime;
 
@@ -176,17 +176,17 @@ namespace PZ
 
 			return true;
 		}
-		else if (message->message == MessageID::POSITION_UPDATED)
+		else if (message.message == MessageID::POSITION_UPDATED)
 		{
 			sprite.SetPosition(GetGlobalPosition());
 			sprite.SetRotation(GetGlobalRotation());
 
 			return true;
 		}
-		else if (message->message == MessageID::DRAW)
+		else if (message.message == MessageID::DRAW)
 		{
-			DrawMessage *drawMessage = static_cast<DrawMessage*>(message.get());
-			drawMessage->window.Draw(sprite);
+			DrawMessage &drawMessage = static_cast<DrawMessage&>(message);
+			drawMessage.window.Draw(sprite);
 
 			return true;
 		}

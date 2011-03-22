@@ -49,11 +49,11 @@ namespace PZ
 			return 0.f;
 	}
 
-	bool SoundEntity::OnMessage(MessagePtr message)
+	bool SoundEntity::OnMessage(Message &message)
 	{
 		bool handled = Entity::OnMessage(message);
 
-		if (message->message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::POSITION_UPDATED)
 		{
 			sf::Vector2f entityPos = GetGlobalPosition();
 			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);

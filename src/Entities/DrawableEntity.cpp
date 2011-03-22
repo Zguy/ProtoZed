@@ -91,11 +91,11 @@ namespace PZ
 			return 0.f;
 	}
 
-	bool DrawableEntity::OnMessage(MessagePtr message)
+	bool DrawableEntity::OnMessage(Message &message)
 	{
 		bool handled = Entity::OnMessage(message);
 
-		if (message->message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::POSITION_UPDATED)
 		{
 			if (HasDrawable())
 			{
@@ -105,12 +105,12 @@ namespace PZ
 
 			return true;
 		}
-		else if (message->message == MessageID::DRAW)
+		else if (message.message == MessageID::DRAW)
 		{
 			if (HasDrawable())
 			{
-				DrawMessage *drawMessage = static_cast<DrawMessage*>(message.get());
-				drawMessage->window.Draw(*drawable);
+				DrawMessage &drawMessage = static_cast<DrawMessage&>(message);
+				drawMessage.window.Draw(*drawable);
 
 				return true;
 			}
