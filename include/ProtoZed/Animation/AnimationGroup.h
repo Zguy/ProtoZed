@@ -48,10 +48,10 @@ namespace PZ
 
 		virtual AnimationBase *GetCopy();
 
+		virtual void AddTime(float deltaTime);
+
 	protected:
 		virtual bool StartImpl();
-
-		virtual void AddTime(float deltaTime);
 
 	private:
 		AnimationGroupImpl *p;

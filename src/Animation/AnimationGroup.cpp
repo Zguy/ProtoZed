@@ -79,24 +79,6 @@ namespace PZ
 		return new AnimationGroup(*this);
 	}
 
-	bool AnimationGroup::StartImpl()
-	{
-		AnimablePtr animable = object.lock();
-		if (p->async)
-		{
-			for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
-			{
-				(*it)->Start(animable);
-			}
-		}
-		else
-		{
-			p->animations.front()->Start(animable);
-		}
-
-		return true;
-	}
-
 	void AnimationGroup::AddTime(float deltaTime)
 	{
 		if (state == RUNNING)
@@ -145,7 +127,7 @@ namespace PZ
 					p->animations.pop_front();
 
 					if (!p->animations.empty())
-						p->animations.front()->Start(object.lock());
+						p->animations.front()->Start(*object);
 				}
 
 				if (p->animations.empty())
@@ -154,5 +136,22 @@ namespace PZ
 				}
 			}
 		}
+	}
+
+	bool AnimationGroup::StartImpl()
+	{
+		if (p->async)
+		{
+			for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
+			{
+				(*it)->Start(*object);
+			}
+		}
+		else
+		{
+			p->animations.front()->Start(*object);
+		}
+
+		return true;
 	}
 }

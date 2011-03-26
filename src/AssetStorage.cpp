@@ -34,7 +34,7 @@ namespace PZ
 			sf::Image image;
 			if (image.LoadFromFile(GetDataFolder()+filename))
 			{
-				assets.insert(std::make_pair<std::string, sf::Image>(filename, image));
+				assets.insert(std::make_pair(filename, image));
 			}
 			else
 			{
@@ -54,7 +54,7 @@ namespace PZ
 			sf::Font font;
 			if (font.LoadFromFile(GetDataFolder()+filename))
 			{
-				assets.insert(std::make_pair<std::string, sf::Font>(filename, font));
+				assets.insert(std::make_pair(filename, font));
 			}
 			else
 			{
@@ -74,7 +74,7 @@ namespace PZ
 			sf::SoundBuffer soundBuffer;
 			if (soundBuffer.LoadFromFile(GetDataFolder()+filename))
 			{
-				assets.insert(std::make_pair<std::string, sf::SoundBuffer>(filename, soundBuffer));
+				assets.insert(std::make_pair(filename, soundBuffer));
 			}
 			else
 			{

@@ -52,6 +52,7 @@
     <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\Animable.cpp" />
     <ClCompile Include="src\Animation\AnimationBase.cpp" />
     <ClCompile Include="src\Animation\Tween.cpp" />
     <ClCompile Include="src\Animation\AnimationGroup.cpp" />

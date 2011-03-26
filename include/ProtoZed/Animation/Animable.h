@@ -20,27 +20,34 @@
 #define Animable_h__
 
 #include <string>
-#include <memory>
+#include <vector>
 
 namespace PZ
 {
+	class AnimationBase;
+
+	typedef std::vector<AnimationBase*> AnimationList;
+
 	class Animable
 	{
 	public:
 		typedef std::string Attribute;
 
-		Animable()
-		{}
-		~Animable()
-		{}
+		Animable();
+		virtual ~Animable();
+
+		AnimationBase *RunAnimation(const std::string &animationName);
+		AnimationBase *RunAnimationDirect(AnimationBase *animation);
+
+		void StepAnimations(float deltaTime);
 
 		virtual bool HasAttribute(Attribute attribute) = 0;
 		virtual void SetAttribute(Attribute attribute, float value) = 0;
 		virtual float GetAttribute(Attribute attribute) const = 0;
-	};
 
-	typedef std::shared_ptr<Animable> AnimablePtr;
-	typedef std::weak_ptr<Animable>   AnimableWeakPtr;
+	private:
+		AnimationList animations;
+	};
 }
 
 #endif // Animable_h__

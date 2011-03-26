@@ -46,19 +46,19 @@ namespace PZ
 			return entityFactory.Unregister(entityName);
 		}
 
-		EntityPtr GetNewEntity(const std::string &entityName, const std::string name = "")
+		Entity *GetNewEntity(const std::string &entityName, const std::string name = "")
 		{
 			std::string fixName = name;
 			if (fixName.empty())
 				fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("Entity"));
-			EntityPtr entity(entityFactory.Create(entityName, fixName));
+			Entity *entity = entityFactory.Create(entityName, fixName);
 			return entity;
 		}
 		template<class T>
-		std::shared_ptr<T> GetNewEntity(const std::string &entityName, const std::string name = "")
+		T *GetNewEntity(const std::string &entityName, const std::string name = "")
 		{
-			EntityPtr entity = GetNewEntity(entityName, name);
-			return std::static_pointer_cast<T, Entity>(entity);
+			Entity *entity = GetNewEntity(entityName, name);
+			return static_cast<T*>(entity);
 		}
 
 	private:

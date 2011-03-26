@@ -70,13 +70,11 @@ namespace PZ
 		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
-		virtual bool OnMessage(MessagePtr message);
+		virtual bool OnMessage(Message &message);
 
 	private:
 		sf::Sound sound;
 	};
-
-	WEAK_SHARED_PTR(SoundEntity)
 }
 
 #endif // SoundEntity_h__
