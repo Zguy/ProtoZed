@@ -131,6 +131,33 @@ namespace PZ
 		return NULL;
 	}
 
+	void Entity::AddComponent(ComponentPtr component)
+	{
+		components.push_back(component);
+	}
+	void Entity::RemoveComponent(const std::string &name)
+	{
+		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			if ((*it)->GetName() == name)
+			{
+				components.erase(it);
+				break;
+			}
+		}
+	}
+	ComponentPtr Entity::GetComponent(const std::string &name) const
+	{
+		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		{
+			if ((*it)->GetName() == name)
+			{
+				return (*it);
+			}
+		}
+		return NULL;
+	}
+
 	const sf::Vector2f &Entity::GetLocalPosition() const
 	{
 		return position;

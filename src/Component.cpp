@@ -20,7 +20,7 @@
 
 namespace PZ
 {
-	Component::Component() : owner(NULL)
+	Component::Component(const std::string &name) : name(name), owner(NULL)
 	{
 
 	}

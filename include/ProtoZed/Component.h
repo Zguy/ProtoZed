@@ -26,15 +26,19 @@ namespace PZ
 	class Component
 	{
 	public:
-		Component();
+		Component(const std::string &name);
 		~Component();
 	
+		inline const std::string &GetName() const { return name; }
+
 		inline bool HasOwner() const { return (owner != NULL); }
 		inline EntityPtr GetOwner() const { return owner; }
 	
 		void HandleMessage(Message &message);
 	
 	private:
+		std::string name;
+
 		EntityPtr owner;
 	};
 }

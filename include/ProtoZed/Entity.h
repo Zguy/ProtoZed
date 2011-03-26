@@ -53,7 +53,6 @@ namespace PZ
 
 		Mode mode;
 	};
-	//typedef std::shared_ptr<Message> MessagePtr;
 
 	struct UpdateMessage : public Message
 	{
@@ -88,6 +87,10 @@ namespace PZ
 		EntityPtr GetChildByName(const std::string name, bool recursive = false) const;
 
 		inline const std::string &GetName() const { return name; }
+
+		void AddComponent(ComponentPtr component);
+		void RemoveComponent(const std::string &name);
+		ComponentPtr GetComponent(const std::string &name) const;
 
 		const sf::Vector2f &GetLocalPosition() const;
 		const sf::Vector2f GetGlobalPosition() const;
