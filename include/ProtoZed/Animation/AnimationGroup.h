@@ -40,7 +40,7 @@ namespace PZ
 		AnimationGroup();
 		AnimationGroup(AnimationProperties *properties);
 		AnimationGroup(const AnimationGroup &copy);
-		~AnimationGroup();
+		virtual ~AnimationGroup();
 
 		void SetAsync(bool async);
 

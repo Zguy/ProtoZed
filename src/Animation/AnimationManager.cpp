@@ -57,6 +57,11 @@ namespace PZ
 		return p->animationFactory.Create(animationType, properties);
 	}
 
+	void AnimationManager::DestroyAnimation(AnimationBase *animation) const
+	{
+		delete animation;
+	}
+
 	bool AnimationManager::HasAnimation(const std::string &animationName) const
 	{
 		return (GetAnimationFromName(animationName) != NULL);

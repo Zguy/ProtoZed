@@ -152,7 +152,7 @@ namespace PZ
 		return p->appStateFactory.Unregister(stateName);
 	}
 
-	void AppStateManager::ChangeState(const std::string &stateName, StringMap *const options)
+	void AppStateManager::ChangeState(const std::string &stateName, StringMap *options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::CHANGE;
@@ -161,7 +161,7 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void AppStateManager::PushState(const std::string &stateName, StringMap *const options)
+	void AppStateManager::PushState(const std::string &stateName, StringMap *options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::PUSH;

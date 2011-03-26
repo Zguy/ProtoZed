@@ -158,8 +158,7 @@ namespace PZ
 
 			p->window.Display();
 
-			if ((!p->window.IsOpened())||
-					(p->stateManager.IsEmpty()))
+			if ((!p->window.IsOpened())||(p->stateManager.IsEmpty()))
 				p->running = false;
 		}
 

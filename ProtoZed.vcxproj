@@ -68,6 +68,7 @@
     <ClCompile Include="src\Entities\SoundEntity.cpp" />
     <ClCompile Include="src\Entities\SpritesheetEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\Helpers.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Jzon.cpp" />

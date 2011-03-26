@@ -18,6 +18,9 @@
 */
 #include <ProtoZed/Animation/AnimationGroup.h>
 
+#include <ProtoZed/Animation/AnimationManager.h>
+#include <ProtoZed/Application.h>
+
 #include <list>
 
 namespace PZ
@@ -54,8 +57,9 @@ namespace PZ
 	}
 	AnimationGroup::~AnimationGroup()
 	{
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
-			delete (*it);
+			animationManager.DestroyAnimation(*it);
 		p->animations.clear();
 
 		delete p;
@@ -81,6 +85,7 @@ namespace PZ
 
 	void AnimationGroup::AddTime(float deltaTime)
 	{
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		if (state == RUNNING)
 		{
 			if (p->async)
@@ -97,7 +102,7 @@ namespace PZ
 
 					if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
 					{
-						delete (*it);
+						animationManager.DestroyAnimation(animation);
 						it = p->animations.erase(it);
 					}
 					else
@@ -123,7 +128,7 @@ namespace PZ
 
 				if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
 				{
-					delete p->animations.front();
+					animationManager.DestroyAnimation(animation);
 					p->animations.pop_front();
 
 					if (!p->animations.empty())

@@ -54,6 +54,8 @@ namespace PZ
 			return static_cast<T*>(GetNewAnimation(animationType, properties));
 		}
 
+		void DestroyAnimation(AnimationBase *animation) const;
+
 		bool HasAnimation(const std::string &animationName) const;
 		
 		bool AddAnimation(const std::string &animationName, AnimationBase *animation);
