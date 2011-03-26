@@ -166,6 +166,8 @@ namespace PZ
 			UpdateMessage &updateMessage = static_cast<UpdateMessage&>(message);
 			float deltaTime = updateMessage.deltaTime;
 
+			StepAnimations(deltaTime);
+
 			currentTime += deltaTime;
 
 			if (currentTime >= (spritesheetDef.animations.at(animationIndex).time))

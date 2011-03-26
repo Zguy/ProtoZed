@@ -75,8 +75,6 @@ namespace PZ
 	private:
 		sf::Sound sound;
 	};
-
-	WEAK_SHARED_PTR(SoundEntity)
 }
 
 #endif // SoundEntity_h__

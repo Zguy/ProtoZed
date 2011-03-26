@@ -36,8 +36,6 @@ namespace PZ
 	protected:
 		virtual bool OnMessage(Message &message);
 	};
-
-	WEAK_SHARED_PTR(ListenerEntity)
 }
 
 #endif // ListenerEntity_h__

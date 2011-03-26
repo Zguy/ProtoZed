@@ -54,6 +54,8 @@ namespace PZ
 			return static_cast<T*>(GetNewAnimation(animationType, properties));
 		}
 
+		void DestroyAnimation(AnimationBase *animation) const;
+
 		bool HasAnimation(const std::string &animationName) const;
 		
 		bool AddAnimation(const std::string &animationName, AnimationBase *animation);
@@ -62,10 +64,6 @@ namespace PZ
 
 		AnimationBase *GetAnimationFromName(const std::string &animationName) const;
 
-		AnimationBase *RunAnimation(const std::string &animationName, AnimablePtr object);
-		void RunAnimationDirect(AnimationBase *animation, AnimablePtr object);
-
-		void Step(float deltaTime);
 	private:
 		AnimationManagerImpl *p;
 

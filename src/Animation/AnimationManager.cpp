@@ -26,13 +26,11 @@
 namespace PZ
 {
 	typedef std::map<std::string, AnimationBase*> AnimationMap;
-	typedef std::vector<AnimationBase*> AnimationList;
 
 	class AnimationManagerImpl
 	{
 	public:
 		AnimationMap  animationMap;
-		AnimationList animations;
 
 		AnimationFactory animationFactory;
 	};
@@ -45,10 +43,6 @@ namespace PZ
 		for (AnimationMap::iterator it = p->animationMap.begin(); it != p->animationMap.end(); ++it)
 			delete (*it).second;
 		p->animationMap.clear();
-
-		for (AnimationList::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
-			delete (*it);
-		p->animations.clear();
 
 		delete p;
 	}
@@ -63,6 +57,11 @@ namespace PZ
 		return p->animationFactory.Create(animationType, properties);
 	}
 
+	void AnimationManager::DestroyAnimation(AnimationBase *animation) const
+	{
+		delete animation;
+	}
+
 	bool AnimationManager::HasAnimation(const std::string &animationName) const
 	{
 		return (GetAnimationFromName(animationName) != NULL);
@@ -72,7 +71,7 @@ namespace PZ
 	{
 		if (!HasAnimation(animationName))
 		{
-			p->animationMap.insert(std::make_pair<std::string, AnimationBase*>(animationName, animation));
+			p->animationMap.insert(std::make_pair(animationName, animation));
 			return true;
 		}
 		else
@@ -107,66 +106,6 @@ namespace PZ
 			return p->animationMap.at(animationName);
 		else
 			return NULL;
-	}
-
-	AnimationBase *AnimationManager::RunAnimation(const std::string &animationName, AnimablePtr object)
-	{
-		AnimationBase *original = GetAnimationFromName(animationName);
-
-		if (original != NULL)
-		{
-			AnimationBase *copy = original->GetCopy();
-			p->animations.push_back(copy);
-			copy->Start(object);
-			return copy;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-
-	void AnimationManager::RunAnimationDirect(AnimationBase *animation, AnimablePtr object)
-	{
-		p->animations.push_back(animation);
-		animation->Start(object);
-	}
-
-	void AnimationManager::Step(float deltaTime)
-	{
-		for (AnimationList::iterator it = p->animations.begin(); it != p->animations.end();)
-		{
-			AnimationBase *animation = (*it);
-
-			if (animation->GetState() == AnimationBase::STARTED)
-			{
-				if (!animation->onStart.empty())
-					animation->onStart(animation);
-
-				animation->state = AnimationBase::RUNNING;
-			}
-
-			if (animation->GetState() == AnimationBase::RUNNING)
-				animation->AddTime(deltaTime);
-
-			if (animation->GetState() == AnimationBase::FINISHED)
-			{
-				if (!animation->onFinished.empty())
-					animation->onFinished(animation);
-
-				delete animation;
-				it = p->animations.erase(it);
-			}
-			else if (animation->GetState() == AnimationBase::STOPPED)
-			{
-				delete animation;
-				it = p->animations.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
 	}
 
 	AnimationFactory &AnimationManager::getAnimationFactory() const

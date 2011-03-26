@@ -53,6 +53,7 @@
     <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animation\Animable.cpp" />
     <ClCompile Include="src\Animation\AnimationBase.cpp" />
     <ClCompile Include="src\Animation\Tween.cpp" />
     <ClCompile Include="src\Animation\AnimationGroup.cpp" />
@@ -69,6 +70,7 @@
     <ClCompile Include="src\Entities\SoundEntity.cpp" />
     <ClCompile Include="src\Entities\SpritesheetEntity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\Helpers.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Jzon.cpp" />

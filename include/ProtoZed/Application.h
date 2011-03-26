@@ -57,7 +57,7 @@ namespace PZ
 		AppStateManager    &GetStateManager() const;
 		EntityManager      &GetEntityManager() const;
 		AnimationManager   &GetAnimationManager() const;
-		ListenerEntityPtr  &GetListenerEntity() const;
+		ListenerEntity     &GetListenerEntity() const;
 
 		ImageStorage       &GetImageStorage() const;
 		FontStorage        &GetFontStorage() const;

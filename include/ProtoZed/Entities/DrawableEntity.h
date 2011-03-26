@@ -101,8 +101,6 @@ namespace PZ
 	private:
 		sf::Drawable *drawable;
 	};
-
-	WEAK_SHARED_PTR(DrawableEntity)
 }
 
 #endif // DrawableEntity_h__

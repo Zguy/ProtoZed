@@ -25,10 +25,6 @@
 
 #include <string>
 #include <vector>
-#include <memory>
-
-#define WEAK_SHARED_PTR(T) typedef std::shared_ptr<T> T ## Ptr; \
-	                         typedef std::weak_ptr<T> T ## WeakPtr;
 
 namespace PZ
 {
@@ -63,12 +59,10 @@ namespace PZ
 	};
 
 	class Entity;
-	WEAK_SHARED_PTR(Entity)
-	typedef std::vector<EntityPtr> EntityList;
+	typedef std::vector<Entity*> EntityList;
 
 	class Component;
-	WEAK_SHARED_PTR(Component)
-	typedef std::vector<ComponentPtr> ComponentList;
+	typedef std::vector<Component*> ComponentList;
 
 	class Entity
 	{
@@ -79,18 +73,18 @@ namespace PZ
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
 
-		bool AddChild(EntityPtr child);
-		bool RemoveChild(EntityPtr child);
+		bool AddChild(Entity *child);
+		bool RemoveChild(Entity *child);
 
 		inline const EntityList &GetChildren() const { return children; }
-		EntityPtr GetChildByIndex(unsigned int index) const;
-		EntityPtr GetChildByName(const std::string name, bool recursive = false) const;
+		Entity *GetChildByIndex(unsigned int index) const;
+		Entity *GetChildByName(const std::string name, bool recursive = false) const;
 
 		inline const std::string &GetName() const { return name; }
 
-		void AddComponent(ComponentPtr component);
+		void AddComponent(Component *component);
 		void RemoveComponent(const std::string &name);
-		ComponentPtr GetComponent(const std::string &name) const;
+		Component *GetComponent(const std::string &name) const;
 
 		const sf::Vector2f &GetLocalPosition() const;
 		const sf::Vector2f GetGlobalPosition() const;
@@ -122,8 +116,6 @@ namespace PZ
 		bool operator==(const Entity &other);
 
 	protected:
-		bool RemoveChild(Entity *child);
-
 		void RecalculateLocalAxes();
 
 		virtual bool OnMessage(Message &message);

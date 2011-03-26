@@ -18,6 +18,9 @@
 */
 #include <ProtoZed/Animation/AnimationGroup.h>
 
+#include <ProtoZed/Animation/AnimationManager.h>
+#include <ProtoZed/Application.h>
+
 #include <list>
 
 namespace PZ
@@ -54,8 +57,9 @@ namespace PZ
 	}
 	AnimationGroup::~AnimationGroup()
 	{
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
-			delete (*it);
+			animationManager.DestroyAnimation(*it);
 		p->animations.clear();
 
 		delete p;
@@ -79,26 +83,9 @@ namespace PZ
 		return new AnimationGroup(*this);
 	}
 
-	bool AnimationGroup::StartImpl()
-	{
-		AnimablePtr animable = object.lock();
-		if (p->async)
-		{
-			for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
-			{
-				(*it)->Start(animable);
-			}
-		}
-		else
-		{
-			p->animations.front()->Start(animable);
-		}
-
-		return true;
-	}
-
 	void AnimationGroup::AddTime(float deltaTime)
 	{
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		if (state == RUNNING)
 		{
 			if (p->async)
@@ -115,7 +102,7 @@ namespace PZ
 
 					if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
 					{
-						delete (*it);
+						animationManager.DestroyAnimation(animation);
 						it = p->animations.erase(it);
 					}
 					else
@@ -141,11 +128,11 @@ namespace PZ
 
 				if ((animation->GetState() == FINISHED)||(animation->GetState() == STOPPED))
 				{
-					delete p->animations.front();
+					animationManager.DestroyAnimation(animation);
 					p->animations.pop_front();
 
 					if (!p->animations.empty())
-						p->animations.front()->Start(object.lock());
+						p->animations.front()->Start(*object);
 				}
 
 				if (p->animations.empty())
@@ -154,5 +141,22 @@ namespace PZ
 				}
 			}
 		}
+	}
+
+	bool AnimationGroup::StartImpl()
+	{
+		if (p->async)
+		{
+			for (AnimationQueue::iterator it = p->animations.begin(); it != p->animations.end(); ++it)
+			{
+				(*it)->Start(*object);
+			}
+		}
+		else
+		{
+			p->animations.front()->Start(*object);
+		}
+
+		return true;
 	}
 }

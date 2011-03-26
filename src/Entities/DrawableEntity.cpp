@@ -105,6 +105,15 @@ namespace PZ
 
 			return true;
 		}
+		else if (message.message == MessageID::UPDATE)
+		{
+			UpdateMessage &updateMessage = static_cast<UpdateMessage&>(message);
+			float deltaTime = updateMessage.deltaTime;
+
+			StepAnimations(deltaTime);
+
+			return true;
+		}
 		else if (message.message == MessageID::DRAW)
 		{
 			if (HasDrawable())

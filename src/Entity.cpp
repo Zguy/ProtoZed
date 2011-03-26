@@ -42,7 +42,7 @@ namespace PZ
 		children.clear();
 	}
 
-	bool Entity::AddChild(EntityPtr child)
+	bool Entity::AddChild(Entity *child)
 	{
 		if (*child == *this)
 		{
@@ -76,10 +76,6 @@ namespace PZ
 
 		return !found;
 	}
-	bool Entity::RemoveChild(EntityPtr child)
-	{
-		return RemoveChild(child.get());
-	}
 	bool Entity::RemoveChild(Entity *child)
 	{
 		bool found = false;
@@ -102,7 +98,7 @@ namespace PZ
 		return found;
 	}
 
-	EntityPtr Entity::GetChildByIndex(unsigned int index) const
+	Entity *Entity::GetChildByIndex(unsigned int index) const
 	{
 		if (index < children.size())
 		{
@@ -113,7 +109,7 @@ namespace PZ
 			return NULL;
 		}
 	}
-	EntityPtr Entity::GetChildByName(const std::string name, bool recursive) const
+	Entity *Entity::GetChildByName(const std::string name, bool recursive) const
 	{
 		const Entity *const parent = this;
 		for (EntityList::const_iterator it = parent->children.cbegin(); it != parent->children.cend(); ++it)
@@ -123,7 +119,7 @@ namespace PZ
 
 			if (recursive)
 			{
-				EntityPtr child = (*it)->GetChildByName(name, true);
+				Entity *child = (*it)->GetChildByName(name, true);
 				if (child != NULL)
 					return child;
 			}
@@ -131,7 +127,7 @@ namespace PZ
 		return NULL;
 	}
 
-	void Entity::AddComponent(ComponentPtr component)
+	void Entity::AddComponent(Component *component)
 	{
 		components.push_back(component);
 	}
@@ -146,7 +142,7 @@ namespace PZ
 			}
 		}
 	}
-	ComponentPtr Entity::GetComponent(const std::string &name) const
+	Component *Entity::GetComponent(const std::string &name) const
 	{
 		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 		{
@@ -275,7 +271,7 @@ namespace PZ
 		bool handled = OnMessage(message);
 		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			ComponentPtr component = (*it);
+			Component *component = (*it);
 			component->HandleMessage(message);
 		}
 

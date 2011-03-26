@@ -40,7 +40,7 @@ namespace PZ
 		AnimationGroup();
 		AnimationGroup(AnimationProperties *properties);
 		AnimationGroup(const AnimationGroup &copy);
-		~AnimationGroup();
+		virtual ~AnimationGroup();
 
 		void SetAsync(bool async);
 
@@ -48,10 +48,10 @@ namespace PZ
 
 		virtual AnimationBase *GetCopy();
 
+		virtual void AddTime(float deltaTime);
+
 	protected:
 		virtual bool StartImpl();
-
-		virtual void AddTime(float deltaTime);
 
 	private:
 		AnimationGroupImpl *p;

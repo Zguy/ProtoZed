@@ -101,8 +101,6 @@ namespace PZ
 		unsigned int currentFrame;
 		float currentTime;
 	};
-
-	WEAK_SHARED_PTR(SpritesheetEntity)
 }
 
 #endif // SpritesheetEntity_h__

@@ -32,14 +32,14 @@ namespace PZ
 		inline const std::string &GetName() const { return name; }
 
 		inline bool HasOwner() const { return (owner != NULL); }
-		inline EntityPtr GetOwner() const { return owner; }
+		inline Entity *GetOwner() const { return owner; }
 	
 		void HandleMessage(Message &message);
 	
 	private:
 		std::string name;
 
-		EntityPtr owner;
+		Entity *owner;
 	};
 }
 

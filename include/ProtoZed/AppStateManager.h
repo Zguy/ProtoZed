@@ -46,8 +46,8 @@ namespace PZ
 		}
 		bool UnregisterState(const std::string &stateName);
 
-		void ChangeState(const std::string &stateName, StringMap *const options = NULL);
-		void PushState(const std::string &stateName, StringMap *const options = NULL);
+		void ChangeState(const std::string &stateName, StringMap *options = NULL);
+		void PushState(const std::string &stateName, StringMap *options = NULL);
 		void PopState();
 		void PopAllStates();
 

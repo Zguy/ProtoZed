@@ -23,8 +23,6 @@
 
 #include <ProtoZed/FastDelegate/delegate.h>
 
-#include <memory>
-
 namespace PZ
 {
 	struct AnimationProperties
@@ -36,7 +34,7 @@ namespace PZ
 
 	class AnimationBase
 	{
-		friend class AnimationManager;
+		friend class Animable;
 		friend class AnimationGroup;
 
 	public:
@@ -54,7 +52,7 @@ namespace PZ
 		AnimationBase(AnimationProperties *properties);
 		virtual ~AnimationBase();
 
-		void Start(AnimablePtr animable);
+		void Start(Animable &animable);
 		void Stop();
 
 		void Pause(bool pause = true);
@@ -66,16 +64,16 @@ namespace PZ
 		inline void SetStartCallback(AnimationCallback &callback) { onStart = callback; }
 		inline void SetFinishedCallback(AnimationCallback &callback) { onFinished = callback; }
 
-		inline AnimablePtr GetAnimable() { return object.lock(); }
+		inline Animable &GetAnimable() { return *object; }
 
 		inline State GetState() const { return state; }
+
+		virtual void AddTime(float deltaTime) = 0;
 
 	protected:
 		virtual bool StartImpl() = 0;
 
-		virtual void AddTime(float deltaTime) = 0;
-
-		AnimableWeakPtr object;
+		Animable *object;
 
 		State state;
 
