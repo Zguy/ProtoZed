@@ -49,15 +49,24 @@ namespace PZ
 			return 0.f;
 	}
 
-	bool SoundEntity::OnMessage(MessagePtr message)
+	bool SoundEntity::OnMessage(Message &message)
 	{
 		bool handled = Entity::OnMessage(message);
 
-		if (message->message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::POSITION_UPDATED)
 		{
 			sf::Vector2f entityPos = GetGlobalPosition();
 			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
 			sound.SetPosition(soundPos);
+
+			return true;
+		}
+		else if (message.message == MessageID::UPDATE)
+		{
+			UpdateMessage &updateMessage = static_cast<UpdateMessage&>(message);
+			float deltaTime = updateMessage.deltaTime;
+
+			StepAnimations(deltaTime);
 
 			return true;
 		}

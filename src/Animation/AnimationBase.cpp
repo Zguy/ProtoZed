@@ -20,21 +20,21 @@
 
 namespace PZ
 {
-	AnimationBase::AnimationBase() : state(NOT_STARTED)
+	AnimationBase::AnimationBase() : object(NULL), state(NOT_STARTED)
 	{
 	}
-	AnimationBase::AnimationBase(AnimationProperties *properties) : state(NOT_STARTED)
+	AnimationBase::AnimationBase(AnimationProperties *properties) : object(NULL), state(NOT_STARTED)
 	{
 	}
 	AnimationBase::~AnimationBase()
 	{
 	}
 
-	void AnimationBase::Start(AnimablePtr animable)
+	void AnimationBase::Start(Animable &animable)
 	{
 		if (state == NOT_STARTED)
 		{
-			object = animable;
+			object = &animable;
 			if (StartImpl())
 				state = STARTED;
 			else

@@ -90,7 +90,7 @@ namespace PZ
 		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
-		virtual bool OnMessage(MessagePtr message);
+		virtual bool OnMessage(Message &message);
 
 	private:
 		void setFrame(unsigned int frame);
@@ -101,8 +101,6 @@ namespace PZ
 		unsigned int currentFrame;
 		float currentTime;
 	};
-
-	WEAK_SHARED_PTR(SpritesheetEntity)
 }
 
 #endif // SpritesheetEntity_h__

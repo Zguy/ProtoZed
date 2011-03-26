@@ -50,7 +50,7 @@ namespace PZ
 	{
 		if (p->logs.find(name) == p->logs.end())
 		{
-			p->logs.insert(std::make_pair<std::string, Log*>(name, new Log(name+".log", p->logLevel)));
+			p->logs.insert(std::make_pair(name, new Log(name+".log", p->logLevel)));
 		}
 	}
 	void LogManager::CloseLog(const std::string &name)

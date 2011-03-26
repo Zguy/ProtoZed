@@ -34,7 +34,7 @@ namespace PZ
 	class ApplicationImpl
 	{
 	public:
-		ApplicationImpl() : running(false), listenerEntity(new ListenerEntity)
+		ApplicationImpl() : running(false)
 		{
 		}
 
@@ -109,7 +109,7 @@ namespace PZ
 		AppStateManager   stateManager;
 		EntityManager     entityManager;
 		AnimationManager  animationManager;
-		ListenerEntityPtr listenerEntity;
+		ListenerEntity    listenerEntity;
 
 		ImageStorage       imageStorage;
 		FontStorage        fontStorage;
@@ -139,8 +139,6 @@ namespace PZ
 
 			p->handleInput();
 
-			p->animationManager.Step(deltaTime);
-
 			p->window.Clear();
 
 			AppState *state = p->stateManager.GetCurrentState();
@@ -152,16 +150,15 @@ namespace PZ
 				}
 
 				// Update entities
-				state->GetRootEntity()->HandleMessage(MessagePtr(new UpdateMessage(deltaTime)));
+				state->GetRootEntity()->HandleMessage(UpdateMessage(deltaTime));
 
 				// Draw drawable entities
-				state->GetRootEntity()->HandleMessage(MessagePtr(new DrawMessage(p->window)));
+				state->GetRootEntity()->HandleMessage(DrawMessage(p->window));
 			}
 
 			p->window.Display();
 
-			if ((!p->window.IsOpened())||
-					(p->stateManager.IsEmpty()))
+			if ((!p->window.IsOpened())||(p->stateManager.IsEmpty()))
 				p->running = false;
 		}
 
@@ -195,7 +192,7 @@ namespace PZ
 	{
 		return p->animationManager;
 	}
-	ListenerEntityPtr &Application::GetListenerEntity() const
+	ListenerEntity &Application::GetListenerEntity() const
 	{
 		return p->listenerEntity;
 	}

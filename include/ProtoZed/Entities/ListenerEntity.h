@@ -34,10 +34,8 @@ namespace PZ
 		float GetGlobalVolume() const;
 
 	protected:
-		virtual bool OnMessage(MessagePtr message);
+		virtual bool OnMessage(Message &message);
 	};
-
-	WEAK_SHARED_PTR(ListenerEntity)
 }
 
 #endif // ListenerEntity_h__

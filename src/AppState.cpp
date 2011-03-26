@@ -27,5 +27,6 @@ namespace PZ
 	}
 	AppState::~AppState()
 	{
+		Application::GetSingleton().GetEntityManager().DestroyEntity(rootEntity, true);
 	}
 }

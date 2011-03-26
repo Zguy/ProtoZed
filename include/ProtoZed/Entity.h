@@ -25,10 +25,6 @@
 
 #include <string>
 #include <vector>
-#include <memory>
-
-#define WEAK_SHARED_PTR(T) typedef std::shared_ptr<T> T ## Ptr; \
-	                         typedef std::weak_ptr<T> T ## WeakPtr;
 
 namespace PZ
 {
@@ -53,7 +49,6 @@ namespace PZ
 
 		Mode mode;
 	};
-	typedef std::shared_ptr<Message> MessagePtr;
 
 	struct UpdateMessage : public Message
 	{
@@ -64,8 +59,7 @@ namespace PZ
 	};
 
 	class Entity;
-	WEAK_SHARED_PTR(Entity)
-	typedef std::vector<EntityPtr> EntityList;
+	typedef std::vector<Entity*> EntityList;
 
 	class Entity
 	{
@@ -76,12 +70,12 @@ namespace PZ
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
 
-		bool AddChild(EntityPtr child);
-		bool RemoveChild(EntityPtr child);
+		bool AddChild(Entity *child);
+		bool RemoveChild(Entity *child);
 
 		inline const EntityList &GetChildren() const { return children; }
-		EntityPtr GetChildByIndex(unsigned int index) const;
-		EntityPtr GetChildByName(const std::string name) const;
+		Entity *GetChildByIndex(unsigned int index) const;
+		Entity *GetChildByName(const std::string name) const;
 
 		inline const std::string &GetName() const { return name; }
 
@@ -110,16 +104,14 @@ namespace PZ
 		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
 		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
 
-		bool HandleMessage(MessagePtr message);
+		bool HandleMessage(Message &message);
 
 		bool operator==(const Entity &other);
 
 	protected:
-		bool RemoveChild(Entity *child);
-
 		void RecalculateLocalAxes();
 
-		virtual bool OnMessage(MessagePtr message);
+		virtual bool OnMessage(Message &message);
 
 	private:
 		UniqueID id;

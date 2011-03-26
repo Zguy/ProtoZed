@@ -176,39 +176,17 @@ namespace PZ
 		return new Tween(*this);
 	}
 
-	bool Tween::StartImpl()
-	{
-		if ((!object.expired())&&(object.lock()->HasAttribute(p->attribute)))
-		{
-			p->startValue  = object.lock()->GetAttribute(p->attribute);
-			p->currentTime = -p->delay;
-		}
-		else
-		{
-			state = STOPPED;
-		}
-
-		return true;
-	}
-
 	void Tween::AddTime(float deltaTime)
 	{
-		if (object.expired())
-		{
-			state = STOPPED;
-			return;
-		}
-
 		if (state == RUNNING)
 		{
-			AnimablePtr animable = object.lock();
 			p->currentTime += deltaTime;
 
 			float goal = (p->relativeGoal ? (p->startValue + p->goal) : p->goal);
 
 			if (p->currentTime > 0.f)
 			{
-				float newValue = animable->GetAttribute(p->attribute);
+				float newValue = object->GetAttribute(p->attribute);
 
 				switch (p->equation)
 				{
@@ -217,14 +195,14 @@ namespace PZ
 				case Easing::EASE_IN_OUT : newValue = p->transition->easeInOut(p->currentTime, p->startValue, (goal - p->startValue), p->totalTime); break;
 				}
 
-				animable->SetAttribute(p->attribute, newValue);
+				object->SetAttribute(p->attribute, newValue);
 			}
 			if (p->currentTime >= p->totalTime)
 			{
 				if ((p->repeat != -1)&&(--p->repeat <= 0))
 				{
 					state = FINISHED;
-					animable->SetAttribute(p->attribute, goal);
+					object->SetAttribute(p->attribute, goal);
 				}
 				else
 				{
@@ -243,5 +221,20 @@ namespace PZ
 				}
 			}
 		}
+	}
+
+	bool Tween::StartImpl()
+	{
+		if (object->HasAttribute(p->attribute))
+		{
+			p->startValue  = object->GetAttribute(p->attribute);
+			p->currentTime = -p->delay;
+		}
+		else
+		{
+			state = STOPPED;
+		}
+
+		return true;
 	}
 }

@@ -31,35 +31,25 @@ namespace PZ
 	class EntityManager
 	{
 	public:
-		EntityManager()
-		{}
-		~EntityManager()
-		{}
+		EntityManager();
+		~EntityManager();
 
 		template<class T>
 		bool RegisterEntity(const std::string &entityName)
 		{
 			return entityFactory.Register<T>(entityName);
 		}
-		bool UnregisterEntity(const std::string &entityName)
+		bool UnregisterEntity(const std::string &entityName);
+
+		Entity *GetNewEntity(const std::string &entityName, const std::string name = "");
+		template<class T>
+		T *GetNewEntity(const std::string &entityName, const std::string name = "")
 		{
-			return entityFactory.Unregister(entityName);
+			Entity *entity = GetNewEntity(entityName, name);
+			return static_cast<T*>(entity);
 		}
 
-		EntityPtr GetNewEntity(const std::string &entityName, const std::string name = "")
-		{
-			std::string fixName = name;
-			if (fixName.empty())
-				fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("Entity"));
-			EntityPtr entity(entityFactory.Create(entityName, fixName));
-			return entity;
-		}
-		template<class T>
-		std::shared_ptr<T> GetNewEntity(const std::string &entityName, const std::string name = "")
-		{
-			EntityPtr entity = GetNewEntity(entityName, name);
-			return std::static_pointer_cast<T, Entity>(entity);
-		}
+		void DestroyEntity(Entity *entity, bool destroyChildren = false) const;
 
 	private:
 		EntityFactory entityFactory;

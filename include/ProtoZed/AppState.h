@@ -53,14 +53,14 @@ namespace PZ
 		virtual void LoadAssets() {}
 		virtual void UnloadAssets() {}
 
-		inline EntityPtr GetRootEntity() const { return rootEntity; }
+		inline Entity *GetRootEntity() const { return rootEntity; }
 
 		inline bool IsStarted() const { return started; }
 
 	private:
 		bool started;
 
-		EntityPtr rootEntity;
+		Entity *rootEntity;
 	};
 }
 
