@@ -16,36 +16,40 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Component_h__
-#define Component_h__
-
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Message.h>
+#ifndef Message_h__
+#define Message_h__
 
 #include <string>
 
 namespace PZ
 {
-	class Component
+	struct Message
 	{
-		friend class Entity;
+		enum Mode
+		{
+			STAY,  // Don't float or sink to any children
+			FLOAT, // Go to the leaf child and float up to the surface
+			SINK   // Sink down the leaf child
+		};
 
-	public:
-		Component(const std::string &name);
-		~Component();
-	
-		inline const std::string &GetName() const { return name; }
+		Message(const std::string &message = "", Mode mode = SINK) : message(message), mode(mode)
+		{}
 
-		inline bool HasOwner() const { return (owner != NULL); }
-		inline Entity *GetOwner() const { return owner; }
-	
-		virtual bool ReceiveMessage(Message &message) = 0;
-	
-	private:
-		std::string name;
+		std::string message;
 
-		Entity *owner;
+		Mode mode;
+
+		template<class T>
+		T &As()
+		{
+			return static_cast<T&>(*this);
+		}
+		template<class T>
+		const T &As() const
+		{
+			return static_cast<const T&>(*this);
+		}
 	};
 }
 
-#endif // Component_h__
+#endif // Message_h__

@@ -22,6 +22,8 @@
     <ClInclude Include="include\ProtoZed\AppState.h" />
     <ClInclude Include="include\ProtoZed\AssetStorage.h" />
     <ClInclude Include="include\ProtoZed\Component.h" />
+    <ClInclude Include="include\ProtoZed\ComponentManager.h" />
+    <ClInclude Include="include\ProtoZed\Components\DrawableComponent.h" />
     <ClInclude Include="include\ProtoZed\Convert.h" />
     <ClInclude Include="include\ProtoZed\Entities\DrawableEntity.h" />
     <ClInclude Include="include\ProtoZed\Entities\ListenerEntity.h" />
@@ -42,6 +44,8 @@
     <ClInclude Include="include\ProtoZed\Jzon.h" />
     <ClInclude Include="include\ProtoZed\Logging\Log.h" />
     <ClInclude Include="include\ProtoZed\Logging\LogManager.h" />
+    <ClInclude Include="include\ProtoZed\Message.h" />
+    <ClInclude Include="include\ProtoZed\Messages.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
@@ -51,6 +55,7 @@
     <ClInclude Include="include\ProtoZed\ProtoZed.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
     <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
+    <ClInclude Include="include\ProtoZed\Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animation\Animable.cpp" />
@@ -64,6 +69,8 @@
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
     <ClCompile Include="src\Component.cpp" />
+    <ClCompile Include="src\ComponentManager.cpp" />
+    <ClCompile Include="src\Components\DrawableComponent.cpp" />
     <ClCompile Include="src\Convert.cpp" />
     <ClCompile Include="src\Entities\DrawableEntity.cpp" />
     <ClCompile Include="src\Entities\ListenerEntity.cpp" />
@@ -111,6 +118,7 @@
     <OutDir>$(ProjectDir)\lib\</OutDir>
     <IntDir>$(ProjectDir)\obj\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.lib</TargetExt>
@@ -122,6 +130,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

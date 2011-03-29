@@ -28,9 +28,4 @@ namespace PZ
 	{
 
 	}
-
-	void Component::HandleMessage(Message &message)
-	{
-
-	}
 }

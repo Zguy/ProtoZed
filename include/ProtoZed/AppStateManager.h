@@ -27,8 +27,6 @@
 
 namespace PZ
 {
-	typedef ::ObjectFactory<AppState*(), std::string> AppStateFactory;
-
 	class AppStateManagerImpl;
 
 	class AppStateManager
@@ -56,8 +54,10 @@ namespace PZ
 		AppState *GetCurrentState() const;
 
 	private:
+		friend class AppStateManagerImpl;
 		AppStateManagerImpl *p;
 
+		typedef ::ObjectFactory<AppState*(), std::string> AppStateFactory;
 		AppStateFactory &getAppStateFactory() const;
 	};
 }

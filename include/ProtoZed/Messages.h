@@ -16,36 +16,37 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Component_h__
-#define Component_h__
+#ifndef Messages_h__
+#define Messages_h__
 
-#include <ProtoZed/Entity.h>
 #include <ProtoZed/Message.h>
 
-#include <string>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 namespace PZ
 {
-	class Component
+	namespace MessageID
 	{
-		friend class Entity;
+		static const std::string UPDATE           = "Update";
+		static const std::string POSITION_UPDATED = "PositionUpdated";
+		static const std::string DRAW             = "Draw";
+	}
 
-	public:
-		Component(const std::string &name);
-		~Component();
-	
-		inline const std::string &GetName() const { return name; }
+	struct UpdateMessage : public Message
+	{
+		UpdateMessage(float deltaTime) : Message(MessageID::UPDATE), deltaTime(deltaTime)
+		{}
 
-		inline bool HasOwner() const { return (owner != NULL); }
-		inline Entity *GetOwner() const { return owner; }
-	
-		virtual bool ReceiveMessage(Message &message) = 0;
-	
-	private:
-		std::string name;
+		float deltaTime;
+	};
 
-		Entity *owner;
+	struct DrawMessage : public Message
+	{
+		DrawMessage(sf::RenderWindow &window) : Message(MessageID::DRAW), window(window)
+		{}
+
+		sf::RenderWindow &window;
 	};
 }
 
-#endif // Component_h__
+#endif // Messages_h__

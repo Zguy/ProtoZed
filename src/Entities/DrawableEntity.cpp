@@ -91,9 +91,9 @@ namespace PZ
 			return 0.f;
 	}
 
-	bool DrawableEntity::OnMessage(Message &message)
+	bool DrawableEntity::HandleMessage(Message &message)
 	{
-		bool handled = Entity::OnMessage(message);
+		bool handled = Entity::HandleMessage(message);
 
 		if (message.message == MessageID::POSITION_UPDATED)
 		{
@@ -107,7 +107,7 @@ namespace PZ
 		}
 		else if (message.message == MessageID::UPDATE)
 		{
-			UpdateMessage &updateMessage = static_cast<UpdateMessage&>(message);
+			UpdateMessage &updateMessage = message.As<UpdateMessage>();
 			float deltaTime = updateMessage.deltaTime;
 
 			StepAnimations(deltaTime);
@@ -118,7 +118,7 @@ namespace PZ
 		{
 			if (HasDrawable())
 			{
-				DrawMessage &drawMessage = static_cast<DrawMessage&>(message);
+				DrawMessage &drawMessage = message.As<DrawMessage>();
 				drawMessage.window.Draw(*drawable);
 
 				return true;

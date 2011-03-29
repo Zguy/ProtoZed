@@ -22,10 +22,10 @@
 #include <ProtoZed/Singleton.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
+#include <ProtoZed/ComponentManager.h>
 #include <ProtoZed/Logging/LogManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
-#include <ProtoZed/Entities/ListenerEntity.h>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Image.hpp>
@@ -56,8 +56,8 @@ namespace PZ
 		LogManager         &GetLogManager() const;
 		AppStateManager    &GetStateManager() const;
 		EntityManager      &GetEntityManager() const;
+		ComponentManager   &GetComponentManager() const;
 		AnimationManager   &GetAnimationManager() const;
-		ListenerEntity     &GetListenerEntity() const;
 
 		ImageStorage       &GetImageStorage() const;
 		FontStorage        &GetFontStorage() const;

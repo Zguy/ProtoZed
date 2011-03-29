@@ -16,41 +16,41 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef EntityManager_h__
-#define EntityManager_h__
+#ifndef ComponentManager_h__
+#define ComponentManager_h__
 
-#include <ProtoZed/Entity.h>
+#include <ProtoZed/Component.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 namespace PZ
 {
-	class EntityManager
+	class ComponentManager
 	{
 	public:
-		EntityManager();
-		~EntityManager();
+		ComponentManager();
+		~ComponentManager();
 
 		template<class T>
-		bool RegisterEntity(const std::string &entityName)
+		bool RegisterComponent(const std::string &componentName)
 		{
-			return entityFactory.Register<T>(entityName);
+			return componentFactory.Register<T>(componentName);
 		}
-		bool UnregisterEntity(const std::string &entityName);
+		bool UnregisterComponent(const std::string &componentName);
 
-		Entity *GetNewEntity(const std::string &entityName, const std::string name = "");
+		Component *GetNewComponent(const std::string &componentName);
 		template<class T>
-		T *GetNewEntity(const std::string &entityName, const std::string name = "")
+		T *GetNewComponent(const std::string &componentName)
 		{
-			Entity *entity = GetNewEntity(entityName, name);
-			return static_cast<T*>(entity);
+			Component *component = GetNewComponent(componentName);
+			return static_cast<T*>(component);
 		}
 
-		void DestroyEntity(Entity *entity, bool destroyChildren = false) const;
+		void DestroyComponent(Component *component) const;
 
 	private:
-		typedef ::ObjectFactory<Entity*(const std::string&), std::string> EntityFactory;
-		EntityFactory entityFactory;
+		typedef ::ObjectFactory<Component*(), std::string> ComponentFactory;
+		ComponentFactory componentFactory;
 	};
 }
 
-#endif // EntityManager_h__
+#endif // ComponentManager_h__

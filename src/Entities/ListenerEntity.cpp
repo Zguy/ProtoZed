@@ -22,7 +22,7 @@
 
 namespace PZ
 {
-	ListenerEntity::ListenerEntity() : Entity("ListenerEntity")
+	ListenerEntity::ListenerEntity(const std::string &name) : Entity("ListenerEntity")
 	{
 	}
 	ListenerEntity::~ListenerEntity()
@@ -38,9 +38,9 @@ namespace PZ
 		return sf::Listener::GetGlobalVolume();
 	}
 
-	bool ListenerEntity::OnMessage(Message &message)
+	bool ListenerEntity::HandleMessage(Message &message)
 	{
-		bool handled = Entity::OnMessage(message);
+		bool handled = Entity::HandleMessage(message);
 
 		if (message.message == MessageID::POSITION_UPDATED)
 		{

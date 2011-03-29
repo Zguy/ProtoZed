@@ -32,4 +32,7 @@
 #include <ProtoZed/Entities/SoundEntity.h>
 #include <ProtoZed/Entities/ListenerEntity.h>
 
+#include <ProtoZed/Component.h>
+#include <ProtoZed/Components/DrawableComponent.h>
+
 #endif // ProtoZed_h__

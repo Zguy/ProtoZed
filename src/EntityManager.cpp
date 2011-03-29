@@ -18,6 +18,9 @@
 */
 #include <ProtoZed/EntityManager.h>
 
+#include <ProtoZed/Convert.h>
+#include <ProtoZed/UniqueIDGenerator.h>
+
 namespace PZ
 {
 	EntityManager::EntityManager()

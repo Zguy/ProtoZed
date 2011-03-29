@@ -16,36 +16,30 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Component_h__
-#define Component_h__
-
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Message.h>
-
-#include <string>
+#include <ProtoZed/ComponentManager.h>
 
 namespace PZ
 {
-	class Component
+	ComponentManager::ComponentManager()
 	{
-		friend class Entity;
+	}
+	ComponentManager::~ComponentManager()
+	{
+	}
 
-	public:
-		Component(const std::string &name);
-		~Component();
-	
-		inline const std::string &GetName() const { return name; }
+	bool ComponentManager::UnregisterComponent(const std::string &entityName)
+	{
+		return componentFactory.Unregister(entityName);
+	}
 
-		inline bool HasOwner() const { return (owner != NULL); }
-		inline Entity *GetOwner() const { return owner; }
-	
-		virtual bool ReceiveMessage(Message &message) = 0;
-	
-	private:
-		std::string name;
+	Component *ComponentManager::GetNewComponent(const std::string &componentName)
+	{
+		Component *component = componentFactory.Create(componentName);
+		return component;
+	}
 
-		Entity *owner;
-	};
+	void ComponentManager::DestroyComponent(Component *component) const
+	{
+		delete component;
+	}
 }
-
-#endif // Component_h__

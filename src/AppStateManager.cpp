@@ -116,7 +116,7 @@ namespace PZ
 
 		StateStack stateStack;
 		TodoQueue  todoQueue;
-		AppStateFactory appStateFactory;
+		AppStateManager::AppStateFactory appStateFactory;
 	};
 
 	AppStateManager::AppStateManager() : p(new AppStateManagerImpl)
@@ -201,9 +201,8 @@ namespace PZ
 			return NULL;
 	}
 
-	AppStateFactory &AppStateManager::getAppStateFactory() const
+	AppStateManager::AppStateFactory &AppStateManager::getAppStateFactory() const
 	{
 		return p->appStateFactory;
 	}
-
 }

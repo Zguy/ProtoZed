@@ -26,7 +26,7 @@ namespace PZ
 	class ListenerEntity : public Entity
 	{
 	public:
-		ListenerEntity();
+		ListenerEntity(const std::string &name);
 		~ListenerEntity();
 
 		// sf::Listener functions
@@ -34,7 +34,7 @@ namespace PZ
 		float GetGlobalVolume() const;
 
 	protected:
-		virtual bool OnMessage(Message &message);
+		virtual bool HandleMessage(Message &message);
 	};
 }
 

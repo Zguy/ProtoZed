@@ -16,36 +16,17 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Component_h__
-#define Component_h__
-
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Message.h>
-
-#include <string>
+#ifndef Version_h__
+#define Version_h__
 
 namespace PZ
 {
-	class Component
+	namespace Version
 	{
-		friend class Entity;
-
-	public:
-		Component(const std::string &name);
-		~Component();
-	
-		inline const std::string &GetName() const { return name; }
-
-		inline bool HasOwner() const { return (owner != NULL); }
-		inline Entity *GetOwner() const { return owner; }
-	
-		virtual bool ReceiveMessage(Message &message) = 0;
-	
-	private:
-		std::string name;
-
-		Entity *owner;
-	};
+		static const unsigned int MAJOR = 0;
+		static const unsigned int MINOR = 1;
+		static const char VERSION_STRING[] = "0.1";
+	}
 }
 
-#endif // Component_h__
+#endif // Version_h__
