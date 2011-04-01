@@ -39,19 +39,25 @@ namespace PZ
 	{
 	public:
 		Entity(const std::string &name);
+		Entity(const std::string &name, const std::string &family);
 		virtual ~Entity();
 
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
+		const Entity *GetRoot() const;
+		Entity *GetRoot();
 
 		bool AddChild(Entity *child);
 		bool RemoveChild(Entity *child);
 
 		inline const EntityList &GetChildren() const { return children; }
+		void GetChildrenRecursive(EntityList &list) const;
 		Entity *GetChildByIndex(unsigned int index) const;
 		Entity *GetChildByName(const std::string name, bool recursive = false) const;
 
+		inline UniqueID GetID() const { return id; }
 		inline const std::string &GetName() const { return name; }
+		inline const std::string &GetFamily() const { return family; }
 
 		bool AddComponent(Component *component);
 		bool AddComponent(const std::string &name);
@@ -93,6 +99,7 @@ namespace PZ
 		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
 		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
 
+		bool BroadcastMessage(Message &message);
 		bool ReceiveMessage(Message &message);
 
 		bool operator==(const Entity &other);
@@ -111,6 +118,7 @@ namespace PZ
 		ComponentList components;
 
 		std::string name;
+		std::string family;
 		sf::Vector2f position;
 		float rotation;
 		sf::Vector2f localXAxis;

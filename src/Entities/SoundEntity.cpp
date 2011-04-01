@@ -20,7 +20,7 @@
 
 namespace PZ
 {
-	SoundEntity::SoundEntity(const std::string name) : Entity(name)
+	SoundEntity::SoundEntity(const std::string name) : Entity(name, "Sound")
 	{
 	}
 	SoundEntity::~SoundEntity()

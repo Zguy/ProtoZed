@@ -16,36 +16,30 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Component_h__
-#define Component_h__
+#ifndef DrawableComponent_h__
+#define DrawableComponent_h__
 
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Message.h>
+#include <ProtoZed/Component.h>
 
-#include <string>
+#include <SFML/Graphics/Drawable.hpp>
 
 namespace PZ
 {
-	class Component
+	class DrawableComponent : public Component
 	{
-		friend class Entity;
-
 	public:
-		Component(const std::string &name);
-		virtual ~Component();
-	
-		inline const std::string &GetName() const { return name; }
+		DrawableComponent();
+		~DrawableComponent();
 
-		inline bool HasOwner() const { return (owner != NULL); }
-		inline Entity *GetOwner() const { return owner; }
-	
-		virtual bool ReceiveMessage(Message &message) = 0;
-	
+		inline bool HasDrawable() const { return (drawable != NULL); }
+		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; drawable->SetPosition(GetOwner()->GetGlobalPosition()); }
+		inline sf::Drawable *GetDrawable() const { return drawable; }
+
+		virtual bool ReceiveMessage(Message &message);
+
 	private:
-		std::string name;
-
-		Entity *owner;
+		sf::Drawable *drawable;
 	};
 }
 
-#endif // Component_h__
+#endif // DrawableComponent_h__

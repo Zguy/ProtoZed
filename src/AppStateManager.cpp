@@ -18,6 +18,8 @@
 */
 #include <ProtoZed/AppStateManager.h>
 
+#include <ProtoZed/Application.h>
+
 #include <stack>
 #include <queue>
 #include <map>
@@ -55,6 +57,7 @@ namespace PZ
 
 		void changeState(const std::string &stateName, StringMap *const options)
 		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Changing state to \""+stateName+"\"");
 			AppState *state = getNewStateByName(stateName);
 			if (state != NULL)
 			{
@@ -67,11 +70,18 @@ namespace PZ
 
 				stateStack.top()->LoadAssets();
 				stateStack.top()->Start(options);
+
+				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Changed state to \""+stateName+"\"");
+			}
+			else
+			{
+				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "State \""+stateName+"\" was not found");
 			}
 		}
 
 		void pushState(const std::string &stateName, StringMap *const options)
 		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Pushing state \""+stateName+"\"");
 			AppState *state = getNewStateByName(stateName);
 			if (state != NULL)
 			{
@@ -82,6 +92,12 @@ namespace PZ
 
 				stateStack.top()->LoadAssets();
 				stateStack.top()->Start(options);
+
+				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Pushed state \""+stateName+"\"");
+			}
+			else
+			{
+				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "State \""+stateName+"\" was not found");
 			}
 		}
 
@@ -89,6 +105,8 @@ namespace PZ
 		{
 			if (!stateStack.empty())
 			{
+				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Popping state");
+
 				stateStack.top()->Stop();
 				stateStack.top()->UnloadAssets();
 
@@ -97,6 +115,8 @@ namespace PZ
 
 				if (!stateStack.empty())
 					stateStack.top()->Resume();
+
+				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Popped state");
 			}
 		}
 

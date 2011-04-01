@@ -24,7 +24,7 @@
 
 namespace PZ
 {
-	SpritesheetEntity::SpritesheetEntity(const std::string &name) : Entity(name), animationIndex(0), currentFrame(0), currentTime(0.f)
+	SpritesheetEntity::SpritesheetEntity(const std::string &name) : Entity(name, "Spritesheet"), animationIndex(0), currentFrame(0), currentTime(0.f)
 	{
 
 	}

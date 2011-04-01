@@ -24,9 +24,13 @@
 
 namespace PZ
 {
-	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
+	Entity::Entity(const std::string &name) : parent(NULL), name(name), family("Entity"), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
 	{
-		id = UniqueIDGenerator::GetNextID("Entity");
+		id = UniqueIDGenerator::GetNextID("EntityID");
+	}
+	Entity::Entity(const std::string &name, const std::string &family) : parent(NULL), name(name), family(family), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
+	{
+		id = UniqueIDGenerator::GetNextID("EntityID");
 	}
 	Entity::~Entity()
 	{
@@ -42,6 +46,25 @@ namespace PZ
 		children.clear();
 
 		ClearComponents(true);
+	}
+
+	const Entity *Entity::GetRoot() const
+	{
+		const Entity *entity = this;
+		while (entity->HasParent())
+		{
+			entity = entity->GetParent();
+		}
+		return entity;
+	}
+	Entity *Entity::GetRoot()
+	{
+		Entity *entity = this;
+		while (entity->HasParent())
+		{
+			entity = entity->GetParent();
+		}
+		return entity;
 	}
 
 	bool Entity::AddChild(Entity *child)
@@ -100,6 +123,14 @@ namespace PZ
 		return found;
 	}
 
+	void Entity::GetChildrenRecursive(EntityList &list) const
+	{
+		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		{
+			list.push_back(*it);
+			(*it)->GetChildrenRecursive(list);
+		}
+	}
 	Entity *Entity::GetChildByIndex(unsigned int index) const
 	{
 		if (index < children.size())
@@ -108,6 +139,7 @@ namespace PZ
 		}
 		else
 		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent child with index \""+Convert::ToString<unsigned int>(index)+"\"");
 			return NULL;
 		}
 	}
@@ -131,7 +163,6 @@ namespace PZ
 
 	bool Entity::AddComponent(Component *component)
 	{
-		//TODO: Add some error logging here
 		if (component->owner == NULL && !HasComponent(component->GetName()))
 		{
 			component->owner = this;
@@ -140,6 +171,7 @@ namespace PZ
 		}
 		else
 		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add component \""+component->GetName()+"\", which already has an owner.");
 			return false;
 		}
 	}
@@ -166,6 +198,8 @@ namespace PZ
 				return true;
 			}
 		}
+
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent component \""+name+"\"");
 		return false;
 	}
 	void Entity::ClearComponents(bool destroy)
@@ -191,6 +225,7 @@ namespace PZ
 				return (*it);
 			}
 		}
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent component \""+name+"\"");
 		return NULL;
 	}
 
@@ -312,6 +347,10 @@ namespace PZ
 		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 
+	bool Entity::BroadcastMessage(Message &message)
+	{
+		return GetRoot()->ReceiveMessage(message);
+	}
 	bool Entity::ReceiveMessage(Message &message)
 	{
 		if (message.mode == Message::FLOAT)
