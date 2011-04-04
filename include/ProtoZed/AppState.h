@@ -38,12 +38,13 @@ namespace PZ
 
 		virtual bool Update(float deltaTime) = 0;
 
-		virtual void Start(StringMap *const options) { started = true; }
+		virtual void Start(StringMap *options) { started = true; }
 		virtual void Stop() { started = false; }
 
 		virtual void Pause() {}
 		virtual void Resume() {}
 
+		virtual void OnTextInput(const sf::Event::TextEvent &textEvent) {}
 		virtual void OnKeyDown(const sf::Event::KeyEvent &keyEvent) {}
 		virtual void OnKeyUp(const sf::Event::KeyEvent &keyEvent) {}
 		virtual void OnMouseDown(const sf::Event::MouseButtonEvent &mouseButtonEvent) {}

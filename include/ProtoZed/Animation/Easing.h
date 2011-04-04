@@ -133,19 +133,19 @@ namespace PZ
 			float easeInOut(float t, float b, float c, float d) const;
 		};
 
-		static Linear  fLinear;
-		static Sine    fSine;
-		static Quint   fQuint;
-		static Quart   fQuart;
-		static Quad    fQuad;
-		static Expo    fExpo;
-		static Elastic fElastic;
-		static Cubic   fCubic;
-		static Circ    fCirc;
-		static Bounce  fBounce;
-		static Back    fBack;
+		static const Linear  fLinear;
+		static const Sine    fSine;
+		static const Quint   fQuint;
+		static const Quart   fQuart;
+		static const Quad    fQuad;
+		static const Expo    fExpo;
+		static const Elastic fElastic;
+		static const Cubic   fCubic;
+		static const Circ    fCirc;
+		static const Bounce  fBounce;
+		static const Back    fBack;
 
-		static Easing *GetFunctionFromEnum(Transition transition)
+		static const Easing *GetFunctionFromEnum(Transition transition)
 		{
 			switch (transition)
 			{

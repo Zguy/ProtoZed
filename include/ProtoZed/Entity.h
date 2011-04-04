@@ -20,6 +20,7 @@
 #define Entity_h__
 
 #include <ProtoZed/UniqueIDGenerator.h>
+#include <ProtoZed/Messages.h>
 
 #include <SFML/System/Vector2.hpp>
 
@@ -28,56 +29,50 @@
 
 namespace PZ
 {
-	namespace MessageID
-	{
-		static const std::string UPDATE           = "Update";
-		static const std::string POSITION_UPDATED = "PositionUpdated";
-	}
-
-	struct Message
-	{
-		enum Mode
-		{
-			STAY,  // Don't float or sink to any children
-			FLOAT, // Go to the leaf child and float up to the surface
-			SINK   // Sink down the leaf child
-		};
-
-		Message(const std::string &message = "", Mode mode = SINK) : message(message), mode(mode)
-		{}
-		std::string message;
-
-		Mode mode;
-	};
-
-	struct UpdateMessage : public Message
-	{
-		UpdateMessage(float deltaTime) : Message(MessageID::UPDATE), deltaTime(deltaTime)
-		{}
-
-		float deltaTime;
-	};
-
 	class Entity;
 	typedef std::vector<Entity*> EntityList;
+
+	class Component;
+	typedef std::vector<Component*> ComponentList;
 
 	class Entity
 	{
 	public:
 		Entity(const std::string &name);
+		Entity(const std::string &name, const std::string &family);
 		virtual ~Entity();
 
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
+		const Entity *GetRoot() const;
+		Entity *GetRoot();
 
 		bool AddChild(Entity *child);
 		bool RemoveChild(Entity *child);
 
 		inline const EntityList &GetChildren() const { return children; }
+		void GetChildrenRecursive(EntityList &list) const;
 		Entity *GetChildByIndex(unsigned int index) const;
-		Entity *GetChildByName(const std::string name) const;
+		Entity *GetChildByName(const std::string name, bool recursive = false) const;
 
+		inline UniqueID GetID() const { return id; }
 		inline const std::string &GetName() const { return name; }
+		inline const std::string &GetFamily() const { return family; }
+
+		bool AddComponent(Component *component);
+		bool AddComponent(const std::string &name);
+		
+		bool RemoveComponent(const std::string &name, bool destroy = true);
+		void ClearComponents(bool destroy = true);
+
+		Component *GetComponent(const std::string &name) const;
+		template<class T>
+		T *GetComponent(const std::string &name) const
+		{
+			return static_cast<T*>(GetComponent(name));
+		}
+
+		bool HasComponent(const std::string &name) const;
 
 		const sf::Vector2f &GetLocalPosition() const;
 		const sf::Vector2f GetGlobalPosition() const;
@@ -104,14 +99,15 @@ namespace PZ
 		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
 		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
 
-		bool HandleMessage(Message &message);
+		bool BroadcastMessage(Message &message);
+		bool ReceiveMessage(Message &message);
 
 		bool operator==(const Entity &other);
 
 	protected:
-		void RecalculateLocalAxes();
+		virtual bool HandleMessage(Message &message);
 
-		virtual bool OnMessage(Message &message);
+		void RecalculateLocalAxes();
 
 	private:
 		UniqueID id;
@@ -119,7 +115,10 @@ namespace PZ
 		Entity *parent;
 		EntityList children;
 
+		ComponentList components;
+
 		std::string name;
+		std::string family;
 		sf::Vector2f position;
 		float rotation;
 		sf::Vector2f localXAxis;

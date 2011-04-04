@@ -16,26 +16,30 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ListenerEntity_h__
-#define ListenerEntity_h__
+#ifndef DrawableComponent_h__
+#define DrawableComponent_h__
 
-#include <ProtoZed/Entity.h>
+#include <ProtoZed/Component.h>
+
+#include <SFML/Graphics/Drawable.hpp>
 
 namespace PZ
 {
-	class ListenerEntity : public Entity
+	class DrawableComponent : public Component
 	{
 	public:
-		ListenerEntity(const std::string &name);
-		~ListenerEntity();
+		DrawableComponent();
+		~DrawableComponent();
 
-		// sf::Listener functions
-		void SetGlobalVolume(float Volume);
-		float GetGlobalVolume() const;
+		inline bool HasDrawable() const { return (drawable != NULL); }
+		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; drawable->SetPosition(GetOwner()->GetGlobalPosition()); }
+		inline sf::Drawable *GetDrawable() const { return drawable; }
 
-	protected:
-		virtual bool HandleMessage(Message &message);
+		virtual bool ReceiveMessage(Message &message);
+
+	private:
+		sf::Drawable *drawable;
 	};
 }
 
-#endif // ListenerEntity_h__
+#endif // DrawableComponent_h__

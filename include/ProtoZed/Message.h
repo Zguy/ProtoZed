@@ -16,26 +16,40 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ListenerEntity_h__
-#define ListenerEntity_h__
+#ifndef Message_h__
+#define Message_h__
 
-#include <ProtoZed/Entity.h>
+#include <string>
 
 namespace PZ
 {
-	class ListenerEntity : public Entity
+	struct Message
 	{
-	public:
-		ListenerEntity(const std::string &name);
-		~ListenerEntity();
+		enum Mode
+		{
+			STAY,  // Don't float or sink to any children
+			FLOAT, // Go to the leaf child and float up to the surface
+			SINK   // Sink down the leaf child
+		};
 
-		// sf::Listener functions
-		void SetGlobalVolume(float Volume);
-		float GetGlobalVolume() const;
+		Message(const std::string &message = "", Mode mode = SINK) : message(message), mode(mode)
+		{}
 
-	protected:
-		virtual bool HandleMessage(Message &message);
+		std::string message;
+
+		Mode mode;
+
+		template<class T>
+		T &As()
+		{
+			return static_cast<T&>(*this);
+		}
+		template<class T>
+		const T &As() const
+		{
+			return static_cast<const T&>(*this);
+		}
 	};
 }
 
-#endif // ListenerEntity_h__
+#endif // Message_h__

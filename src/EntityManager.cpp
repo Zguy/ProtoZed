@@ -18,6 +18,10 @@
 */
 #include <ProtoZed/EntityManager.h>
 
+#include <ProtoZed/Convert.h>
+#include <ProtoZed/UniqueIDGenerator.h>
+#include <ProtoZed/Application.h>
+
 namespace PZ
 {
 	EntityManager::EntityManager()
@@ -36,8 +40,9 @@ namespace PZ
 	{
 		std::string fixName = name;
 		if (fixName.empty())
-			fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("Entity"));
+			fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("EntityName"));
 		Entity *entity = entityFactory.Create(entityName, fixName);
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created entity "+entity->GetName()+" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
 		return entity;
 	}
 
@@ -49,11 +54,11 @@ namespace PZ
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
 				Entity *child = (*it);
-
 				DestroyEntity(child, true);
 			}
 		}
 
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed entity "+entity->GetName()+" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
 		delete entity;
 	}
 }

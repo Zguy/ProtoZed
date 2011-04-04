@@ -18,11 +18,15 @@
 */
 #include <ProtoZed/Application.h>
 
+#include <ProtoZed/Version.h>
 #include <ProtoZed/AppStateManager.h>
 
 #include <ProtoZed/Entities/DrawableEntity.h>
 #include <ProtoZed/Entities/SpritesheetEntity.h>
 #include <ProtoZed/Entities/SoundEntity.h>
+#include <ProtoZed/Entities/ListenerEntity.h>
+
+#include <ProtoZed/Components/DrawableComponent.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
 #include <ProtoZed/Animation/Tween.h>
@@ -38,20 +42,23 @@ namespace PZ
 		{
 		}
 
-		bool boot(const std::string &appName, sf::VideoMode &videoMode, sf::WindowSettings &params)
+		bool boot(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
 		{
 			if (running)
 				return true;
 
 			logManager.OpenLog("ProtoZed");
-			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "Initializing ProtoZed...");
+			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
-			window.Create(videoMode, appName, 6UL, params);
+			window.Create(videoMode, appName, windowStyle, params);
 
 			entityManager.RegisterEntity<Entity>("Entity");
 			entityManager.RegisterEntity<DrawableEntity>("DrawableEntity");
 			entityManager.RegisterEntity<SpritesheetEntity>("SpritesheetEntity");
 			entityManager.RegisterEntity<SoundEntity>("SoundEntity");
+			entityManager.RegisterEntity<ListenerEntity>("ListenerEntity");
+
+			componentManager.RegisterComponent<DrawableComponent>("Drawable");
 
 			animationManager.RegisterAnimationType<AnimationGroup>("AnimationGroup");
 			animationManager.RegisterAnimationType<Tween>("Tween");
@@ -65,7 +72,7 @@ namespace PZ
 
 		void shutdown()
 		{
-			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "Shutting down ProtoZed...");
+			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "Shutting down ProtoZed");
 
 			stateManager.PopAllStates();
 			stateManager.Update();
@@ -87,7 +94,9 @@ namespace PZ
 				else
 				if (stateManager.GetCurrentState() != NULL)
 				{
-					if (event.Type == sf::Event::KeyPressed)
+					if (event.Type == sf::Event::TextEntered)
+						stateManager.GetCurrentState()->OnTextInput(event.Text);
+					else if (event.Type == sf::Event::KeyPressed)
 						stateManager.GetCurrentState()->OnKeyDown(event.Key);
 					else if (event.Type == sf::Event::KeyReleased)
 						stateManager.GetCurrentState()->OnKeyUp(event.Key);
@@ -105,11 +114,11 @@ namespace PZ
 
 		sf::RenderWindow window;
 
-		LogManager        logManager;
-		AppStateManager   stateManager;
-		EntityManager     entityManager;
-		AnimationManager  animationManager;
-		ListenerEntity    listenerEntity;
+		LogManager       logManager;
+		AppStateManager  stateManager;
+		EntityManager    entityManager;
+		ComponentManager componentManager;
+		AnimationManager animationManager;
 
 		ImageStorage       imageStorage;
 		FontStorage        fontStorage;
@@ -124,9 +133,9 @@ namespace PZ
 		delete p;
 	}
 
-	int Application::Run(const std::string &appName, sf::VideoMode &videoMode, sf::WindowSettings &params)
+	int Application::Run(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
 	{
-		if (!p->boot(appName, videoMode, params))
+		if (!p->boot(appName, videoMode, windowStyle, params))
 		{
 			return 1;
 		}
@@ -150,10 +159,10 @@ namespace PZ
 				}
 
 				// Update entities
-				state->GetRootEntity()->HandleMessage(UpdateMessage(deltaTime));
+				state->GetRootEntity()->ReceiveMessage(UpdateMessage(deltaTime));
 
 				// Draw drawable entities
-				state->GetRootEntity()->HandleMessage(DrawMessage(p->window));
+				state->GetRootEntity()->ReceiveMessage(DrawMessage(p->window));
 			}
 
 			p->window.Display();
@@ -188,13 +197,13 @@ namespace PZ
 	{
 		return p->entityManager;
 	}
+	ComponentManager &Application::GetComponentManager() const
+	{
+		return p->componentManager;
+	}
 	AnimationManager &Application::GetAnimationManager() const
 	{
 		return p->animationManager;
-	}
-	ListenerEntity &Application::GetListenerEntity() const
-	{
-		return p->listenerEntity;
 	}
 
 	ImageStorage &Application::GetImageStorage() const

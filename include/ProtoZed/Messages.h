@@ -16,41 +16,37 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Entities/ListenerEntity.h>
+#ifndef Messages_h__
+#define Messages_h__
 
-#include <SFML/Audio/Listener.hpp>
+#include <ProtoZed/Message.h>
+
+#include <SFML/Graphics/RenderWindow.hpp>
 
 namespace PZ
 {
-	ListenerEntity::ListenerEntity(const std::string &name) : Entity("ListenerEntity")
+	namespace MessageID
 	{
-	}
-	ListenerEntity::~ListenerEntity()
-	{
-	}
-
-	void ListenerEntity::SetGlobalVolume(float Volume)
-	{
-		sf::Listener::SetGlobalVolume(Volume);
-	}
-	float ListenerEntity::GetGlobalVolume() const
-	{
-		return sf::Listener::GetGlobalVolume();
+		static const std::string UPDATE           = "Update";
+		static const std::string POSITION_UPDATED = "PositionUpdated";
+		static const std::string DRAW             = "Draw";
 	}
 
-	bool ListenerEntity::HandleMessage(Message &message)
+	struct UpdateMessage : public Message
 	{
-		bool handled = Entity::HandleMessage(message);
+		UpdateMessage(float deltaTime) : Message(MessageID::UPDATE), deltaTime(deltaTime)
+		{}
 
-		if (message.message == MessageID::POSITION_UPDATED)
-		{
-			sf::Vector2f entityPos = GetGlobalPosition();
-			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
-			sf::Listener::SetPosition(soundPos);
+		float deltaTime;
+	};
 
-			return true;
-		}
+	struct DrawMessage : public Message
+	{
+		DrawMessage(sf::RenderWindow &window) : Message(MessageID::DRAW), window(window)
+		{}
 
-		return handled;
-	}
+		sf::RenderWindow &window;
+	};
 }
+
+#endif // Messages_h__

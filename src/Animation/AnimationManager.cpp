@@ -32,7 +32,7 @@ namespace PZ
 	public:
 		AnimationMap  animationMap;
 
-		AnimationFactory animationFactory;
+		AnimationManager::AnimationFactory animationFactory;
 	};
 
 	AnimationManager::AnimationManager() : p(new AnimationManagerImpl)
@@ -108,7 +108,7 @@ namespace PZ
 			return NULL;
 	}
 
-	AnimationFactory &AnimationManager::getAnimationFactory() const
+	AnimationManager::AnimationFactory &AnimationManager::getAnimationFactory() const
 	{
 		return p->animationFactory;
 	}

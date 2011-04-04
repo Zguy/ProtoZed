@@ -16,26 +16,16 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ListenerEntity_h__
-#define ListenerEntity_h__
-
-#include <ProtoZed/Entity.h>
+#include <ProtoZed/Component.h>
 
 namespace PZ
 {
-	class ListenerEntity : public Entity
+	Component::Component(const std::string &name) : name(name), owner(NULL)
 	{
-	public:
-		ListenerEntity(const std::string &name);
-		~ListenerEntity();
 
-		// sf::Listener functions
-		void SetGlobalVolume(float Volume);
-		float GetGlobalVolume() const;
+	}
+	Component::~Component()
+	{
 
-	protected:
-		virtual bool HandleMessage(Message &message);
-	};
+	}
 }
-
-#endif // ListenerEntity_h__

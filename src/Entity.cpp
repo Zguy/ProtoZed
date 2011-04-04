@@ -20,12 +20,17 @@
 
 #include <ProtoZed/Convert.h>
 #include <ProtoZed/Application.h>
+#include <ProtoZed/Component.h>
 
 namespace PZ
 {
-	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
+	Entity::Entity(const std::string &name) : parent(NULL), name(name), family("Entity"), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
 	{
-		id = UniqueIDGenerator::GetNextID("Entity");
+		id = UniqueIDGenerator::GetNextID("EntityID");
+	}
+	Entity::Entity(const std::string &name, const std::string &family) : parent(NULL), name(name), family(family), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
+	{
+		id = UniqueIDGenerator::GetNextID("EntityID");
 	}
 	Entity::~Entity()
 	{
@@ -39,6 +44,27 @@ namespace PZ
 			(*it)->parent = NULL;
 		}
 		children.clear();
+
+		ClearComponents(true);
+	}
+
+	const Entity *Entity::GetRoot() const
+	{
+		const Entity *entity = this;
+		while (entity->HasParent())
+		{
+			entity = entity->GetParent();
+		}
+		return entity;
+	}
+	Entity *Entity::GetRoot()
+	{
+		Entity *entity = this;
+		while (entity->HasParent())
+		{
+			entity = entity->GetParent();
+		}
+		return entity;
 	}
 
 	bool Entity::AddChild(Entity *child)
@@ -97,6 +123,14 @@ namespace PZ
 		return found;
 	}
 
+	void Entity::GetChildrenRecursive(EntityList &list) const
+	{
+		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		{
+			list.push_back(*it);
+			(*it)->GetChildrenRecursive(list);
+		}
+	}
 	Entity *Entity::GetChildByIndex(unsigned int index) const
 	{
 		if (index < children.size())
@@ -105,17 +139,108 @@ namespace PZ
 		}
 		else
 		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent child with index \""+Convert::ToString<unsigned int>(index)+"\"");
 			return NULL;
 		}
 	}
-	Entity *Entity::GetChildByName(const std::string name) const
+	Entity *Entity::GetChildByName(const std::string name, bool recursive) const
 	{
-		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		const Entity *const parent = this;
+		for (EntityList::const_iterator it = parent->children.cbegin(); it != parent->children.cend(); ++it)
 		{
 			if ((*it)->GetName() == name)
 				return (*it);
+
+			if (recursive)
+			{
+				Entity *child = (*it)->GetChildByName(name, true);
+				if (child != NULL)
+					return child;
+			}
 		}
 		return NULL;
+	}
+
+	bool Entity::AddComponent(Component *component)
+	{
+		if (component->owner == NULL && !HasComponent(component->GetName()))
+		{
+			component->owner = this;
+			components.push_back(component);
+			return true;
+		}
+		else
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add component \""+component->GetName()+"\", which already has an owner.");
+			return false;
+		}
+	}
+	bool Entity::AddComponent(const std::string &name)
+	{
+		return AddComponent(Application::GetSingleton().GetComponentManager().GetNewComponent(name));
+	}
+
+	bool Entity::RemoveComponent(const std::string &name, bool destroy)
+	{
+		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			if ((*it)->GetName() == name)
+			{
+				(*it)->owner = NULL;
+
+				if (destroy)
+				{
+					Application::GetSingleton().GetComponentManager().DestroyComponent(*it);
+				}
+
+				components.erase(it);
+
+				return true;
+			}
+		}
+
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent component \""+name+"\"");
+		return false;
+	}
+	void Entity::ClearComponents(bool destroy)
+	{
+		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			(*it)->owner = NULL;
+
+			if (destroy)
+			{
+				Application::GetSingleton().GetComponentManager().DestroyComponent(*it);
+			}
+		}
+		components.clear();
+	}
+
+	Component *Entity::GetComponent(const std::string &name) const
+	{
+		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		{
+			if ((*it)->GetName() == name)
+			{
+				return (*it);
+			}
+		}
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent component \""+name+"\"");
+		return NULL;
+	}
+
+	bool Entity::HasComponent(const std::string &name) const
+	{
+		bool found = false;
+		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		{
+			if ((*it)->GetName() == name)
+			{
+				found = true;
+				break;
+			}
+		}
+		return found;
 	}
 
 	const sf::Vector2f &Entity::GetLocalPosition() const
@@ -143,14 +268,14 @@ namespace PZ
 	{
 		position = pos;
 
-		HandleMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetLocalPosition(float x, float y)
 	{
 		position.x = x;
 		position.y = y;
 
-		HandleMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetGlobalPosition(const sf::Vector2f &pos)
 	{
@@ -173,7 +298,7 @@ namespace PZ
 			position = pos;
 		}
 
-		HandleMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetGlobalPosition(float x, float y)
 	{
@@ -187,7 +312,7 @@ namespace PZ
 			position.y = y;
 		}
 
-		HandleMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 
 	float Entity::GetLocalRotation() const
@@ -208,7 +333,7 @@ namespace PZ
 
 		RecalculateLocalAxes();
 
-		HandleMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 	void Entity::SetGlobalRotation(float rot)
 	{
@@ -219,26 +344,35 @@ namespace PZ
 
 		RecalculateLocalAxes();
 
-		HandleMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
 	}
 
-	bool Entity::HandleMessage(Message &message)
+	bool Entity::BroadcastMessage(Message &message)
+	{
+		return GetRoot()->ReceiveMessage(message);
+	}
+	bool Entity::ReceiveMessage(Message &message)
 	{
 		if (message.mode == Message::FLOAT)
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
-				(*it)->HandleMessage(message);
+				(*it)->ReceiveMessage(message);
 			}
 		}
 
-		bool handled = OnMessage(message);
+		bool handled = HandleMessage(message);
+		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			Component *component = (*it);
+			component->ReceiveMessage(message);
+		}
 
 		if (message.mode == Message::SINK)
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
-				(*it)->HandleMessage(message);
+				(*it)->ReceiveMessage(message);
 			}
 		}
 
@@ -250,16 +384,7 @@ namespace PZ
 		return id == other.id;
 	}
 
-	void Entity::RecalculateLocalAxes()
-	{
-		const float angle = -Convert::DegreesToRadians(GetGlobalRotation());
-		localXAxis.x = std::cos(angle);
-		localXAxis.y = std::sin(angle);
-		localYAxis.x = -localXAxis.y;
-		localYAxis.y = localXAxis.x;
-	}
-
-	bool Entity::OnMessage(Message &message)
+	bool Entity::HandleMessage(Message &message)
 	{
 		if (message.message == MessageID::POSITION_UPDATED)
 		{
@@ -269,5 +394,14 @@ namespace PZ
 		}
 
 		return false;
+	}
+
+	void Entity::RecalculateLocalAxes()
+	{
+		const float angle = -Convert::DegreesToRadians(GetGlobalRotation());
+		localXAxis.x = std::cos(angle);
+		localXAxis.y = std::sin(angle);
+		localYAxis.x = -localXAxis.y;
+		localYAxis.y = localXAxis.x;
 	}
 }

@@ -30,8 +30,6 @@ namespace PZ
 	class AnimationBase;
 	struct AnimationProperties;
 
-	typedef ::ObjectFactory<AnimationBase*(AnimationProperties*), std::string> AnimationFactory;
-
 	class AnimationManagerImpl;
 
 	class AnimationManager
@@ -65,8 +63,10 @@ namespace PZ
 		AnimationBase *GetAnimationFromName(const std::string &animationName) const;
 
 	private:
+		friend class AnimationManagerImpl;
 		AnimationManagerImpl *p;
 
+		typedef ::ObjectFactory<AnimationBase*(AnimationProperties*), std::string> AnimationFactory;
 		AnimationFactory &getAnimationFactory() const;
 	};
 }

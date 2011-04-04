@@ -16,41 +16,43 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Entities/ListenerEntity.h>
-
-#include <SFML/Audio/Listener.hpp>
+#include <ProtoZed/Components/DrawableComponent.h>
 
 namespace PZ
 {
-	ListenerEntity::ListenerEntity(const std::string &name) : Entity("ListenerEntity")
+	DrawableComponent::DrawableComponent() : Component("Drawable"), drawable(NULL)
 	{
+
 	}
-	ListenerEntity::~ListenerEntity()
+	DrawableComponent::~DrawableComponent()
 	{
+		if (HasDrawable())
+			delete drawable;
 	}
 
-	void ListenerEntity::SetGlobalVolume(float Volume)
+	bool DrawableComponent::ReceiveMessage(Message &message)
 	{
-		sf::Listener::SetGlobalVolume(Volume);
-	}
-	float ListenerEntity::GetGlobalVolume() const
-	{
-		return sf::Listener::GetGlobalVolume();
-	}
-
-	bool ListenerEntity::HandleMessage(Message &message)
-	{
-		bool handled = Entity::HandleMessage(message);
-
 		if (message.message == MessageID::POSITION_UPDATED)
 		{
-			sf::Vector2f entityPos = GetGlobalPosition();
-			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
-			sf::Listener::SetPosition(soundPos);
+			if (HasDrawable())
+			{
+				drawable->SetPosition(GetOwner()->GetGlobalPosition());
+				drawable->SetRotation(GetOwner()->GetGlobalRotation());
+			}
 
 			return true;
 		}
+		else if (message.message == MessageID::DRAW)
+		{
+			if (HasDrawable())
+			{
+				DrawMessage &drawMessage = message.As<DrawMessage>();
+				drawMessage.window.Draw(*drawable);
 
-		return handled;
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

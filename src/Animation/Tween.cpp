@@ -33,15 +33,15 @@ namespace PZ
 		float totalTime;
 		float currentTime;
 
-		Animable::Attribute attribute;
-		float               goal;
-		bool                relativeGoal;
-		Easing::Transition  transitionEnum;
-		Easing::Easing     *transition;
-		Easing::Equation    equation;
-		float               delay;
-		int                 repeat;
-		bool                pingpong;
+		Animable::Attribute  attribute;
+		float                goal;
+		bool                 relativeGoal;
+		Easing::Transition   transitionEnum;
+		const Easing::Easing *transition;
+		Easing::Equation     equation;
+		float                delay;
+		int                  repeat;
+		bool                 pingpong;
 	};
 
 	Tween::Tween() : p(new TweenImpl)

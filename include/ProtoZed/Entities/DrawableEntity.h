@@ -22,24 +22,10 @@
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Animation/Animable.h>
 
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
 namespace PZ
 {
-	namespace MessageID
-	{
-		static const std::string DRAW = "Draw";
-	}
-
-	struct DrawMessage : public Message
-	{
-		DrawMessage(sf::RenderWindow &window) : Message(MessageID::DRAW), window(window)
-		{}
-
-		sf::RenderWindow &window;
-	};
-
 	namespace Attributes
 	{
 		static const Animable::Attribute X        = "X";
@@ -96,7 +82,7 @@ namespace PZ
 		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
-		virtual bool OnMessage(Message &message);
+		virtual bool HandleMessage(Message &message);
 
 	private:
 		sf::Drawable *drawable;
