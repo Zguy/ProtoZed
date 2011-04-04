@@ -26,13 +26,12 @@ namespace PZ
 {
 	class AnimationBase;
 
+	typedef std::string Attribute;
 	typedef std::vector<AnimationBase*> AnimationList;
 
 	class Animable
 	{
 	public:
-		typedef std::string Attribute;
-
 		Animable();
 		virtual ~Animable();
 

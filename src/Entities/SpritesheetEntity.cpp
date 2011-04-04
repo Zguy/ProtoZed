@@ -36,7 +36,7 @@ namespace PZ
 	void SpritesheetEntity::SetSpritesheet(const SpritesheetDefinition &spritesheet)
 	{
 		spritesheetDef = spritesheet;
-		sprite.SetImage(PZ::Application::GetSingleton().GetImageStorage().GetAsset(spritesheetDef.image));
+		sprite.SetImage(Application::GetSingleton().GetImageStorage().GetAsset(spritesheetDef.image));
 		SetAnimation(spritesheetDef.animations.at(0).name);
 	}
 	bool SpritesheetEntity::SetSpritesheetFromFile(const std::string &filename)

@@ -28,15 +28,15 @@ namespace PZ
 {
 	namespace Attributes
 	{
-		static const Animable::Attribute X        = "X";
-		static const Animable::Attribute Y        = "Y";
-		static const Animable::Attribute SCALE_X  = "SCALE_X";
-		static const Animable::Attribute SCALE_Y  = "SCALE_Y";
-		static const Animable::Attribute ROTATION = "ROTATION";
-		static const Animable::Attribute COLOR_R  = "COLOR_R";
-		static const Animable::Attribute COLOR_G  = "COLOR_G";
-		static const Animable::Attribute COLOR_B  = "COLOR_B";
-		static const Animable::Attribute ALPHA    = "ALPHA";
+		static const Attribute X        = "X";
+		static const Attribute Y        = "Y";
+		static const Attribute SCALE_X  = "SCALE_X";
+		static const Attribute SCALE_Y  = "SCALE_Y";
+		static const Attribute ROTATION = "ROTATION";
+		static const Attribute COLOR_R  = "COLOR_R";
+		static const Attribute COLOR_G  = "COLOR_G";
+		static const Attribute COLOR_B  = "COLOR_B";
+		static const Attribute ALPHA    = "ALPHA";
 	}
 
 	class DrawableEntity : public Entity, public Animable

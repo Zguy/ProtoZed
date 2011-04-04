@@ -28,7 +28,7 @@ namespace PZ
 {
 	namespace Attributes
 	{
-		static const Animable::Attribute VOLUME = "VOLUME";
+		static const Attribute VOLUME = "VOLUME";
 	}
 
 	class SoundEntity : public Entity, public Animable
