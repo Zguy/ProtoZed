@@ -22,7 +22,7 @@
 
 namespace PZ
 {
-	AppState::AppState() : started(false), rootEntity(Application::GetSingleton().GetEntityManager().GetNewEntity("Entity", "RootEntity"))
+	AppState::AppState() : started(false), rootEntity(Application::GetSingleton().GetEntityManager().CreateEntity("Entity", "RootEntity"))
 	{
 	}
 	AppState::~AppState()

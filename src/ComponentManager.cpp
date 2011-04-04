@@ -34,7 +34,7 @@ namespace PZ
 		return componentFactory.Unregister(entityName);
 	}
 
-	Component *ComponentManager::GetNewComponent(const std::string &componentName)
+	Component *ComponentManager::CreateComponent(const std::string &componentName)
 	{
 		Component *component = componentFactory.Create(componentName);
 		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created component "+component->GetName());

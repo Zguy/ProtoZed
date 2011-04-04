@@ -42,7 +42,7 @@ namespace PZ
 	{
 		bool handled = Entity::HandleMessage(message);
 
-		if (message.message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::POSITION_UPDATED || message.message == MessageID::ROTATION_UPDATED)
 		{
 			sf::Vector2f entityPos = GetGlobalPosition();
 			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);

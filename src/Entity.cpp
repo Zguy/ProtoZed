@@ -188,7 +188,7 @@ namespace PZ
 	}
 	bool Entity::AddComponent(const std::string &name)
 	{
-		return AddComponent(Application::GetSingleton().GetComponentManager().GetNewComponent(name));
+		return AddComponent(Application::GetSingleton().GetComponentManager().CreateComponent(name));
 	}
 
 	bool Entity::RemoveComponent(const std::string &name, bool destroy)

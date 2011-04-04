@@ -181,7 +181,13 @@ namespace PZ
 		else if (message.message == MessageID::POSITION_UPDATED)
 		{
 			sprite.SetPosition(GetGlobalPosition());
+
+			return true;
+		}
+		else if (message.message == MessageID::ROTATION_UPDATED)
+		{
 			sprite.SetRotation(GetGlobalRotation());
+			sprite.SetPosition(GetGlobalPosition());
 
 			return true;
 		}

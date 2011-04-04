@@ -25,6 +25,7 @@
 namespace PZ
 {
 	class AnimationBase;
+	struct AnimationProperties;
 
 	typedef std::string Attribute;
 	typedef std::vector<AnimationBase*> AnimationList;
@@ -37,6 +38,7 @@ namespace PZ
 
 		AnimationBase *RunAnimation(const std::string &animationName);
 		AnimationBase *RunAnimationDirect(AnimationBase *animation);
+		AnimationBase *RunAnimationDirect(const std::string &animationType, AnimationProperties *properties);
 
 		void StopAllAnimations();
 

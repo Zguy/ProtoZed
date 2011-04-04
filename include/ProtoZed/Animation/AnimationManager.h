@@ -45,11 +45,11 @@ namespace PZ
 		}
 		bool UnregisterAnimationType(const std::string &animationType);
 
-		AnimationBase *GetNewAnimation(const std::string &animationType, AnimationProperties *properties = NULL) const;
+		AnimationBase *CreateAnimation(const std::string &animationType, AnimationProperties *properties = NULL) const;
 		template<class T>
-		T *GetNewAnimation(const std::string &animationType, AnimationProperties *properties = NULL) const
+		T *CreateAnimation(const std::string &animationType, AnimationProperties *properties = NULL) const
 		{
-			return static_cast<T*>(GetNewAnimation(animationType, properties));
+			return static_cast<T*>(CreateAnimation(animationType, properties));
 		}
 
 		void DestroyAnimation(AnimationBase *animation) const;
@@ -57,6 +57,7 @@ namespace PZ
 		bool HasAnimation(const std::string &animationName) const;
 		
 		bool AddAnimation(const std::string &animationName, AnimationBase *animation);
+		bool AddAnimation(const std::string &animationName, const std::string &animationType, AnimationProperties *properties);
 		bool AddAnimationFromFile(const std::string &animationName, const std::string &filename);
 		bool RemoveAnimation(const std::string &animationName);
 

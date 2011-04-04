@@ -64,6 +64,10 @@ namespace PZ
 
 		return animation;
 	}
+	AnimationBase *Animable::RunAnimationDirect(const std::string &animationType, AnimationProperties *properties)
+	{
+		return RunAnimationDirect(Application::GetSingleton().GetAnimationManager().CreateAnimation(animationType, properties));
+	}
 
 	void Animable::StopAllAnimations()
 	{

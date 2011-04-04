@@ -52,7 +52,7 @@ namespace PZ
 		return p->animationFactory.Unregister(animationType);
 	}
 
-	AnimationBase *AnimationManager::GetNewAnimation(const std::string &animationType, AnimationProperties *properties) const
+	AnimationBase *AnimationManager::CreateAnimation(const std::string &animationType, AnimationProperties *properties) const
 	{
 		return p->animationFactory.Create(animationType, properties);
 	}
@@ -78,6 +78,10 @@ namespace PZ
 		{
 			return false;
 		}
+	}
+	bool AnimationManager::AddAnimation(const std::string &animationName, const std::string &animationType, AnimationProperties *properties)
+	{
+		return AddAnimation(animationName, CreateAnimation(animationType, properties));
 	}
 	bool AnimationManager::AddAnimationFromFile(const std::string &animationName, const std::string &filename)
 	{

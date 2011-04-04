@@ -45,6 +45,7 @@ namespace PZ
 		void SetAsync(bool async);
 
 		void AddAnimation(AnimationBase *animation);
+		void AddAnimation(const std::string &animationType, AnimationProperties *properties);
 
 		virtual AnimationBase *GetCopy();
 
