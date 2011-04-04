@@ -100,7 +100,16 @@ namespace PZ
 			if (HasDrawable())
 			{
 				drawable->SetPosition(GetGlobalPosition());
+			}
+
+			return true;
+		}
+		else if (message.message == MessageID::ROTATION_UPDATED)
+		{
+			if (HasDrawable())
+			{
 				drawable->SetRotation(GetGlobalRotation());
+				drawable->SetPosition(GetGlobalPosition());
 			}
 
 			return true;

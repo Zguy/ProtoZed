@@ -29,6 +29,7 @@ namespace PZ
 	{
 		static const std::string UPDATE           = "Update";
 		static const std::string POSITION_UPDATED = "PositionUpdated";
+		static const std::string ROTATION_UPDATED = "RotationUpdated";
 		static const std::string DRAW             = "Draw";
 	}
 

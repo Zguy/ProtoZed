@@ -331,9 +331,7 @@ namespace PZ
 	{
 		rotation = rot;
 
-		RecalculateLocalAxes();
-
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
 	}
 	void Entity::SetGlobalRotation(float rot)
 	{
@@ -342,9 +340,7 @@ namespace PZ
 		else
 			rotation = rot;
 
-		RecalculateLocalAxes();
-
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
 	}
 
 	bool Entity::BroadcastMessage(Message &message)
@@ -386,7 +382,7 @@ namespace PZ
 
 	bool Entity::HandleMessage(Message &message)
 	{
-		if (message.message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::ROTATION_UPDATED)
 		{
 			RecalculateLocalAxes();
 

@@ -39,6 +39,8 @@ namespace PZ
 		AnimationBase *RunAnimation(const std::string &animationName);
 		AnimationBase *RunAnimationDirect(AnimationBase *animation);
 
+		void StopAllAnimations();
+
 		void StepAnimations(float deltaTime);
 
 		virtual bool HasAttribute(Attribute attribute) = 0;

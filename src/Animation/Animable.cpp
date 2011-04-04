@@ -65,9 +65,17 @@ namespace PZ
 		return animation;
 	}
 
+	void Animable::StopAllAnimations()
+	{
+		for (AnimationList::iterator it = animations.begin(); it != animations.end(); ++it)
+		{
+			(*it)->Stop();
+		}
+	}
+
 	void Animable::StepAnimations(float deltaTime)
 	{
-		AnimationManager &animationManager = PZ::Application::GetSingleton().GetAnimationManager();
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationList::iterator it = animations.begin(); it != animations.end();)
 		{
 			AnimationBase *animation = (*it);
