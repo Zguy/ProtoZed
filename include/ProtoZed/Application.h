@@ -48,7 +48,7 @@ namespace PZ
 		Application();
 		~Application();
 
-		int Run(const std::string &appName, sf::VideoMode &videoMode, sf::WindowSettings &params = sf::WindowSettings());
+		int Run(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), sf::WindowSettings &params = sf::WindowSettings());
 
 		void RequestShutdown();
 

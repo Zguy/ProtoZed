@@ -40,7 +40,6 @@
     <ClInclude Include="include\ProtoZed\FastDelegate\get_pointer.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\make_delegatetmpl.hpp" />
     <ClInclude Include="include\ProtoZed\Helpers.h" />
-    <ClInclude Include="include\ProtoZed\InputManager.h" />
     <ClInclude Include="include\ProtoZed\Jzon.h" />
     <ClInclude Include="include\ProtoZed\Logging\Log.h" />
     <ClInclude Include="include\ProtoZed\Logging\LogManager.h" />
@@ -49,9 +48,6 @@
     <ClInclude Include="include\ProtoZed\ObjectFactory\MacroRepeat.h" />
     <ClInclude Include="include\ProtoZed\ObjectFactory\ObjectFactory.h" />
     <ClInclude Include="include\ProtoZed\AppStateManager.h" />
-    <ClInclude Include="include\ProtoZed\ParticleSystem\Emitter.h" />
-    <ClInclude Include="include\ProtoZed\ParticleSystem\Particle.h" />
-    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="include\ProtoZed\ProtoZed.h" />
     <ClInclude Include="include\ProtoZed\Singleton.h" />
     <ClInclude Include="include\ProtoZed\UniqueIDGenerator.h" />
@@ -79,12 +75,9 @@
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\Helpers.cpp" />
-    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\Jzon.cpp" />
     <ClCompile Include="src\Logging\Log.cpp" />
     <ClCompile Include="src\Logging\LogManager.cpp" />
-    <ClCompile Include="src\ParticleSystem\Emitter.cpp" />
-    <ClCompile Include="src\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="src\UniqueIDGenerator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -42,7 +42,7 @@ namespace PZ
 		{
 		}
 
-		bool boot(const std::string &appName, sf::VideoMode &videoMode, sf::WindowSettings &params)
+		bool boot(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
 		{
 			if (running)
 				return true;
@@ -50,7 +50,7 @@ namespace PZ
 			logManager.OpenLog("ProtoZed");
 			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
-			window.Create(videoMode, appName, 6UL, params);
+			window.Create(videoMode, appName, windowStyle, params);
 
 			entityManager.RegisterEntity<Entity>("Entity");
 			entityManager.RegisterEntity<DrawableEntity>("DrawableEntity");
@@ -94,7 +94,9 @@ namespace PZ
 				else
 				if (stateManager.GetCurrentState() != NULL)
 				{
-					if (event.Type == sf::Event::KeyPressed)
+					if (event.Type == sf::Event::TextEntered)
+						stateManager.GetCurrentState()->OnTextInput(event.Text);
+					else if (event.Type == sf::Event::KeyPressed)
 						stateManager.GetCurrentState()->OnKeyDown(event.Key);
 					else if (event.Type == sf::Event::KeyReleased)
 						stateManager.GetCurrentState()->OnKeyUp(event.Key);
@@ -131,9 +133,9 @@ namespace PZ
 		delete p;
 	}
 
-	int Application::Run(const std::string &appName, sf::VideoMode &videoMode, sf::WindowSettings &params)
+	int Application::Run(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
 	{
-		if (!p->boot(appName, videoMode, params))
+		if (!p->boot(appName, videoMode, windowStyle, params))
 		{
 			return 1;
 		}
