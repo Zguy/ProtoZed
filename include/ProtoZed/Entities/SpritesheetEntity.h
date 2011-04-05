@@ -21,6 +21,7 @@
 
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Attributes.h>
 
 #include <SFML/Graphics/Sprite.hpp>
 

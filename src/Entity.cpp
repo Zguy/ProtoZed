@@ -36,14 +36,10 @@ namespace PZ
 	{
 		if (HasParent())
 		{
-			parent->RemoveChild(this);
+			parent->RemoveChild(this, false);
 		}
 
-		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
-		{
-			(*it)->parent = NULL;
-		}
-		children.clear();
+		ClearChildren(false);
 
 		ClearComponents(true);
 	}
@@ -101,7 +97,7 @@ namespace PZ
 
 		return !found;
 	}
-	bool Entity::RemoveChild(Entity *child)
+	bool Entity::RemoveChild(Entity *child, bool destroy)
 	{
 		bool found = false;
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
@@ -110,6 +106,10 @@ namespace PZ
 			{
 				(*it)->parent = NULL;
 				children.erase(it);
+
+				if (destroy)
+					Application::GetSingleton().GetEntityManager().DestroyEntity(*it, true);
+
 				found = true;
 				break;
 			}
@@ -121,6 +121,17 @@ namespace PZ
 		}
 
 		return found;
+	}
+	void Entity::ClearChildren(bool destroy)
+	{
+		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+		{
+			(*it)->parent = NULL;
+
+			if (destroy)
+				Application::GetSingleton().GetEntityManager().DestroyEntity(*it, true);
+		}
+		children.clear();
 	}
 
 	void Entity::GetChildrenRecursive(EntityList &list) const
@@ -177,7 +188,7 @@ namespace PZ
 	}
 	bool Entity::AddComponent(const std::string &name)
 	{
-		return AddComponent(Application::GetSingleton().GetComponentManager().GetNewComponent(name));
+		return AddComponent(Application::GetSingleton().GetComponentManager().CreateComponent(name));
 	}
 
 	bool Entity::RemoveComponent(const std::string &name, bool destroy)
@@ -331,9 +342,7 @@ namespace PZ
 	{
 		rotation = rot;
 
-		RecalculateLocalAxes();
-
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
 	}
 	void Entity::SetGlobalRotation(float rot)
 	{
@@ -342,9 +351,7 @@ namespace PZ
 		else
 			rotation = rot;
 
-		RecalculateLocalAxes();
-
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
 	}
 
 	bool Entity::BroadcastMessage(Message &message)
@@ -386,7 +393,7 @@ namespace PZ
 
 	bool Entity::HandleMessage(Message &message)
 	{
-		if (message.message == MessageID::POSITION_UPDATED)
+		if (message.message == MessageID::ROTATION_UPDATED)
 		{
 			RecalculateLocalAxes();
 

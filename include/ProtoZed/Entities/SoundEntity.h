@@ -21,16 +21,12 @@
 
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Attributes.h>
 
 #include <SFML/Audio/Sound.hpp>
 
 namespace PZ
 {
-	namespace Attributes
-	{
-		static const Animable::Attribute VOLUME = "VOLUME";
-	}
-
 	class SoundEntity : public Entity, public Animable
 	{
 	public:

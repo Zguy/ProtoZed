@@ -37,11 +37,11 @@ namespace PZ
 		}
 		bool UnregisterComponent(const std::string &componentName);
 
-		Component *GetNewComponent(const std::string &componentName);
+		Component *CreateComponent(const std::string &componentName);
 		template<class T>
-		T *GetNewComponent(const std::string &componentName)
+		T *CreateComponent(const std::string &componentName)
 		{
-			Component *component = GetNewComponent(componentName);
+			Component *component = CreateComponent(componentName);
 			return static_cast<T*>(component);
 		}
 

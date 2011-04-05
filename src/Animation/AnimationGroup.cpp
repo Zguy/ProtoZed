@@ -77,6 +77,10 @@ namespace PZ
 			p->animations.push_back(animation);
 		}
 	}
+	void AnimationGroup::AddAnimation(const std::string &animationType, AnimationProperties *properties)
+	{
+		AddAnimation(Application::GetSingleton().GetAnimationManager().CreateAnimation(animationType, properties));
+	}
 
 	AnimationBase *AnimationGroup::GetCopy()
 	{

@@ -29,7 +29,7 @@ namespace PZ
 	}
 	Animable::~Animable()
 	{
-		AnimationManager &animationManager = PZ::Application::GetSingleton().GetAnimationManager();
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationList::iterator it = animations.begin(); it != animations.end(); ++it)
 		{
 			animationManager.DestroyAnimation((*it));
@@ -39,7 +39,7 @@ namespace PZ
 
 	AnimationBase *Animable::RunAnimation(const std::string &animationName)
 	{
-		AnimationManager &animationManager = PZ::Application::GetSingleton().GetAnimationManager();
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		AnimationBase *original = animationManager.GetAnimationFromName(animationName);
 
 		if (original != NULL)
@@ -64,10 +64,22 @@ namespace PZ
 
 		return animation;
 	}
+	AnimationBase *Animable::RunAnimationDirect(const std::string &animationType, AnimationProperties *properties)
+	{
+		return RunAnimationDirect(Application::GetSingleton().GetAnimationManager().CreateAnimation(animationType, properties));
+	}
+
+	void Animable::StopAllAnimations()
+	{
+		for (AnimationList::iterator it = animations.begin(); it != animations.end(); ++it)
+		{
+			(*it)->Stop();
+		}
+	}
 
 	void Animable::StepAnimations(float deltaTime)
 	{
-		AnimationManager &animationManager = PZ::Application::GetSingleton().GetAnimationManager();
+		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationList::iterator it = animations.begin(); it != animations.end();)
 		{
 			AnimationBase *animation = (*it);

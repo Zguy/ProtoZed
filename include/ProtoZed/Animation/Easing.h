@@ -44,87 +44,84 @@ namespace PZ
 			EASE_IN_OUT
 		};
 
-		class Easing
+		class EasingBase
 		{
 		public:
-			Easing()
-			{}
-
 			virtual float easeIn(float t, float b, float c, float d) const    = 0;
 			virtual float easeOut(float t, float b, float c, float d) const   = 0;
 			virtual float easeInOut(float t, float b, float c, float d) const = 0;
 		};
-		class Back : public Easing
+		class Back : public EasingBase
 		{
 		public:
 			virtual float easeIn(float t, float b, float c, float d) const;
 			virtual float easeOut(float t, float b, float c, float d) const;
 			virtual float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Bounce : public Easing
+		class Bounce : public EasingBase
 		{
 		public:
 			virtual float easeIn(float t, float b, float c, float d) const;
 			virtual float easeOut(float t, float b, float c, float d) const;
 			virtual float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Circ : public Easing
+		class Circ : public EasingBase
 		{
 		public:
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Cubic : public Easing
+		class Cubic : public EasingBase
 		{
 		public:
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Elastic : public Easing
+		class Elastic : public EasingBase
 		{
 		public:
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Expo : public Easing
+		class Expo : public EasingBase
 		{
 		public:
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Quad : public Easing
+		class Quad : public EasingBase
 		{
 		public:
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Quart : public Easing
+		class Quart : public EasingBase
 		{
 		public:
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Quint : public Easing
+		class Quint : public EasingBase
 		{
 		public :
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Sine : public Easing
+		class Sine : public EasingBase
 		{
 		public :
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
-		class Linear : public Easing
+		class Linear : public EasingBase
 		{
 		public :
 			float easeNone(float t, float b, float c, float d) const;
@@ -145,7 +142,7 @@ namespace PZ
 		static const Bounce  fBounce;
 		static const Back    fBack;
 
-		static const Easing *GetFunctionFromEnum(Transition transition)
+		static const EasingBase *GetFunctionFromEnum(Transition transition)
 		{
 			switch (transition)
 			{

@@ -48,7 +48,8 @@ namespace PZ
 		Entity *GetRoot();
 
 		bool AddChild(Entity *child);
-		bool RemoveChild(Entity *child);
+		bool RemoveChild(Entity *child, bool destroy = true);
+		void ClearChildren(bool destroy = true);
 
 		inline const EntityList &GetChildren() const { return children; }
 		void GetChildrenRecursive(EntityList &list) const;

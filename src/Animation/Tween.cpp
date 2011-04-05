@@ -33,15 +33,15 @@ namespace PZ
 		float totalTime;
 		float currentTime;
 
-		Animable::Attribute  attribute;
-		float                goal;
-		bool                 relativeGoal;
-		Easing::Transition   transitionEnum;
-		const Easing::Easing *transition;
-		Easing::Equation     equation;
-		float                delay;
-		int                  repeat;
-		bool                 pingpong;
+		Attribute               attribute;
+		float                   goal;
+		bool                    relativeGoal;
+		Easing::Transition      transitionEnum;
+		const Easing::EasingBase *transition;
+		Easing::Equation        equation;
+		float                   delay;
+		int                     repeat;
+		bool                    pingpong;
 	};
 
 	Tween::Tween() : p(new TweenImpl)
@@ -82,7 +82,7 @@ namespace PZ
 		delete p;
 	}
 
-	void Tween::SetAll(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay, int repeat, bool pingpong, bool relativeGoal)
+	void Tween::SetAll(Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay, int repeat, bool pingpong, bool relativeGoal)
 	{
 		p->attribute      = attribute;
 		p->goal           = goal;
@@ -96,7 +96,7 @@ namespace PZ
 		p->pingpong       = pingpong;
 	}
 
-	void Tween::SetAttribute(Animable::Attribute attribute)
+	void Tween::SetAttribute(Attribute attribute)
 	{
 		p->attribute = attribute;
 	}
@@ -134,7 +134,7 @@ namespace PZ
 		p->pingpong = pingpong;
 	}
 
-	Animable::Attribute Tween::GetAttribute() const
+	Attribute Tween::GetAttribute() const
 	{
 		return p->attribute;
 	}

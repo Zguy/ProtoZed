@@ -16,16 +16,25 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Component.h>
+#ifndef Attributes_h__
+#define Attributes_h__
 
 namespace PZ
 {
-	Component::Component(const std::string &name) : name(name), owner(NULL)
+	namespace Attributes
 	{
+		static const Attribute X        = "X";
+		static const Attribute Y        = "Y";
+		static const Attribute SCALE_X  = "SCALE_X";
+		static const Attribute SCALE_Y  = "SCALE_Y";
+		static const Attribute ROTATION = "ROTATION";
+		static const Attribute COLOR_R  = "COLOR_R";
+		static const Attribute COLOR_G  = "COLOR_G";
+		static const Attribute COLOR_B  = "COLOR_B";
+		static const Attribute ALPHA    = "ALPHA";
 
-	}
-	Component::~Component()
-	{
-
+		static const Attribute VOLUME   = "VOLUME";
 	}
 }
+
+#endif // Attributes_h__

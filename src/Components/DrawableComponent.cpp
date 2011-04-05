@@ -37,7 +37,16 @@ namespace PZ
 			if (HasDrawable())
 			{
 				drawable->SetPosition(GetOwner()->GetGlobalPosition());
+			}
+
+			return true;
+		}
+		else if (message.message == MessageID::ROTATION_UPDATED)
+		{
+			if (HasDrawable())
+			{
 				drawable->SetRotation(GetOwner()->GetGlobalRotation());
+				drawable->SetPosition(GetOwner()->GetGlobalPosition());
 			}
 
 			return true;

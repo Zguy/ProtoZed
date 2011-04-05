@@ -21,24 +21,12 @@
 
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Attributes.h>
 
 #include <SFML/Graphics/Drawable.hpp>
 
 namespace PZ
 {
-	namespace Attributes
-	{
-		static const Animable::Attribute X        = "X";
-		static const Animable::Attribute Y        = "Y";
-		static const Animable::Attribute SCALE_X  = "SCALE_X";
-		static const Animable::Attribute SCALE_Y  = "SCALE_Y";
-		static const Animable::Attribute ROTATION = "ROTATION";
-		static const Animable::Attribute COLOR_R  = "COLOR_R";
-		static const Animable::Attribute COLOR_G  = "COLOR_G";
-		static const Animable::Attribute COLOR_B  = "COLOR_B";
-		static const Animable::Attribute ALPHA    = "ALPHA";
-	}
-
 	class DrawableEntity : public Entity, public Animable
 	{
 	public:

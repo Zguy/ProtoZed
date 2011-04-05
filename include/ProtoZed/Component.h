@@ -31,8 +31,10 @@ namespace PZ
 		friend class Entity;
 
 	public:
-		Component(const std::string &name);
-		virtual ~Component();
+		Component(const std::string &name) : name(name), owner(NULL)
+		{}
+		virtual ~Component()
+		{}
 	
 		inline const std::string &GetName() const { return name; }
 

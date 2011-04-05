@@ -21,6 +21,7 @@
     <ClInclude Include="include\ProtoZed\Application.h" />
     <ClInclude Include="include\ProtoZed\AppState.h" />
     <ClInclude Include="include\ProtoZed\AssetStorage.h" />
+    <ClInclude Include="include\ProtoZed\Attributes.h" />
     <ClInclude Include="include\ProtoZed\Component.h" />
     <ClInclude Include="include\ProtoZed\ComponentManager.h" />
     <ClInclude Include="include\ProtoZed\Components\DrawableComponent.h" />
@@ -64,7 +65,6 @@
     <ClCompile Include="src\AppState.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
-    <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\ComponentManager.cpp" />
     <ClCompile Include="src\Components\DrawableComponent.cpp" />
     <ClCompile Include="src\Convert.cpp" />

@@ -87,9 +87,6 @@
     <ClInclude Include="include\ProtoZed\AssetStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ProtoZed\ParticleSystem\Particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ProtoZed\Convert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,15 +117,6 @@
     <ClInclude Include="include\ProtoZed\Entities\SpritesheetEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ProtoZed\ParticleSystem\ParticleSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ProtoZed\ParticleSystem\Emitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ProtoZed\InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ProtoZed\Jzon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -148,6 +136,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ProtoZed\Messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ProtoZed\Attributes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -209,19 +200,7 @@
     <ClCompile Include="src\Entities\SpritesheetEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ParticleSystem\ParticleSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleSystem\Emitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Jzon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Animation\Animable.cpp">

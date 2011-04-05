@@ -25,19 +25,22 @@
 namespace PZ
 {
 	class AnimationBase;
+	struct AnimationProperties;
 
+	typedef std::string Attribute;
 	typedef std::vector<AnimationBase*> AnimationList;
 
 	class Animable
 	{
 	public:
-		typedef std::string Attribute;
-
 		Animable();
 		virtual ~Animable();
 
 		AnimationBase *RunAnimation(const std::string &animationName);
 		AnimationBase *RunAnimationDirect(AnimationBase *animation);
+		AnimationBase *RunAnimationDirect(const std::string &animationType, AnimationProperties *properties);
+
+		void StopAllAnimations();
 
 		void StepAnimations(float deltaTime);
 

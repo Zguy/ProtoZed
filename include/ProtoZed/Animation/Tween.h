@@ -27,11 +27,11 @@ namespace PZ
 	struct TweenProperties : public AnimationProperties
 	{
 	public:
-		TweenProperties(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false)
+		TweenProperties(Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false)
 			: attribute(attribute), goal(goal), relativeGoal(relativeGoal), transition(transition), equation(equation), time(time), delay(delay), repeat(repeat), pingpong(pingpong)
 		{}
 
-		Animable::Attribute attribute;
+		Attribute           attribute;
 		float               goal;
 		bool                relativeGoal;
 		Easing::Transition  transition;
@@ -52,9 +52,9 @@ namespace PZ
 		Tween(const Tween &copy);
 		virtual ~Tween();
 
-		void SetAll(Animable::Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false);
+		void SetAll(Attribute attribute, float goal, Easing::Transition transition, Easing::Equation equation, float time, float delay = 0.f, int repeat = 0, bool pingpong = false, bool relativeGoal = false);
 
-		void SetAttribute(Animable::Attribute attribute);
+		void SetAttribute(Attribute attribute);
 		void SetGoal(float goal);
 		void SetRelativeGoal(bool relative);
 		void SetTransition(Easing::Transition transition);
@@ -64,7 +64,7 @@ namespace PZ
 		void SetRepeat(int repeat);
 		void SetPingPoing(bool pingpong);
 
-		Animable::Attribute GetAttribute()    const;
+		Attribute           GetAttribute()    const;
 		float               GetGoal()         const;
 		bool                GetRelativeGoal() const;
 		Easing::Transition  GetTransition()   const;
