@@ -64,7 +64,6 @@
     <ClCompile Include="src\AppState.cpp" />
     <ClCompile Include="src\AppStateManager.cpp" />
     <ClCompile Include="src\AssetStorage.cpp" />
-    <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\ComponentManager.cpp" />
     <ClCompile Include="src\Components\DrawableComponent.cpp" />
     <ClCompile Include="src\Convert.cpp" />

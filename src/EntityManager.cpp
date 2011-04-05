@@ -42,7 +42,7 @@ namespace PZ
 		if (fixName.empty())
 			fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("EntityName"));
 		Entity *entity = entityFactory.Create(entityName, fixName);
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created entity "+entity->GetName()+" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
 		return entity;
 	}
 
@@ -58,7 +58,7 @@ namespace PZ
 			}
 		}
 
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed entity "+entity->GetName()+" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
 		delete entity;
 	}
 }

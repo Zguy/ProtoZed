@@ -37,13 +37,13 @@ namespace PZ
 	Component *ComponentManager::CreateComponent(const std::string &componentName)
 	{
 		Component *component = componentFactory.Create(componentName);
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created component "+component->GetName());
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created component \""+component->GetName()+"\"");
 		return component;
 	}
 
 	void ComponentManager::DestroyComponent(Component *component) const
 	{
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed component "+component->GetName());
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed component \""+component->GetName()+"\"");
 		delete component;
 	}
 }

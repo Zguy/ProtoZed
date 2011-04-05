@@ -41,31 +41,41 @@ namespace PZ
 	}
 	bool SpritesheetEntity::SetSpritesheetFromFile(const std::string &filename)
 	{
-		Jzon::Object root = Jzon::FileReader::ReadFile(filename)->AsObject();
+		Jzon::NodePtr rootNode = Jzon::FileReader::ReadFile(filename);
 
-		SpritesheetDefinition def;
-		def.name   = root.Get("name").AsValue().AsString();
-		def.image  = root.Get("image").AsValue().AsString();
-		def.size.x = root.Get("width").AsValue().AsInt();
-		def.size.y = root.Get("height").AsValue().AsInt();
-
-		Jzon::Array &animationArray = root.Get("animations").AsArray();
-		for (Jzon::Array::Iterator it = animationArray.Begin(); it != animationArray.End(); ++it)
+		if (rootNode->IsValue() && rootNode->AsValue() == Jzon::null)
 		{
-			Jzon::Object &animationObject = (*it).AsObject();
-			SpritesheetAnimationDefinition aniDef;
-			aniDef.name = animationObject.Get("name").AsValue().AsString();
-			aniDef.from = animationObject.Get("start").AsValue().AsInt();
-			aniDef.to   = animationObject.Get("end").AsValue().AsInt();
-			aniDef.time = (float)animationObject.Get("time").AsValue().AsDouble();
-			aniDef.loop = animationObject.Get("loop").AsValue().AsBool();
-
-			def.animations.push_back(aniDef);
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" failed to open spritesheet \""+filename+"\"");
+			return false;
 		}
+		else
+		{
+			Jzon::Object root = rootNode->AsObject();
 
-		SetSpritesheet(def);
+			SpritesheetDefinition def;
+			def.name   = root.Get("name").AsValue().AsString();
+			def.image  = root.Get("image").AsValue().AsString();
+			def.size.x = root.Get("width").AsValue().AsInt();
+			def.size.y = root.Get("height").AsValue().AsInt();
 
-		return true;
+			Jzon::Array &animationArray = root.Get("animations").AsArray();
+			for (Jzon::Array::Iterator it = animationArray.Begin(); it != animationArray.End(); ++it)
+			{
+				Jzon::Object &animationObject = (*it).AsObject();
+				SpritesheetAnimationDefinition aniDef;
+				aniDef.name = animationObject.Get("name").AsValue().AsString();
+				aniDef.from = animationObject.Get("start").AsValue().AsInt();
+				aniDef.to   = animationObject.Get("end").AsValue().AsInt();
+				aniDef.time = (float)animationObject.Get("time").AsValue().AsDouble();
+				aniDef.loop = animationObject.Get("loop").AsValue().AsBool();
+
+				def.animations.push_back(aniDef);
+			}
+
+			SetSpritesheet(def);
+
+			return true;
+		}
 	}
 
 	bool SpritesheetEntity::SetAnimation(const std::string &name)
@@ -170,10 +180,13 @@ namespace PZ
 
 			currentTime += deltaTime;
 
-			if (currentTime >= (spritesheetDef.animations.at(animationIndex).time))
+			if (spritesheetDef.animations.size() > animationIndex)
 			{
-				currentTime = 0.f;
-				setFrame(currentFrame+1);
+				if (currentTime >= (spritesheetDef.animations.at(animationIndex).time))
+				{
+					currentTime = 0.f;
+					setFrame(currentFrame+1);
+				}
 			}
 
 			return true;
@@ -209,20 +222,23 @@ namespace PZ
 		{
 			const unsigned int imageWidth = sprite.GetImage()->GetWidth();
 			const unsigned int imageHeight = sprite.GetImage()->GetHeight();
-			const unsigned int frameWidth = spritesheetDef.size.x;
-			const unsigned int frameHeight = spritesheetDef.size.y;
+			if (imageWidth > 0 && imageHeight > 0)
+			{
+				const unsigned int frameWidth = spritesheetDef.size.x;
+				const unsigned int frameHeight = spritesheetDef.size.y;
 
-			const unsigned int framesPerRow = imageWidth / frameWidth;
-			const unsigned int actualFrame = animation.from+frame;
+				const unsigned int framesPerRow = imageWidth / frameWidth;
+				const unsigned int actualFrame = animation.from+frame;
 
-			const unsigned int frameY = (actualFrame/framesPerRow);
+				const unsigned int frameY = (actualFrame/framesPerRow);
 
-			const unsigned int x = (actualFrame-(frameY*framesPerRow))*frameWidth;
-			const unsigned int y = frameY*frameHeight;
-			const unsigned int w = frameWidth;
-			const unsigned int h = frameHeight;
-			sprite.SetSubRect(sf::IntRect(x,y,x+w,y+h));
-			currentFrame = frame;
+				const unsigned int x = (actualFrame-(frameY*framesPerRow))*frameWidth;
+				const unsigned int y = frameY*frameHeight;
+				const unsigned int w = frameWidth;
+				const unsigned int h = frameHeight;
+				sprite.SetSubRect(sf::IntRect(x,y,x+w,y+h));
+				currentFrame = frame;
+			}
 		}
 		else if (animation.loop)
 		{
