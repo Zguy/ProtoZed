@@ -44,7 +44,7 @@ namespace PZ
 
 		void StepAnimations(float deltaTime);
 
-		virtual bool HasAttribute(Attribute attribute) = 0;
+		virtual bool HasAttribute(Attribute attribute) const = 0;
 		virtual void SetAttribute(Attribute attribute, float value) = 0;
 		virtual float GetAttribute(Attribute attribute) const = 0;
 

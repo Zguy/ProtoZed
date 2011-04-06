@@ -19,6 +19,8 @@
 #ifndef Entity_h__
 #define Entity_h__
 
+#include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Attributes.h>
 #include <ProtoZed/UniqueIDGenerator.h>
 #include <ProtoZed/Messages.h>
 
@@ -35,7 +37,7 @@ namespace PZ
 	class Component;
 	typedef std::vector<Component*> ComponentList;
 
-	class Entity
+	class Entity : public Animable
 	{
 	public:
 		Entity(const std::string &name);
@@ -99,6 +101,10 @@ namespace PZ
 
 		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
 		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
+
+		virtual bool HasAttribute(Attribute attribute) const;
+		virtual void SetAttribute(Attribute attribute, float value);
+		virtual float GetAttribute(Attribute attribute) const;
 
 		bool BroadcastMessage(Message &message);
 		bool ReceiveMessage(Message &message);

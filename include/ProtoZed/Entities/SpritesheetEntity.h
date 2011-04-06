@@ -43,7 +43,7 @@ namespace PZ
 		SpritesheetAnimationDefinitionList animations;
 	};
 
-	class SpritesheetEntity : public Entity, public Animable
+	class SpritesheetEntity : public Entity
 	{
 	public:
 		SpritesheetEntity(const std::string &name);
@@ -86,7 +86,7 @@ namespace PZ
 		inline void Resize(const sf::Vector2f& Size) { sprite.Resize(Size); }
 
 		// Animable
-		virtual bool HasAttribute(Attribute attribute);
+		virtual bool HasAttribute(Attribute attribute) const;
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 

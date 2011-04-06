@@ -29,30 +29,24 @@ namespace PZ
  			delete drawable;
 	}
 
-	bool DrawableEntity::HasAttribute(Attribute attribute)
+	bool DrawableEntity::HasAttribute(Attribute attribute) const
 	{
-		return ((attribute == Attributes::X)||
-						(attribute == Attributes::Y)||
-						(attribute == Attributes::SCALE_X)||
+		return ((attribute == Attributes::SCALE_X)||
 						(attribute == Attributes::SCALE_Y)||
-						(attribute == Attributes::ROTATION)||
 						(attribute == Attributes::COLOR_R)||
 						(attribute == Attributes::COLOR_G)||
 						(attribute == Attributes::COLOR_B)||
-						(attribute == Attributes::ALPHA));
+						(attribute == Attributes::ALPHA)||
+						Entity::HasAttribute(attribute));
 	}
 	void DrawableEntity::SetAttribute(Attribute attribute, float value)
 	{
-		if (attribute == Attributes::X)
-			SetX(value);
-		else if (attribute == Attributes::Y)
-			SetY(value);
-		else if (attribute == Attributes::SCALE_X)
+		Entity::SetAttribute(attribute, value);
+
+		if (attribute == Attributes::SCALE_X)
 			SetScaleX(value);
 		else if (attribute == Attributes::SCALE_Y)
 			SetScaleY(value);
-		else if (attribute == Attributes::ROTATION)
-			SetLocalRotation(value);
 		else if ((attribute == Attributes::COLOR_R)||(attribute == Attributes::COLOR_G)||(attribute == Attributes::COLOR_B)||(attribute == Attributes::ALPHA))
 		{
 			sf::Color color = GetColor();
@@ -69,16 +63,10 @@ namespace PZ
 	}
 	float DrawableEntity::GetAttribute(Attribute attribute) const
 	{
-		if (attribute == Attributes::X)
-			return GetLocalPosition().x;
-		else if (attribute == Attributes::Y)
-			return GetLocalPosition().y;
-		else if (attribute == Attributes::SCALE_X)
+		if (attribute == Attributes::SCALE_X)
 			return GetScale().x;
 		else if (attribute == Attributes::SCALE_Y)
 			return GetScale().y;
-		else if (attribute == Attributes::ROTATION)
-			return GetLocalRotation();
 		else if (attribute == Attributes::COLOR_R)
 			return GetColor().r;
 		else if (attribute == Attributes::COLOR_G)
@@ -88,7 +76,7 @@ namespace PZ
 		else if (attribute == Attributes::ALPHA)
 			return GetColor().a;
 		else
-			return 0.f;
+			return Entity::GetAttribute(attribute);
 	}
 
 	bool DrawableEntity::HandleMessage(Message &message)
@@ -111,15 +99,6 @@ namespace PZ
 				drawable->SetRotation(GetGlobalRotation());
 				drawable->SetPosition(GetGlobalPosition());
 			}
-
-			return true;
-		}
-		else if (message.message == MessageID::UPDATE)
-		{
-			UpdateMessage &updateMessage = message.As<UpdateMessage>();
-			float deltaTime = updateMessage.deltaTime;
-
-			StepAnimations(deltaTime);
 
 			return true;
 		}

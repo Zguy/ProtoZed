@@ -32,12 +32,15 @@ namespace PZ
 		sound.SetBuffer(soundBuffer);
 	}
 
-	bool SoundEntity::HasAttribute(Attribute attribute)
+	bool SoundEntity::HasAttribute(Attribute attribute) const
 	{
-		return (attribute == Attributes::VOLUME);
+		return ((attribute == Attributes::VOLUME)||
+						Entity::HasAttribute(attribute));
 	}
 	void SoundEntity::SetAttribute(Attribute attribute, float value)
 	{
+		Entity::SetAttribute(attribute, value);
+
 		if (attribute == Attributes::VOLUME)
 			SetVolume(value);
 	}
@@ -46,7 +49,7 @@ namespace PZ
 		if (attribute == Attributes::VOLUME)
 			return GetVolume();
 		else
-			return 0.f;
+			return Entity::GetAttribute(attribute);
 	}
 
 	bool SoundEntity::HandleMessage(Message &message)
@@ -58,15 +61,6 @@ namespace PZ
 			sf::Vector2f entityPos = GetGlobalPosition();
 			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
 			sound.SetPosition(soundPos);
-
-			return true;
-		}
-		else if (message.message == MessageID::UPDATE)
-		{
-			UpdateMessage &updateMessage = message.As<UpdateMessage>();
-			float deltaTime = updateMessage.deltaTime;
-
-			StepAnimations(deltaTime);
 
 			return true;
 		}

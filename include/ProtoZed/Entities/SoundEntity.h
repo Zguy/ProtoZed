@@ -27,7 +27,7 @@
 
 namespace PZ
 {
-	class SoundEntity : public Entity, public Animable
+	class SoundEntity : public Entity
 	{
 	public:
 		SoundEntity(const std::string name);
@@ -61,7 +61,7 @@ namespace PZ
 		inline float GetPlayingOffset() const { return sound.GetPlayingOffset(); }
 
 		// Animable
-		virtual bool HasAttribute(Attribute attribute);
+		virtual bool HasAttribute(Attribute attribute) const;
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 

@@ -62,6 +62,10 @@ namespace PZ
 		inline void Scale(float FactorX, float FactorY) { drawable->Scale(FactorX, FactorY); }
 		inline void Scale(const sf::Vector2f& Factor) { drawable->Scale(Factor); }
 
+		virtual bool HasAttribute(Attribute attribute) const;
+		virtual void SetAttribute(Attribute attribute, float value);
+		virtual float GetAttribute(Attribute attribute) const;
+
 		virtual bool ReceiveMessage(Message &message);
 
 	private:

@@ -19,6 +19,7 @@
 #ifndef Component_h__
 #define Component_h__
 
+#include <ProtoZed/Animation/Animable.h>
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Message.h>
 
@@ -26,7 +27,7 @@
 
 namespace PZ
 {
-	class Component
+	class Component : public Animable
 	{
 		friend class Entity;
 
@@ -41,6 +42,10 @@ namespace PZ
 		inline bool HasOwner() const { return (owner != NULL); }
 		inline Entity *GetOwner() const { return owner; }
 	
+		virtual bool HasAttribute(Attribute attribute) const { return false; }
+		virtual void SetAttribute(Attribute attribute, float value) { }
+		virtual float GetAttribute(Attribute attribute) const { return 0.f; }
+
 		virtual bool ReceiveMessage(Message &message) = 0;
 	
 	private:

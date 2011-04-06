@@ -30,6 +30,56 @@ namespace PZ
 			delete drawable;
 	}
 
+	bool DrawableComponent::HasAttribute(Attribute attribute) const
+	{
+		return ((attribute == Attributes::SCALE_X)||
+						(attribute == Attributes::SCALE_Y)||
+						(attribute == Attributes::COLOR_R)||
+						(attribute == Attributes::COLOR_G)||
+						(attribute == Attributes::COLOR_B)||
+						(attribute == Attributes::ALPHA)||
+						Component::HasAttribute(attribute));
+	}
+	void DrawableComponent::SetAttribute(Attribute attribute, float value)
+	{
+		Component::SetAttribute(attribute, value);
+
+		if (attribute == Attributes::SCALE_X)
+			SetScaleX(value);
+		else if (attribute == Attributes::SCALE_Y)
+			SetScaleY(value);
+		else if ((attribute == Attributes::COLOR_R)||(attribute == Attributes::COLOR_G)||(attribute == Attributes::COLOR_B)||(attribute == Attributes::ALPHA))
+		{
+			sf::Color color = GetColor();
+			if (attribute == Attributes::COLOR_R)
+				color.r = static_cast<sf::Uint8>(value);
+			else if (attribute == Attributes::COLOR_G)
+				color.g = static_cast<sf::Uint8>(value);
+			else if (attribute == Attributes::COLOR_B)
+				color.b = static_cast<sf::Uint8>(value);
+			else if (attribute == Attributes::ALPHA)
+				color.a = static_cast<sf::Uint8>(value);
+			SetColor(color);
+		}
+	}
+	float DrawableComponent::GetAttribute(Attribute attribute) const
+	{
+		if (attribute == Attributes::SCALE_X)
+			return GetScale().x;
+		else if (attribute == Attributes::SCALE_Y)
+			return GetScale().y;
+		else if (attribute == Attributes::COLOR_R)
+			return GetColor().r;
+		else if (attribute == Attributes::COLOR_G)
+			return GetColor().g;
+		else if (attribute == Attributes::COLOR_B)
+			return GetColor().b;
+		else if (attribute == Attributes::ALPHA)
+			return GetColor().a;
+		else
+			return Component::GetAttribute(attribute);
+	}
+
 	bool DrawableComponent::ReceiveMessage(Message &message)
 	{
 		if (message.message == MessageID::POSITION_UPDATED)

@@ -354,6 +354,73 @@ namespace PZ
 		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
 	}
 
+	bool Entity::HasAttribute(Attribute attribute) const
+	{
+		bool has = false;
+
+		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		{
+			if ((*it)->HasAttribute(attribute))
+			{
+				has = true;
+				break; // It doesn't matter if more components has the attribute, we just need "has" to be true
+			}
+		}
+
+		if (!has) // Pretty much the same reason has above
+		{
+			if ((attribute == Attributes::X)||
+					(attribute == Attributes::Y)||
+					(attribute == Attributes::ROTATION))
+			{
+				has = true;
+			}
+		}
+
+		return has;
+	}
+	void Entity::SetAttribute(Attribute attribute, float value)
+	{
+		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		{
+			if ((*it)->HasAttribute(attribute))
+			{
+				(*it)->SetAttribute(attribute, value);
+			}
+		}
+
+		if (attribute == Attributes::X)
+			SetX(value);
+		else if (attribute == Attributes::Y)
+			SetY(value);
+		else if (attribute == Attributes::ROTATION)
+			SetLocalRotation(value);
+	}
+	float Entity::GetAttribute(Attribute attribute) const
+	{
+		// There's no way to choose which to return if more than one component has the attribute,
+		// so we'll just return the first we find and hope that its value is representable for the whole Entity
+		float result = 0.f;
+
+		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		{
+			if ((*it)->HasAttribute(attribute))
+			{
+				result = (*it)->GetAttribute(attribute);
+				break;
+			}
+		}
+
+		if (attribute == Attributes::X)
+			result = GetLocalPosition().x;
+		else if (attribute == Attributes::Y)
+			result = GetLocalPosition().y;
+		else if (attribute == Attributes::ROTATION)
+			result = GetLocalRotation();
+
+		return result;
+	}
+
 	bool Entity::BroadcastMessage(Message &message)
 	{
 		return GetRoot()->ReceiveMessage(message);
@@ -396,6 +463,15 @@ namespace PZ
 		if (message.message == MessageID::ROTATION_UPDATED)
 		{
 			RecalculateLocalAxes();
+
+			return true;
+		}
+		else if (message.message == MessageID::UPDATE)
+		{
+			UpdateMessage &updateMessage = message.As<UpdateMessage>();
+			float deltaTime = updateMessage.deltaTime;
+
+			StepAnimations(deltaTime);
 
 			return true;
 		}
