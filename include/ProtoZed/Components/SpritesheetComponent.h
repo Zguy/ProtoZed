@@ -19,8 +19,7 @@
 #ifndef SpritesheetEntity_h__
 #define SpritesheetEntity_h__
 
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Component.h>
 #include <ProtoZed/Attributes.h>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -43,11 +42,11 @@ namespace PZ
 		SpritesheetAnimationDefinitionList animations;
 	};
 
-	class SpritesheetEntity : public Entity
+	class SpritesheetComponent : public Component
 	{
 	public:
-		SpritesheetEntity(const std::string &name);
-		virtual ~SpritesheetEntity();
+		SpritesheetComponent();
+		~SpritesheetComponent();
 
 		void SetSpritesheet(const SpritesheetDefinition &spritesheet);
 		bool SetSpritesheetFromFile(const std::string &filename);
@@ -90,8 +89,7 @@ namespace PZ
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 
-	protected:
-		virtual bool HandleMessage(Message &message);
+		virtual bool ReceiveMessage(Message &message);
 
 	private:
 		void setFrame(unsigned int frame);

@@ -48,6 +48,9 @@ namespace PZ
 
 		virtual bool ReceiveMessage(Message &message) = 0;
 	
+	protected:
+		virtual void SetOwner(Entity *newOwner) { owner = newOwner; }
+
 	private:
 		std::string name;
 

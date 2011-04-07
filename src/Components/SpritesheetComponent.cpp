@@ -16,30 +16,29 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Entities/SpritesheetEntity.h>
+#include <ProtoZed/Components/SpritesheetComponent.h>
 
-#include <ProtoZed/Entities/DrawableEntity.h>
 #include <ProtoZed/Application.h>
 #include <ProtoZed/Jzon.h>
 
 namespace PZ
 {
-	SpritesheetEntity::SpritesheetEntity(const std::string &name) : Entity(name, "Spritesheet"), animationIndex(0), currentFrame(0), currentTime(0.f)
+	SpritesheetComponent::SpritesheetComponent() : Component("Spritesheet"), animationIndex(0), currentFrame(0), currentTime(0.f)
 	{
 
 	}
-	SpritesheetEntity::~SpritesheetEntity()
+	SpritesheetComponent::~SpritesheetComponent()
 	{
 
 	}
 
-	void SpritesheetEntity::SetSpritesheet(const SpritesheetDefinition &spritesheet)
+	void SpritesheetComponent::SetSpritesheet(const SpritesheetDefinition &spritesheet)
 	{
 		spritesheetDef = spritesheet;
 		sprite.SetImage(Application::GetSingleton().GetImageStorage().GetAsset(spritesheetDef.image));
 		SetAnimation(spritesheetDef.animations.at(0).name);
 	}
-	bool SpritesheetEntity::SetSpritesheetFromFile(const std::string &filename)
+	bool SpritesheetComponent::SetSpritesheetFromFile(const std::string &filename)
 	{
 		Jzon::NodePtr rootNode = Jzon::FileReader::ReadFile(filename);
 
@@ -78,7 +77,7 @@ namespace PZ
 		}
 	}
 
-	bool SpritesheetEntity::SetAnimation(const std::string &name)
+	bool SpritesheetComponent::SetAnimation(const std::string &name)
 	{
 		bool found = false;
 		for (unsigned int i = 0; i < spritesheetDef.animations.size(); ++i)
@@ -100,12 +99,12 @@ namespace PZ
 
 		return found;
 	}
-	const std::string &SpritesheetEntity::GetAnimation() const
+	const std::string &SpritesheetComponent::GetAnimation() const
 	{
 		return spritesheetDef.animations.at(animationIndex).name;
 	}
 
-	bool SpritesheetEntity::HasAttribute(Attribute attribute) const
+	bool SpritesheetComponent::HasAttribute(Attribute attribute) const
 	{
 		return ((attribute == Attributes::SCALE_X)||
 						(attribute == Attributes::SCALE_Y)||
@@ -113,11 +112,11 @@ namespace PZ
 						(attribute == Attributes::COLOR_G)||
 						(attribute == Attributes::COLOR_B)||
 						(attribute == Attributes::ALPHA)||
-						Entity::HasAttribute(attribute));
+						Component::HasAttribute(attribute));
 	}
-	void SpritesheetEntity::SetAttribute(Attribute attribute, float value)
+	void SpritesheetComponent::SetAttribute(Attribute attribute, float value)
 	{
-		Entity::SetAttribute(attribute, value);
+		Component::SetAttribute(attribute, value);
 
 		if (attribute == Attributes::SCALE_X)
 			SetScaleX(value);
@@ -137,7 +136,7 @@ namespace PZ
 			SetColor(color);
 		}
 	}
-	float SpritesheetEntity::GetAttribute(Attribute attribute) const
+	float SpritesheetComponent::GetAttribute(Attribute attribute) const
 	{
 		if (attribute == Attributes::SCALE_X)
 			return GetScale().x;
@@ -152,13 +151,11 @@ namespace PZ
 		else if (attribute == Attributes::ALPHA)
 			return GetColor().a;
 		else
-			return Entity::GetAttribute(attribute);
+			return Component::GetAttribute(attribute);
 	}
 
-	bool SpritesheetEntity::HandleMessage(Message &message)
+	bool SpritesheetComponent::ReceiveMessage(Message &message)
 	{
-		bool handled = Entity::HandleMessage(message);
-
 		if (message.message == MessageID::UPDATE)
 		{
 			UpdateMessage &updateMessage = message.As<UpdateMessage>();
@@ -179,14 +176,14 @@ namespace PZ
 		}
 		else if (message.message == MessageID::POSITION_UPDATED)
 		{
-			sprite.SetPosition(GetGlobalPosition());
+			sprite.SetPosition(GetOwner()->GetGlobalPosition());
 
 			return true;
 		}
 		else if (message.message == MessageID::ROTATION_UPDATED)
 		{
-			sprite.SetRotation(GetGlobalRotation());
-			sprite.SetPosition(GetGlobalPosition());
+			sprite.SetRotation(GetOwner()->GetGlobalRotation());
+			sprite.SetPosition(GetOwner()->GetGlobalPosition());
 
 			return true;
 		}
@@ -198,10 +195,10 @@ namespace PZ
 			return true;
 		}
 
-		return handled;
+		return false;
 	}
 
-	void SpritesheetEntity::setFrame(unsigned int frame)
+	void SpritesheetComponent::setFrame(unsigned int frame)
 	{
 		SpritesheetAnimationDefinition &animation = spritesheetDef.animations.at(animationIndex);
 		if (frame <= (animation.to - animation.from))

@@ -32,7 +32,7 @@ namespace PZ
 		~DrawableComponent();
 
 		inline bool HasDrawable() const { return (drawable != NULL); }
-		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; drawable->SetPosition(GetOwner()->GetGlobalPosition()); }
+		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; if (HasOwner()) { GetDrawable()->SetPosition(GetOwner()->GetGlobalPosition()); } }
 		inline sf::Drawable *GetDrawable() const { return drawable; }
 
 		// Pretend we're a sf::Drawable
@@ -67,6 +67,9 @@ namespace PZ
 		virtual float GetAttribute(Attribute attribute) const;
 
 		virtual bool ReceiveMessage(Message &message);
+
+	protected:
+		virtual void SetOwner(Entity *newOwner);
 
 	private:
 		sf::Drawable *drawable;

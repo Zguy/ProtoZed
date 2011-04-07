@@ -174,9 +174,9 @@ namespace PZ
 
 	bool Entity::AddComponent(Component *component)
 	{
-		if (component->owner == NULL && !HasComponent(component->GetName()))
+		if (component->GetOwner() == NULL && !HasComponent(component->GetName()))
 		{
-			component->owner = this;
+			component->SetOwner(this);
 			components.push_back(component);
 			return true;
 		}
@@ -197,7 +197,7 @@ namespace PZ
 		{
 			if ((*it)->GetName() == name)
 			{
-				(*it)->owner = NULL;
+				(*it)->SetOwner(NULL);
 
 				if (destroy)
 				{
@@ -217,7 +217,7 @@ namespace PZ
 	{
 		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			(*it)->owner = NULL;
+			(*it)->SetOwner(NULL);
 
 			if (destroy)
 			{

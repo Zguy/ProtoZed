@@ -114,4 +114,14 @@ namespace PZ
 
 		return false;
 	}
+
+	void DrawableComponent::SetOwner(Entity *newOwner)
+	{
+		Component::SetOwner(newOwner);
+
+		if (HasOwner() && HasDrawable())
+		{
+			GetDrawable()->SetPosition(GetOwner()->GetGlobalPosition());
+		}
+	}
 }
