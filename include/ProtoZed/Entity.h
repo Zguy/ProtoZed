@@ -40,6 +40,9 @@ namespace PZ
 	class Entity : public Animable
 	{
 	public:
+		static Entity *Create(const std::string &entityName, const std::string &name = "");
+		static void Destroy(Entity *entity, bool destroyChildren = false);
+
 		Entity(const std::string &name);
 		Entity(const std::string &name, const std::string &family);
 		virtual ~Entity();
@@ -49,6 +52,7 @@ namespace PZ
 		const Entity *GetRoot() const;
 		Entity *GetRoot();
 
+		Entity *CreateChild(const std::string &entityName, const std::string &name = "");
 		bool AddChild(Entity *child);
 		bool RemoveChild(Entity *child, bool destroy = true);
 		void ClearChildren(bool destroy = true);

@@ -24,6 +24,15 @@
 
 namespace PZ
 {
+	Entity *Entity::Create(const std::string &entityName, const std::string &name)
+	{
+		return PZ::Application::GetSingleton().GetEntityManager().CreateEntity(entityName, name);
+	}
+	void Entity::Destroy(Entity *entity, bool destroyChildren)
+	{
+		PZ::Application::GetSingleton().GetEntityManager().DestroyEntity(entity, destroyChildren);
+	}
+
 	Entity::Entity(const std::string &name) : parent(NULL), name(name), family("Entity"), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
 	{
 		id = UniqueIDGenerator::GetNextID("EntityID");
@@ -63,6 +72,19 @@ namespace PZ
 		return entity;
 	}
 
+	Entity *Entity::CreateChild(const std::string &entityName, const std::string &name)
+	{
+		Entity *entity = PZ::Application::GetSingleton().GetEntityManager().CreateEntity(entityName, name);
+		if (AddChild(entity))
+		{
+			return entity;
+		}
+		else
+		{
+			PZ::Application::GetSingleton().GetEntityManager().DestroyEntity(entity);
+			return NULL;
+		}
+	}
 	bool Entity::AddChild(Entity *child)
 	{
 		if (*child == *this)
