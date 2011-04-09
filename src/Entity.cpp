@@ -199,7 +199,7 @@ namespace PZ
 		if (component->GetOwner() == NULL && !HasComponent(component->GetName()))
 		{
 			component->SetOwner(this);
-			components.push_back(component);
+			components.insert(std::make_pair(component->GetName(), component));
 			return true;
 		}
 		else
@@ -212,38 +212,40 @@ namespace PZ
 	{
 		return AddComponent(Application::GetSingleton().GetComponentManager().CreateComponent(name));
 	}
-
 	bool Entity::RemoveComponent(const std::string &name, bool destroy)
 	{
-		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		ComponentList::const_iterator it = components.find(name);
+		if (it != components.end())
 		{
-			if ((*it)->GetName() == name)
+			Component *component = (*it).second;
+			component->SetOwner(NULL);
+
+			if (destroy)
 			{
-				(*it)->SetOwner(NULL);
-
-				if (destroy)
-				{
-					Application::GetSingleton().GetComponentManager().DestroyComponent(*it);
-				}
-
-				components.erase(it);
-
-				return true;
+				Application::GetSingleton().GetComponentManager().DestroyComponent(component);
 			}
-		}
 
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent component \""+name+"\"");
-		return false;
+			components.erase(it);
+
+			return true;
+		}
+		else
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent component \""+name+"\"");
+			return false;
+		}
 	}
 	void Entity::ClearComponents(bool destroy)
 	{
 		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			(*it)->SetOwner(NULL);
+			Component *component = (*it).second;
+
+			component->SetOwner(NULL);
 
 			if (destroy)
 			{
-				Application::GetSingleton().GetComponentManager().DestroyComponent(*it);
+				Application::GetSingleton().GetComponentManager().DestroyComponent(component);
 			}
 		}
 		components.clear();
@@ -251,29 +253,21 @@ namespace PZ
 
 	Component *Entity::GetComponent(const std::string &name) const
 	{
-		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		ComponentList::const_iterator it = components.find(name);
+		if (it != components.end())
 		{
-			if ((*it)->GetName() == name)
-			{
-				return (*it);
-			}
+			return (*it).second;
 		}
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent component \""+name+"\"");
-		return NULL;
+		else
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent component \""+name+"\"");
+			return NULL;
+		}
 	}
 
 	bool Entity::HasComponent(const std::string &name) const
 	{
-		bool found = false;
-		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
-		{
-			if ((*it)->GetName() == name)
-			{
-				found = true;
-				break;
-			}
-		}
-		return found;
+		return (components.find(name) != components.end());
 	}
 
 	const sf::Vector2f &Entity::GetLocalPosition() const
@@ -382,7 +376,8 @@ namespace PZ
 
 		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 		{
-			if ((*it)->HasAttribute(attribute))
+			Component *component = (*it).second;
+			if (component->HasAttribute(attribute))
 			{
 				has = true;
 				break; // It doesn't matter if more components has the attribute, we just need "has" to be true
@@ -405,9 +400,10 @@ namespace PZ
 	{
 		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			if ((*it)->HasAttribute(attribute))
+			Component *component = (*it).second;
+			if (component->HasAttribute(attribute))
 			{
-				(*it)->SetAttribute(attribute, value);
+				component->SetAttribute(attribute, value);
 			}
 		}
 
@@ -426,9 +422,10 @@ namespace PZ
 
 		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 		{
-			if ((*it)->HasAttribute(attribute))
+			Component *component = (*it).second;
+			if (component->HasAttribute(attribute))
 			{
-				result = (*it)->GetAttribute(attribute);
+				result = component->GetAttribute(attribute);
 				break;
 			}
 		}
@@ -460,7 +457,7 @@ namespace PZ
 		bool handled = HandleMessage(message);
 		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			Component *component = (*it);
+			Component *component = (*it).second;
 			component->ReceiveMessage(message);
 		}
 

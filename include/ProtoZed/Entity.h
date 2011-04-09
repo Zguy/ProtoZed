@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace PZ
 {
@@ -35,7 +36,7 @@ namespace PZ
 	typedef std::vector<Entity*> EntityList;
 
 	class Component;
-	typedef std::vector<Component*> ComponentList;
+	typedef std::map<std::string, Component*> ComponentList;
 
 	class Entity : public Animable
 	{
@@ -68,7 +69,6 @@ namespace PZ
 
 		bool AddComponent(Component *component);
 		bool AddComponent(const std::string &name);
-		
 		bool RemoveComponent(const std::string &name, bool destroy = true);
 		void ClearComponents(bool destroy = true);
 
