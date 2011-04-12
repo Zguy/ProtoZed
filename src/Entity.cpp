@@ -127,10 +127,11 @@ namespace PZ
 			if (*(*it) == *child)
 			{
 				(*it)->parent = NULL;
-				children.erase(it);
 
 				if (destroy)
 					Application::GetSingleton().GetEntityManager().DestroyEntity(*it, true);
+
+				children.erase(it);
 
 				found = true;
 				break;
