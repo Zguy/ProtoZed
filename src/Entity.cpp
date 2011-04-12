@@ -264,7 +264,6 @@ namespace PZ
 			return NULL;
 		}
 	}
-
 	bool Entity::HasComponent(const std::string &name) const
 	{
 		return (components.find(name) != components.end());

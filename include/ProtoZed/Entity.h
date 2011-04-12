@@ -78,7 +78,7 @@ namespace PZ
 		{
 			return static_cast<T*>(GetComponent(name));
 		}
-
+		const ComponentList &GetComponents() const { return components; }
 		bool HasComponent(const std::string &name) const;
 
 		const sf::Vector2f &GetLocalPosition() const;
@@ -93,7 +93,7 @@ namespace PZ
 		inline void SetY(float y) { SetLocalPosition(GetLocalPosition().x, y); }
 
 		inline void Move(float offsetX, float offsetY) { SetLocalPosition(GetLocalPosition().x+offsetX, GetLocalPosition().y+offsetY); }
-		inline void Move(const sf::Vector2f& offset) { SetLocalPosition(GetLocalPosition()+offset); }
+		inline void Move(const sf::Vector2f &offset) { SetLocalPosition(GetLocalPosition()+offset); }
 
 		float GetLocalRotation() const;
 		float GetGlobalRotation() const;
