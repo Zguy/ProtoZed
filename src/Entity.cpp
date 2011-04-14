@@ -195,6 +195,19 @@ namespace PZ
 		return NULL;
 	}
 
+	Component *Entity::CreateComponent(const std::string &name)
+	{
+		Component *component = Application::GetSingleton().GetComponentManager().CreateComponent(name);
+		if (AddComponent(component))
+		{
+			return component;
+		}
+		else
+		{
+			Application::GetSingleton().GetComponentManager().DestroyComponent(component);
+			return NULL;
+		}
+	}
 	bool Entity::AddComponent(Component *component)
 	{
 		if (component->GetOwner() == NULL && !HasComponent(component->GetName()))
@@ -208,10 +221,6 @@ namespace PZ
 			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add component \""+component->GetName()+"\", which already has an owner.");
 			return false;
 		}
-	}
-	bool Entity::AddComponent(const std::string &name)
-	{
-		return AddComponent(Application::GetSingleton().GetComponentManager().CreateComponent(name));
 	}
 	bool Entity::RemoveComponent(const std::string &name, bool destroy)
 	{

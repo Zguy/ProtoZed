@@ -67,8 +67,13 @@ namespace PZ
 		inline const std::string &GetName() const { return name; }
 		inline const std::string &GetFamily() const { return family; }
 
+		Component *CreateComponent(const std::string &name);
+		template<class T>
+		T *CreateComponent(const std::string &name)
+		{
+			return static_cast<T*>(CreateComponent(name));
+		}
 		bool AddComponent(Component *component);
-		bool AddComponent(const std::string &name);
 		bool RemoveComponent(const std::string &name, bool destroy = true);
 		void ClearComponents(bool destroy = true);
 
