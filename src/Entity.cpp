@@ -87,6 +87,12 @@ namespace PZ
 	}
 	bool Entity::AddChild(Entity *child)
 	{
+		if (child == NULL)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "AddChild() ignored a NULL pointer");
+			return false;
+		}
+
 		if (*child == *this)
 		{
 			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add itself as a child");
@@ -210,6 +216,12 @@ namespace PZ
 	}
 	bool Entity::AddComponent(Component *component)
 	{
+		if (component == NULL)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "AddComponent() ignored a NULL pointer");
+			return false;
+		}
+
 		if (component->GetOwner() == NULL && !HasComponent(component->GetName()))
 		{
 			component->SetOwner(this);
