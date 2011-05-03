@@ -32,8 +32,8 @@ namespace PZ
 		~DrawableComponent();
 
 		inline bool HasDrawable() const { return (drawable != NULL); }
-		inline void SetDrawable(sf::Drawable *newDrawable) { drawable = newDrawable; if (HasOwner()) { GetDrawable()->SetPosition(GetOwner()->GetGlobalPosition()); } }
 		inline sf::Drawable *GetDrawable() const { return drawable; }
+		void SetDrawable(sf::Drawable *newDrawable);
 
 		// Pretend we're a sf::Drawable
 		// Note: We should probably check if drawable is NULL

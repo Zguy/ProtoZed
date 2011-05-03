@@ -30,6 +30,23 @@ namespace PZ
 			delete drawable;
 	}
 
+	void DrawableComponent::SetDrawable(sf::Drawable *newDrawable)
+	{
+		if (HasDrawable())
+		{
+			delete drawable;
+			drawable = NULL;
+		}
+
+		drawable = newDrawable;
+		
+		if (HasDrawable() && HasOwner())
+		{
+			GetDrawable()->SetPosition(GetOwner()->GetGlobalPosition());
+			GetDrawable()->SetRotation(GetOwner()->GetGlobalRotation());
+		}
+	}
+
 	bool DrawableComponent::HasAttribute(Attribute attribute) const
 	{
 		return ((attribute == Attributes::SCALE_X)||
