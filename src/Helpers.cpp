@@ -26,6 +26,13 @@ namespace PZ
 {
 	namespace Helpers
 	{
+		void NormalizeVector(sf::Vector2f &vector)
+		{
+			const float length = GetDistance(sf::Vector2f(), vector);
+			if (length > 0.f)
+				vector /= length;
+		}
+
 		sf::Vector2f GetForwardVector(float rotation, float length)
 		{
 			const float rotRad = Convert::DegreesToRadians(rotation);
