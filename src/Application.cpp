@@ -41,7 +41,7 @@ namespace PZ
 		{
 		}
 
-		bool boot(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
+		bool boot(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
 		{
 			if (running)
 				return true;
@@ -49,7 +49,13 @@ namespace PZ
 			logManager.OpenLog("ProtoZed");
 			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
-			window.Create(videoMode, appName, windowStyle, params);
+			sf::VideoMode sfVideoMode(videoMode.GetWindowResolution().x, videoMode.GetWindowResolution().y);
+			if (videoMode.GetFullscreen())
+				windowStyle |= sf::Style::Fullscreen;
+			window.Create(sfVideoMode, appName, windowStyle, params);
+
+			view = videoMode.GetView();
+			window.SetView(view);
 
 			entityManager.RegisterEntity<Entity>("Entity");
 			entityManager.RegisterEntity<SoundEntity>("SoundEntity");
@@ -111,6 +117,8 @@ namespace PZ
 		bool running;
 
 		sf::RenderWindow window;
+		sf::View view;
+		Input input;
 
 		LogManager       logManager;
 		AppStateManager  stateManager;
@@ -131,7 +139,7 @@ namespace PZ
 		delete p;
 	}
 
-	int Application::Run(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
+	int Application::Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
 	{
 		if (!p->boot(appName, videoMode, windowStyle, params))
 		{
@@ -141,6 +149,8 @@ namespace PZ
 		while (p->running)
 		{
 			float deltaTime = p->window.GetFrameTime();
+
+			p->input.Update(p->window);
 
 			p->stateManager.Update();
 
@@ -179,9 +189,9 @@ namespace PZ
 		p->running = false;
 	}
 
-	const sf::Input &Application::GetInput() const
+	const Input &Application::GetInput() const
 	{
-		return p->window.GetInput();
+		return p->input;
 	}
 	LogManager &Application::GetLogManager() const
 	{

@@ -20,6 +20,8 @@
 #define Application_h__
 
 #include <ProtoZed/Singleton.h>
+#include <ProtoZed/VideoMode.h>
+#include <ProtoZed/Input.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/ComponentManager.h>
@@ -27,7 +29,6 @@
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
 
-#include <SFML/Window.hpp>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
@@ -48,11 +49,11 @@ namespace PZ
 		Application();
 		~Application();
 
-		int Run(const std::string &appName, sf::VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), sf::WindowSettings &params = sf::WindowSettings());
+		int Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), sf::WindowSettings &params = sf::WindowSettings());
 
 		void RequestShutdown();
 
-		const sf::Input    &GetInput() const;
+		const Input        &GetInput() const;
 		LogManager         &GetLogManager() const;
 		AppStateManager    &GetStateManager() const;
 		EntityManager      &GetEntityManager() const;
