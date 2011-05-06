@@ -27,10 +27,14 @@ namespace PZ
 {
 	namespace MessageID
 	{
-		static const std::string UPDATE           = "Update";
-		static const std::string POSITION_UPDATED = "PositionUpdated";
-		static const std::string ROTATION_UPDATED = "RotationUpdated";
-		static const std::string DRAW             = "Draw";
+		enum Type
+		{
+			UPDATE = 1,
+			POSITION_UPDATED,
+			ROTATION_UPDATED,
+			DRAW,
+			USER // Start your own message ids from here
+		};
 	}
 
 	struct UpdateMessage : public Message

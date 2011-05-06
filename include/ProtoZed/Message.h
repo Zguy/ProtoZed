@@ -23,6 +23,8 @@
 
 namespace PZ
 {
+	typedef unsigned int MessageType;
+
 	struct Message
 	{
 		enum Mode
@@ -32,10 +34,10 @@ namespace PZ
 			SINK   // Sink down the leaf child
 		};
 
-		Message(const std::string &message = "", Mode mode = SINK) : message(message), mode(mode)
+		Message(MessageType message = 0, Mode mode = SINK) : message(message), mode(mode)
 		{}
 
-		std::string message;
+		MessageType message;
 
 		Mode mode;
 

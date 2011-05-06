@@ -158,6 +158,8 @@ namespace PZ
 
 			p->window.Clear();
 
+			Update(deltaTime);
+
 			AppState *state = p->stateManager.GetCurrentState();
 			if (state != NULL)
 			{

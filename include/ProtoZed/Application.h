@@ -49,6 +49,8 @@ namespace PZ
 		Application();
 		~Application();
 
+		virtual void Update(float deltaTime) {}
+
 		int Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), sf::WindowSettings &params = sf::WindowSettings());
 
 		void RequestShutdown();
