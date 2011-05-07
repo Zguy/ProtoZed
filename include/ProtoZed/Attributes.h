@@ -19,21 +19,23 @@
 #ifndef Attributes_h__
 #define Attributes_h__
 
+#include <ProtoZed/Animation/Animable.h>
+
 namespace PZ
 {
 	namespace Attributes
 	{
-		static const Attribute X        = "X";
-		static const Attribute Y        = "Y";
-		static const Attribute SCALE_X  = "SCALE_X";
-		static const Attribute SCALE_Y  = "SCALE_Y";
-		static const Attribute ROTATION = "ROTATION";
-		static const Attribute COLOR_R  = "COLOR_R";
-		static const Attribute COLOR_G  = "COLOR_G";
-		static const Attribute COLOR_B  = "COLOR_B";
-		static const Attribute ALPHA    = "ALPHA";
+		enum Type
+		{
+			X = 1, Y,
+			SCALE_X, SCALE_Y,
+			ROTATION,
+			COLOR_R, COLOR_G, COLOR_B, ALPHA,
 
-		static const Attribute VOLUME   = "VOLUME";
+			VOLUME,
+
+			USER // Start your own attributes from here
+		};
 	}
 }
 

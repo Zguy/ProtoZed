@@ -27,7 +27,7 @@ namespace PZ
 	class AnimationBase;
 	struct AnimationProperties;
 
-	typedef std::string Attribute;
+	typedef unsigned int Attribute;
 	typedef std::vector<AnimationBase*> AnimationList;
 
 	class Animable

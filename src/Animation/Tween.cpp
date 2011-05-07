@@ -25,7 +25,7 @@ namespace PZ
 	class TweenImpl
 	{
 	public:
-		TweenImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(""), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
+		TweenImpl() : startValue(0.f), totalTime(0.f), currentTime(0.f), attribute(0), goal(1.f), relativeGoal(false), transitionEnum(Easing::LINEAR), transition(&Easing::fLinear), equation(Easing::EASE_IN_OUT), delay(0.f), repeat(0), pingpong(false)
 		{}
 
 		float startValue;
