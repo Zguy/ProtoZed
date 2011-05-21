@@ -183,7 +183,7 @@ namespace PZ
 			return NULL;
 		}
 	}
-	Entity *Entity::GetChildByName(const std::string name, bool recursive) const
+	Entity *Entity::GetChildByName(const std::string &name, bool recursive) const
 	{
 		const Entity *const parent = this;
 		for (EntityList::const_iterator it = parent->children.cbegin(); it != parent->children.cend(); ++it)

@@ -61,7 +61,7 @@ namespace PZ
 		inline const EntityList &GetChildren() const { return children; }
 		void GetChildrenRecursive(EntityList &list) const;
 		Entity *GetChildByIndex(unsigned int index) const;
-		Entity *GetChildByName(const std::string name, bool recursive = false) const;
+		Entity *GetChildByName(const std::string &name, bool recursive = false) const;
 
 		inline UniqueID GetID() const { return id; }
 		inline const std::string &GetName() const { return name; }
