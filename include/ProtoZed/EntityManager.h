@@ -37,9 +37,9 @@ namespace PZ
 		}
 		bool UnregisterEntity(const std::string &entityName);
 
-		Entity *CreateEntity(const std::string &entityName, const std::string name = "");
+		Entity *CreateEntity(const std::string &entityName, const std::string &name = "");
 		template<class T>
-		T *CreateEntity(const std::string &entityName, const std::string name = "")
+		T *CreateEntity(const std::string &entityName, const std::string &name = "")
 		{
 			Entity *entity = CreateEntity(entityName, name);
 			return static_cast<T*>(entity);

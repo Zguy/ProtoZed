@@ -87,35 +87,33 @@ namespace PZ
 	
 	bool Input::operator==(const Input &rhs)
 	{
-		bool equal = true;
-	
 		for (int i = 0; i < sf::Key::Count; ++i)
 			if (myKeys[i] != rhs.myKeys[i])
-				equal = false;
+				return false;
 	
 		for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
 			if (myMouseButtons[i] != rhs.myMouseButtons[i])
-				equal = false;
+				return false;
 	
 		for (int i = 0; i < sf::Joy::Count; ++i)
 		{
 			for (int j = 0; j < sf::Joy::ButtonCount; ++j)
 				if (myJoystickButtons[i][j] != rhs.myJoystickButtons[i][j])
-					equal = false;
+					return false;
 	
 			for (int j = 0; j < sf::Joy::AxisCount; ++j)
 				if (myJoystickAxis[i][j] != rhs.myJoystickAxis[i][j])
-					equal = false;
+					return false;
 			if (myJoystickAxis[i][sf::Joy::AxisPOV] != rhs.myJoystickAxis[i][sf::Joy::AxisPOV])
-				equal = false;
+				return false;
 		}
 	
 		if (myMouseX != rhs.myMouseX)
-			equal = false;
+			return false;
 		if (myMouseY != rhs.myMouseY)
-			equal = false;
-	
-		return equal;
+			return false;
+
+		return true;
 	}
 	bool Input::operator!=(const Input &rhs)
 	{

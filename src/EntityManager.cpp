@@ -36,7 +36,7 @@ namespace PZ
 		return entityFactory.Unregister(entityName);
 	}
 
-	Entity *EntityManager::CreateEntity(const std::string &entityName, const std::string name)
+	Entity *EntityManager::CreateEntity(const std::string &entityName, const std::string &name)
 	{
 		std::string fixName = name;
 		if (fixName.empty())

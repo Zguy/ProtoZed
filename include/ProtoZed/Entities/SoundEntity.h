@@ -30,7 +30,7 @@ namespace PZ
 	class SoundEntity : public Entity
 	{
 	public:
-		SoundEntity(const std::string name);
+		SoundEntity(const std::string &name);
 		~SoundEntity();
 
 		void SetSoundBuffer(const sf::SoundBuffer &soundBuffer);

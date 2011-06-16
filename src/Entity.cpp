@@ -276,7 +276,7 @@ namespace PZ
 	Component *Entity::GetComponent(const std::string &name) const
 	{
 		ComponentList::const_iterator it = components.find(name);
-		if (it != components.end())
+		if (it != components.cend())
 		{
 			return (*it).second;
 		}
@@ -288,7 +288,7 @@ namespace PZ
 	}
 	bool Entity::HasComponent(const std::string &name) const
 	{
-		return (components.find(name) != components.end());
+		return (components.find(name) != components.cend());
 	}
 
 	const sf::Vector2f &Entity::GetLocalPosition() const
@@ -479,7 +479,8 @@ namespace PZ
 		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
 		{
 			Component *component = (*it).second;
-			component->ReceiveMessage(message);
+			if (component->ReceiveMessage(message))
+				handled = true;
 		}
 
 		if (message.mode == Message::SINK)
