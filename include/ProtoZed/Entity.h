@@ -19,6 +19,8 @@
 #ifndef Entity_h__
 #define Entity_h__
 
+#include <ProtoZed/Animation/Animable.h>
+#include <ProtoZed/Attributes.h>
 #include <ProtoZed/UniqueIDGenerator.h>
 #include <ProtoZed/Messages.h>
 
@@ -26,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace PZ
 {
@@ -33,11 +36,14 @@ namespace PZ
 	typedef std::vector<Entity*> EntityList;
 
 	class Component;
-	typedef std::vector<Component*> ComponentList;
+	typedef std::map<std::string, Component*> ComponentList;
 
-	class Entity
+	class Entity : public Animable
 	{
 	public:
+		static Entity *Create(const std::string &entityName, const std::string &name = "");
+		static void Destroy(Entity *entity, bool destroyChildren = false);
+
 		Entity(const std::string &name);
 		Entity(const std::string &name, const std::string &family);
 		virtual ~Entity();
@@ -47,6 +53,7 @@ namespace PZ
 		const Entity *GetRoot() const;
 		Entity *GetRoot();
 
+		Entity *CreateChild(const std::string &entityName, const std::string &name = "");
 		bool AddChild(Entity *child);
 		bool RemoveChild(Entity *child, bool destroy = true);
 		void ClearChildren(bool destroy = true);
@@ -54,15 +61,19 @@ namespace PZ
 		inline const EntityList &GetChildren() const { return children; }
 		void GetChildrenRecursive(EntityList &list) const;
 		Entity *GetChildByIndex(unsigned int index) const;
-		Entity *GetChildByName(const std::string name, bool recursive = false) const;
+		Entity *GetChildByName(const std::string &name, bool recursive = false) const;
 
 		inline UniqueID GetID() const { return id; }
 		inline const std::string &GetName() const { return name; }
 		inline const std::string &GetFamily() const { return family; }
 
+		Component *CreateComponent(const std::string &name);
+		template<class T>
+		T *CreateComponent(const std::string &name)
+		{
+			return static_cast<T*>(CreateComponent(name));
+		}
 		bool AddComponent(Component *component);
-		bool AddComponent(const std::string &name);
-		
 		bool RemoveComponent(const std::string &name, bool destroy = true);
 		void ClearComponents(bool destroy = true);
 
@@ -72,7 +83,7 @@ namespace PZ
 		{
 			return static_cast<T*>(GetComponent(name));
 		}
-
+		const ComponentList &GetComponents() const { return components; }
 		bool HasComponent(const std::string &name) const;
 
 		const sf::Vector2f &GetLocalPosition() const;
@@ -87,7 +98,7 @@ namespace PZ
 		inline void SetY(float y) { SetLocalPosition(GetLocalPosition().x, y); }
 
 		inline void Move(float offsetX, float offsetY) { SetLocalPosition(GetLocalPosition().x+offsetX, GetLocalPosition().y+offsetY); }
-		inline void Move(const sf::Vector2f& offset) { SetLocalPosition(GetLocalPosition()+offset); }
+		inline void Move(const sf::Vector2f &offset) { SetLocalPosition(GetLocalPosition()+offset); }
 
 		float GetLocalRotation() const;
 		float GetGlobalRotation() const;
@@ -99,6 +110,10 @@ namespace PZ
 
 		inline const sf::Vector2f &GetLocalXAxis() const { return localXAxis; }
 		inline const sf::Vector2f &GetLocalYAxis() const { return localYAxis; }
+
+		virtual bool HasAttribute(Attribute attribute) const;
+		virtual void SetAttribute(Attribute attribute, float value);
+		virtual float GetAttribute(Attribute attribute) const;
 
 		bool BroadcastMessage(Message &message);
 		bool ReceiveMessage(Message &message);

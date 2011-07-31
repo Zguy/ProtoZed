@@ -16,22 +16,27 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ProtoZed_h__
-#define ProtoZed_h__
+#ifndef Attributes_h__
+#define Attributes_h__
 
-#include <ProtoZed/Application.h>
-#include <ProtoZed/Convert.h>
-#include <ProtoZed/Helpers.h>
-#include <ProtoZed/UniqueIDGenerator.h>
+#include <ProtoZed/Animation/Animable.h>
 
-#include <ProtoZed/Animation/Animation.h>
+namespace PZ
+{
+	namespace Attributes
+	{
+		enum Type
+		{
+			X = 1, Y,
+			SCALE_X, SCALE_Y,
+			ROTATION,
+			COLOR_R, COLOR_G, COLOR_B, ALPHA,
 
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Entities/ListenerEntity.h>
+			VOLUME,
 
-#include <ProtoZed/Component.h>
-#include <ProtoZed/Components/DrawableComponent.h>
-#include <ProtoZed/Components/SpritesheetComponent.h>
-#include <ProtoZed/Components/SoundComponent.h>
+			USER // Start your own attributes from here
+		};
+	}
+}
 
-#endif // ProtoZed_h__
+#endif // Attributes_h__

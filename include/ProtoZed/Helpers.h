@@ -25,6 +25,8 @@ namespace PZ
 {
 	namespace Helpers
 	{
+		void NormalizeVector(sf::Vector2f &vector);
+
 		sf::Vector2f GetForwardVector(const float rotation, const float length);
 
 		float GetDistance(const sf::Vector2f &pointA, const sf::Vector2f &pointB);

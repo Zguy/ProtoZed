@@ -37,12 +37,21 @@ namespace PZ
 	Component *ComponentManager::CreateComponent(const std::string &componentName)
 	{
 		Component *component = componentFactory.Create(componentName);
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created component \""+component->GetName()+"\"");
+		if (component != NULL)
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created component \""+component->GetName()+"\"");
+		else
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Tried to create component \""+componentName+"\", but it does not exist");
 		return component;
 	}
 
 	void ComponentManager::DestroyComponent(Component *component) const
 	{
+		if (component == NULL)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "DestroyComponent() ignored a NULL pointer");
+			return;
+		}
+
 		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed component \""+component->GetName()+"\"");
 		delete component;
 	}

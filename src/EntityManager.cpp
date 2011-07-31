@@ -36,18 +36,27 @@ namespace PZ
 		return entityFactory.Unregister(entityName);
 	}
 
-	Entity *EntityManager::CreateEntity(const std::string &entityName, const std::string name)
+	Entity *EntityManager::CreateEntity(const std::string &entityName, const std::string &name)
 	{
 		std::string fixName = name;
 		if (fixName.empty())
 			fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("EntityName"));
 		Entity *entity = entityFactory.Create(entityName, fixName);
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
+		if (entity != NULL)
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
+		else
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Tried to create entity \""+entityName+"\", but it does not exist");
 		return entity;
 	}
 
 	void EntityManager::DestroyEntity(Entity *entity, bool destroyChildren) const
 	{
+		if (entity == NULL)
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "DestroyEntity() ignored a NULL pointer");
+			return;
+		}
+
 		if (destroyChildren)
 		{
 			EntityList children = entity->GetChildren();
