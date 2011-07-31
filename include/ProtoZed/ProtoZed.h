@@ -27,11 +27,11 @@
 #include <ProtoZed/Animation/Animation.h>
 
 #include <ProtoZed/Entity.h>
-#include <ProtoZed/Entities/SoundEntity.h>
 #include <ProtoZed/Entities/ListenerEntity.h>
 
 #include <ProtoZed/Component.h>
 #include <ProtoZed/Components/DrawableComponent.h>
 #include <ProtoZed/Components/SpritesheetComponent.h>
+#include <ProtoZed/Components/SoundComponent.h>
 
 #endif // ProtoZed_h__

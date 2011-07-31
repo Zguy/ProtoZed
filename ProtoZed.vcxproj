@@ -27,7 +27,7 @@
     <ClInclude Include="include\ProtoZed\Components\DrawableComponent.h" />
     <ClInclude Include="include\ProtoZed\Convert.h" />
     <ClInclude Include="include\ProtoZed\Entities\ListenerEntity.h" />
-    <ClInclude Include="include\ProtoZed\Entities\SoundEntity.h" />
+    <ClInclude Include="include\ProtoZed\Components\SoundComponent.h" />
     <ClInclude Include="include\ProtoZed\Components\SpritesheetComponent.h" />
     <ClInclude Include="include\ProtoZed\Entity.h" />
     <ClInclude Include="include\ProtoZed\EntityManager.h" />
@@ -70,7 +70,7 @@
     <ClCompile Include="src\Components\DrawableComponent.cpp" />
     <ClCompile Include="src\Convert.cpp" />
     <ClCompile Include="src\Entities\ListenerEntity.cpp" />
-    <ClCompile Include="src\Entities\SoundEntity.cpp" />
+    <ClCompile Include="src\Components\SoundComponent.cpp" />
     <ClCompile Include="src\Components\SpritesheetComponent.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />

@@ -19,19 +19,17 @@
 #ifndef SoundEntity_h__
 #define SoundEntity_h__
 
-#include <ProtoZed/Entity.h>
-#include <ProtoZed/Animation/Animable.h>
-#include <ProtoZed/Attributes.h>
+#include <ProtoZed/Component.h>
 
 #include <SFML/Audio/Sound.hpp>
 
 namespace PZ
 {
-	class SoundEntity : public Entity
+	class SoundComponent : public Component
 	{
 	public:
-		SoundEntity(const std::string &name);
-		~SoundEntity();
+		SoundComponent();
+		~SoundComponent();
 
 		void SetSoundBuffer(const sf::SoundBuffer &soundBuffer);
 
@@ -60,13 +58,12 @@ namespace PZ
 
 		inline float GetPlayingOffset() const { return sound.GetPlayingOffset(); }
 
-		// Animable
 		virtual bool HasAttribute(Attribute attribute) const;
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
-		virtual bool HandleMessage(Message &message);
+		virtual bool ReceiveMessage(Message &message);
 
 	private:
 		sf::Sound sound;

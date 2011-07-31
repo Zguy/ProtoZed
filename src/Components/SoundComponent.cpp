@@ -16,55 +16,53 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/Entities/SoundEntity.h>
+#include <ProtoZed/Components/SoundComponent.h>
 
 namespace PZ
 {
-	SoundEntity::SoundEntity(const std::string &name) : Entity(name, "Sound")
+	SoundComponent::SoundComponent() : Component("Sound")
 	{
 	}
-	SoundEntity::~SoundEntity()
+	SoundComponent::~SoundComponent()
 	{
 	}
 
-	void SoundEntity::SetSoundBuffer(const sf::SoundBuffer &soundBuffer)
+	void SoundComponent::SetSoundBuffer(const sf::SoundBuffer &soundBuffer)
 	{
 		sound.SetBuffer(soundBuffer);
 	}
 
-	bool SoundEntity::HasAttribute(Attribute attribute) const
+	bool SoundComponent::HasAttribute(Attribute attribute) const
 	{
 		return ((attribute == Attributes::VOLUME)||
-						Entity::HasAttribute(attribute));
+						Component::HasAttribute(attribute));
 	}
-	void SoundEntity::SetAttribute(Attribute attribute, float value)
+	void SoundComponent::SetAttribute(Attribute attribute, float value)
 	{
-		Entity::SetAttribute(attribute, value);
+		Component::SetAttribute(attribute, value);
 
 		if (attribute == Attributes::VOLUME)
 			SetVolume(value);
 	}
-	float SoundEntity::GetAttribute(Attribute attribute) const
+	float SoundComponent::GetAttribute(Attribute attribute) const
 	{
 		if (attribute == Attributes::VOLUME)
 			return GetVolume();
 		else
-			return Entity::GetAttribute(attribute);
+			return Component::GetAttribute(attribute);
 	}
 
-	bool SoundEntity::HandleMessage(Message &message)
+	bool SoundComponent::ReceiveMessage(Message &message)
 	{
-		bool handled = Entity::HandleMessage(message);
-
 		if (message.message == MessageID::POSITION_UPDATED || message.message == MessageID::ROTATION_UPDATED)
 		{
-			sf::Vector2f entityPos = GetGlobalPosition();
+			sf::Vector2f entityPos = GetOwner()->GetGlobalPosition();
 			sf::Vector3f soundPos(entityPos.x, entityPos.y, 0);
 			sound.SetPosition(soundPos);
 
 			return true;
 		}
 
-		return handled;
+		return false;
 	}
 }
