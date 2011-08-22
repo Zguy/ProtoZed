@@ -22,11 +22,11 @@
 
 namespace PZ
 {
-	AppState::AppState() : started(false), rootEntity(Application::GetSingleton().GetEntityManager().CreateEntity("Entity", "RootEntity"))
+	AppState::AppState() : started(false), rootEntity(Entity::Create("Entity", "RootEntity"))
 	{
 	}
 	AppState::~AppState()
 	{
-		Application::GetSingleton().GetEntityManager().DestroyEntity(rootEntity, true);
+		rootEntity->Destroy(true);
 	}
 }

@@ -48,6 +48,8 @@ namespace PZ
 		Entity(const std::string &name, const std::string &family);
 		virtual ~Entity();
 
+		inline void Destroy(bool destroyChildren = false) { Entity::Destroy(this, destroyChildren); }
+
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
 		const Entity *GetRoot() const;
