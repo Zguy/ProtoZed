@@ -19,7 +19,6 @@
 #ifndef Component_h__
 #define Component_h__
 
-#include <ProtoZed/Animation/Animable.h>
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Message.h>
 
@@ -27,7 +26,7 @@
 
 namespace PZ
 {
-	class Component : public Animable
+	class Component
 	{
 		friend class Entity;
 

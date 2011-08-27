@@ -73,13 +73,11 @@ namespace PZ
 		}
 
 		std::fstream logFile;
-		Log::Level logLevel;
 	};
 
-	Log::Log(const std::string &file, Log::Level level) : p(new LogImpl)
+	Log::Log(const std::string &file) : p(new LogImpl)
 	{
 		p->logFile.open(file.c_str(), std::ios::out | std::ios::trunc);
-		p->logLevel = level;
 
 		p->logIntroLine();
 	}
@@ -90,21 +88,13 @@ namespace PZ
 		delete p;
 	}
 
-	void Log::Message(Type type, Level level, const std::string &message)
+	void Log::Message(Type type, const std::string &message)
 	{
-		if (level >= p->logLevel)
-		{
-			std::string typeStr = p->typeToString(type);
-			std::string timeStr = p->currentTime();
+		std::string typeStr = p->typeToString(type);
+		std::string timeStr = p->currentTime();
 
-			std::string line = typeStr + " ("+timeStr+"): " + message;
-			p->logFile << line << std::endl;
-			std::cout << line << std::endl;
-		}
-	}
-
-	void Log::setLogLevel(Log::Level level)
-	{
-		p->logLevel = level;
+		std::string line = typeStr + " ("+timeStr+"): " + message;
+		p->logFile << line << std::endl;
+		std::cout << line << std::endl;
 	}
 }

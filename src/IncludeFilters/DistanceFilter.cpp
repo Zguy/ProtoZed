@@ -16,43 +16,22 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Log_h__
-#define Log_h__
+#include <ProtoZed/IncludeFilters/DistanceFilter.h>
 
-#include <string>
+#include <ProtoZed/Entity.h>
+#include <ProtoZed/Helpers.h>
 
 namespace PZ
 {
-	class LogImpl;
-
-	class Log
+	DistanceFilter::DistanceFilter(const sf::Vector2f &origin, const float distance) : origin(origin), distance(distance)
 	{
-		friend class LogManager;
+	}
+	DistanceFilter::~DistanceFilter()
+	{
+	}
 
-	public:
-		enum Type
-		{
-			LT_INFO,
-			LT_ERROR,
-			LT_WARNING,
-			LT_DEBUG
-		};
-
-	private:
-		Log(const std::string &file);
-		~Log();
-
-	public:
-		void Message(Type type, const std::string &message);
-
-		inline void Info(const std::string &message) { Message(LT_INFO, message); }
-		inline void Error(const std::string &message) { Message(LT_ERROR, message); }
-		inline void Warning(const std::string &message) { Message(LT_WARNING, message); }
-		inline void Debug(const std::string &message) { Message(LT_DEBUG, message); }
-
-	private:
-		LogImpl *p;
-	};
+	bool DistanceFilter::TestEntity(const Entity *entity) const
+	{
+		return (Helpers::GetDistanceSquared(origin, entity->GetGlobalPosition()) <= (distance*distance));
+	}
 }
-
-#endif // Log_h__

@@ -16,43 +16,26 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Log_h__
-#define Log_h__
+#ifndef NoFilter_h__
+#define NoFilter_h__
 
-#include <string>
+#include <ProtoZed/IncludeFilter.h>
 
 namespace PZ
 {
-	class LogImpl;
-
-	class Log
+	class NoFilter : public IncludeFilter
 	{
-		friend class LogManager;
-
 	public:
-		enum Type
+		NoFilter()
+		{}
+		virtual ~NoFilter()
+		{}
+
+		virtual bool TestEntity(const Entity *entity) const
 		{
-			LT_INFO,
-			LT_ERROR,
-			LT_WARNING,
-			LT_DEBUG
-		};
-
-	private:
-		Log(const std::string &file);
-		~Log();
-
-	public:
-		void Message(Type type, const std::string &message);
-
-		inline void Info(const std::string &message) { Message(LT_INFO, message); }
-		inline void Error(const std::string &message) { Message(LT_ERROR, message); }
-		inline void Warning(const std::string &message) { Message(LT_WARNING, message); }
-		inline void Debug(const std::string &message) { Message(LT_DEBUG, message); }
-
-	private:
-		LogImpl *p;
+			return true;
+		}
 	};
 }
 
-#endif // Log_h__
+#endif // NoFilter_h__

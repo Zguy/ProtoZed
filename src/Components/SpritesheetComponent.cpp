@@ -44,7 +44,7 @@ namespace PZ
 
 		if (rootNode->IsValue() && rootNode->AsValue() == Jzon::null)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" failed to open spritesheet \""+filename+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" failed to open spritesheet \""+filename+"\"");
 			return false;
 		}
 		else
@@ -94,7 +94,7 @@ namespace PZ
 
 		if (!found)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to set non-existent animation \""+name+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to set non-existent animation \""+name+"\"");
 		}
 
 		return found;

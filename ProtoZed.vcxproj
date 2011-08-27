@@ -40,6 +40,9 @@
     <ClInclude Include="include\ProtoZed\FastDelegate\get_pointer.hpp" />
     <ClInclude Include="include\ProtoZed\FastDelegate\make_delegatetmpl.hpp" />
     <ClInclude Include="include\ProtoZed\Helpers.h" />
+    <ClInclude Include="include\ProtoZed\IncludeFilter.h" />
+    <ClInclude Include="include\ProtoZed\IncludeFilters\DistanceFilter.h" />
+    <ClInclude Include="include\ProtoZed\IncludeFilters\NoFilter.h" />
     <ClInclude Include="include\ProtoZed\Input.h" />
     <ClInclude Include="include\ProtoZed\Jzon.h" />
     <ClInclude Include="include\ProtoZed\Logging\Log.h" />
@@ -75,6 +78,7 @@
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityManager.cpp" />
     <ClCompile Include="src\Helpers.cpp" />
+    <ClCompile Include="src\IncludeFilters\DistanceFilter.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Jzon.cpp" />
     <ClCompile Include="src\Logging\Log.cpp" />

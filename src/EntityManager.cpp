@@ -43,9 +43,9 @@ namespace PZ
 			fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("EntityName"));
 		Entity *entity = entityFactory.Create(entityName, fixName);
 		if (entity != NULL)
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Created entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+")");
 		else
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Tried to create entity \""+entityName+"\", but it does not exist");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Tried to create entity \""+entityName+"\", but it does not exist");
 		return entity;
 	}
 
@@ -53,7 +53,7 @@ namespace PZ
 	{
 		if (entity == NULL)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "DestroyEntity() ignored a NULL pointer");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning("DestroyEntity() ignored a NULL pointer");
 			return;
 		}
 
@@ -67,7 +67,7 @@ namespace PZ
 			}
 		}
 
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+", "+entity->GetFamily()+")");
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Destroyed entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+")");
 		delete entity;
 	}
 }

@@ -45,7 +45,7 @@ namespace PZ
 			return static_cast<T*>(entity);
 		}
 
-		void DestroyEntity(Entity *entity, bool destroyChildren = false) const;
+		void DestroyEntity(Entity *entity, bool destroyChildren = true) const;
 
 	private:
 		typedef ::ObjectFactory<Entity*(const std::string&), std::string> EntityFactory;

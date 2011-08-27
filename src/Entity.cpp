@@ -33,11 +33,7 @@ namespace PZ
 		PZ::Application::GetSingleton().GetEntityManager().DestroyEntity(entity, destroyChildren);
 	}
 
-	Entity::Entity(const std::string &name) : parent(NULL), name(name), family("Entity"), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
-	{
-		id = UniqueIDGenerator::GetNextID("EntityID");
-	}
-	Entity::Entity(const std::string &name, const std::string &family) : parent(NULL), name(name), family(family), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
+	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
 	{
 		id = UniqueIDGenerator::GetNextID("EntityID");
 	}
@@ -48,7 +44,7 @@ namespace PZ
 			parent->RemoveChild(this, false);
 		}
 
-		ClearChildren(false);
+		ClearChildren(true);
 
 		ClearComponents(true);
 	}
@@ -74,14 +70,14 @@ namespace PZ
 
 	Entity *Entity::CreateChild(const std::string &entityName, const std::string &name)
 	{
-		Entity *entity = PZ::Application::GetSingleton().GetEntityManager().CreateEntity(entityName, name);
+		Entity *entity = Entity::Create(entityName, name);
 		if (AddChild(entity))
 		{
 			return entity;
 		}
 		else
 		{
-			PZ::Application::GetSingleton().GetEntityManager().DestroyEntity(entity);
+			entity->Destroy();
 			return NULL;
 		}
 	}
@@ -89,13 +85,13 @@ namespace PZ
 	{
 		if (child == NULL)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "AddChild() ignored a NULL pointer");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning("AddChild() ignored a NULL pointer");
 			return false;
 		}
 
 		if (*child == *this)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add itself as a child");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to add itself as a child");
 			return false;
 		}
 
@@ -120,7 +116,7 @@ namespace PZ
 		}
 		else
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" already has child \""+child->GetName()+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" already has child \""+child->GetName()+"\"");
 		}
 
 		return !found;
@@ -135,7 +131,7 @@ namespace PZ
 				(*it)->parent = NULL;
 
 				if (destroy)
-					Application::GetSingleton().GetEntityManager().DestroyEntity(*it, true);
+					(*it)->Destroy();
 
 				children.erase(it);
 
@@ -146,7 +142,7 @@ namespace PZ
 
 		if (!found)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent child \""+child->GetName()+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to remove non-existent child \""+child->GetName()+"\"");
 		}
 
 		return found;
@@ -158,17 +154,30 @@ namespace PZ
 			(*it)->parent = NULL;
 
 			if (destroy)
-				Application::GetSingleton().GetEntityManager().DestroyEntity(*it, true);
+				(*it)->Destroy();
 		}
 		children.clear();
 	}
 
-	void Entity::GetChildrenRecursive(EntityList &list) const
+	void Entity::GetChildren(EntityList &list, const IncludeFilter &filter) const
 	{
 		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
-			list.push_back(*it);
-			(*it)->GetChildrenRecursive(list);
+			if (filter.TestEntity(*it))
+			{
+				list.push_back(*it);
+			}
+		}
+	}
+	void Entity::GetChildrenRecursive(EntityList &list, const IncludeFilter &filter) const
+	{
+		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		{
+			if (filter.TestEntity(*it))
+			{
+				list.push_back(*it);
+			}
+			(*it)->GetChildrenRecursive(list, filter);
 		}
 	}
 	Entity *Entity::GetChildByIndex(unsigned int index) const
@@ -179,7 +188,7 @@ namespace PZ
 		}
 		else
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent child with index \""+Convert::ToString<unsigned int>(index)+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to access non-existent child with index \""+Convert::ToString<unsigned int>(index)+"\"");
 			return NULL;
 		}
 	}
@@ -218,7 +227,7 @@ namespace PZ
 	{
 		if (component == NULL)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "AddComponent() ignored a NULL pointer");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning("AddComponent() ignored a NULL pointer");
 			return false;
 		}
 
@@ -230,13 +239,13 @@ namespace PZ
 		}
 		else
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to add component \""+component->GetName()+"\", which already has an owner.");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to add component \""+component->GetName()+"\", which already has an owner.");
 			return false;
 		}
 	}
 	bool Entity::RemoveComponent(const std::string &name, bool destroy)
 	{
-		ComponentList::const_iterator it = components.find(name);
+		ComponentMap::const_iterator it = components.find(name);
 		if (it != components.end())
 		{
 			Component *component = (*it).second;
@@ -253,13 +262,13 @@ namespace PZ
 		}
 		else
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to remove non-existent component \""+name+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to remove non-existent component \""+name+"\"");
 			return false;
 		}
 	}
 	void Entity::ClearComponents(bool destroy)
 	{
-		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		for (ComponentMap::iterator it = components.begin(); it != components.end(); ++it)
 		{
 			Component *component = (*it).second;
 
@@ -275,14 +284,14 @@ namespace PZ
 
 	Component *Entity::GetComponent(const std::string &name) const
 	{
-		ComponentList::const_iterator it = components.find(name);
+		ComponentMap::const_iterator it = components.find(name);
 		if (it != components.cend())
 		{
 			return (*it).second;
 		}
 		else
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Entity \""+GetName()+"\" tried to access non-existent component \""+name+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to access non-existent component \""+name+"\"");
 			return NULL;
 		}
 	}
@@ -395,7 +404,7 @@ namespace PZ
 	{
 		bool has = false;
 
-		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		for (ComponentMap::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 		{
 			Component *component = (*it).second;
 			if (component->HasAttribute(attribute))
@@ -419,7 +428,7 @@ namespace PZ
 	}
 	void Entity::SetAttribute(Attribute attribute, float value)
 	{
-		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		for (ComponentMap::iterator it = components.begin(); it != components.end(); ++it)
 		{
 			Component *component = (*it).second;
 			if (component->HasAttribute(attribute))
@@ -441,7 +450,7 @@ namespace PZ
 		// so we'll just return the first we find and hope that its value is representable for the whole Entity
 		float result = 0.f;
 
-		for (ComponentList::const_iterator it = components.cbegin(); it != components.cend(); ++it)
+		for (ComponentMap::const_iterator it = components.cbegin(); it != components.cend(); ++it)
 		{
 			Component *component = (*it).second;
 			if (component->HasAttribute(attribute))
@@ -476,7 +485,7 @@ namespace PZ
 		}
 
 		bool handled = HandleMessage(message);
-		for (ComponentList::iterator it = components.begin(); it != components.end(); ++it)
+		for (ComponentMap::iterator it = components.begin(); it != components.end(); ++it)
 		{
 			Component *component = (*it).second;
 			if (component->ReceiveMessage(message))

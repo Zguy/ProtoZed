@@ -38,9 +38,6 @@ namespace PZ
 
 		Log &GetLog(const std::string &name);
 
-		void SetLogLevel(Log::Level level);
-		Log::Level GetLogLevel() const;
-
 	private:
 		LogManagerImpl *p;
 	};

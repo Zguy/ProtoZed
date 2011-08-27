@@ -16,43 +16,27 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef Log_h__
-#define Log_h__
+#ifndef DistanceFilter_h__
+#define DistanceFilter_h__
 
-#include <string>
+#include <ProtoZed/IncludeFilter.h>
+
+#include <SFML/System/Vector2.hpp>
 
 namespace PZ
 {
-	class LogImpl;
-
-	class Log
+	class DistanceFilter : public IncludeFilter
 	{
-		friend class LogManager;
-
 	public:
-		enum Type
-		{
-			LT_INFO,
-			LT_ERROR,
-			LT_WARNING,
-			LT_DEBUG
-		};
+		DistanceFilter(const sf::Vector2f &origin, const float distance);
+		virtual ~DistanceFilter();
+
+		virtual bool TestEntity(const Entity *entity) const;
 
 	private:
-		Log(const std::string &file);
-		~Log();
-
-	public:
-		void Message(Type type, const std::string &message);
-
-		inline void Info(const std::string &message) { Message(LT_INFO, message); }
-		inline void Error(const std::string &message) { Message(LT_ERROR, message); }
-		inline void Warning(const std::string &message) { Message(LT_WARNING, message); }
-		inline void Debug(const std::string &message) { Message(LT_DEBUG, message); }
-
-	private:
-		LogImpl *p;
+		sf::Vector2f origin;
+		float distance;
 	};
 }
 
-#endif // Log_h__
+#endif // DistanceFilter_h__

@@ -28,12 +28,10 @@ namespace PZ
 	{
 	public:
 		LogMap logs;
-		Log::Level logLevel;
 	};
 
 	LogManager::LogManager() : p(new LogManagerImpl)
 	{
-		p->logLevel = Log::LVL_LOW;
 	}
 	LogManager::~LogManager()
 	{
@@ -50,7 +48,7 @@ namespace PZ
 	{
 		if (p->logs.find(name) == p->logs.end())
 		{
-			p->logs.insert(std::make_pair(name, new Log(name+".log", p->logLevel)));
+			p->logs.insert(std::make_pair(name, new Log(name+".log")));
 		}
 	}
 	void LogManager::CloseLog(const std::string &name)
@@ -68,19 +66,5 @@ namespace PZ
 		OpenLog(name);
 
 		return *p->logs.at(name);
-	}
-
-	void LogManager::SetLogLevel(Log::Level level)
-	{
-		p->logLevel = level;
-
-		for (LogMap::iterator it = p->logs.begin(); it != p->logs.end(); ++it)
-		{
-			(*it).second->setLogLevel(level);
-		}
-	}
-	Log::Level LogManager::GetLogLevel() const
-	{
-		return p->logLevel;
 	}
 }

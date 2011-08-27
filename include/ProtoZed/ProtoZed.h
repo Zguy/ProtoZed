@@ -34,4 +34,8 @@
 #include <ProtoZed/Components/SpritesheetComponent.h>
 #include <ProtoZed/Components/SoundComponent.h>
 
+#include <ProtoZed/IncludeFilter.h>
+#include <ProtoZed/IncludeFilters/NoFilter.h>
+#include <ProtoZed/IncludeFilters/DistanceFilter.h>
+
 #endif // ProtoZed_h__

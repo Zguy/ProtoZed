@@ -23,14 +23,6 @@ namespace PZ
 	VideoMode::VideoMode() : virtualResolution(0,0), windowResolution(0,0), windowFullscreen(false)
 	{
 	}
-	VideoMode::VideoMode(const sf::Vector2i &windowResolution, const sf::Vector2i &virtualResolution) : virtualResolution(virtualResolution), windowResolution(windowResolution), windowFullscreen(false)
-	{
-		calculateView();
-	}
-	VideoMode::VideoMode(int windowWidth, int windowHeight, int virtualWidth, int virtualHeight) : virtualResolution(virtualWidth, virtualHeight), windowResolution(windowWidth, windowHeight), windowFullscreen(false)
-	{
-		calculateView();
-	}
 	VideoMode::VideoMode(const sf::Vector2i &windowResolution, const sf::Vector2i &virtualResolution, bool fullscreen) : virtualResolution(virtualResolution), windowResolution(windowResolution), windowFullscreen(fullscreen)
 	{
 		calculateView();
@@ -85,6 +77,10 @@ namespace PZ
 
 		if (sameVirtual)
 			SetVirtualResolution(width, height);
+	}
+	void VideoMode::SetFullscreen(bool fullscreen)
+	{
+		windowFullscreen = fullscreen;
 	}
 
 	void VideoMode::calculateView()

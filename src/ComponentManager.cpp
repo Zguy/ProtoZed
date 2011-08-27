@@ -38,9 +38,9 @@ namespace PZ
 	{
 		Component *component = componentFactory.Create(componentName);
 		if (component != NULL)
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Created component \""+component->GetName()+"\"");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Created component \""+component->GetName()+"\"");
 		else
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error(Log::LVL_MEDIUM, "Tried to create component \""+componentName+"\", but it does not exist");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Tried to create component \""+componentName+"\", but it does not exist");
 		return component;
 	}
 
@@ -48,11 +48,11 @@ namespace PZ
 	{
 		if (component == NULL)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning(Log::LVL_LOW, "DestroyComponent() ignored a NULL pointer");
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning("DestroyComponent() ignored a NULL pointer");
 			return;
 		}
 
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info(Log::LVL_LOW, "Destroyed component \""+component->GetName()+"\"");
+		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Destroyed component \""+component->GetName()+"\"");
 		delete component;
 	}
 }

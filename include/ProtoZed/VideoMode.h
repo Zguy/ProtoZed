@@ -28,10 +28,8 @@ namespace PZ
 	{
 	public:
 		VideoMode();
-		VideoMode(const sf::Vector2i &windowResolution, const sf::Vector2i &virtualResolution);
-		VideoMode(int windowWidth, int windowHeight, int virtualWidth, int virtualHeight);
-		VideoMode(const sf::Vector2i &windowResolution, const sf::Vector2i &virtualResolution, bool fullscreen);
-		VideoMode(int windowWidth, int windowHeight, int virtualWidth, int virtualHeight, bool fullscreen);
+		VideoMode(const sf::Vector2i &windowResolution, const sf::Vector2i &virtualResolution, bool fullscreen = false);
+		VideoMode(int windowWidth, int windowHeight, int virtualWidth, int virtualHeight, bool fullscreen = false);
 		~VideoMode();
 
 		void SetVirtualResolution(const sf::Vector2i &resolution);
@@ -40,6 +38,7 @@ namespace PZ
 		void SetWindowResolution(int width, int height, bool sameVirtual = true);
 		void SetWindowResolution(const sf::Vector2i &resolution, bool fullscreen, bool sameVirtual = true);
 		void SetWindowResolution(int width, int height, bool fullscreen, bool sameVirtual = true);
+		void SetFullscreen(bool fullscreen);
 
 		inline const sf::Vector2i &GetVirtualResolution() const { return virtualResolution; }
 		inline const sf::Vector2i &GetWindowResolution() const { return windowResolution; }

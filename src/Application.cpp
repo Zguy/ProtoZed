@@ -47,7 +47,7 @@ namespace PZ
 				return true;
 
 			logManager.OpenLog("ProtoZed");
-			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
+			logManager.GetLog("ProtoZed").Info(std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
 			sf::VideoMode sfVideoMode(videoMode.GetWindowResolution().x, videoMode.GetWindowResolution().y);
 			if (videoMode.GetFullscreen())
@@ -69,14 +69,14 @@ namespace PZ
 
 			running = true;
 
-			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "ProtoZed is running");
+			logManager.GetLog("ProtoZed").Info("ProtoZed is running");
 
 			return true;
 		}
 
 		void shutdown()
 		{
-			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "Shutting down ProtoZed");
+			logManager.GetLog("ProtoZed").Info("Shutting down ProtoZed");
 
 			stateManager.PopAllStates();
 			stateManager.Update();
@@ -85,7 +85,7 @@ namespace PZ
 
 			running = false;
 
-			logManager.GetLog("ProtoZed").Info(Log::LVL_LOW, "ProtoZed has stopped");
+			logManager.GetLog("ProtoZed").Info("ProtoZed has stopped");
 		}
 
 		void handleInput() 

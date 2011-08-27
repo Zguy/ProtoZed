@@ -23,12 +23,14 @@
 #include <ProtoZed/Attributes.h>
 #include <ProtoZed/UniqueIDGenerator.h>
 #include <ProtoZed/Messages.h>
+#include <ProtoZed/IncludeFilter.h>
+#include <ProtoZed/IncludeFilters/NoFilter.h>
 
 #include <SFML/System/Vector2.hpp>
 
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 namespace PZ
 {
@@ -36,19 +38,18 @@ namespace PZ
 	typedef std::vector<Entity*> EntityList;
 
 	class Component;
-	typedef std::map<std::string, Component*> ComponentList;
+	typedef std::unordered_map<std::string, Component*> ComponentMap;
 
 	class Entity : public Animable
 	{
 	public:
 		static Entity *Create(const std::string &entityName, const std::string &name = "");
-		static void Destroy(Entity *entity, bool destroyChildren = false);
+		static void Destroy(Entity *entity, bool destroyChildren = true);
 
 		Entity(const std::string &name);
-		Entity(const std::string &name, const std::string &family);
 		virtual ~Entity();
 
-		inline void Destroy(bool destroyChildren = false) { Entity::Destroy(this, destroyChildren); }
+		inline void Destroy(bool destroyChildren = true) { Entity::Destroy(this, destroyChildren); }
 
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
@@ -56,18 +57,27 @@ namespace PZ
 		Entity *GetRoot();
 
 		Entity *CreateChild(const std::string &entityName, const std::string &name = "");
+		/**
+		 * @brief Adds an Entity as a child
+		 * 
+		 * Will remove the Entity from the previous parent
+		 * if it has one.
+		 * 
+		 * @param child The Entity to add
+		 * @return True if successful
+		 */
 		bool AddChild(Entity *child);
 		bool RemoveChild(Entity *child, bool destroy = true);
 		void ClearChildren(bool destroy = true);
 
 		inline const EntityList &GetChildren() const { return children; }
-		void GetChildrenRecursive(EntityList &list) const;
+		void GetChildren(EntityList &list, const IncludeFilter &filter = NoFilter()) const;
+		void GetChildrenRecursive(EntityList &list, const IncludeFilter &filter = NoFilter()) const;
 		Entity *GetChildByIndex(unsigned int index) const;
 		Entity *GetChildByName(const std::string &name, bool recursive = false) const;
 
 		inline UniqueID GetID() const { return id; }
 		inline const std::string &GetName() const { return name; }
-		inline const std::string &GetFamily() const { return family; }
 
 		Component *CreateComponent(const std::string &name);
 		template<class T>
@@ -85,7 +95,7 @@ namespace PZ
 		{
 			return static_cast<T*>(GetComponent(name));
 		}
-		const ComponentList &GetComponents() const { return components; }
+		const ComponentMap &GetComponents() const { return components; }
 		bool HasComponent(const std::string &name) const;
 
 		const sf::Vector2f &GetLocalPosition() const;
@@ -133,10 +143,9 @@ namespace PZ
 		Entity *parent;
 		EntityList children;
 
-		ComponentList components;
+		ComponentMap components;
 
 		std::string name;
-		std::string family;
 		sf::Vector2f position;
 		float rotation;
 		sf::Vector2f localXAxis;
