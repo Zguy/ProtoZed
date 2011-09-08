@@ -26,6 +26,7 @@ namespace PZ
 {
 	class AnimationBase;
 	struct AnimationProperties;
+	class AnimationManager;
 
 	typedef unsigned int Attribute;
 	typedef std::vector<AnimationBase*> AnimationList;
@@ -50,6 +51,8 @@ namespace PZ
 
 	private:
 		AnimationList animations;
+
+		AnimationManager &animationManager;
 	};
 }
 

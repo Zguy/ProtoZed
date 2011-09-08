@@ -63,7 +63,7 @@ namespace PZ
 		virtual float GetAttribute(Attribute attribute) const;
 
 	protected:
-		virtual bool ReceiveMessage(Message &message);
+		virtual bool HandleMessage(Message &message);
 
 	private:
 		sf::Sound sound;

@@ -23,7 +23,7 @@
 
 namespace PZ
 {
-	SpritesheetComponent::SpritesheetComponent() : Component("Spritesheet"), animationIndex(0), currentFrame(0), currentTime(0.f)
+	SpritesheetComponent::SpritesheetComponent() : Component("Spritesheet", ComponentFamily::VISUAL), animationIndex(0), currentFrame(0), currentTime(0.f)
 	{
 
 	}
@@ -40,41 +40,41 @@ namespace PZ
 	}
 	bool SpritesheetComponent::SetSpritesheetFromFile(const std::string &filename)
 	{
-		Jzon::NodePtr rootNode = Jzon::FileReader::ReadFile(filename);
+		Jzon::FileReader reader(filename);
 
-		if (rootNode->IsValue() && rootNode->AsValue() == Jzon::null)
+		// If it is a value, it's probably null and the file is invalid
+		if (reader.DetermineType() == Jzon::Node::T_VALUE)
 		{
 			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" failed to open spritesheet \""+filename+"\"");
 			return false;
 		}
-		else
+
+		Jzon::Object root;
+		reader.Read(root);
+
+		SpritesheetDefinition def;
+		def.name   = root.Get("name").AsString();
+		def.image  = root.Get("image").AsString();
+		def.size.x = root.Get("width").AsInt();
+		def.size.y = root.Get("height").AsInt();
+
+		Jzon::Array &animationArray = root.Get("animations").AsArray();
+		for (Jzon::Array::iterator it = animationArray.begin(); it != animationArray.end(); ++it)
 		{
-			Jzon::Object root = rootNode->AsObject();
+			Jzon::Object &animationObject = (*it).AsObject();
+			SpritesheetAnimationDefinition aniDef;
+			aniDef.name = animationObject.Get("name").AsString();
+			aniDef.from = animationObject.Get("start").AsInt();
+			aniDef.to   = animationObject.Get("end").AsInt();
+			aniDef.time = (float)animationObject.Get("time").AsDouble();
+			aniDef.loop = animationObject.Get("loop").AsBool();
 
-			SpritesheetDefinition def;
-			def.name   = root.Get("name").AsValue().AsString();
-			def.image  = root.Get("image").AsValue().AsString();
-			def.size.x = root.Get("width").AsValue().AsInt();
-			def.size.y = root.Get("height").AsValue().AsInt();
-
-			Jzon::Array &animationArray = root.Get("animations").AsArray();
-			for (Jzon::Array::Iterator it = animationArray.Begin(); it != animationArray.End(); ++it)
-			{
-				Jzon::Object &animationObject = (*it).AsObject();
-				SpritesheetAnimationDefinition aniDef;
-				aniDef.name = animationObject.Get("name").AsValue().AsString();
-				aniDef.from = animationObject.Get("start").AsValue().AsInt();
-				aniDef.to   = animationObject.Get("end").AsValue().AsInt();
-				aniDef.time = (float)animationObject.Get("time").AsValue().AsDouble();
-				aniDef.loop = animationObject.Get("loop").AsValue().AsBool();
-
-				def.animations.push_back(aniDef);
-			}
-
-			SetSpritesheet(def);
-
-			return true;
+			def.animations.push_back(aniDef);
 		}
+
+		SetSpritesheet(def);
+
+		return true;
 	}
 
 	bool SpritesheetComponent::SetAnimation(const std::string &name)
@@ -154,7 +154,7 @@ namespace PZ
 			return Component::GetAttribute(attribute);
 	}
 
-	bool SpritesheetComponent::ReceiveMessage(Message &message)
+	bool SpritesheetComponent::HandleMessage(Message &message)
 	{
 		if (message.message == MessageID::UPDATE)
 		{

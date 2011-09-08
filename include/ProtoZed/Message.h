@@ -23,6 +23,8 @@
 
 namespace PZ
 {
+	class Entity;
+
 	typedef unsigned int MessageType;
 
 	struct Message
@@ -34,12 +36,14 @@ namespace PZ
 			SINK   // Sink down the leaf child
 		};
 
-		Message(MessageType message = 0, Mode mode = SINK) : message(message), mode(mode)
+		Message(MessageType message = 0, Mode mode = SINK) : message(message), mode(mode), sender(NULL)
 		{}
 
 		MessageType message;
 
 		Mode mode;
+
+		Entity *sender;
 
 		template<class T>
 		T &As()

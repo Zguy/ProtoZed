@@ -130,9 +130,9 @@ namespace PZ
 		for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
 			myMouseButtons[i] = input.IsMouseButtonDown(static_cast<sf::Mouse::Button>(i));
 
-		for (int i = 0; i < sf::Joy::Count; ++i)
+		for (unsigned int i = 0; i < sf::Joy::Count; ++i)
 		{
-			for (int j = 0; j < sf::Joy::ButtonCount; ++j)
+			for (unsigned int j = 0; j < sf::Joy::ButtonCount; ++j)
 				myJoystickButtons[i][j] = input.IsJoystickButtonDown(i, j);
 
 			for (int j = 0; j < sf::Joy::AxisCount; ++j)

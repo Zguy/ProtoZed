@@ -23,6 +23,7 @@
 #include <ProtoZed/Attributes.h>
 #include <ProtoZed/UniqueIDGenerator.h>
 #include <ProtoZed/Messages.h>
+#include <ProtoZed/ComponentFamily.h>
 #include <ProtoZed/IncludeFilter.h>
 #include <ProtoZed/IncludeFilters/NoFilter.h>
 
@@ -44,12 +45,12 @@ namespace PZ
 	{
 	public:
 		static Entity *Create(const std::string &entityName, const std::string &name = "");
-		static void Destroy(Entity *entity, bool destroyChildren = true);
+		static void Destroy(Entity *entity);
 
 		Entity(const std::string &name);
 		virtual ~Entity();
 
-		inline void Destroy(bool destroyChildren = true) { Entity::Destroy(this, destroyChildren); }
+		inline void Destroy() { Entity::Destroy(this); }
 
 		inline bool HasParent() const { return (parent != NULL); }
 		inline Entity *GetParent() const { return parent; }
@@ -67,8 +68,8 @@ namespace PZ
 		 * @return True if successful
 		 */
 		bool AddChild(Entity *child);
-		bool RemoveChild(Entity *child, bool destroy = true);
-		void ClearChildren(bool destroy = true);
+		bool RemoveChild(Entity *child, bool destroy);
+		void ClearChildren();
 
 		inline const EntityList &GetChildren() const { return children; }
 		void GetChildren(EntityList &list, const IncludeFilter &filter = NoFilter()) const;
@@ -86,8 +87,8 @@ namespace PZ
 			return static_cast<T*>(CreateComponent(name));
 		}
 		bool AddComponent(Component *component);
-		bool RemoveComponent(const std::string &name, bool destroy = true);
-		void ClearComponents(bool destroy = true);
+		bool RemoveComponent(const std::string &name);
+		void ClearComponents();
 
 		Component *GetComponent(const std::string &name) const;
 		template<class T>
@@ -129,6 +130,8 @@ namespace PZ
 
 		bool BroadcastMessage(Message &message);
 		bool ReceiveMessage(Message &message);
+		bool SendMessage(Message &message, Entity *receiver);
+		bool SendMessage(const Message &message, Entity *receiver);
 
 		bool operator==(const Entity &other);
 

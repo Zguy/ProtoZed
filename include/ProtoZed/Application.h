@@ -47,11 +47,11 @@ namespace PZ
 	{
 	public:
 		Application();
-		~Application();
+		virtual ~Application();
 
 		virtual void Update(float deltaTime) {}
 
-		int Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), sf::WindowSettings &params = sf::WindowSettings());
+		int Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), const sf::WindowSettings &params = sf::WindowSettings());
 
 		void RequestShutdown();
 

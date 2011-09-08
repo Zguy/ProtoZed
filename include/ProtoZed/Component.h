@@ -19,6 +19,7 @@
 #ifndef Component_h__
 #define Component_h__
 
+#include <ProtoZed/ComponentFamily.h>
 #include <ProtoZed/Entity.h>
 #include <ProtoZed/Message.h>
 
@@ -31,12 +32,14 @@ namespace PZ
 		friend class Entity;
 
 	public:
-		Component(const std::string &name) : name(name), owner(NULL)
+		Component(const std::string &name, ComponentFamily::Type family) : name(name), family(family), owner(NULL)
 		{}
 		virtual ~Component()
 		{}
 	
 		inline const std::string &GetName() const { return name; }
+
+		inline ComponentFamily::Type GetFamily() const { return family; }
 
 		inline bool HasOwner() const { return (owner != NULL); }
 		inline Entity *GetOwner() const { return owner; }
@@ -45,13 +48,14 @@ namespace PZ
 		virtual void SetAttribute(Attribute attribute, float value) { }
 		virtual float GetAttribute(Attribute attribute) const { return 0.f; }
 
-		virtual bool ReceiveMessage(Message &message) = 0;
+		virtual bool HandleMessage(Message &message) = 0;
 	
 	protected:
 		virtual void SetOwner(Entity *newOwner) { owner = newOwner; }
 
 	private:
 		std::string name;
+		ComponentFamily::Type family;
 
 		Entity *owner;
 	};

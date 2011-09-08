@@ -23,6 +23,7 @@
     <ClInclude Include="include\ProtoZed\AssetStorage.h" />
     <ClInclude Include="include\ProtoZed\Attributes.h" />
     <ClInclude Include="include\ProtoZed\Component.h" />
+    <ClInclude Include="include\ProtoZed\ComponentFamily.h" />
     <ClInclude Include="include\ProtoZed\ComponentManager.h" />
     <ClInclude Include="include\ProtoZed\Components\DrawableComponent.h" />
     <ClInclude Include="include\ProtoZed\Convert.h" />

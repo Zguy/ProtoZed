@@ -92,10 +92,24 @@ namespace Jzon
 		else
 			throw TypeException();
 	}
+	const Object &Node::AsObject() const
+	{
+		if (IsObject())
+			return static_cast<const Object&>(*this);
+		else
+			throw TypeException();
+	}
 	Array &Node::AsArray()
 	{
 		if (IsArray())
 			return static_cast<Array&>(*this);
+		else
+			throw TypeException();
+	}
+	const Array &Node::AsArray() const
+	{
+		if (IsArray())
+			return static_cast<const Array&>(*this);
 		else
 			throw TypeException();
 	}
@@ -106,63 +120,22 @@ namespace Jzon
 		else
 			throw TypeException();
 	}
-
-	NodePtr Node::Read(const std::string &json)
+	const Value &Node::AsValue() const
 	{
-		if (json.size() == 0)
-			return NodePtr(new Value());
+		if (IsValue())
+			return static_cast<const Value&>(*this);
+		else
+			throw TypeException();
+	}
 
-		std::string node;
-		Type lookFor;
-		int numOpen = 0;
-
+	Node::Type Node::DetermineType(const std::string &json)
+	{
 		switch (json.at(0))
 		{
-		case '{' : lookFor = T_OBJECT; break;
-		case '[' : lookFor = T_ARRAY; break;
-		default : lookFor = T_VALUE; break;
+		case '{' : return T_OBJECT; break;
+		case '[' : return T_ARRAY; break;
+		default : return T_VALUE; break;
 		}
-
-		if (lookFor == T_VALUE)
-			return Value::Read(json);
-
-		for (std::string::const_iterator it = json.cbegin(); it != json.cend(); ++it)
-		{
-			char c = (*it);
-
-			node += c;
-
-			char openToken, closeToken;
-			if (lookFor == T_OBJECT)
-			{
-				openToken = '{';
-				closeToken = '}';
-			}
-			else if (lookFor == T_ARRAY)
-			{
-				openToken = '[';
-				closeToken = ']';
-			}
-
-			if (c == openToken)
-			{
-				++numOpen;
-			}
-			else if (c == closeToken)
-			{
-				--numOpen;
-
-				if (numOpen == 0)
-				{
-					if (lookFor == T_OBJECT)
-						return Object::Read(node);
-					else if (lookFor == T_ARRAY)
-						return Array::Read(node);
-				}
-			}
-		}
-
-		return NodePtr(new Value());
 	}
 
 
@@ -175,6 +148,12 @@ namespace Jzon
 		valueStr = rhs.valueStr;
 		type = rhs.type;
 	}
+	Value::Value(const Node &rhs)
+	{
+		const Value &value = rhs.AsValue();
+		valueStr = value.valueStr;
+		type = value.type;
+	}
 	Value::Value(const std::string &value)
 		: valueStr(value), type(VT_STRING)
 	{
@@ -182,7 +161,6 @@ namespace Jzon
 	Value::Value(const char *value)
 		: valueStr(std::string(value)), type(VT_STRING)
 	{
-
 	}
 	Value::Value(const int value)
 		: type(VT_INT)
@@ -219,10 +197,6 @@ namespace Jzon
 		return type;
 	}
 
-	bool Value::IsNull() const
-	{
-		return (type == VT_NULL);
-	}
 	std::string Value::AsString() const
 	{
 		if (IsNull())
@@ -236,7 +210,7 @@ namespace Jzon
 			return 0;
 		else
 		{
-			if (GetValueType() == VT_INT)
+			if (IsInt() || IsDouble())
 			{
 				std::stringstream sstr(valueStr);
 				int val;
@@ -253,7 +227,7 @@ namespace Jzon
 			return 0.0;
 		else
 		{
-			if (GetValueType() == VT_DOUBLE)
+			if (IsDouble() || IsInt())
 			{
 				std::stringstream sstr(valueStr);
 				double val;
@@ -269,7 +243,7 @@ namespace Jzon
 		if (IsNull())
 			return false;
 		else
-			if (GetValueType() == VT_BOOL)
+			if (IsBool())
 				return (valueStr == "true");
 			else
 				throw ValueException();
@@ -327,6 +301,12 @@ namespace Jzon
 			Set(rhs);
 		return *this;
 	}
+	Value &Value::operator=(const Node &rhs)
+	{
+		if (this != &rhs)
+			Set(rhs.AsValue());
+		return *this;
+	}
 	Value &Value::operator=(const std::string &rhs)
 	{
 		Set(rhs);
@@ -373,26 +353,24 @@ namespace Jzon
 			value += valueStr;
 		return value;
 	}
-	NodePtr Value::Read(const std::string &json)
+	void Value::Read(const std::string &json)
 	{
-		ValuePtr value(new Value);
-
-		if (json.front() == '"' && json.back() == '"')
+		if (json.at(0) == '"' && json.at(json.size()-1) == '"')
 		{
-			value->valueStr = json.substr(1, json.size()-2);
-			value->type = VT_STRING;
+			valueStr = json.substr(1, json.size()-2);
+			type = VT_STRING;
 		}
 		else if (json == "true" || json == "false")
 		{
-			value->valueStr = json;
-			value->type = VT_BOOL;
+			valueStr = json;
+			type = VT_BOOL;
 		}
 		else
 		{
 			bool onlyNumbers = true;
 			bool point = false;
 
-			for (std::string::const_iterator it = json.cbegin(); it != json.cend(); ++it)
+			for (std::string::const_iterator it = json.begin(); it != json.end(); ++it)
 			{
 				char c = (*it);
 
@@ -410,28 +388,26 @@ namespace Jzon
 			{
 				if (point)
 				{
-					value->valueStr = json;
-					value->type = VT_DOUBLE;
+					valueStr = json;
+					type = VT_DOUBLE;
 				}
 				else
 				{
-					value->valueStr = json;
-					value->type = VT_INT;
+					valueStr = json;
+					type = VT_INT;
 				}
 			}
 			else
 			{
-				value->valueStr = "";
-				value->type = VT_NULL;
+				valueStr = "";
+				type = VT_NULL;
 			}
 		}
-
-		return value;
 	}
 
-	NodePtr Value::GetCopy() const
+	Node *Value::GetCopy() const
 	{
-		return NodePtr(new Value(*this));
+		return new Value(*this);
 	}
 
 
@@ -440,16 +416,29 @@ namespace Jzon
 	}
 	Object::Object(const Object &other)
 	{
-		for (ChildList::const_iterator it = other.children.cbegin(); it != other.children.cend(); ++it)
+		for (ChildList::const_iterator it = other.children.begin(); it != other.children.end(); ++it)
 		{
 			const std::string &name = (*it).first;
 			Node &value = *(*it).second;
 
-			children.push_back(std::make_pair<std::string, NodePtr>(name, value.GetCopy()));
+			children.push_back(std::make_pair(name, value.GetCopy()));
+		}
+	}
+	Object::Object(const Node &other)
+	{
+		const Object &object = other.AsObject();
+
+		for (ChildList::const_iterator it = object.children.begin(); it != object.children.end(); ++it)
+		{
+			const std::string &name = (*it).first;
+			Node &value = *(*it).second;
+
+			children.push_back(std::make_pair(name, value.GetCopy()));
 		}
 	}
 	Object::~Object()
 	{
+		Clear();
 	}
 
 	Node::Type Object::GetType() const
@@ -459,15 +448,11 @@ namespace Jzon
 
 	void Object::Add(const std::string &name, Node &node)
 	{
-		children.push_back(std::make_pair<std::string, NodePtr>(name, node.GetCopy()));
-	}
-	void Object::Add(const std::string &name, NodePtr node)
-	{
-		children.push_back(std::make_pair<std::string, NodePtr>(name, node->GetCopy()));
+		children.push_back(std::make_pair(name, node.GetCopy()));
 	}
 	void Object::Add(const std::string &name, Value node)
 	{
-		children.push_back(std::make_pair<std::string, NodePtr>(name, node.GetCopy()));
+		children.push_back(std::make_pair(name, new Value(node)));
 	}
 	void Object::Remove(const std::string &name)
 	{
@@ -475,37 +460,55 @@ namespace Jzon
 		{
 			if ((*it).first == name)
 			{
+				delete (*it).second;
 				children.erase(it);
 				break;
 			}
 		}
 	}
-
-	Object::Iterator Object::Begin()
+	void Object::Clear()
 	{
-		if (children.size() > 0)
-			return Object::Iterator(&children.front());
-		else
-			return Object::Iterator(NULL);
-	}
-	Object::Iterator Object::End()
-	{
-		if (children.size() > 0)
-			return Object::Iterator(&children.back()+1);
-		else
-			return Object::Iterator(NULL);
+		for (ChildList::iterator it = children.begin(); it != children.end(); ++it)
+		{
+			delete (*it).second;
+		}
+		children.clear();
 	}
 
-	Node &Object::Get(const std::string &name, Node &default) const
+	Object::iterator Object::begin()
 	{
-		for (ChildList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		if (children.size() > 0)
+			return Object::iterator(&children.front());
+		else
+			return Object::iterator(NULL);
+	}
+	Object::iterator Object::end()
+	{
+		if (children.size() > 0)
+			return Object::iterator(&children.back()+1);
+		else
+			return Object::iterator(NULL);
+	}
+
+	unsigned int Object::GetCount() const
+	{
+		return children.size();
+	}
+	Node &Object::Get(const std::string &name) const
+	{
+		Value value;
+		return Get(name, value);
+	}
+	Node &Object::Get(const std::string &name, Node &def) const
+	{
+		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
 		{
 			if ((*it).first == name)
 			{
 				return *(*it).second;
 			}
 		}
-		return default;
+		return def;
 	}
 
 	std::string Object::Write(const Format &format, unsigned int level) const
@@ -515,12 +518,12 @@ namespace Jzon
 		std::string json;
 		json += "{" + fi.GetNewline();
 
-		for (ChildList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
 		{
 			const std::string &name = (*it).first;
 			Node &value = *(*it).second;
 
-			if (it != children.cbegin())
+			if (it != children.begin())
 				json += "," + fi.GetNewline();
 			json += fi.GetIndentation(level+1) + "\""+name+"\"" + ":" + fi.GetSpacing() + value.Write(format, level+1);
 		}
@@ -528,18 +531,17 @@ namespace Jzon
 		json += fi.GetNewline() + fi.GetIndentation(level) + "}";
 		return json;
 	}
-	NodePtr Object::Read(const std::string &json)
+	void Object::Read(const std::string &json)
 	{
-		ObjectPtr object(new Object);
 		std::string name;
 		std::string value;
 		bool atName = true;
 		int numOpen = 0;
 		bool inString = false;
 
-		for (std::string::const_iterator it = json.cbegin(); it != json.cend(); ++it)
+		for (std::string::const_iterator it = json.begin(); it != json.end(); ++it)
 		{
-			char c = (*it);
+			const char &c = (*it);
 
 			if (c == '{' || c == '[')
 			{
@@ -567,8 +569,16 @@ namespace Jzon
 				{
 					if (!value.empty())
 					{
-						NodePtr node = Node::Read(value);
-						object->Add(name, *node);
+						Node *node = NULL;
+						switch (Node::DetermineType(value))
+						{
+						case T_VALUE  : node = new Value;  break;
+						case T_OBJECT : node = new Object; break;
+						case T_ARRAY  : node = new Array;  break;
+						}
+						node->Read(value);
+						Add(name, *node);
+						delete node;
 					}
 
 					name.clear();
@@ -579,13 +589,11 @@ namespace Jzon
 					value += c;
 			}
 		}
-
-		return object;
 	}
 
-	NodePtr Object::GetCopy() const
+	Node *Object::GetCopy() const
 	{
-		return NodePtr(new Object(*this));
+		return new Object(*this);
 	}
 
 
@@ -594,7 +602,18 @@ namespace Jzon
 	}
 	Array::Array(const Array &other)
 	{
-		for (ChildList::const_iterator it = other.children.cbegin(); it != other.children.cend(); ++it)
+		for (ChildList::const_iterator it = other.children.begin(); it != other.children.end(); ++it)
+		{
+			const Node &value = *(*it);
+
+			children.push_back(value.GetCopy());
+		}
+	}
+	Array::Array(const Node &other)
+	{
+		const Array &array = other.AsArray();
+
+		for (ChildList::const_iterator it = array.children.begin(); it != array.children.end(); ++it)
 		{
 			const Node &value = *(*it);
 
@@ -603,6 +622,7 @@ namespace Jzon
 	}
 	Array::~Array()
 	{
+		Clear();
 	}
 
 	Node::Type Array::GetType() const
@@ -614,45 +634,58 @@ namespace Jzon
 	{
 		children.push_back(node.GetCopy());
 	}
-	void Array::Add(NodePtr node)
-	{
-		children.push_back(node->GetCopy());
-	}
 	void Array::Add(Value node)
 	{
-		children.push_back(node.GetCopy());
+		children.push_back(new Value(node));
 	}
 	void Array::Remove(unsigned int index)
 	{
 		if (index < children.size())
-			children.erase(children.begin()+index);
+		{
+			ChildList::iterator it = children.begin()+index;
+			delete (*it);
+			children.erase(it);
+		}
+	}
+	void Array::Clear()
+	{
+		for (ChildList::iterator it = children.begin(); it != children.end(); ++it)
+		{
+			delete (*it);
+		}
+		children.clear();
 	}
 
-	Array::Iterator Array::Begin()
+	Array::iterator Array::begin()
 	{
 		if (children.size() > 0)
-			return Array::Iterator(&children.front());
+			return Array::iterator(&children.front());
 		else
-			return Array::Iterator(NULL);
+			return Array::iterator(NULL);
 	}
-	Array::Iterator Array::End()
+	Array::iterator Array::end()
 	{
 		if (children.size() > 0)
-			return Array::Iterator(&children.back()+1);
+			return Array::iterator(&children.back()+1);
 		else
-			return Array::Iterator(NULL);
+			return Array::iterator(NULL);
 	}
 
 	unsigned int Array::GetCount() const
 	{
 		return children.size();
 	}
-	Node &Array::Get(unsigned int index, Node &default) const
+	Node &Array::Get(unsigned int index) const
+	{
+		Value value;
+		return Get(index, value);
+	}
+	Node &Array::Get(unsigned int index, Node &def) const
 	{
 		if (index < children.size())
 			return *children.at(index);
 		else
-			return default;
+			return def;
 	}
 
 	std::string Array::Write(const Format &format, unsigned int level) const
@@ -662,11 +695,11 @@ namespace Jzon
 		std::string json;
 		json += "[" + fi.GetNewline();
 
-		for (ChildList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
 		{
 			Node &value = *(*it);
 
-			if (it != children.cbegin())
+			if (it != children.begin())
 				json += "," + fi.GetNewline();
 			json += fi.GetIndentation(level+1) + value.Write(format, level+1);
 		}
@@ -674,16 +707,15 @@ namespace Jzon
 		json += fi.GetNewline() + fi.GetIndentation(level) + "]";
 		return json;
 	}
-	NodePtr Array::Read(const std::string &json)
+	void Array::Read(const std::string &json)
 	{
-		ArrayPtr array(new Array);
 		std::string value;
 		int numOpen = 0;
 		bool inString = false;
 
-		for (std::string::const_iterator it = json.cbegin(); it != json.cend(); ++it)
+		for (std::string::const_iterator it = json.begin(); it != json.end(); ++it)
 		{
-			char c = (*it);
+			const char &c = (*it);
 
 			if (c == '{' || c == '[')
 			{
@@ -702,8 +734,16 @@ namespace Jzon
 			{
 				if (!value.empty())
 				{
-					NodePtr node = Node::Read(value);
-					array->Add(*node);
+					Node *node = NULL;
+					switch (Node::DetermineType(value))
+					{
+					case T_VALUE  : node = new Value;  break;
+					case T_OBJECT : node = new Object; break;
+					case T_ARRAY  : node = new Array;  break;
+					}
+					node->Read(value);
+					Add(*node);
+					delete node;
 				}
 
 				value.clear();
@@ -714,13 +754,11 @@ namespace Jzon
 				value += c;
 			}
 		}
-
-		return array;
 	}
 
-	NodePtr Array::GetCopy() const
+	Node *Array::GetCopy() const
 	{
-		return NodePtr(new Array(*this));
+		return new Array(*this);
 	}
 
 
@@ -736,10 +774,6 @@ namespace Jzon
 		FileWriter writer;
 		writer.Write(filename, root, format);
 	}
-	void FileWriter::WriteFile(const std::string &filename, NodePtr root, const Format &format)
-	{
-		WriteFile(filename, *root, format);
-	}
 
 	void FileWriter::Write(const std::string &filename, Node &root, const Format &format)
 	{
@@ -747,42 +781,48 @@ namespace Jzon
 		file << root.Write(format);
 		file.close();
 	}
-	void FileWriter::Write(const std::string &filename, NodePtr root, const Format &format)
-	{
-		Write(filename, *root, format);
-	}
 
 
-	FileReader::FileReader()
+	FileReader::FileReader(const std::string &filename)
 	{
-	}
-	FileReader::~FileReader()
-	{
-	}
-
-	NodePtr FileReader::ReadFile(const std::string &filename)
-	{
-		FileReader reader;
-		return reader.Read(filename);
-	}
-
-	NodePtr FileReader::Read(const std::string &filename)
-	{
-		std::string json;
 		std::fstream file(filename.c_str(), std::ios::in);
-		if (!file.is_open())
-			return NodePtr(new Value());
 
+		json = "";
+
+		std::string line;
 		while (!file.eof())
 		{
-			std::string line;
 			std::getline(file, line);
 			json += line + '\n';
 		}
 
 		RemoveWhitespace(json);
+	}
+	FileReader::~FileReader()
+	{
+	}
 
-		return Node::Read(json);
+	void FileReader::ReadFile(const std::string &filename, Node &node)
+	{
+		FileReader reader(filename);
+		reader.Read(node);
+	}
+
+	void FileReader::Read(Node &node)
+	{
+		if (DetermineType() == node.GetType())
+		{
+			node.Read(json);
+		}
+		else
+		{
+			throw TypeException();
+		}
+	}
+
+	Node::Type FileReader::DetermineType()
+	{
+		return Node::DetermineType(json);
 	}
 
 	void FileReader::RemoveWhitespace(std::string &json)

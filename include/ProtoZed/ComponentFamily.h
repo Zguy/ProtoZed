@@ -16,17 +16,22 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <ProtoZed/AppState.h>
-
-#include <ProtoZed/Application.h>
+#ifndef ComponentFamily_h__
+#define ComponentFamily_h__
 
 namespace PZ
 {
-	AppState::AppState() : started(false), rootEntity(Entity::Create("Entity", "RootEntity"))
+	namespace ComponentFamily
 	{
-	}
-	AppState::~AppState()
-	{
-		rootEntity->Destroy();
-	}
+		enum Value
+		{
+			VISUAL,
+			SOUND,
+			USER // Start your own from here
+		};
+
+		typedef unsigned int Type;
+	};
 }
+
+#endif // ComponentFamily_h__

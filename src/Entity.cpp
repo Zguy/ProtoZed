@@ -28,9 +28,9 @@ namespace PZ
 	{
 		return PZ::Application::GetSingleton().GetEntityManager().CreateEntity(entityName, name);
 	}
-	void Entity::Destroy(Entity *entity, bool destroyChildren)
+	void Entity::Destroy(Entity *entity)
 	{
-		PZ::Application::GetSingleton().GetEntityManager().DestroyEntity(entity, destroyChildren);
+		PZ::Application::GetSingleton().GetEntityManager().DestroyEntity(entity);
 	}
 
 	Entity::Entity(const std::string &name) : parent(NULL), name(name), position(0.f,0.f), rotation(0.f), localXAxis(1.f,0.f), localYAxis(0.f,1.f)
@@ -44,9 +44,9 @@ namespace PZ
 			parent->RemoveChild(this, false);
 		}
 
-		ClearChildren(true);
+		ClearChildren();
 
-		ClearComponents(true);
+		ClearComponents();
 	}
 
 	const Entity *Entity::GetRoot() const
@@ -109,7 +109,7 @@ namespace PZ
 		{
 			sf::Vector2f oldPos = child->GetGlobalPosition();
 			if (child->HasParent())
-				child->GetParent()->RemoveChild(child);
+				child->GetParent()->RemoveChild(child, false);
 			child->parent = this;
 			child->SetGlobalPosition(oldPos);
 			children.push_back(child);
@@ -147,14 +147,13 @@ namespace PZ
 
 		return found;
 	}
-	void Entity::ClearChildren(bool destroy)
+	void Entity::ClearChildren()
 	{
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			(*it)->parent = NULL;
 
-			if (destroy)
-				(*it)->Destroy();
+			(*it)->Destroy();
 		}
 		children.clear();
 	}
@@ -243,7 +242,7 @@ namespace PZ
 			return false;
 		}
 	}
-	bool Entity::RemoveComponent(const std::string &name, bool destroy)
+	bool Entity::RemoveComponent(const std::string &name)
 	{
 		ComponentMap::const_iterator it = components.find(name);
 		if (it != components.end())
@@ -251,10 +250,7 @@ namespace PZ
 			Component *component = (*it).second;
 			component->SetOwner(NULL);
 
-			if (destroy)
-			{
-				Application::GetSingleton().GetComponentManager().DestroyComponent(component);
-			}
+			Application::GetSingleton().GetComponentManager().DestroyComponent(component);
 
 			components.erase(it);
 
@@ -266,7 +262,7 @@ namespace PZ
 			return false;
 		}
 	}
-	void Entity::ClearComponents(bool destroy)
+	void Entity::ClearComponents()
 	{
 		for (ComponentMap::iterator it = components.begin(); it != components.end(); ++it)
 		{
@@ -274,10 +270,7 @@ namespace PZ
 
 			component->SetOwner(NULL);
 
-			if (destroy)
-			{
-				Application::GetSingleton().GetComponentManager().DestroyComponent(component);
-			}
+			Application::GetSingleton().GetComponentManager().DestroyComponent(component);
 		}
 		components.clear();
 	}
@@ -325,14 +318,14 @@ namespace PZ
 	{
 		position = pos;
 
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		SendMessage(Message(MessageID::POSITION_UPDATED), this);
 	}
 	void Entity::SetLocalPosition(float x, float y)
 	{
 		position.x = x;
 		position.y = y;
 
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		SendMessage(Message(MessageID::POSITION_UPDATED), this);
 	}
 	void Entity::SetGlobalPosition(const sf::Vector2f &pos)
 	{
@@ -355,7 +348,7 @@ namespace PZ
 			position = pos;
 		}
 
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		SendMessage(Message(MessageID::POSITION_UPDATED), this);
 	}
 	void Entity::SetGlobalPosition(float x, float y)
 	{
@@ -369,7 +362,7 @@ namespace PZ
 			position.y = y;
 		}
 
-		ReceiveMessage(Message(MessageID::POSITION_UPDATED));
+		SendMessage(Message(MessageID::POSITION_UPDATED), this);
 	}
 
 	float Entity::GetLocalRotation() const
@@ -388,7 +381,7 @@ namespace PZ
 	{
 		rotation = rot;
 
-		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
+		SendMessage(Message(MessageID::ROTATION_UPDATED), this);
 	}
 	void Entity::SetGlobalRotation(float rot)
 	{
@@ -397,7 +390,7 @@ namespace PZ
 		else
 			rotation = rot;
 
-		ReceiveMessage(Message(MessageID::ROTATION_UPDATED));
+		SendMessage(Message(MessageID::ROTATION_UPDATED), this);
 	}
 
 	bool Entity::HasAttribute(Attribute attribute) const
@@ -472,7 +465,7 @@ namespace PZ
 
 	bool Entity::BroadcastMessage(Message &message)
 	{
-		return GetRoot()->ReceiveMessage(message);
+		return SendMessage(message, GetRoot());
 	}
 	bool Entity::ReceiveMessage(Message &message)
 	{
@@ -488,7 +481,7 @@ namespace PZ
 		for (ComponentMap::iterator it = components.begin(); it != components.end(); ++it)
 		{
 			Component *component = (*it).second;
-			if (component->ReceiveMessage(message))
+			if (component->HandleMessage(message))
 				handled = true;
 		}
 
@@ -501,6 +494,24 @@ namespace PZ
 		}
 
 		return handled;
+	}
+	bool Entity::SendMessage(Message &message, Entity *receiver)
+	{
+		message.sender = this;
+
+		if (receiver != NULL)
+		{
+			return receiver->ReceiveMessage(message);
+		}
+		else
+		{
+			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Entity \""+GetName()+"\" tried to send a message to a NULL Entity");
+			return false;
+		}
+	}
+	bool Entity::SendMessage(const Message &message, Entity *receiver)
+	{
+		return SendMessage(const_cast<Message&>(message), receiver);
 	}
 
 	bool Entity::operator==(const Entity &other)

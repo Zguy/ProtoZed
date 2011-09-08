@@ -20,7 +20,7 @@
 
 namespace PZ
 {
-	DrawableComponent::DrawableComponent() : Component("Drawable"), drawable(NULL)
+	DrawableComponent::DrawableComponent() : Component("Drawable", ComponentFamily::VISUAL), drawable(NULL)
 	{
 
 	}
@@ -97,7 +97,7 @@ namespace PZ
 			return Component::GetAttribute(attribute);
 	}
 
-	bool DrawableComponent::ReceiveMessage(Message &message)
+	bool DrawableComponent::HandleMessage(Message &message)
 	{
 		if (message.message == MessageID::POSITION_UPDATED)
 		{

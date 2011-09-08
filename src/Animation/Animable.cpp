@@ -24,12 +24,11 @@
 
 namespace PZ
 {
-	Animable::Animable()
+	Animable::Animable() : animationManager(Application::GetSingleton().GetAnimationManager())
 	{
 	}
 	Animable::~Animable()
 	{
-		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationList::iterator it = animations.begin(); it != animations.end(); ++it)
 		{
 			animationManager.DestroyAnimation((*it));
@@ -39,7 +38,6 @@ namespace PZ
 
 	AnimationBase *Animable::RunAnimation(const std::string &animationName)
 	{
-		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		AnimationBase *original = animationManager.GetAnimationFromName(animationName);
 
 		if (original != NULL)
@@ -66,7 +64,7 @@ namespace PZ
 	}
 	AnimationBase *Animable::RunAnimationDirect(const std::string &animationType, AnimationProperties *properties)
 	{
-		return RunAnimationDirect(Application::GetSingleton().GetAnimationManager().CreateAnimation(animationType, properties));
+		return RunAnimationDirect(animationManager.CreateAnimation(animationType, properties));
 	}
 
 	void Animable::StopAllAnimations()
@@ -79,7 +77,6 @@ namespace PZ
 
 	void Animable::StepAnimations(float deltaTime)
 	{
-		AnimationManager &animationManager = Application::GetSingleton().GetAnimationManager();
 		for (AnimationList::iterator it = animations.begin(); it != animations.end();)
 		{
 			AnimationBase *animation = (*it);

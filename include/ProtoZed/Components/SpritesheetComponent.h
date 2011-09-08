@@ -89,7 +89,7 @@ namespace PZ
 		virtual void SetAttribute(Attribute attribute, float value);
 		virtual float GetAttribute(Attribute attribute) const;
 
-		virtual bool ReceiveMessage(Message &message);
+		virtual bool HandleMessage(Message &message);
 
 	private:
 		void setFrame(unsigned int frame);

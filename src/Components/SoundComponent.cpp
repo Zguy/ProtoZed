@@ -20,7 +20,7 @@
 
 namespace PZ
 {
-	SoundComponent::SoundComponent() : Component("Sound")
+	SoundComponent::SoundComponent() : Component("Sound", ComponentFamily::SOUND)
 	{
 	}
 	SoundComponent::~SoundComponent()
@@ -52,7 +52,7 @@ namespace PZ
 			return Component::GetAttribute(attribute);
 	}
 
-	bool SoundComponent::ReceiveMessage(Message &message)
+	bool SoundComponent::HandleMessage(Message &message)
 	{
 		if (message.message == MessageID::POSITION_UPDATED || message.message == MessageID::ROTATION_UPDATED)
 		{

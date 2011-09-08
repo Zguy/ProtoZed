@@ -49,7 +49,7 @@ namespace PZ
 		return entity;
 	}
 
-	void EntityManager::DestroyEntity(Entity *entity, bool destroyChildren) const
+	void EntityManager::DestroyEntity(Entity *entity) const
 	{
 		if (entity == NULL)
 		{
@@ -57,17 +57,16 @@ namespace PZ
 			return;
 		}
 
-		if (destroyChildren)
+		// Destroy the children
+		EntityList children = entity->GetChildren();
+		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 		{
-			EntityList children = entity->GetChildren();
-			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
-			{
-				Entity *child = (*it);
-				DestroyEntity(child, true);
-			}
+			Entity *child = (*it);
+			DestroyEntity(child);
 		}
 
 		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Destroyed entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+")");
+
 		delete entity;
 	}
 }

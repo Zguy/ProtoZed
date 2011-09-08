@@ -37,10 +37,12 @@ namespace PZ
 	Component *ComponentManager::CreateComponent(const std::string &componentName)
 	{
 		Component *component = componentFactory.Create(componentName);
+
 		if (component != NULL)
 			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Created component \""+component->GetName()+"\"");
 		else
 			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Tried to create component \""+componentName+"\", but it does not exist");
+
 		return component;
 	}
 

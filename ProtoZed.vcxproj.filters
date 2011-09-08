@@ -153,6 +153,9 @@
     <ClInclude Include="include\ProtoZed\IncludeFilters\NoFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ProtoZed\ComponentFamily.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">

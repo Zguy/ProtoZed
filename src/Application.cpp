@@ -41,7 +41,7 @@ namespace PZ
 		{
 		}
 
-		bool boot(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
+		bool boot(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, const sf::WindowSettings &params)
 		{
 			if (running)
 				return true;
@@ -139,7 +139,7 @@ namespace PZ
 		delete p;
 	}
 
-	int Application::Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, sf::WindowSettings &params)
+	int Application::Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, const sf::WindowSettings &params)
 	{
 		if (!p->boot(appName, videoMode, windowStyle, params))
 		{
