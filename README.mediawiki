@@ -4,7 +4,7 @@ A simple but powerful game framework.
 
 Please note that this framework is still under heavy development and might undergo major changes.
 
-It is lacking in documentation, but there is a doxygen of the awesome branch available [[http://protozed.zguyserver.nu/ here]].
+It is lacking in documentation, but there is a doxygen of the awesome branch available http://protozed.zguyserver.nu/ here.
 
 '''Features:'''
 * A state system.
@@ -16,13 +16,13 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 * A log system.
 
 '''Dependencies:'''
-* [[http://www.sfml-dev.org/ SFML 1.6]]
-* [[http://www.boost.org/ boost 1.48.0]]
+* [http://www.sfml-dev.org/ SFML 1.6]
+* [http://www.boost.org/ boost 1.48.0]
 
 ''''Platform Support:'''
 * Windows
 * Linux*
 * Mac OS X*
-*These are not tested, but they should work. Every third party library I'm using has support for them and all of my own code should be platform independent.
+ *These are not tested, but they should work. Every third party library I'm using has support for them and all of my own code should be platform independent.
 
 (Note: Only Visual Studio 2010 project files are provided so far)
