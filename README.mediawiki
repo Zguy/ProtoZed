@@ -19,7 +19,7 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 * [http://www.sfml-dev.org/ SFML 1.6]
 * [http://www.boost.org/ boost 1.48.0]
 
-''''Platform Support:'''
+'''Platform Support:'''
 * Windows
 * Linux*
 * Mac OS X*
