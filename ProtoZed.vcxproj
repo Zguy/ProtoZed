@@ -141,7 +141,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>include;E:\SDK\SFML-1.6\include;E:\SDK\boost_1_48_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include;C:\SDK\boost_1_48_0</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;PROFILER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -163,7 +163,7 @@
       </FunctionLevelLinking>
       <IntrinsicFunctions>
       </IntrinsicFunctions>
-      <AdditionalIncludeDirectories>include;E:\SDK\SFML-1.6\include;E:\SDK\boost_1_48_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;C:\SDK\SFML-1.6\include;C:\SDK\boost_1_48_0</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessorDefinitions>NDEBUG;PROFILER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
