@@ -109,7 +109,7 @@ namespace PZ
 		//TODO: Maybe output as json instead?
 		std::fstream log(filename+".log", std::ios::out | std::ios::trunc);
 
-		for (EntryMap::const_iterator it = p->entries.begin(); it != p->entries.end(); ++it)
+		for (EntryMap::const_iterator it = p->entries.cbegin(); it != p->entries.cend(); ++it)
 		{
 			log << "avg: " << (*it).second.GetAverage() << " ms\tbest: " << (*it).second.best << " ms\tworst: " << (*it).second.worst << " ms\t" << (*it).second.count << " times\t" << (*it).first << "\n";
 		}

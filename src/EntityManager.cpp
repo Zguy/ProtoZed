@@ -35,7 +35,7 @@ namespace PZ
 	public:
 		bool hasEntity(const EntityID &id)
 		{
-			for (EntityList::const_iterator it = entities.begin(); it != entities.end(); ++it)
+			for (EntityList::const_iterator it = entities.cbegin(); it != entities.cend(); ++it)
 			{
 				if (id == (*it))
 					return true;
@@ -147,10 +147,10 @@ namespace PZ
 
 	void EntityManager::SendMessageToAll(const Message &message) const
 	{
-		for (ComponentStore::const_iterator it = p->components.begin(); it != p->components.end(); ++it)
+		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
 		{
 			const EntityComponentMap &ecm = (*it).second;
-			for (EntityComponentMap::const_iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+			for (EntityComponentMap::const_iterator it2 = ecm.cbegin(); it2 != ecm.cend(); ++it2)
 			{
 				Component *component = (*it2).second;
 				component->HandleMessage(message);
@@ -163,10 +163,10 @@ namespace PZ
 		
 		if (p->hasEntity(to))
 		{
-			for (ComponentStore::const_iterator it = p->components.begin(); it != p->components.end(); ++it)
+			for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
 			{
 				const EntityComponentMap &ecm = (*it).second;
-				for (EntityComponentMap::const_iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+				for (EntityComponentMap::const_iterator it2 = ecm.cbegin(); it2 != ecm.cend(); ++it2)
 				{
 					const EntityID &id = (*it2).first;
 					Component *component = (*it2).second;

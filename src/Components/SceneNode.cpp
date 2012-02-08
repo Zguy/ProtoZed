@@ -100,7 +100,7 @@ namespace PZ
 	}
 	bool SceneNode::HasChild(const EntityID &id)
 	{
-		for (EntityList::const_iterator it = children.begin(); it != children.end(); ++it)
+		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
 			if ((*it) == id)
 			{

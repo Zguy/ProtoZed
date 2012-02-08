@@ -233,7 +233,7 @@ namespace PZ
 		}
 
 		profiler.Begin("IterateEntities");
-		for (EntityComponentMap::const_iterator it = ecm.begin(); it != ecm.end(); ++it)
+		for (EntityComponentMap::const_iterator it = ecm.cbegin(); it != ecm.cend(); ++it)
 		{
 			EntityID id = (*it).first;
 			Sprite *sprite = static_cast<Sprite*>((*it).second);
@@ -278,7 +278,7 @@ namespace PZ
 		profiler.End();
 
 		profiler.Begin("DrawLayers");
-		for (LayerList::const_iterator it = p->layers.begin(); it != p->layers.end(); ++it)
+		for (LayerList::const_iterator it = p->layers.cbegin(); it != p->layers.cend(); ++it)
 		{
 			const Layer &layer = (*it);
 
