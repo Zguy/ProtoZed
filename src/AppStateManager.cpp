@@ -1,24 +1,27 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 #include <ProtoZed/AppStateManager.h>
 
-#include <ProtoZed/Application.h>
+#include <ProtoZed/Log.h>
 
 #include <stack>
 #include <queue>
@@ -30,7 +33,7 @@ namespace PZ
 	{
 		enum Type
 		{
-			CHANGE = 1,
+			CHANGE,
 			PUSH,
 			POP,
 			POP_ALL
@@ -39,7 +42,7 @@ namespace PZ
 		{
 			Type type;
 			std::string stateName;
-			StringMap *options;
+			StringMap options;
 		};
 	}
 
@@ -47,19 +50,22 @@ namespace PZ
 	typedef std::map<std::string, AppState*> StateMap;
 	typedef std::queue<Todo::Entry> TodoQueue;
 
-	class AppStateManagerImpl
+	class AppStateManager::Impl
 	{
 	public:
+		Impl(Application &application) : application(application)
+		{}
+
 		AppState *getNewStateByName(const std::string &stateName)
 		{
-			return appStateFactory.Create(stateName);
+			return appStateFactory.Create(stateName, application);
 		}
 
-		void changeState(const std::string &stateName, StringMap *const options)
+		void changeState(const std::string &stateName, StringMap &options)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Changing state to \""+stateName+"\"");
+			Log::Info("ProtoZed", "Changing state to \""+stateName+"\"");
 			AppState *state = getNewStateByName(stateName);
-			if (state != NULL)
+			if (state != nullptr)
 			{
 				stateStack.top()->Stop();
 				stateStack.top()->UnloadAssets();
@@ -71,19 +77,19 @@ namespace PZ
 				stateStack.top()->LoadAssets();
 				stateStack.top()->Start(options);
 
-				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Changed state to \""+stateName+"\"");
+				Log::Info("ProtoZed", "Changed state to \""+stateName+"\"");
 			}
 			else
 			{
-				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("State \""+stateName+"\" was not found");
+				Log::Info("ProtoZed", "State \""+stateName+"\" was not found");
 			}
 		}
 
-		void pushState(const std::string &stateName, StringMap *const options)
+		void pushState(const std::string &stateName, StringMap &options)
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Pushing state \""+stateName+"\"");
+			Log::Info("ProtoZed", "Pushing state \""+stateName+"\"");
 			AppState *state = getNewStateByName(stateName);
-			if (state != NULL)
+			if (state != nullptr)
 			{
 				if (!stateStack.empty())
 					stateStack.top()->Pause();
@@ -93,11 +99,11 @@ namespace PZ
 				stateStack.top()->LoadAssets();
 				stateStack.top()->Start(options);
 
-				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Pushed state \""+stateName+"\"");
+				Log::Info("ProtoZed", "Pushed state \""+stateName+"\"");
 			}
 			else
 			{
-				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("State \""+stateName+"\" was not found");
+				Log::Info("ProtoZed", "State \""+stateName+"\" was not found");
 			}
 		}
 
@@ -105,7 +111,7 @@ namespace PZ
 		{
 			if (!stateStack.empty())
 			{
-				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Popping state");
+				Log::Info("ProtoZed", "Popping state");
 
 				stateStack.top()->Stop();
 				stateStack.top()->UnloadAssets();
@@ -116,30 +122,39 @@ namespace PZ
 				if (!stateStack.empty())
 					stateStack.top()->Resume();
 
-				Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Popped state");
+				Log::Info("ProtoZed", "Popped state");
 			}
 		}
 
 		void popAllStates()
 		{
-			while (!stateStack.empty())
+			if (!stateStack.empty())
 			{
-				if (stateStack.top()->IsStarted())
+				Log::Info("ProtoZed", "Popping all states");
+
+				while (!stateStack.empty())
 				{
-					stateStack.top()->Stop();
-					stateStack.top()->UnloadAssets();
+					if (stateStack.top()->IsStarted())
+					{
+						stateStack.top()->Stop();
+						stateStack.top()->UnloadAssets();
+					}
+					delete stateStack.top();
+					stateStack.pop();
 				}
-				delete stateStack.top();
-				stateStack.pop();
+
+				Log::Info("ProtoZed", "Popped all states");
 			}
 		}
+
+		Application &application;
 
 		StateStack stateStack;
 		TodoQueue  todoQueue;
 		AppStateManager::AppStateFactory appStateFactory;
 	};
 
-	AppStateManager::AppStateManager() : p(new AppStateManagerImpl)
+	AppStateManager::AppStateManager(Application &application) : p(new Impl(application))
 	{
 	}
 	AppStateManager::~AppStateManager()
@@ -161,8 +176,6 @@ namespace PZ
 			case Todo::POP     : p->popState();                                  break;
 			case Todo::POP_ALL : p->popAllStates();                              break;
 			}
-			if (entry.options != NULL)
-				delete entry.options;
 			p->todoQueue.pop();
 		}
 	}
@@ -172,7 +185,14 @@ namespace PZ
 		return p->appStateFactory.Unregister(stateName);
 	}
 
-	void AppStateManager::ChangeState(const std::string &stateName, StringMap *options)
+	void AppStateManager::ChangeState(const std::string &stateName)
+	{
+		Todo::Entry todo;
+		todo.type      = Todo::CHANGE;
+		todo.stateName = stateName;
+		p->todoQueue.push(todo);
+	}
+	void AppStateManager::ChangeState(const std::string &stateName, StringMap &options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::CHANGE;
@@ -181,7 +201,14 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void AppStateManager::PushState(const std::string &stateName, StringMap *options)
+	void AppStateManager::PushState(const std::string &stateName)
+	{
+		Todo::Entry todo;
+		todo.type      = Todo::PUSH;
+		todo.stateName = stateName;
+		p->todoQueue.push(todo);
+	}
+	void AppStateManager::PushState(const std::string &stateName, StringMap &options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::PUSH;
@@ -195,7 +222,6 @@ namespace PZ
 		Todo::Entry todo;
 		todo.type      = Todo::POP;
 		todo.stateName = "";
-		todo.options   = NULL;
 		p->todoQueue.push(todo);
 	}
 
@@ -204,7 +230,6 @@ namespace PZ
 		Todo::Entry todo;
 		todo.type      = Todo::POP_ALL;
 		todo.stateName = "";
-		todo.options   = NULL;
 		p->todoQueue.push(todo);
 	}
 
@@ -218,7 +243,7 @@ namespace PZ
 		if (!p->stateStack.empty())
 			return p->stateStack.top();
 		else
-			return NULL;
+			return nullptr;
 	}
 
 	AppStateManager::AppStateFactory &AppStateManager::getAppStateFactory() const

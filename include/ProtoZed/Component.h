@@ -1,26 +1,28 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
-#ifndef Component_h__
-#define Component_h__
+#ifndef PZ_Component_h__
+#define PZ_Component_h__
 
-#include <ProtoZed/ComponentFamily.h>
-#include <ProtoZed/Entity.h>
+#include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Message.h>
 
 #include <string>
@@ -29,36 +31,35 @@ namespace PZ
 {
 	class Component
 	{
-		friend class Entity;
-
-	public:
-		Component(const std::string &name, ComponentFamily::Type family) : name(name), family(family), owner(NULL)
+		friend class EntityManager;
+	protected:
+		Component(const EntityID &owner, EntityManager &manager) : owner(owner), manager(manager)
 		{}
 		virtual ~Component()
 		{}
-	
-		inline const std::string &GetName() const { return name; }
 
-		inline ComponentFamily::Type GetFamily() const { return family; }
+	public:
+		virtual bool HandleMessage(const Message &message)
+		{
+			return false;
+		}
 
-		inline bool HasOwner() const { return (owner != NULL); }
-		inline Entity *GetOwner() const { return owner; }
-	
-		virtual bool HasAttribute(Attribute attribute) const { return false; }
-		virtual void SetAttribute(Attribute attribute, float value) { }
-		virtual float GetAttribute(Attribute attribute) const { return 0.f; }
+		EntityID GetOwnerID() const
+		{
+			return owner;
+		}
 
-		virtual bool HandleMessage(Message &message) = 0;
-	
 	protected:
-		virtual void SetOwner(Entity *newOwner) { owner = newOwner; }
+		EntityManager &GetManager() const
+		{
+			return manager;
+		}
 
 	private:
-		std::string name;
-		ComponentFamily::Type family;
+		EntityID owner;
 
-		Entity *owner;
+		EntityManager &manager;
 	};
 }
 
-#endif // Component_h__
+#endif // PZ_Component_h__

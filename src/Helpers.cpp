@@ -1,24 +1,27 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 #include <ProtoZed/Helpers.h>
 
-#include <ProtoZed/Convert.h>
+#include <ProtoZed/Math.h>
 
 #include <cmath>
 
@@ -26,40 +29,17 @@ namespace PZ
 {
 	namespace Helpers
 	{
-		void NormalizeVector(sf::Vector2f &vector)
+		Vector2f GetForwardVector(Angle::Radians rotation, float length)
 		{
-			const float length = GetDistance(sf::Vector2f(), vector);
-			if (length > 0.f)
-				vector /= length;
+			return Vector2f(std::cos(rotation.ToFloat()) * length * -1, std::sin(rotation.ToFloat()) * length);
 		}
 
-		sf::Vector2f GetForwardVector(float rotation, float length)
+		Angle::Radians GetRotationTo(const Vector2f &from, const Vector2f &to)
 		{
-			const float rotRad = Convert::DegreesToRadians(rotation);
-			return sf::Vector2f(std::cos(rotRad) * length * -1,
-													std::sin(rotRad) * length);
-		}
+			float x = to.x - from.x;
+			float y = to.y - from.y;
 
-		float GetDistance(const sf::Vector2f &pointA, const sf::Vector2f &pointB)
-		{
-			return std::sqrt(GetDistanceSquared(pointA, pointB));
-		}
-		float GetDistanceSquared(const sf::Vector2f &pointA, const sf::Vector2f &pointB)
-		{
-			const float x = std::abs(pointB.x - pointA.x);
-			const float y = std::abs(pointB.y - pointA.y);
-
-			return (x*x + y*y);
-		}
-
-		float GetRotationTo(const sf::Vector2f &from, const sf::Vector2f &to)
-		{
-			const float x = to.x - from.x;
-			const float y = to.y - from.y;
-
-			const float angle = Convert::RadiansToDegrees(std::atan2(x, y)) + 180.f;
-
-			return angle;
+			return (Angle::Radians(std::atan2(x, y) + Math::PI));
 		}
 	}
 }

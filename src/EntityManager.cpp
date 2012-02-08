@@ -1,72 +1,270 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 #include <ProtoZed/EntityManager.h>
 
-#include <ProtoZed/Convert.h>
-#include <ProtoZed/UniqueIDGenerator.h>
-#include <ProtoZed/Application.h>
+#include <ProtoZed/MetaEntity.h>
+#include <ProtoZed/Component.h>
+
+#include <vector>
 
 namespace PZ
 {
-	EntityManager::EntityManager()
+	typedef std::unordered_map<HashString, EntityComponentMap> ComponentStore;
+
+	class EntityManager::Impl
+	{
+	public:
+		bool hasEntity(const EntityID &id)
+		{
+			for (EntityList::const_iterator it = entities.begin(); it != entities.end(); ++it)
+			{
+				if (id == (*it))
+					return true;
+			}
+			return false;
+		}
+
+		void eraseComponent(ComponentStore::iterator &it, EntityComponentMap::iterator &it2)
+		{
+			EntityComponentMap &ecm = (*it).second;
+
+			delete (*it2).second;
+			ecm.erase(it2);
+
+			if (ecm.empty())
+			{
+				components.erase(it);
+			}
+		}
+
+		EntityList entities;
+
+		ComponentStore components;
+
+		static const EntityComponentMap emptyMap; //TODO: This solution sucks
+	};
+
+	const EntityComponentMap EntityManager::Impl::emptyMap;
+
+	EntityManager::EntityManager() : p(new Impl)
 	{
 	}
 	EntityManager::~EntityManager()
 	{
+		p->entities.clear();
+
+		for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
+		{
+			EntityComponentMap &ecm = (*it).second;
+
+			for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+			{
+				delete (*it2).second;
+			}
+		}
+		p->components.clear();
+
+		delete p;
 	}
 
-	bool EntityManager::UnregisterEntity(const std::string &entityName)
+	bool EntityManager::CreateEntity(const EntityID &id)
 	{
-		return entityFactory.Unregister(entityName);
-	}
+		if (!p->hasEntity(id))
+		{
+			p->entities.push_back(id);
 
-	Entity *EntityManager::CreateEntity(const std::string &entityName, const std::string &name)
-	{
-		std::string fixName = name;
-		if (fixName.empty())
-			fixName = "Entity"+Convert::ToString<UniqueID>(UniqueIDGenerator::GetNextID("EntityName"));
-		Entity *entity = entityFactory.Create(entityName, fixName);
-		if (entity != NULL)
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Created entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+")");
+			return true;
+		}
 		else
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Error("Tried to create entity \""+entityName+"\", but it does not exist");
-		return entity;
+		{
+			return false;
+		}
+	}
+	bool EntityManager::DestroyEntity(const EntityID &id)
+	{
+		for (EntityList::iterator it = p->entities.begin(); it != p->entities.end(); ++it)
+		{
+			if ((*it) == id)
+			{
+				// Remove all components associated with this entity
+				for (ComponentStore::iterator it2 = p->components.begin(); it2 != p->components.end();)
+				{
+					EntityComponentMap &ecm = (*it2).second;
+
+					ComponentStore::iterator next_it2 = it2;
+					++next_it2;
+
+					EntityComponentMap::iterator it3 = ecm.find(id);
+					if (it3 != ecm.end())
+					{
+						p->eraseComponent(it2, it3);
+					}
+
+					it2 = next_it2;
+				}
+
+				p->entities.erase(it);
+
+				return true;
+			}
+		}
+		return false;
 	}
 
-	void EntityManager::DestroyEntity(Entity *entity) const
+	MetaEntity EntityManager::GetEntity(const EntityID &id) const
 	{
-		if (entity == NULL)
+		Profile profile("GetEntity");
+		if (p->hasEntity(id))
 		{
-			Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Warning("DestroyEntity() ignored a NULL pointer");
-			return;
+			MetaEntity entity(id, const_cast<EntityManager&>(*this));
+
+			return entity;
+		}
+		else
+		{
+			return MetaEntity();
+		}
+	}
+
+	void EntityManager::SendMessageToAll(const Message &message) const
+	{
+		for (ComponentStore::const_iterator it = p->components.begin(); it != p->components.end(); ++it)
+		{
+			const EntityComponentMap &ecm = (*it).second;
+			for (EntityComponentMap::const_iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+			{
+				Component *component = (*it2).second;
+				component->HandleMessage(message);
+			}
+		}
+	}
+	bool EntityManager::SendMessage(const Message &message, const EntityID &to) const
+	{
+		// This is going to be slow..
+		
+		if (p->hasEntity(to))
+		{
+			for (ComponentStore::const_iterator it = p->components.begin(); it != p->components.end(); ++it)
+			{
+				const EntityComponentMap &ecm = (*it).second;
+				for (EntityComponentMap::const_iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+				{
+					const EntityID &id = (*it2).first;
+					Component *component = (*it2).second;
+
+					if (id == to)
+					{
+						component->HandleMessage(message);
+						break;
+					}
+				}
+			}
+
+			return true;
 		}
 
-		// Destroy the children
-		EntityList children = entity->GetChildren();
-		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+		return false;
+	}
+
+	bool EntityManager::AddComponentImpl(const EntityID &id, const HashString &name, Component *component)
+	{
+		return p->components[name].insert(std::make_pair(id, component)).second;
+	}
+	bool EntityManager::RemoveComponentImpl(const EntityID &id, const HashString &name)
+	{
+		ComponentStore::iterator it = p->components.find(name);
+		if (it == p->components.end())
 		{
-			Entity *child = (*it);
-			DestroyEntity(child);
+			return false;
 		}
+		else
+		{
+			EntityComponentMap &ecm = (*it).second;
+			EntityComponentMap::iterator it2 = ecm.find(id);
+			if (it2 == ecm.end())
+			{
+				return false;
+			}
+			else
+			{
+				p->eraseComponent(it, it2);
 
-		Application::GetSingleton().GetLogManager().GetLog("ProtoZed").Info("Destroyed entity \""+entity->GetName()+"\" ("+Convert::ToString<UniqueID>(entity->GetID())+")");
-
-		delete entity;
+				return true;
+			}
+		}
+	}
+	bool EntityManager::HasComponentImpl(const EntityID &id, const HashString &name)
+	{
+		ComponentStore::iterator it = p->components.find(name);
+		if (it == p->components.end())
+		{
+			return false;
+		}
+		else
+		{
+			EntityComponentMap &ecm = (*it).second;
+			EntityComponentMap::iterator it2 = ecm.find(id);
+			if (it2 == ecm.end())
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+	Component *EntityManager::GetComponentImpl(const EntityID &id, const HashString &name)
+	{
+		ComponentStore::iterator it = p->components.find(name);
+		if (it == p->components.end())
+		{
+			return nullptr;
+		}
+		else
+		{
+			EntityComponentMap &ecm = (*it).second;
+			EntityComponentMap::iterator it2 = ecm.find(id);
+			if (it2 == ecm.end())
+			{
+				return nullptr;
+			}
+			else
+			{
+				return (*it2).second;
+			}
+		}
+	}
+	const EntityComponentMap &EntityManager::GetEntitiesWithImpl(const HashString &name)
+	{
+		ComponentStore::const_iterator it = p->components.find(name);
+		if (it == p->components.end())
+		{
+			// Help?
+			return p->emptyMap;
+		}
+		else
+		{
+			return (*it).second;
+		}
 	}
 }

@@ -1,23 +1,26 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
-#ifndef AppStateManager_h__
-#define AppStateManager_h__
+#ifndef PZ_AppStateManager_h__
+#define PZ_AppStateManager_h__
 
 #include <ProtoZed/AppState.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
@@ -27,12 +30,12 @@
 
 namespace PZ
 {
-	class AppStateManagerImpl;
+	class Application;
 
 	class AppStateManager
 	{
 	public:
-		AppStateManager();
+		AppStateManager(Application &application);
 		~AppStateManager();
 
 		void Update();
@@ -44,8 +47,10 @@ namespace PZ
 		}
 		bool UnregisterState(const std::string &stateName);
 
-		void ChangeState(const std::string &stateName, StringMap *options = NULL);
-		void PushState(const std::string &stateName, StringMap *options = NULL);
+		void ChangeState(const std::string &stateName);
+		void ChangeState(const std::string &stateName, StringMap &options);
+		void PushState(const std::string &stateName);
+		void PushState(const std::string &stateName, StringMap &options);
 		void PopState();
 		void PopAllStates();
 
@@ -54,12 +59,12 @@ namespace PZ
 		AppState *GetCurrentState() const;
 
 	private:
-		friend class AppStateManagerImpl;
-		AppStateManagerImpl *p;
+		class Impl;
+		Impl *p;
 
-		typedef ::ObjectFactory<AppState*(), std::string> AppStateFactory;
+		typedef ::ObjectFactory<AppState*(Application&), std::string> AppStateFactory;
 		AppStateFactory &getAppStateFactory() const;
 	};
 }
 
-#endif // AppStateManager_h__
+#endif // PZ_AppStateManager_h__

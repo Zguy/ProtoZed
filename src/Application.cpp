@@ -1,129 +1,114 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 #include <ProtoZed/Application.h>
 
 #include <ProtoZed/Version.h>
+#include <ProtoZed/Clock.h>
 #include <ProtoZed/AppStateManager.h>
+#include <ProtoZed/Profiler.h>
+#include <ProtoZed/Log.h>
+#include <ProtoZed/Messages.h>
 
-#include <ProtoZed/Entities/ListenerEntity.h>
-
-#include <ProtoZed/Components/DrawableComponent.h>
-#include <ProtoZed/Components/SpritesheetComponent.h>
-#include <ProtoZed/Components/SoundComponent.h>
+#include <ProtoZed/Components/SceneNode.h>
+#include <ProtoZed/Components/Position2D.h>
+#include <ProtoZed/Components/Sprite.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
 #include <ProtoZed/Animation/Tween.h>
 
-#include <SFML/Graphics.hpp>
-
 namespace PZ
 {
-	class ApplicationImpl
+	class Application::Impl
 	{
 	public:
-		ApplicationImpl() : running(false)
+		Impl(Application &i) : i(i), running(false), services(i), stateManager(i)
 		{
 		}
 
-		bool boot(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, const sf::WindowSettings &params)
+		bool boot()
 		{
 			if (running)
 				return true;
 
-			logManager.OpenLog("ProtoZed");
-			logManager.GetLog("ProtoZed").Info(std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
+			profiler   = new Profiler;
+			Profile profile("Boot");
 
-			sf::VideoMode sfVideoMode(videoMode.GetWindowResolution().x, videoMode.GetWindowResolution().y);
-			if (videoMode.GetFullscreen())
-				windowStyle |= sf::Style::Fullscreen;
-			window.Create(sfVideoMode, appName, windowStyle, params);
+			logManager = new LogManager;
 
-			view = videoMode.GetView();
-			window.SetView(view);
+			logManager->OpenLog("ProtoZed");
+			logManager->GetLog("ProtoZed").Info(std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
-			entityManager.RegisterEntity<Entity>("Entity");
-			entityManager.RegisterEntity<ListenerEntity>("ListenerEntity");
+			// Start services
+			services.StartAll();
 
-			componentManager.RegisterComponent<DrawableComponent>("Drawable");
-			componentManager.RegisterComponent<SpritesheetComponent>("Spritesheet");
-			componentManager.RegisterComponent<SoundComponent>("Sound");
+			entityManager.RegisterComponent<SceneNode>();
+			entityManager.RegisterComponent<Position2D>();
+			entityManager.RegisterComponent<Sprite>();
 
 			animationManager.RegisterAnimationType<AnimationGroup>("AnimationGroup");
 			animationManager.RegisterAnimationType<Tween>("Tween");
 
 			running = true;
 
-			logManager.GetLog("ProtoZed").Info("ProtoZed is running");
+			logManager->GetLog("ProtoZed").Info("ProtoZed is running");
 
 			return true;
 		}
 
 		void shutdown()
 		{
-			logManager.GetLog("ProtoZed").Info("Shutting down ProtoZed");
-
-			stateManager.PopAllStates();
-			stateManager.Update();
-
-			window.Close();
-
-			running = false;
-
-			logManager.GetLog("ProtoZed").Info("ProtoZed has stopped");
-		}
-
-		void handleInput() 
-		{
-			sf::Event event;
-			while (window.GetEvent(event))
 			{
-				if (event.Type == sf::Event::Closed)
-					running = false;
-				else
-				if (stateManager.GetCurrentState() != NULL)
-				{
-					if (event.Type == sf::Event::TextEntered)
-						stateManager.GetCurrentState()->OnTextInput(event.Text);
-					else if (event.Type == sf::Event::KeyPressed)
-						stateManager.GetCurrentState()->OnKeyDown(event.Key);
-					else if (event.Type == sf::Event::KeyReleased)
-						stateManager.GetCurrentState()->OnKeyUp(event.Key);
-					else if (event.Type == sf::Event::MouseButtonPressed)
-						stateManager.GetCurrentState()->OnMouseDown(event.MouseButton);
-					else if (event.Type == sf::Event::MouseButtonReleased)
-						stateManager.GetCurrentState()->OnMouseUp(event.MouseButton);
-					else if (event.Type == sf::Event::MouseMoved)
-						stateManager.GetCurrentState()->OnMouseMove(event.MouseMove);
-				}
+				Profile profile("Shutdown");
+
+				logManager->GetLog("ProtoZed").Info("Shutting down ProtoZed");
+
+				stateManager.PopAllStates();
+				stateManager.Update();
+
+				// Shutdown services
+				services.StopAll();
+				services.RemoveAll();
+
+				running = false;
+
+				logManager->GetLog("ProtoZed").Info("ProtoZed has stopped");
 			}
+
+			delete logManager;
+
+			profiler->WriteLog("Profile");
+			delete profiler;
 		}
+
+		Application &i;
 
 		bool running;
 
-		sf::RenderWindow window;
-		sf::View view;
-		Input input;
+		Profiler   *profiler;
+		LogManager *logManager;
 
-		LogManager       logManager;
+		ServiceList      services;
 		AppStateManager  stateManager;
 		EntityManager    entityManager;
-		ComponentManager componentManager;
 		AnimationManager animationManager;
 
 		ImageStorage       imageStorage;
@@ -131,54 +116,57 @@ namespace PZ
 		SoundBufferStorage soundBufferStorage;
 	};
 
-	Application::Application() : p(new ApplicationImpl)
+	Application::Application()
 	{
+		p = new Impl(*this);
 	}
 	Application::~Application()
 	{
 		delete p;
 	}
 
-	int Application::Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle, const sf::WindowSettings &params)
+	int Application::Run()
 	{
-		if (!p->boot(appName, videoMode, windowStyle, params))
+		if (!p->boot())
 		{
 			return 1;
 		}
 
+		Clock frameTimer;
 		while (p->running)
 		{
-			float deltaTime = p->window.GetFrameTime();
+			Profile profile("MainLoop");
 
-			p->input.Update(p->window);
+			float deltaTime = frameTimer.GetElapsedTime();
+			frameTimer.Reset();
 
-			p->stateManager.Update();
-
-			p->handleInput();
-
-			p->window.Clear();
+			{
+				Profile profile("StateManager");
+				p->stateManager.Update();
+			}
 
 			Update(deltaTime);
 
-			AppState *state = p->stateManager.GetCurrentState();
-			if (state != NULL)
 			{
-				if (!state->Update(deltaTime))
+				Profile profile("CurrentState");
+				AppState *state = p->stateManager.GetCurrentState();
+				if (state != nullptr)
 				{
-					p->stateManager.PopState();
+					state->Update(deltaTime);
 				}
-
-				// Update entities
-				state->GetRootEntity()->ReceiveMessage(UpdateMessage(deltaTime));
-
-				// Draw drawable entities
-				state->GetRootEntity()->ReceiveMessage(DrawMessage(p->window));
 			}
 
-			p->window.Display();
+			{
+				Profile profile("UpdateComponents");
+				p->entityManager.SendMessageToAll(UpdateMessage::Create(deltaTime));
+			}
 
-			if ((!p->window.IsOpened())||(p->stateManager.IsEmpty()))
-				p->running = false;
+			p->services.UpdateAll(deltaTime);
+
+			if (p->stateManager.IsEmpty())
+			{
+				RequestShutdown();
+			}
 		}
 
 		p->shutdown();
@@ -191,13 +179,9 @@ namespace PZ
 		p->running = false;
 	}
 
-	const Input &Application::GetInput() const
+	ServiceList &Application::GetServiceList() const
 	{
-		return p->input;
-	}
-	LogManager &Application::GetLogManager() const
-	{
-		return p->logManager;
+		return p->services;
 	}
 	AppStateManager &Application::GetStateManager() const
 	{
@@ -206,10 +190,6 @@ namespace PZ
 	EntityManager &Application::GetEntityManager() const
 	{
 		return p->entityManager;
-	}
-	ComponentManager &Application::GetComponentManager() const
-	{
-		return p->componentManager;
 	}
 	AnimationManager &Application::GetAnimationManager() const
 	{

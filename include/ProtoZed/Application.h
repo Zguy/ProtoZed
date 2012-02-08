@@ -1,31 +1,30 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
-#ifndef Application_h__
-#define Application_h__
+#ifndef PZ_Application_h__
+#define PZ_Application_h__
 
-#include <ProtoZed/Singleton.h>
-#include <ProtoZed/VideoMode.h>
-#include <ProtoZed/Input.h>
+#include <ProtoZed/ServiceList.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
-#include <ProtoZed/ComponentManager.h>
-#include <ProtoZed/Logging/LogManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
 
@@ -33,17 +32,13 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 
-#include <string>
-
 namespace PZ
 {
 	typedef AssetStorage<sf::Image>       ImageStorage;
 	typedef AssetStorage<sf::Font>        FontStorage;
 	typedef AssetStorage<sf::SoundBuffer> SoundBufferStorage;
 
-	class ApplicationImpl;
-
-	class Application : public Singleton<Application>
+	class Application
 	{
 	public:
 		Application();
@@ -51,15 +46,13 @@ namespace PZ
 
 		virtual void Update(float deltaTime) {}
 
-		int Run(const std::string &appName, VideoMode &videoMode, unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize), const sf::WindowSettings &params = sf::WindowSettings());
+		int Run();
 
 		void RequestShutdown();
 
-		const Input        &GetInput() const;
-		LogManager         &GetLogManager() const;
+		ServiceList        &GetServiceList() const;
 		AppStateManager    &GetStateManager() const;
 		EntityManager      &GetEntityManager() const;
-		ComponentManager   &GetComponentManager() const;
 		AnimationManager   &GetAnimationManager() const;
 
 		ImageStorage       &GetImageStorage() const;
@@ -67,8 +60,9 @@ namespace PZ
 		SoundBufferStorage &GetSoundBufferStorage() const;
 
 	private:
-		ApplicationImpl *p;
+		class Impl;
+		Impl *p;
 	};
 }
 
-#endif // Application_h__
+#endif // PZ_Application_h__

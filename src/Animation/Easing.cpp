@@ -1,27 +1,29 @@
 /*
-	Copyright 2010-2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
-	This file is part of ProtoZed.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-	ProtoZed is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-	ProtoZed is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-
-	You should have received a copy of the GNU Lesser General Public License
-	along with ProtoZed.  If not, see <http://www.gnu.org/licenses/>.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 #include <ProtoZed/Animation/Easing.h>
 
-#include <cmath>
+#include <ProtoZed/Math.h>
 
-static const float M_PI   = 3.14159265358979323846f;
-static const float M_PI_2 = 1.57079632679489661923f;
+#include <cmath>
 
 namespace PZ
 {
@@ -48,16 +50,16 @@ namespace PZ
 		/**** SINE ****/
 		float Sine::easeIn(float t, float b, float c, float d) const
 		{
-			return -c * std::cos(t/d * (M_PI_2)) + c + b;
+			return -c * std::cos(t/d * (Math::PI_2)) + c + b;
 		}
 		float Sine::easeOut(float t, float b, float c, float d) const
 		{
-			return c * std::sin(t/d * (M_PI_2)) + b;
+			return c * std::sin(t/d * (Math::PI_2)) + b;
 		}
 
 		float Sine::easeInOut(float t, float b, float c, float d) const
 		{
-			return -c/2 * (std::cos(M_PI*t/d) - 1) + b;
+			return -c/2 * (std::cos(Math::PI*t/d) - 1) + b;
 		}
 
 		/**** QUINT ****/
@@ -130,7 +132,7 @@ namespace PZ
 			float a=c;
 			float s=p/4;
 			float postFix =a*std::pow(2,10*(t-=1));
-			return -(postFix * std::sin((t*d-s)*(2*M_PI)/p )) + b;
+			return -(postFix * std::sin((t*d-s)*(2*Math::PI)/p )) + b;
 		}
 		float Elastic::easeOut(float t, float b, float c, float d) const
 		{
@@ -138,7 +140,7 @@ namespace PZ
 			float p=d*.3f;
 			float a=c;
 			float s=p/4;
-			return (a*std::pow(2,-10*t) * std::sin( (t*d-s)*(2*M_PI)/p ) + c + b);
+			return (a*std::pow(2,-10*t) * std::sin( (t*d-s)*(2*Math::PI)/p ) + c + b);
 		}
 		float Elastic::easeInOut(float t, float b, float c, float d) const
 		{
@@ -150,10 +152,10 @@ namespace PZ
 			if (t < 1)
 			{
 				float postFix =a*std::pow(2,10*(t-=1));
-				return -.5f*(postFix* std::sin( (t*d-s)*(2*M_PI)/p )) + b;
+				return -.5f*(postFix* std::sin( (t*d-s)*(2*Math::PI)/p )) + b;
 			}
 			float postFix =  a*std::pow(2,-10*(t-=1));
-			return postFix * std::sin( (t*d-s)*(2*M_PI)/p )*.5f + c + b;
+			return postFix * std::sin( (t*d-s)*(2*Math::PI)/p )*.5f + c + b;
 		}
 
 		/****  CUBIC ****/
