@@ -75,6 +75,13 @@ namespace PZ
 		MetaEntity GetEntity(const EntityID &id) const;
 
 		/**
+		 * \brief	Gets a list of every entity.
+		 *
+		 * \return	The list of entites.
+		 */
+		const EntityList &GetAllEntities() const;
+
+		/**
 		 * \brief	Registers a component.
 		 *
 		 * \return	true if it succeeds, false if it fails.

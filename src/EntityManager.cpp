@@ -145,6 +145,11 @@ namespace PZ
 		}
 	}
 
+	const EntityList &EntityManager::GetAllEntities() const
+	{
+		return p->entities;
+	}
+
 	void EntityManager::SendMessageToAll(const Message &message) const
 	{
 		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
