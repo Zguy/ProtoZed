@@ -4,7 +4,7 @@ A simple but powerful game framework.
 
 Please note that this framework is still under heavy development and might undergo major changes.
 
-It is lacking in documentation, but there is a doxygen of the awesome branch available http://protozed.zguyserver.nu/ here.
+It is lacking in documentation, but there is a doxygen of the awesome branch available [http://protozed.zguyserver.nu/ here].
 
 '''Features:'''
 * A state system.
