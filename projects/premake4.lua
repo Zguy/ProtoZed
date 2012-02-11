@@ -14,47 +14,43 @@ solution "ProtoZed"
 	
 configuration "Release"
 	defines { "NDEBUG" }
+	flags { "Optimize" }
 	
 configuration "Debug"
 	defines { "_DEBUG" }
-
---[[project "GWEN DLL"
-	defines { "GWEN_COMPILE_DLL" }
-	files { "../src/**.*", "../include/Gwen/**.*" }
-	kind "SharedLib"
-	
-	configuration "Release"
-		targetname( "gwen" )
-		
-	configuration "Debug"
-		targetname( "gwend" )]]--
+	flags { "Symbols" }
 
 project "ProtoZed"
 	defines { "PROFILER" }
 	files { "../src/**.*", "../include/ProtoZed/**.*" }
-	includedirs { "../include/" }
+	includedirs { "../include/", "C:/SDK/SFML-1.6/include", "C:/SDK/boost_1_48_0" }
 	--flags { "ExtraWarnings" }
 	kind "StaticLib"
 	
 	configuration "Release"
-		targetname( "ProtoZed" )
-		flags { "Optimize" }
+		targetname "ProtoZed"
 		
 	configuration "Debug"
-		targetname( "ProtoZed_d" )
-		flags { "Symbols" }
+		targetname "ProtoZed_d"
 		
 --
--- Renderers
+-- Services
 --
+function DefineService(name, includes)
 
---[[DefineRenderer( "OpenGL", {"../Renderers/OpenGL/OpenGL.cpp"} )
-DefineRenderer( "OpenGL_DebugFont", { "../Renderers/OpenGL/OpenGL.cpp", "../Renderers/OpenGL/DebugFont/OpenGL_DebugFont.cpp" } )
-DefineRenderer( "SFML", { "../Renderers/SFML/SFML.cpp" } )
-DefineRenderer( "Allegro", { "../Renderers/Allegro/Allegro.cpp" } )
+	project ("Service_"..name)
+	defines { "PROFILER" }
+	files { "../services/"..name.."/**.*" }
+	includedirs { "../services/"..name.."/include/", "../include/", includes }
+	kind "StaticLib"
+	
+	configuration "Release"
+		targetname (name)
+		
+	configuration "Debug"
+		targetname (name.."_d")
 
-if ( os.get() == "windows" ) then
-	DefineRenderer( "DirectX9", { "../Renderers/DirectX9/DirectX9.cpp" } )
-	DefineRenderer( "Direct2D", { "../Renderers/Direct2D/Direct2D.cpp" } )
-	DefineRenderer( "GDI", { "../Renderers/GDIPlus/GDIPlus.cpp", "../Renderers/GDIPlus/GDIPlusBuffered.cpp" } )
-end]]--
+end
+
+DefineService("Renderer_SFML", { "C:/SDK/SFML-1.6/include" })
+DefineService("Input_SFML", { "C:/SDK/SFML-1.6/include" })
