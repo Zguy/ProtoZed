@@ -22,8 +22,6 @@ THE SOFTWARE.
 #ifndef PZ_AppState_h__
 #define PZ_AppState_h__
 
-#include <SFML/Window/Event.hpp>
-
 #include <map>
 #include <string>
 
