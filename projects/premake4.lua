@@ -4,13 +4,15 @@ solution "ProtoZed"
 	location ( os.get() .. "/" .. _ACTION )
 	flags { "ExtraWarnings", "Unicode", "NoPCH" }
 	targetdir ( "../lib/" .. os.get() )
-	libdirs { "../lib/", "../lib/" .. os.get() }
 
 	configurations
 	{ 
 		"Release",
 		"Debug"
 	}
+	
+configuration "linux"
+	buildoptions { "-std=c++0x" }
 	
 configuration "Release"
 	defines { "NDEBUG" }
@@ -41,6 +43,7 @@ function DefineService(name, includes)
 	defines { "PROFILER" }
 	files { "../services/"..name.."/**.*" }
 	includedirs { "../services/"..name.."/include/", "../include/", includes }
+	libdirs { "../lib/" .. os.get() }
 	kind "StaticLib"
 	
 	configuration "Release"
