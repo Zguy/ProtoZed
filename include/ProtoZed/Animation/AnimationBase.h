@@ -89,6 +89,8 @@ namespace PZ
 		AnimationCallback onFinished;
 
 	private:
+		AnimationBase &operator=(const AnimationBase&);
+
 		AnimationManager &animationManager;
 	};
 }

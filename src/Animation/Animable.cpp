@@ -30,6 +30,9 @@ namespace PZ
 	Animable::Animable(AnimationManager &animationManager) : animationManager(animationManager)
 	{
 	}
+	Animable::Animable(const Animable &other) : animationManager(other.GetAnimationManager())
+	{
+	}
 	Animable::~Animable()
 	{
 		for (AnimationList::iterator it = animations.begin(); it != animations.end(); ++it)

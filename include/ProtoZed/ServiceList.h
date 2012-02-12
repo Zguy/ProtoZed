@@ -22,12 +22,13 @@ THE SOFTWARE.
 #ifndef PZ_ServiceList_h__
 #define PZ_ServiceList_h__
 
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Service.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 namespace PZ
 {
-	class ServiceList
+	class ServiceList : public NonCopyable
 	{
 		friend class Application;
 	public:

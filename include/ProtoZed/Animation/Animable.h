@@ -38,6 +38,7 @@ namespace PZ
 	{
 	public:
 		Animable(AnimationManager &animationManager);
+		Animable(const Animable &other);
 		virtual ~Animable();
 
 		AnimationBase *RunAnimation(const std::string &animationName);
@@ -59,6 +60,8 @@ namespace PZ
 		}
 
 	private:
+		Animable &operator=(const Animable&);
+
 		AnimationList animations;
 
 		AnimationManager &animationManager;

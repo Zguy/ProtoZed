@@ -22,6 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_Component_h__
 #define PZ_Component_h__
 
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Message.h>
 
@@ -29,7 +30,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	class Component
+	class Component : public NonCopyable
 	{
 		friend class EntityManager;
 	protected:

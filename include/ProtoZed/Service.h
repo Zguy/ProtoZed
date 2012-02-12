@@ -22,6 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_Service_h__
 #define PZ_Service_h__
 
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/ServiceType.h>
 
 #include <string>
@@ -30,7 +31,7 @@ namespace PZ
 {
 	class Application;
 
-	class Service
+	class Service : public NonCopyable
 	{
 	public:
 		Service(const ServiceType &type, Application &application) : type(type), started(false), application(application)

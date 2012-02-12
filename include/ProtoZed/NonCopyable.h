@@ -19,50 +19,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Profiler_h__
-#define PZ_Profiler_h__
-
-#include <ProtoZed/Singleton.h>
-#include <ProtoZed/NonCopyable.h>
-
-#include <string>
+#ifndef PZ_NonCopyable_h__
+#define PZ_NonCopyable_h__
 
 namespace PZ
 {
-	class Profiler : public Singleton<Profiler>
+	class NonCopyable
 	{
-	public:
-		Profiler();
-		~Profiler();
-
-#ifdef PROFILER
-		void Begin(const std::string &name);
-		void End();
-
-		void WriteLog(const std::string &filename) const;
-#else
-		inline void Begin(const std::string &name)
-		{}
-		inline void End()
-		{}
-
-		void WriteLog(const std::string &filename) const
-		{}
-#endif
-	private:
-		class Impl;
-		Impl *p;
-	};
-
-	class Profile : public NonCopyable
-	{
-	public:
-		Profile(const std::string &name);
-		~Profile();
+	protected:
+		NonCopyable() {}
 
 	private:
-		Profiler &profiler;
+		NonCopyable(const NonCopyable&);
+		NonCopyable &operator=(const NonCopyable&);
 	};
 }
 
-#endif // PZ_Profiler_h__
+#endif // PZ_NonCopyable_h__
