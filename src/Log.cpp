@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Log.h>
 
+#include <boost/date_time.hpp>
+
 #include <fstream>
 #include <ctime>
 #include <iostream>
@@ -90,29 +92,22 @@ namespace PZ
 			}
 		}
 
-		//TODO: Move these into helper functions
 		std::string currentTime()
 		{
-			time_t currTime = std::time(nullptr);
-			tm *timeStruct = new tm;
-			localtime_s(timeStruct, &currTime);
-			char *timeStr = new char[10];
-			std::strftime(timeStr, 10, "%H:%M:%S", timeStruct);
-			std::string str = timeStr;
-			delete timeStruct;
-			delete[] timeStr;
+			using namespace boost::posix_time;
+
+			ptime clock = second_clock::local_time();
+			std::string str = to_simple_string(clock.time_of_day());
+
 			return str;
 		}
 		std::string currentDateTime()
 		{
-			time_t currTime = std::time(nullptr);
-			tm *timeStruct = new tm;
-			localtime_s(timeStruct, &currTime);
-			char *timeStr = new char[20];
-			std::strftime(timeStr, 20, "%d/%m/%Y %H:%M:%S", timeStruct);
-			std::string str = timeStr;
-			delete timeStruct;
-			delete[] timeStr;
+			using namespace boost::posix_time;
+
+			ptime clock = second_clock::local_time();
+			std::string str = to_simple_string(clock);
+
 			return str;
 		}
 

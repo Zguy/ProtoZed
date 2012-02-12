@@ -72,6 +72,8 @@ namespace Jzon
 		}
 
 	private:
+		FormatInterpreter &operator=(const FormatInterpreter&);
+
 		const Format &format;
 		std::string indentationChar;
 		std::string newline;
