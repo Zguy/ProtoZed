@@ -43,7 +43,6 @@ function DefineService(name, includes)
 	defines { "PROFILER" }
 	files { "../services/"..name.."/**.*" }
 	includedirs { "../services/"..name.."/include/", "../include/", includes }
-	libdirs { "../lib/" .. os.get() }
 	kind "StaticLib"
 	
 	configuration "Release"

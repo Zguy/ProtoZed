@@ -34,13 +34,12 @@ namespace PZ
 	{
 		if (assets.find(filename) == assets.end())
 		{
-			sf::Image image;
-			if (image.LoadFromFile(GetDataFolder()+filename))
+			auto result = assets.insert(std::make_pair(filename, sf::Image()));
+			sf::Image &image = (*result.first).second;
+
+			if (!image.LoadFromFile(GetDataFolder()+filename))
 			{
-				assets.insert(std::make_pair(filename, image));
-			}
-			else
-			{
+				assets.erase(result.first);
 				return false;
 			}
 		}
@@ -54,13 +53,12 @@ namespace PZ
 	{
 		if (assets.find(filename) == assets.end())
 		{
-			sf::Font font;
-			if (font.LoadFromFile(GetDataFolder()+filename))
+			auto result = assets.insert(std::make_pair(filename, sf::Font()));
+			sf::Font &font = (*result.first).second;
+
+			if (!font.LoadFromFile(GetDataFolder()+filename))
 			{
-				assets.insert(std::make_pair(filename, font));
-			}
-			else
-			{
+				assets.erase(result.first);
 				return false;
 			}
 		}
@@ -74,13 +72,12 @@ namespace PZ
 	{
 		if (assets.find(filename) == assets.end())
 		{
-			sf::SoundBuffer soundBuffer;
-			if (soundBuffer.LoadFromFile(GetDataFolder()+filename))
+			auto result = assets.insert(std::make_pair(filename, sf::SoundBuffer()));
+			sf::SoundBuffer &soundBuffer = (*result.first).second;
+
+			if (!soundBuffer.LoadFromFile(GetDataFolder()+filename))
 			{
-				assets.insert(std::make_pair(filename, soundBuffer));
-			}
-			else
-			{
+				assets.erase(result.first);
 				return false;
 			}
 		}
