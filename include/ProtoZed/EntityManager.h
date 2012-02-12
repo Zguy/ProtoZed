@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include <ProtoZed/HashString.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
+#include <vector>
 #include <unordered_map>
 
 namespace PZ

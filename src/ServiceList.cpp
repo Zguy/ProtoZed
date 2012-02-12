@@ -87,7 +87,7 @@ namespace PZ
 			Service *service = factory.Create(type, type, application);
 			if (service != nullptr)
 			{
-				ServiceStore::const_iterator it = p->findService(after);
+				ServiceStore::iterator it = p->findService(after);
 				if (it != p->services.end() && ++it != p->services.end())
 				{
 					p->services.insert(it, service);
@@ -113,7 +113,7 @@ namespace PZ
 			Service *service = factory.Create(type, type, application);
 			if (service != nullptr)
 			{
-				ServiceStore::const_iterator it = p->findService(before);
+				ServiceStore::iterator it = p->findService(before);
 				if (it != p->services.end())
 				{
 					p->services.insert(it, service);
@@ -131,7 +131,7 @@ namespace PZ
 
 	bool ServiceList::Remove(const ServiceType &type)
 	{
-		ServiceStore::const_iterator it = p->findService(type);
+		ServiceStore::iterator it = p->findService(type);
 		if (it != p->services.end())
 		{
 			// Warn if service not stopped

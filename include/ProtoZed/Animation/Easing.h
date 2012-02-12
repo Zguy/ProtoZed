@@ -50,6 +50,7 @@ namespace PZ
 		class EasingBase
 		{
 		public:
+			EasingBase() {}
 			virtual float easeIn(float t, float b, float c, float d) const    = 0;
 			virtual float easeOut(float t, float b, float c, float d) const   = 0;
 			virtual float easeInOut(float t, float b, float c, float d) const = 0;
@@ -57,6 +58,7 @@ namespace PZ
 		class Back : public EasingBase
 		{
 		public:
+			Back() {}
 			virtual float easeIn(float t, float b, float c, float d) const;
 			virtual float easeOut(float t, float b, float c, float d) const;
 			virtual float easeInOut(float t, float b, float c, float d) const;
@@ -64,6 +66,7 @@ namespace PZ
 		class Bounce : public EasingBase
 		{
 		public:
+			Bounce() {}
 			virtual float easeIn(float t, float b, float c, float d) const;
 			virtual float easeOut(float t, float b, float c, float d) const;
 			virtual float easeInOut(float t, float b, float c, float d) const;
@@ -71,6 +74,7 @@ namespace PZ
 		class Circ : public EasingBase
 		{
 		public:
+			Circ() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
@@ -78,6 +82,7 @@ namespace PZ
 		class Cubic : public EasingBase
 		{
 		public:
+			Cubic() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
@@ -85,6 +90,7 @@ namespace PZ
 		class Elastic : public EasingBase
 		{
 		public:
+			Elastic() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
@@ -92,6 +98,7 @@ namespace PZ
 		class Expo : public EasingBase
 		{
 		public:
+			Expo() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
@@ -99,6 +106,7 @@ namespace PZ
 		class Quad : public EasingBase
 		{
 		public:
+			Quad() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
@@ -106,27 +114,31 @@ namespace PZ
 		class Quart : public EasingBase
 		{
 		public:
+			Quart() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
 		class Quint : public EasingBase
 		{
-		public :
+		public:
+			Quint() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
 		class Sine : public EasingBase
 		{
-		public :
+		public:
+			Sine() {}
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;
 			float easeInOut(float t, float b, float c, float d) const;
 		};
 		class Linear : public EasingBase
 		{
-		public :
+		public:
+			Linear() {}
 			float easeNone(float t, float b, float c, float d) const;
 			float easeIn(float t, float b, float c, float d) const;
 			float easeOut(float t, float b, float c, float d) const;

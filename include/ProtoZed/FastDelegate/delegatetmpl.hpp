@@ -20,6 +20,8 @@
 // Note: this header is a header template and must NOT have multiple-inclusion
 // protection.
 
+#include <cstring>
+
 namespace fd
 {
 

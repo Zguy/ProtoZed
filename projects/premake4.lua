@@ -2,7 +2,7 @@ solution "ProtoZed"
 
 	language "C++"
 	location ( os.get() .. "/" .. _ACTION )
-	flags { "Unicode", "NoPCH" }
+	flags { "ExtraWarnings", "Unicode", "NoPCH" }
 	targetdir ( "../lib/" .. os.get() )
 	libdirs { "../lib/", "../lib/" .. os.get() }
 
@@ -24,7 +24,6 @@ project "ProtoZed"
 	defines { "PROFILER" }
 	files { "../src/**.*", "../include/ProtoZed/**.*" }
 	includedirs { "../include/", "C:/SDK/SFML-1.6/include", "C:/SDK/boost_1_48_0" }
-	--flags { "ExtraWarnings" }
 	kind "StaticLib"
 	
 	configuration "Release"
@@ -53,4 +52,4 @@ function DefineService(name, includes)
 end
 
 DefineService("Renderer_SFML", { "C:/SDK/SFML-1.6/include" })
-DefineService("Input_SFML", { "C:/SDK/SFML-1.6/include" })
+DefineService("Input_SFML", { "C:/SDK/SFML-1.6/include", "../services/Renderer_SFML/include" })

@@ -13,6 +13,8 @@
 #if !defined(__GET_POINTER_HPP__INCLUDED__)
 #define __GET_POINTER_HPP__INCLUDED__
 
+#include <memory>
+
 namespace fd
 {
 
