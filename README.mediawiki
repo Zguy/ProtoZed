@@ -22,6 +22,6 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 
 '''Platform Support:'''
 * Windows
-* Linux*
+* Linux
 * Mac OS X*
 <nowiki>*</nowiki>These are not tested, but they should work. Every third party library I'm using has support for them and all of my own code should be platform independent.

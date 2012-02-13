@@ -199,12 +199,15 @@ namespace Jzon
 		std::string json;
 		RemoveWhitespace(_json, json);
 
+		Node::Type type;
 		switch (json.at(0))
 		{
-		case '{' : return T_OBJECT; break;
-		case '[' : return T_ARRAY; break;
-		default : return T_VALUE; break;
+		case '{' : type = T_OBJECT; break;
+		case '[' : type = T_ARRAY; break;
+		default : type = T_VALUE; break;
 		}
+
+		return type;
 	}
 
 
