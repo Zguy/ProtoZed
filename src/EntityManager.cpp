@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	typedef std::unordered_map<HashString, EntityComponentMap> ComponentStore;
+	typedef std::unordered_map<HashString, EntityComponentMap, std::hash<unsigned int>> ComponentStore;
 
 	class EntityManager::Impl
 	{

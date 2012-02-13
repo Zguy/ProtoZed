@@ -37,7 +37,7 @@ namespace PZ
 
 	typedef HashString EntityID;
 	typedef std::vector<EntityID> EntityList;
-	typedef std::unordered_map<EntityID, Component*> EntityComponentMap;
+	typedef std::unordered_map<EntityID, Component*, std::hash<unsigned int>> EntityComponentMap;
 
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
