@@ -28,7 +28,7 @@ THE SOFTWARE.
 namespace PZ
 {
 	// sf::Image
-	template<> sf::Image AssetStorage<sf::Image>::nullAsset;
+	template<> sf::Image AssetStorage<sf::Image>::nullAsset = sf::Image();
 	template<>
 	bool AssetStorage<sf::Image>::PreloadAsset(const std::string &filename)
 	{
@@ -47,7 +47,7 @@ namespace PZ
 	}
 
 	// sf::Font
-	template<> sf::Font AssetStorage<sf::Font>::nullAsset;
+	template<> sf::Font AssetStorage<sf::Font>::nullAsset = sf::Font();
 	template<>
 	bool AssetStorage<sf::Font>::PreloadAsset(const std::string &filename)
 	{
@@ -66,7 +66,7 @@ namespace PZ
 	}
 
 	// sf::SoundBuffer
-	template<> sf::SoundBuffer AssetStorage<sf::SoundBuffer>::nullAsset;
+	template<> sf::SoundBuffer AssetStorage<sf::SoundBuffer>::nullAsset = sf::SoundBuffer();
 	template<>
 	bool AssetStorage<sf::SoundBuffer>::PreloadAsset(const std::string &filename)
 	{
