@@ -31,18 +31,16 @@ namespace PZ
 
 	const Vector2f Position2D::GetPosition(Scope::Level scope) const
 	{
-		if (scope == Scope::GLOBAL)
+		Vector2f finalPos;
+
+		switch (scope)
 		{
-			return ConvertLocalToGlobal(pos);
+		case Scope::GLOBAL : finalPos = ConvertLocalToGlobal(pos); break;
+		case Scope::LOCAL  : finalPos = pos;                       break;
+		default            : finalPos = pos;                       break;
 		}
-		else if (scope == Scope::LOCAL)
-		{
-			return pos;
-		}
-		else
-		{
-			return pos;
-		}
+		
+		return finalPos;
 	}
 	void Position2D::SetPosition(const Vector2f &newPos, Scope::Level scope)
 	{
