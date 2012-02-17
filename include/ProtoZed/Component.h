@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/EntityManager.h>
+#include <ProtoZed/MetaEntity.h>
 #include <ProtoZed/Message.h>
 
 #include <string>
@@ -49,8 +50,10 @@ namespace PZ
 		{
 			return owner;
 		}
-
-	protected:
+		MetaEntity GetOwnerEntity() const
+		{
+			return manager.GetEntity(owner);
+		}
 		EntityManager &GetManager() const
 		{
 			return manager;
