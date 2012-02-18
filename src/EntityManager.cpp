@@ -166,6 +166,11 @@ namespace PZ
 		return p->entities;
 	}
 
+	unsigned int EntityManager::GetEntityCount() const
+	{
+		return p->entities.size();
+	}
+
 	void EntityManager::SendMessageToAll(const Message &message) const
 	{
 		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)

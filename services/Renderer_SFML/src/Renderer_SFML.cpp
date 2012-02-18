@@ -127,9 +127,7 @@ namespace PZ
 	bool Renderer_SFML::Start()
 	{
 		if (!Renderer::Start())
-		{
 			return false;
-		}
 
 		unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize);
 
@@ -151,9 +149,7 @@ namespace PZ
 	bool Renderer_SFML::Stop()
 	{
 		if (!Renderer::Stop())
-		{
 			return false;
-		}
 
 		p->window.Close();
 

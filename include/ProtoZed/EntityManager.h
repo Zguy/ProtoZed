@@ -86,6 +86,8 @@ namespace PZ
 		 */
 		const EntityList &GetAllEntities() const;
 
+		unsigned int GetEntityCount() const;
+
 		/**
 		 * \brief	Registers a component.
 		 *

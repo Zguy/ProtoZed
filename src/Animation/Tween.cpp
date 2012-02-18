@@ -219,7 +219,9 @@ namespace PZ
 							p->startValue = goal;
 						}
 						else
+						{
 							std::swap(p->startValue, p->goal);
+						}
 					}
 				}
 			}
