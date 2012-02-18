@@ -41,27 +41,25 @@ namespace PZ
 	public:
 		static const HashString Family;
 
-		SceneNode(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
-		{}
-		~SceneNode()
-		{}
+		SceneNode(const EntityID &owner, EntityManager &manager);
+		~SceneNode();
 
 		void SetParent(const EntityID &id);
-		inline EntityID GetParentID() const
+		inline const EntityID &GetParentID() const
 		{
 			return parent;
 		}
 
 		void AddChild(const EntityID &id);
 		void RemoveChild(const EntityID &id);
-		bool HasChild(const EntityID &id);
+		bool HasChild(const EntityID &id) const;
 		inline const EntityList &GetChildren() const
 		{
 			return children;
 		}
 
 	private:
-		void _SetParent(const EntityID &id);
+		void _SetParent(const EntityID &id, bool removeFromOldParent = true);
 		void _AddChild(const EntityID &id);
 		void _RemoveChild(const EntityID &id);
 

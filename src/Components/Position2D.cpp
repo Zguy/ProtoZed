@@ -29,6 +29,14 @@ namespace PZ
 
 	const Axes Position2D::globalAxes(Vector2f(1.f,0.f), Vector2f(0.f,1.f));
 
+	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos(0.f,0.f), depth(0.f), rotation(0.f), axes(globalAxes), parentAxesCache(globalAxes), inheritAxes(true), inheritPosition(true), inheritRotation(true)
+	{
+		updateChildren();
+	}
+	Position2D::~Position2D()
+	{
+	}
+
 	const Vector2f Position2D::GetPosition(Scope::Level scope) const
 	{
 		Vector2f finalPos;
@@ -125,17 +133,6 @@ namespace PZ
 
 	bool Position2D::HandleMessage(const Message &message)
 	{
-		if (message.type == Messages::CHILD)
-		{
-			ChildMessage childMessage(message);
-			if (childMessage.added)
-			{
-				updateChildren();
-			}
-
-			return true;
-		}
-
 		return false;
 	}
 

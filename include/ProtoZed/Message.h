@@ -22,6 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_Message_h__
 #define PZ_Message_h__
 
+#include <ProtoZed/HashString.h>
 #include <ProtoZed/Jzon.h>
 
 namespace PZ
@@ -30,7 +31,7 @@ namespace PZ
 
 	struct Message
 	{
-		Message(MessageType type) : type(type)
+		Message(const MessageType &type) : type(type)
 		{}
 		~Message()
 		{}

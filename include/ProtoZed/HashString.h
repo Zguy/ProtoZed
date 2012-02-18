@@ -33,7 +33,6 @@ namespace PZ
 		HashString(const HashString &other);
 		HashString(const std::string &str);
 		HashString(const char *str);
-		explicit HashString(unsigned int hash);
 		~HashString();
 
 		HashString &operator=(const HashString &other);

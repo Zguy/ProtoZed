@@ -49,27 +49,21 @@ namespace PZ
 			if (running)
 				return true;
 
-			profiler   = new Profiler;
 			Profile profile("Boot");
 
-			logManager = new LogManager;
-
-			logManager->OpenLog("ProtoZed");
-			logManager->GetLog("ProtoZed").Info(std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
-
-			// Start services
-			services.StartAll();
+			logManager.OpenLog("ProtoZed");
+			Log::Info("ProtoZed", std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
 			entityManager.RegisterComponent<SceneNode>();
 			entityManager.RegisterComponent<Position2D>();
 			entityManager.RegisterComponent<Sprite>();
 
-			animationManager.RegisterAnimationType<AnimationGroup>("AnimationGroup");
-			animationManager.RegisterAnimationType<Tween>("Tween");
+			// Start services
+			services.StartAll();
 
 			running = true;
 
-			logManager->GetLog("ProtoZed").Info("ProtoZed is running");
+			Log::Info("ProtoZed", "ProtoZed is running");
 
 			return true;
 		}
@@ -79,10 +73,12 @@ namespace PZ
 			{
 				Profile profile("Shutdown");
 
-				logManager->GetLog("ProtoZed").Info("Shutting down ProtoZed");
+				Log::Info("ProtoZed", "Shutting down ProtoZed");
 
 				stateManager.PopAllStates();
 				stateManager.Update();
+
+				entityManager.ClearEntities();
 
 				// Shutdown services
 				services.StopAll();
@@ -90,26 +86,22 @@ namespace PZ
 
 				running = false;
 
-				logManager->GetLog("ProtoZed").Info("ProtoZed has stopped");
+				Log::Info("ProtoZed", "ProtoZed has stopped");
 			}
 
-			delete logManager;
-
-			profiler->WriteLog("Profile");
-			delete profiler;
+			profiler.WriteLog("Profile");
 		}
 
 		Application &i;
 
 		bool running;
 
-		Profiler   *profiler;
-		LogManager *logManager;
-
 		ServiceList      services;
 		AppStateManager  stateManager;
 		EntityManager    entityManager;
 		AnimationManager animationManager;
+		LogManager       logManager;
+		Profiler         profiler;
 
 		ImageStorage       imageStorage;
 		FontStorage        fontStorage;
@@ -140,6 +132,9 @@ namespace PZ
 			float deltaTime = frameTimer.GetElapsedTime();
 			frameTimer.Reset();
 
+
+			p->services.UpdateAll(deltaTime);
+
 			{
 				Profile profile("StateManager");
 				p->stateManager.Update();
@@ -160,8 +155,6 @@ namespace PZ
 				Profile profile("UpdateComponents");
 				p->entityManager.SendMessageToAll(UpdateMessage::Create(deltaTime));
 			}
-
-			p->services.UpdateAll(deltaTime);
 
 			if (p->stateManager.IsEmpty())
 			{

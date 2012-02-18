@@ -28,13 +28,23 @@ namespace PZ
 {
 	const HashString SceneNode::Family = "SceneNode";
 
+	SceneNode::SceneNode(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
+	{
+	}
+	SceneNode::~SceneNode()
+	{
+		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+		{
+			SceneNode *node = GetManager().GetComponent<SceneNode>(*it);
+			if (node != nullptr)
+				node->_SetParent(EntityID(), false);
+		}
+		children.clear();
+	}
+
 	void SceneNode::SetParent(const EntityID &id)
 	{
-		if (id == EntityID())
-		{
-			parent = EntityID();
-		}
-		else
+		if (id != GetOwnerID())
 		{
 			if (!GetManager().HasComponent<SceneNode>(id))
 			{
@@ -61,7 +71,7 @@ namespace PZ
 
 	void SceneNode::AddChild(const EntityID &id)
 	{
-		if (id != EntityID())
+		if (id != EntityID() && id != GetOwnerID())
 		{
 			if (!GetManager().HasComponent<SceneNode>(id))
 			{
@@ -73,14 +83,12 @@ namespace PZ
 
 				SceneNode *node = GetManager().GetComponent<SceneNode>(id);
 				node->_SetParent(GetOwnerID());
-
-				GetManager().SendMessage(ChildMessage::Create(id, true), GetOwnerID());
 			}
 		}
 	}
 	void SceneNode::RemoveChild(const EntityID &id)
 	{
-		if (id != EntityID())
+		if (id != EntityID() && id != GetOwnerID())
 		{
 			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 			{
@@ -89,16 +97,14 @@ namespace PZ
 					children.erase(it);
 
 					SceneNode *node = GetManager().GetComponent<SceneNode>(id);
-					node->SetParent(EntityID());
-
-					GetManager().SendMessage(ChildMessage::Create(id, false), GetOwnerID());
+					node->_SetParent(EntityID(), false);
 
 					break;
 				}
 			}
 		}
 	}
-	bool SceneNode::HasChild(const EntityID &id)
+	bool SceneNode::HasChild(const EntityID &id) const
 	{
 		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 		{
@@ -111,22 +117,15 @@ namespace PZ
 		return false;
 	}
 
-	void SceneNode::_SetParent(const EntityID &id)
+	void SceneNode::_SetParent(const EntityID &id, bool removeFromOldParent)
 	{
-		if (id == EntityID())
+		if (removeFromOldParent && parent != EntityID()) // If we already have a parent
 		{
-			parent = EntityID();
+			SceneNode *node = GetManager().GetComponent<SceneNode>(parent);
+			node->_RemoveChild(GetOwnerID());
 		}
-		else
-		{
-			if (parent != EntityID()) // If we already have a parent
-			{
-				SceneNode *node = GetManager().GetComponent<SceneNode>(parent);
-				node->_RemoveChild(GetOwnerID());
-			}
 
-			parent = id;
-		}
+		parent = id;
 	}
 	void SceneNode::_AddChild(const EntityID &id)
 	{
@@ -135,8 +134,6 @@ namespace PZ
 			if (!HasChild(id))
 			{
 				children.push_back(id);
-
-				GetManager().SendMessage(ChildMessage::Create(id, true), GetOwnerID());
 			}
 		}
 	}
@@ -149,8 +146,6 @@ namespace PZ
 				if ((*it) == id)
 				{
 					children.erase(it);
-
-					GetManager().SendMessage(ChildMessage::Create(id, false), GetOwnerID());
 
 					break;
 				}

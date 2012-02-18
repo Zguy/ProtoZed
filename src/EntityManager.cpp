@@ -23,6 +23,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/MetaEntity.h>
 #include <ProtoZed/Component.h>
+#include <ProtoZed/Log.h>
 
 #include <vector>
 
@@ -33,16 +34,6 @@ namespace PZ
 	class EntityManager::Impl
 	{
 	public:
-		bool hasEntity(const EntityID &id)
-		{
-			for (EntityList::const_iterator it = entities.cbegin(); it != entities.cend(); ++it)
-			{
-				if (id == (*it))
-					return true;
-			}
-			return false;
-		}
-
 		void eraseComponent(ComponentStore::iterator &it, EntityComponentMap::iterator &it2)
 		{
 			EntityComponentMap &ecm = (*it).second;
@@ -70,25 +61,17 @@ namespace PZ
 	}
 	EntityManager::~EntityManager()
 	{
-		p->entities.clear();
-
-		for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
-		{
-			EntityComponentMap &ecm = (*it).second;
-
-			for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
-			{
-				delete (*it2).second;
-			}
-		}
-		p->components.clear();
+		ClearEntities();
 
 		delete p;
 	}
 
 	bool EntityManager::CreateEntity(const EntityID &id)
 	{
-		if (!p->hasEntity(id))
+		if (id == HashString())
+			return false;
+
+		if (!HasEntity(id))
 		{
 			p->entities.push_back(id);
 
@@ -101,6 +84,9 @@ namespace PZ
 	}
 	bool EntityManager::DestroyEntity(const EntityID &id)
 	{
+		if (id == HashString())
+			return false;
+
 		for (EntityList::iterator it = p->entities.begin(); it != p->entities.end(); ++it)
 		{
 			if ((*it) == id)
@@ -129,11 +115,25 @@ namespace PZ
 		}
 		return false;
 	}
+	bool EntityManager::HasEntity(const EntityID &id) const
+	{
+		if (id == HashString())
+			return false;
+
+		for (EntityList::const_iterator it = p->entities.begin(); it != p->entities.end(); ++it)
+		{
+			if (id == (*it))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	MetaEntity EntityManager::GetEntity(const EntityID &id) const
 	{
 		Profile profile("GetEntity");
-		if (p->hasEntity(id))
+		if (HasEntity(id))
 		{
 			MetaEntity entity(id, const_cast<EntityManager&>(*this));
 
@@ -143,6 +143,22 @@ namespace PZ
 		{
 			return MetaEntity();
 		}
+	}
+
+	void EntityManager::ClearEntities()
+	{
+		p->entities.clear();
+
+		for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
+		{
+			EntityComponentMap &ecm = (*it).second;
+
+			for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+			{
+				delete (*it2).second;
+			}
+		}
+		p->components.clear();
 	}
 
 	const EntityList &EntityManager::GetAllEntities() const
@@ -166,7 +182,7 @@ namespace PZ
 	{
 		// This is going to be slow..
 		
-		if (p->hasEntity(to))
+		if (HasEntity(to))
 		{
 			for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
 			{
@@ -192,6 +208,9 @@ namespace PZ
 
 	bool EntityManager::AddComponentImpl(const EntityID &id, const HashString &name, Component *component)
 	{
+		if (id == HashString())
+			return false;
+
 		return p->components[name].insert(std::make_pair(id, component)).second;
 	}
 	bool EntityManager::RemoveComponentImpl(const EntityID &id, const HashString &name)
@@ -217,7 +236,7 @@ namespace PZ
 			}
 		}
 	}
-	bool EntityManager::HasComponentImpl(const EntityID &id, const HashString &name)
+	bool EntityManager::HasComponentImpl(const EntityID &id, const HashString &name) const
 	{
 		ComponentStore::iterator it = p->components.find(name);
 		if (it == p->components.end())
@@ -238,7 +257,7 @@ namespace PZ
 			}
 		}
 	}
-	Component *EntityManager::GetComponentImpl(const EntityID &id, const HashString &name)
+	Component *EntityManager::GetComponentImpl(const EntityID &id, const HashString &name) const
 	{
 		ComponentStore::iterator it = p->components.find(name);
 		if (it == p->components.end())
@@ -259,7 +278,7 @@ namespace PZ
 			}
 		}
 	}
-	const EntityComponentMap &EntityManager::GetEntitiesWithImpl(const HashString &name)
+	const EntityComponentMap &EntityManager::GetEntitiesWithImpl(const HashString &name) const
 	{
 		ComponentStore::const_iterator it = p->components.find(name);
 		if (it == p->components.end())
@@ -271,5 +290,10 @@ namespace PZ
 		{
 			return (*it).second;
 		}
+	}
+
+	void EntityManager::deleteComponent(Component *component)
+	{
+		delete component;
 	}
 }

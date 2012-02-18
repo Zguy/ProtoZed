@@ -66,6 +66,8 @@ namespace PZ
 		 */
 		bool DestroyEntity(const EntityID &id);
 
+		bool HasEntity(const EntityID &id) const;
+
 		/**
 		 * \brief	Gets an entity.
 		 *
@@ -74,6 +76,8 @@ namespace PZ
 		 * \return	The entity.
 		 */
 		MetaEntity GetEntity(const EntityID &id) const;
+
+		void ClearEntities();
 
 		/**
 		 * \brief	Gets a list of every entity.
@@ -116,14 +120,37 @@ namespace PZ
 		{
 			T *component = dynamic_cast<T*>(factory.Create(T::Family, id, *this));
 
-			if (component != nullptr && AddComponentImpl(id, T::Family, component))
+			if (component != nullptr)
 			{
-				return component;
+				if (AddComponentImpl(id, T::Family, component))
+				{
+					return component;
+				}
+				else
+				{
+					deleteComponent(component);
+				}
 			}
-			else
+
+			return nullptr;
+		}
+		Component *AddComponent(const EntityID &id, const HashString &family)
+		{
+			Component *component = factory.Create(family, id, *this);
+
+			if (component != nullptr)
 			{
-				return nullptr;
+				if (AddComponentImpl(id, family, component))
+				{
+					return component;
+				}
+				else
+				{
+					deleteComponent(component);
+				}
 			}
+			
+			return nullptr;
 		}
 
 		/**
@@ -138,6 +165,10 @@ namespace PZ
 		{
 			return RemoveComponentImpl(id, T::Family);
 		}
+		bool RemoveComponent(const EntityID &id, const HashString &family)
+		{
+			return RemoveComponentImpl(id, family);
+		}
 
 		/**
 		 * \brief	Query if 'id' has a component.
@@ -147,9 +178,13 @@ namespace PZ
 		 * \return	true if it has the component, false if not.
 		 */
 		template<class T>
-		bool HasComponent(const EntityID &id)
+		bool HasComponent(const EntityID &id) const
 		{
 			return HasComponentImpl(id, T::Family);
+		}
+		bool HasComponent(const EntityID &id, const HashString &family) const
+		{
+			return HasComponentImpl(id, family);
 		}
 
 		/**
@@ -160,10 +195,15 @@ namespace PZ
 		 * \return	null if it fails, else the component.
 		 */
 		template<class T>
-		T *GetComponent(const EntityID &id)
+		T *GetComponent(const EntityID &id) const
 		{
 			Profile profile("GetComponent");
 			return dynamic_cast<T*>(GetComponentImpl(id, T::Family));
+		}
+		Component *GetComponent(const EntityID &id, const HashString &family) const
+		{
+			Profile profile("GetComponent");
+			return GetComponentImpl(id, family);
 		}
 
 		/**
@@ -172,9 +212,13 @@ namespace PZ
 		 * \return	The entities with the component.
 		 */
 		template<class T>
-		const EntityComponentMap &GetEntitiesWith()
+		const EntityComponentMap &GetEntitiesWith() const
 		{
 			return GetEntitiesWithImpl(T::Family);
+		}
+		const EntityComponentMap &GetEntitiesWith(const HashString &family) const
+		{
+			return GetEntitiesWithImpl(family);
 		}
 
 		void SendMessageToAll(const Message &message) const;
@@ -183,9 +227,11 @@ namespace PZ
 	private:
 		bool AddComponentImpl(const EntityID &id, const HashString &name, Component *component);
 		bool RemoveComponentImpl(const EntityID &id, const HashString &name);
-		bool HasComponentImpl(const EntityID &id, const HashString &name);
-		Component *GetComponentImpl(const EntityID &id, const HashString &name);
-		const EntityComponentMap &GetEntitiesWithImpl(const HashString &name);
+		bool HasComponentImpl(const EntityID &id, const HashString &name) const;
+		Component *GetComponentImpl(const EntityID &id, const HashString &name) const;
+		const EntityComponentMap &GetEntitiesWithImpl(const HashString &name) const;
+
+		static void deleteComponent(Component *component); // This is to avoid having to #include Component.h here
 
 		typedef ObjectFactory<Component*(const EntityID&, EntityManager&), HashString> ComponentFactory;
 		ComponentFactory factory;

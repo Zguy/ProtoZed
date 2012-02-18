@@ -35,6 +35,7 @@ namespace PZ
 			Degrees();
 			explicit Degrees(float angle);
 			Degrees(const Radians &angle);
+			~Degrees();
 
 			Degrees &operator=(float other);
 			Degrees &operator=(const Radians &other);
@@ -61,6 +62,7 @@ namespace PZ
 			Radians();
 			explicit Radians(float angle);
 			Radians(const Degrees &angle);
+			~Radians();
 
 			Radians &operator=(float other);
 			Radians &operator=(const Degrees &other);

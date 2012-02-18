@@ -29,7 +29,6 @@ namespace PZ
 	namespace Messages
 	{
 		static const MessageType UPDATE = "Update";
-		static const MessageType CHILD  = "Child";
 	}
 
 	struct UpdateMessage
@@ -48,27 +47,6 @@ namespace PZ
 		}
 
 		float deltaTime;
-	};
-
-	struct ChildMessage
-	{
-		ChildMessage(const Message &message)
-		{
-			id = EntityID(message.args.Get("id", Jzon::Value(0)).AsInt());
-			added = message.args.Get("added", Jzon::Value(true)).AsBool();
-		}
-
-		static Message Create(EntityID id, bool added)
-		{
-			Message message(Messages::CHILD);
-			message.args.Add("id", static_cast<int>(id));
-			message.args.Add("added", added);
-
-			return message;
-		}
-
-		EntityID id;
-		bool added; // true = added, false = removed
 	};
 }
 

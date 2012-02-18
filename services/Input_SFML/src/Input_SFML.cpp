@@ -37,7 +37,7 @@ namespace PZ
 	void Input_SFML::Update(float deltaTime)
 	{
 		//FIXME: Highly temporary
-		Renderer_SFML *renderer = GetApplication().GetServiceList().Get<Renderer_SFML>(PZ::Services::RENDERER);
+		Renderer_SFML *renderer = GetApplication().GetServiceList().Get<Renderer_SFML>(Services::RENDERER);
 		if (renderer != nullptr)
 		{
 			const sf::Input &input = renderer->GetWindow().GetInput();

@@ -45,20 +45,6 @@ namespace PZ
 
 		bool used;
 
-		Layer &operator=(const Layer &other)
-		{
-			if (&other != this)
-			{
-				id       = other.id;
-				drawable = other.drawable;
-				depth    = other.depth;
-
-				used = other.used;
-			}
-
-			return *this;
-		}
-
 		bool operator<(const Layer &other) const
 		{
 			return depth < other.depth;
@@ -193,14 +179,6 @@ namespace PZ
 		p->window.Clear();
 		profiler.End();
 
-		profiler.Begin("GetEntities");
-		const EntityComponentMap &ecm = GetApplication().GetEntityManager().GetEntitiesWith<Sprite>();
-		profiler.End();
-		
-		profiler.Begin("ReserveLayers");
-		p->layers.reserve(ecm.size());
-		profiler.End();
-
 		p->clearLayerAcc += deltaTime;
 		if (p->clearLayerAcc >= p->clearLayerLimit)
 		{
@@ -233,43 +211,45 @@ namespace PZ
 		}
 
 		profiler.Begin("IterateEntities");
-		for (EntityComponentMap::const_iterator it = ecm.cbegin(); it != ecm.cend(); ++it)
 		{
-			EntityID id = (*it).first;
-			Sprite *sprite = static_cast<Sprite*>((*it).second);
+			Profile profile("Sprite");
 
-			if (sprite->GetSprite().empty())
-				continue;
-
-			profiler.Begin("FindSprite");
-			LayerList::iterator layerIt = p->findLayer(id);
-			//TODO: What if the sprite has changed?
-			if (layerIt == p->layers.end())
+			const EntityComponentMap &ecm = GetApplication().GetEntityManager().GetEntitiesWith<Sprite>();
+			for (EntityComponentMap::const_iterator it = ecm.cbegin(); it != ecm.cend(); ++it)
 			{
-				profiler.Begin("CreateLayer");
-				sf::Sprite *sfSprite = new sf::Sprite(GetApplication().GetImageStorage().GetAsset(sprite->GetSprite()));
+				EntityID id = (*it).first;
+				Sprite *sprite = static_cast<Sprite*>((*it).second);
 
-				const Vector2f &center = sprite->GetCenter();
-				sfSprite->SetCenter(sf::Vector2f(center.x, center.y));
+				profiler.Begin("FindSprite");
+				LayerList::iterator layerIt = p->findLayer(id);
+				//TODO: What if the sprite has changed?
+				if (layerIt == p->layers.end())
+				{
+					profiler.Begin("CreateLayer");
+					sf::Sprite *sfSprite = new sf::Sprite(GetApplication().GetImageStorage().GetAsset(sprite->GetSprite()));
 
-				layerIt = p->newLayer(id, sfSprite, 0);
+					const Vector2f &center = sprite->GetCenter();
+					sfSprite->SetCenter(sf::Vector2f(center.x, center.y));
+
+					layerIt = p->newLayer(id, sfSprite, 0);
+					profiler.End();
+				}
+				Layer &layer = (*layerIt);
+				layer.used = true;
+				profiler.End();
+
+				profiler.Begin("GetPosition");
+				Position2D *position = GetApplication().GetEntityManager().GetComponent<Position2D>(id);
+				if (position != nullptr)
+				{
+					const Vector2f &pos = position->GetPosition(Scope::GLOBAL);
+					layer.drawable->SetPosition(sf::Vector2f(pos.x, pos.y));
+					layer.drawable->SetRotation(position->GetRotation(Scope::GLOBAL).ToFloat());
+
+					layer.depth = position->GetDepth();
+				}
 				profiler.End();
 			}
-			Layer &layer = (*layerIt);
-			layer.used = true;
-			profiler.End();
-
-			profiler.Begin("GetPosition");
-			Position2D *position = GetApplication().GetEntityManager().GetComponent<Position2D>(id);
-			if (position != nullptr)
-			{
-				const Vector2f &pos = position->GetPosition(Scope::GLOBAL);
-				layer.drawable->SetPosition(sf::Vector2f(pos.x, pos.y));
-				layer.drawable->SetRotation(position->GetRotation(Scope::GLOBAL).ToFloat());
-
-				layer.depth = position->GetDepth();
-			}
-			profiler.End();
 		}
 		profiler.End();
 
@@ -282,7 +262,10 @@ namespace PZ
 		{
 			const Layer &layer = (*it);
 
-			p->window.Draw(*layer.drawable);
+			if (layer.used)
+			{
+				p->window.Draw(*layer.drawable);
+			}
 		}
 		profiler.End();
 

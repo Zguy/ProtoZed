@@ -53,12 +53,6 @@ namespace PZ
 		readable = str;
 #endif
 	}
-	HashString::HashString(unsigned int hash) : hash(hash)
-	{
-#ifdef _DEBUG
-		readable = "??Unknown??";
-#endif
-	}
 	HashString::~HashString()
 	{
 	}

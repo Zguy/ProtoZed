@@ -36,6 +36,9 @@ namespace PZ
 		Degrees::Degrees(const Radians &angle) : angle(angle.ToFloat() * (180.f / Math::PI))
 		{
 		}
+		Degrees::~Degrees()
+		{
+		}
 
 		Degrees &Degrees::operator=(float other)
 		{
@@ -81,6 +84,9 @@ namespace PZ
 		{
 		}
 		Radians::Radians(const Degrees &angle) : angle(angle.ToFloat() * (Math::PI / 180.f))
+		{
+		}
+		Radians::~Radians()
 		{
 		}
 

@@ -55,6 +55,10 @@ namespace PZ
 		{
 			return id;
 		}
+		inline EntityManager &GetManager() const
+		{
+			return *manager;
+		}
 
 		/**
 		 * \brief	Query if this object is valid.
@@ -92,6 +96,13 @@ namespace PZ
 			else
 				return nullptr;
 		}
+		Component *AddComponent(const HashString &family)
+		{
+			if (IsValid())
+				return manager->AddComponent(id, family);
+			else
+				return nullptr;
+		}
 
 		/**
 		 * \brief	Removes a component.
@@ -103,6 +114,13 @@ namespace PZ
 		{
 			if (IsValid())
 				return manager->RemoveComponent<T>(id);
+			else
+				return false;
+		}
+		bool RemoveComponent(const HashString &family)
+		{
+			if (IsValid())
+				return manager->RemoveComponent(id, family);
 			else
 				return false;
 		}
@@ -120,6 +138,13 @@ namespace PZ
 			else
 				return false;
 		}
+		bool HasComponent(const HashString &family) const
+		{
+			if (IsValid())
+				return manager->HasComponent(id, family);
+			else
+				return false;
+		}
 
 		/**
 		 * \brief	Gets a component.
@@ -131,6 +156,13 @@ namespace PZ
 		{
 			if (IsValid())
 				return manager->GetComponent<T>(id);
+			else
+				return nullptr;
+		}
+		Component *GetComponent(const HashString &family) const
+		{
+			if (IsValid())
+				return manager->GetComponent(id, family);
 			else
 				return nullptr;
 		}
@@ -149,143 +181,5 @@ namespace PZ
 		EntityManager *manager;
 	};
 }
-
-#if 0
-#include <ProtoZed/Vector2.h>
-#include <ProtoZed/Animation/Animable.h>
-#include <ProtoZed/Attributes.h>
-#include <ProtoZed/UniqueIDGenerator.h>
-#include <ProtoZed/Messages.h>
-#include <ProtoZed/ComponentFamily.h>
-#include <ProtoZed/IncludeFilter.h>
-#include <ProtoZed/IncludeFilters/NoFilter.h>
-
-#include <string>
-#include <vector>
-#include <unordered_map>
-
-namespace PZ
-{
-	class Entity;
-	typedef std::vector<Entity*> EntityList;
-
-	class Component;
-	typedef std::unordered_map<std::string, Component*> ComponentMap;
-
-	class Entity : public Animable
-	{
-	public:
-		static Entity *Create(const std::string &entityName, const std::string &name = "");
-		static void Destroy(Entity *entity);
-
-		Entity(const std::string &name);
-		virtual ~Entity();
-
-		inline void Destroy() { Entity::Destroy(this); }
-
-		inline bool HasParent() const { return (parent != nullptr); }
-		inline Entity *GetParent() const { return parent; }
-		const Entity *GetRoot() const;
-		Entity *GetRoot();
-
-		Entity *CreateChild(const std::string &entityName, const std::string &name = "");
-		/**
-		 * @brief Adds an Entity as a child
-		 * 
-		 * Will remove the Entity from the previous parent
-		 * if it has one.
-		 * 
-		 * @param child The Entity to add
-		 * @return True if successful
-		 */
-		bool AddChild(Entity *child);
-		bool RemoveChild(Entity *child, bool destroy);
-		void ClearChildren();
-
-		inline const EntityList &GetChildren() const { return children; }
-		void GetChildren(EntityList &list, const IncludeFilter &filter = NoFilter()) const;
-		void GetChildrenRecursive(EntityList &list, const IncludeFilter &filter = NoFilter()) const;
-		Entity *GetChildByIndex(unsigned int index) const;
-		Entity *GetChildByName(const std::string &name, bool recursive = false) const;
-
-		inline UniqueID GetID() const { return id; }
-		inline const std::string &GetName() const { return name; }
-
-		Component *CreateComponent(const std::string &name);
-		template<class T>
-		T *CreateComponent(const std::string &name)
-		{
-			return static_cast<T*>(CreateComponent(name));
-		}
-		bool AddComponent(Component *component);
-		bool RemoveComponent(const std::string &name);
-		void ClearComponents();
-
-		Component *GetComponent(const std::string &name) const;
-		template<class T>
-		T *GetComponent(const std::string &name) const
-		{
-			return static_cast<T*>(GetComponent(name));
-		}
-		const ComponentMap &GetComponents() const { return components; }
-		bool HasComponent(const std::string &name) const;
-
-		const Vector2f &GetLocalPosition() const;
-		const Vector2f GetGlobalPosition() const;
-
-		void SetLocalPosition(const Vector2f &pos);
-		void SetLocalPosition(float x, float y);
-		void SetGlobalPosition(const Vector2f &pos);
-		void SetGlobalPosition(float x, float y);
-
-		inline void SetX(float x) { SetLocalPosition(x, GetLocalPosition().y); }
-		inline void SetY(float y) { SetLocalPosition(GetLocalPosition().x, y); }
-
-		inline void Move(float offsetX, float offsetY) { SetLocalPosition(GetLocalPosition().x+offsetX, GetLocalPosition().y+offsetY); }
-		inline void Move(const Vector2f &offset) { SetLocalPosition(GetLocalPosition()+offset); }
-
-		float GetLocalRotation() const;
-		float GetGlobalRotation() const;
-
-		void SetLocalRotation(float rot);
-		void SetGlobalRotation(float rot);
-
-		inline void Rotate(float angle) { SetLocalRotation(GetLocalRotation()+angle); }
-
-		inline const Vector2f &GetLocalXAxis() const { return localXAxis; }
-		inline const Vector2f &GetLocalYAxis() const { return localYAxis; }
-
-		virtual bool HasAttribute(Attribute attribute) const;
-		virtual void SetAttribute(Attribute attribute, float value);
-		virtual float GetAttribute(Attribute attribute) const;
-
-		bool BroadcastMessage(Message &message);
-		bool ReceiveMessage(Message &message);
-		bool SendMessage(Message &message, Entity *receiver);
-		bool SendMessage(const Message &message, Entity *receiver);
-
-		bool operator==(const Entity &other);
-
-	protected:
-		virtual bool HandleMessage(Message &message);
-
-		void RecalculateLocalAxes();
-
-	private:
-		UniqueID id;
-
-		Entity *parent;
-		EntityList children;
-
-		ComponentMap components;
-
-		std::string name;
-		Vector2f position;
-		float rotation;
-		Vector2f localXAxis;
-		Vector2f localYAxis;
-	};
-}
-#endif
 
 #endif // PZ_MetaEntity_h__

@@ -35,33 +35,6 @@ namespace PZ
 		Sprite(const EntityID &owner, EntityManager &manager);
 		~Sprite();
 
-		// Pretend we're a sf::Drawable
-		// Note: We should probably check if drawable is NULL
-		//       in every function, but I can't be bothered.
-		/*inline void SetScale(float ScaleX, float ScaleY) { drawable->SetScale(ScaleX, ScaleY); }
-		inline void SetScale(const sf::Vector2f& Scale) { drawable->SetScale(Scale); }
-
-		inline void SetScaleX(float FactorX) { drawable->SetScaleX(FactorX); }
-		inline void SetScaleY(float FactorY) { drawable->SetScaleY(FactorY); }
-
-		inline void SetCenter(float CenterX, float CenterY) { drawable->SetCenter(CenterX, CenterY); }
-		inline void SetCenter(const sf::Vector2f& Center) { drawable->SetCenter(Center); }
-
-		inline void SetColor(const sf::Color& Col) { drawable->SetColor(Col); }
-
-		inline void SetBlendMode(sf::Blend::Mode Mode) { drawable->SetBlendMode(Mode); }
-
-		inline const sf::Vector2f& GetScale() const { return drawable->GetScale(); }
-
-		inline const sf::Vector2f& GetCenter() const { return drawable->GetCenter(); }
-
-		inline const sf::Color& GetColor() const { return drawable->GetColor(); }
-
-		inline sf::Blend::Mode GetBlendMode() const { return drawable->GetBlendMode(); }
-
-		inline void Scale(float FactorX, float FactorY) { drawable->Scale(FactorX, FactorY); }
-		inline void Scale(const sf::Vector2f& Factor) { drawable->Scale(Factor); }*/
-
 		inline const std::string &GetSprite() const
 		{
 			return sprite;
@@ -86,4 +59,4 @@ namespace PZ
 	};
 }
 
-#endif // PZ_PZ_Sprite_h__
+#endif // PZ_Sprite_h__

@@ -37,10 +37,8 @@ namespace PZ
 	public:
 		static const HashString Family;
 
-		Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos(0.f,0.f), depth(0.f), rotation(0.f), axes(globalAxes), parentAxesCache(globalAxes), inheritAxes(true), inheritPosition(true), inheritRotation(true)
-		{}
-		~Position2D()
-		{}
+		Position2D(const EntityID &owner, EntityManager &manager);
+		~Position2D();
 	
 		const Vector2f GetPosition(Scope::Level scope = Scope::LOCAL) const;
 		void SetPosition(const Vector2f &newPos, Scope::Level scope = Scope::LOCAL);
