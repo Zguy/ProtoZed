@@ -49,9 +49,6 @@ namespace PZ
 		virtual void Pause() {}
 		virtual void Resume() {}
 
-		virtual void LoadAssets() {}
-		virtual void UnloadAssets() {}
-
 		inline bool IsStarted() const { return started; }
 
 	protected:

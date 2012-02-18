@@ -68,13 +68,11 @@ namespace PZ
 			if (state != nullptr)
 			{
 				stateStack.top()->Stop();
-				stateStack.top()->UnloadAssets();
 				delete stateStack.top();
 				stateStack.pop();
 
 				stateStack.push(state);
 
-				stateStack.top()->LoadAssets();
 				stateStack.top()->Start(options);
 
 				Log::Info("ProtoZed", "Changed state to \""+stateName+"\"");
@@ -96,7 +94,6 @@ namespace PZ
 
 				stateStack.push(state);
 
-				stateStack.top()->LoadAssets();
 				stateStack.top()->Start(options);
 
 				Log::Info("ProtoZed", "Pushed state \""+stateName+"\"");
@@ -114,7 +111,6 @@ namespace PZ
 				Log::Info("ProtoZed", "Popping state");
 
 				stateStack.top()->Stop();
-				stateStack.top()->UnloadAssets();
 
 				delete stateStack.top();
 				stateStack.pop();
@@ -137,7 +133,6 @@ namespace PZ
 					if (stateStack.top()->IsStarted())
 					{
 						stateStack.top()->Stop();
-						stateStack.top()->UnloadAssets();
 					}
 					delete stateStack.top();
 					stateStack.pop();
