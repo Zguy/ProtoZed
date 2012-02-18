@@ -23,10 +23,14 @@ THE SOFTWARE.
 
 #include <ProtoZed/Version.h>
 #include <ProtoZed/Clock.h>
-#include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/Log.h>
 #include <ProtoZed/Messages.h>
+
+#include <ProtoZed/ServiceList.h>
+#include <ProtoZed/AppStateManager.h>
+#include <ProtoZed/EntityManager.h>
+#include <ProtoZed/Animation/AnimationManager.h>
 
 #include <ProtoZed/Components/SceneNode.h>
 #include <ProtoZed/Components/Position2D.h>

@@ -33,6 +33,10 @@ THE SOFTWARE.
 #include <ProtoZed/UniqueIDGenerator.h>
 #include <ProtoZed/Messages.h>
 
+#include <ProtoZed/ServiceList.h>
+#include <ProtoZed/AppStateManager.h>
+#include <ProtoZed/EntityManager.h>
+
 #include <ProtoZed/Animation/Animation.h>
 
 #include <ProtoZed/MetaEntity.h>

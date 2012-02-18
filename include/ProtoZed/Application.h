@@ -22,10 +22,6 @@ THE SOFTWARE.
 #ifndef PZ_Application_h__
 #define PZ_Application_h__
 
-#include <ProtoZed/ServiceList.h>
-#include <ProtoZed/AppStateManager.h>
-#include <ProtoZed/EntityManager.h>
-#include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetStorage.h>
 
 #include <SFML/Graphics/Image.hpp>
@@ -34,6 +30,11 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class ServiceList;
+	class AppStateManager;
+	class EntityManager;
+	class AnimationManager;
+
 	typedef AssetStorage<sf::Image>       ImageStorage;
 	typedef AssetStorage<sf::Font>        FontStorage;
 	typedef AssetStorage<sf::SoundBuffer> SoundBufferStorage;

@@ -22,6 +22,7 @@ THE SOFTWARE.
 #include <Input_SFML.h>
 
 #include <ProtoZed/Application.h>
+#include <ProtoZed/ServiceList.h>
 
 #include <Renderer_SFML.h>
 
