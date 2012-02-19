@@ -30,6 +30,7 @@ THE SOFTWARE.
 namespace PZ
 {
 	typedef std::unordered_map<HashString, EntityComponentMap, std::hash<unsigned int>> ComponentStore;
+	typedef std::vector<EntityListener*> ListenerList;
 
 	class EntityManager::Impl
 	{
@@ -47,11 +48,86 @@ namespace PZ
 			}
 		}
 
+		// Listener emits
+		virtual void emitEntityCreatedPre(const EntityID &id)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->EntityCreatedPre(id);
+			}
+		}
+		virtual void emitEntityCreatedPost(const EntityID &id)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->EntityCreatedPost(id);
+			}
+		}
+		virtual void emitEntityDestroyedPre(const EntityID &id)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->EntityDestroyedPre(id);
+			}
+		}
+		virtual void emitEntityDestroyedPost(const EntityID &id)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->EntityDestroyedPost(id);
+			}
+		}
+
+		virtual void emitEntitiesClearedPre()
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->EntitiesClearedPre();
+			}
+		}
+		virtual void emitEntitiesClearedPost()
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->EntitiesClearedPost();
+			}
+		}
+
+		virtual void emitComponentAddedPre(const EntityID &id, const HashString &family)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->ComponentAddedPre(id, family);
+			}
+		}
+		virtual void emitComponentAddedPost(const EntityID &id, const HashString &family)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->ComponentAddedPost(id, family);
+			}
+		}
+		virtual void emitComponentRemovedPre(const EntityID &id, const HashString &family)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->ComponentRemovedPre(id, family);
+			}
+		}
+		virtual void emitComponentRemovedPost(const EntityID &id, const HashString &family)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->ComponentRemovedPost(id, family);
+			}
+		}
+
 		EntityList entities;
 
 		ComponentStore components;
-
 		static const EntityComponentMap emptyMap; //TODO: This solution sucks
+
+		ListenerList listeners;
 	};
 
 	const EntityComponentMap EntityManager::Impl::emptyMap;
@@ -73,7 +149,11 @@ namespace PZ
 
 		if (!HasEntity(id))
 		{
+			p->emitEntityCreatedPre(id);
+
 			p->entities.push_back(id);
+
+			p->emitEntityCreatedPost(id);
 
 			return true;
 		}
@@ -91,6 +171,8 @@ namespace PZ
 		{
 			if ((*it) == id)
 			{
+				p->emitEntityDestroyedPre(id);
+
 				// Remove all components associated with this entity
 				for (ComponentStore::iterator it2 = p->components.begin(); it2 != p->components.end();)
 				{
@@ -109,6 +191,8 @@ namespace PZ
 				}
 
 				p->entities.erase(it);
+
+				p->emitEntityDestroyedPost(id);
 
 				return true;
 			}
@@ -147,6 +231,8 @@ namespace PZ
 
 	void EntityManager::ClearEntities()
 	{
+		p->emitEntitiesClearedPre();
+
 		p->entities.clear();
 
 		for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
@@ -159,6 +245,8 @@ namespace PZ
 			}
 		}
 		p->components.clear();
+
+		p->emitEntitiesClearedPost();
 	}
 
 	const EntityList &EntityManager::GetAllEntities() const
@@ -169,6 +257,23 @@ namespace PZ
 	unsigned int EntityManager::GetEntityCount() const
 	{
 		return p->entities.size();
+	}
+
+	void EntityManager::GetAllComponents(const EntityID &id, ComponentList &list) const
+	{
+		list.clear();
+
+		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
+		{
+			const EntityComponentMap &ecm = (*it).second;
+			for (EntityComponentMap::const_iterator it2 = ecm.cbegin(); it2 != ecm.cend(); ++it2)
+			{
+				if ((*it2).first == id)
+				{
+					list.push_back((*it).first);
+				}
+			}
+		}
 	}
 
 	void EntityManager::SendMessageToAll(const Message &message) const
@@ -211,12 +316,37 @@ namespace PZ
 		return false;
 	}
 
+	void EntityManager::RegisterListener(EntityListener *listener)
+	{
+		if (listener != nullptr)
+		{
+			p->listeners.push_back(listener);
+		}
+	}
+	void EntityManager::UnregisterListener(EntityListener *listener)
+	{
+		for (ListenerList::iterator it = p->listeners.begin(); it != p->listeners.end(); ++it)
+		{
+			if ((*it) == listener)
+			{
+				p->listeners.erase(it);
+				break;
+			}
+		}
+	}
+
 	bool EntityManager::AddComponentImpl(const EntityID &id, const HashString &name, Component *component)
 	{
 		if (id == HashString())
 			return false;
 
-		return p->components[name].insert(std::make_pair(id, component)).second;
+		p->emitComponentAddedPre(id, name);
+
+		bool success = p->components[name].insert(std::make_pair(id, component)).second;
+
+		p->emitComponentAddedPost(id, name);
+
+		return success;
 	}
 	bool EntityManager::RemoveComponentImpl(const EntityID &id, const HashString &name)
 	{
@@ -235,7 +365,11 @@ namespace PZ
 			}
 			else
 			{
+				p->emitComponentRemovedPre(id, name);
+
 				p->eraseComponent(it, it2);
+
+				p->emitComponentRemovedPost(id, name);
 
 				return true;
 			}

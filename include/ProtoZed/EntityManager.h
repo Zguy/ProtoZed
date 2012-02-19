@@ -38,6 +38,31 @@ namespace PZ
 	typedef HashString EntityID;
 	typedef std::vector<EntityID> EntityList;
 	typedef std::unordered_map<EntityID, Component*, std::hash<unsigned int>> EntityComponentMap;
+	typedef std::vector<HashString> ComponentList;
+
+	class EntityListener
+	{
+	public:
+		EntityListener()
+		{}
+		virtual ~EntityListener()
+		{}
+
+		virtual void EntityCreatedPre(const EntityID &id) {}
+		virtual void EntityCreatedPost(const EntityID &id) {}
+		
+		virtual void EntityDestroyedPre(const EntityID &id) {}
+		virtual void EntityDestroyedPost(const EntityID &id) {}
+
+		virtual void EntitiesClearedPre() {}
+		virtual void EntitiesClearedPost() {}
+
+		virtual void ComponentAddedPre(const EntityID &id, const HashString &family) {}
+		virtual void ComponentAddedPost(const EntityID &id, const HashString &family) {}
+		
+		virtual void ComponentRemovedPre(const EntityID &id, const HashString &family) {}
+		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family) {}
+	};
 
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
@@ -208,6 +233,8 @@ namespace PZ
 			return GetComponentImpl(id, family);
 		}
 
+		void GetAllComponents(const EntityID &id, ComponentList &list) const;
+
 		/**
 		 * \brief	Gets the entities with a certain component.
 		 *
@@ -225,6 +252,9 @@ namespace PZ
 
 		void SendMessageToAll(const Message &message) const;
 		bool SendMessage(const Message &message, const EntityID &to) const;
+
+		void RegisterListener(EntityListener *listener);
+		void UnregisterListener(EntityListener *listener);
 
 	private:
 		bool AddComponentImpl(const EntityID &id, const HashString &name, Component *component);
