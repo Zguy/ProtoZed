@@ -23,6 +23,10 @@ THE SOFTWARE.
 
 #include <ProtoZed/Profiler.h>
 
+#ifndef _DEBUG
+#include <ProtoZed/Convert.h>
+#endif
+
 #include <boost/crc.hpp>
 
 namespace PZ
@@ -51,6 +55,12 @@ namespace PZ
 		hash = hashString(std::string(str));
 #ifdef _DEBUG
 		readable = str;
+#endif
+	}
+	HashString::HashString(unsigned int hash) : hash(hash)
+	{
+#ifdef _DEBUG
+		readable = "???Unknown???";
 #endif
 	}
 	HashString::~HashString()
@@ -90,6 +100,13 @@ namespace PZ
 	{
 		return (hash < other.hash);
 	}
+
+#ifndef _DEBUG
+	const std::string HashString::GetReadable() const
+	{
+		return Convert::ToString(hash);
+	}
+#endif
 
 	unsigned int HashString::hashString(const std::string &str) const
 	{
