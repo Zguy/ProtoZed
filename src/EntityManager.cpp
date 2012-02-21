@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	typedef std::unordered_map<HashString, EntityComponentMap, std::hash<unsigned int>> ComponentStore;
+	typedef std::unordered_map<HashString, EntityComponentMap, std::hash<int>> ComponentStore;
 	typedef std::vector<EntityListener*> ListenerList;
 
 	class EntityManager::Impl
@@ -216,7 +216,6 @@ namespace PZ
 
 	MetaEntity EntityManager::GetEntity(const EntityID &id) const
 	{
-		Profile profile("GetEntity");
 		if (HasEntity(id))
 		{
 			MetaEntity entity(id, const_cast<EntityManager&>(*this));

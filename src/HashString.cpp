@@ -110,16 +110,9 @@ namespace PZ
 
 	unsigned int HashString::hashString(const std::string &str) const
 	{
-		Profiler *profiler = Profiler::GetSingletonPtr();
-		if (profiler != nullptr)
-			profiler->Begin("Hash");
-
 		boost::crc_32_type result;
 		result.process_bytes(str.c_str(), str.size());
 		unsigned int checksum = result.checksum();
-
-		if (profiler != nullptr)
-			profiler->End();
 
 		return checksum;
 	}

@@ -37,7 +37,7 @@ namespace PZ
 
 	typedef HashString EntityID;
 	typedef std::vector<EntityID> EntityList;
-	typedef std::unordered_map<EntityID, Component*, std::hash<unsigned int>> EntityComponentMap;
+	typedef std::unordered_map<EntityID, Component*, std::hash<int>> EntityComponentMap;
 	typedef std::vector<HashString> ComponentList;
 
 	class EntityListener
@@ -224,12 +224,10 @@ namespace PZ
 		template<class T>
 		T *GetComponent(const EntityID &id) const
 		{
-			Profile profile("GetComponent");
 			return dynamic_cast<T*>(GetComponentImpl(id, T::Family));
 		}
 		Component *GetComponent(const EntityID &id, const HashString &family) const
 		{
-			Profile profile("GetComponent");
 			return GetComponentImpl(id, family);
 		}
 
