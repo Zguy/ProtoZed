@@ -175,11 +175,6 @@ namespace PZ
 		}
 	}
 
-	bool AppStateManager::UnregisterState(const std::string &stateName)
-	{
-		return p->appStateFactory.Unregister(stateName);
-	}
-
 	void AppStateManager::ChangeState(const std::string &stateName)
 	{
 		Todo::Entry todo;

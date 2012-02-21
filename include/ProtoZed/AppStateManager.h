@@ -45,7 +45,10 @@ namespace PZ
 		{
 			return getAppStateFactory().Register<T>(stateName);
 		}
-		bool UnregisterState(const std::string &stateName);
+		bool UnregisterState(const std::string &stateName)
+		{
+			return getAppStateFactory().Unregister(stateName);
+		}
 
 		void ChangeState(const std::string &stateName);
 		void ChangeState(const std::string &stateName, StringMap &options);
