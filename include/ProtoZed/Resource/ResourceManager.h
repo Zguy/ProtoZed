@@ -57,7 +57,7 @@ namespace PZ
 			return getResourceFactory().Unregister(type);
 		}
 
-		bool AddArchive(const std::string &filename, const std::string &type);
+		bool AddArchive(const std::string &filename, const ArchiveType &type);
 		bool RemoveArchive(const std::string &filename);
 
 		bool LoadAll();
