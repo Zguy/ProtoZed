@@ -33,6 +33,14 @@ namespace PZ
 	}
 	SceneNode::~SceneNode()
 	{
+		if (parent != EntityID())
+		{
+			SceneNode *node = GetManager().GetComponent<SceneNode>(parent);
+			if (node != nullptr)
+				node->_RemoveChild(GetOwnerID());
+
+			parent = EntityID();
+		}
 		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			SceneNode *node = GetManager().GetComponent<SceneNode>(*it);
