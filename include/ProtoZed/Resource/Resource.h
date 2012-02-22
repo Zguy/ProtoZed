@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Resource_h__
 #define PZ_Resource_h__
 
+#include <ProtoZed/DataChunk.h>
+
 namespace PZ
 {
 	class Resource

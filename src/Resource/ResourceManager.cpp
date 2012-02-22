@@ -28,13 +28,15 @@ THE SOFTWARE.
 namespace PZ
 {
 	typedef std::vector<std::pair<std::string, Archive*>> ArchiveList;
+	typedef std::map<std::string, Resource*> ResourceMap;
 
 	class ResourceManager::Impl
 	{
 	public:
 		ArchiveList archives;
-		ResourceManager::ArchiveFactory archiveFactory;
+		ResourceMap resources;
 
+		ResourceManager::ArchiveFactory archiveFactory;
 		ResourceManager::ResourceFactory resourceFactory;
 	};
 
@@ -48,6 +50,12 @@ namespace PZ
 			delete (*it).second;
 		}
 		p->archives.clear();
+
+		for (ResourceMap::iterator it = p->resources.begin(); it != p->resources.end(); ++it)
+		{
+			delete (*it).second;
+		}
+		p->resources.clear();
 
 		delete p;
 	}
@@ -86,7 +94,7 @@ namespace PZ
 	{
 		return false;
 	}
-	bool ResourceManager::Load(const std::string &filename)
+	bool ResourceManager::Load(const std::string &filename, const std::string &type)
 	{
 		Archive *archive = nullptr;
 		for (ArchiveList::const_iterator it = p->archives.cbegin(); it != p->archives.cend(); ++it)
@@ -102,11 +110,13 @@ namespace PZ
 		{
 			DataChunk data = archive->Get(filename);
 
-			Resource *resource = p->resourceFactory.Create("???");
+			Resource *resource = p->resourceFactory.Create(type);
 			if (resource != nullptr)
 			{
 				resource->filename = filename;
 				resource->load(data);
+
+				p->resources.insert(std::make_pair(filename, resource));
 
 				return true;
 			}

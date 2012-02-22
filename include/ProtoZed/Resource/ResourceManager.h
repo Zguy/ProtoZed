@@ -50,7 +50,7 @@ namespace PZ
 		template<class T>
 		bool RegisterResourceType(const std::string &type)
 		{
-			return getResourceFactory<T>(type);
+			return getResourceFactory().Register<T>(type);
 		}
 		bool UnregisterResourceType(const std::string &type)
 		{
@@ -61,7 +61,7 @@ namespace PZ
 		bool RemoveArchive(const std::string &filename);
 
 		bool LoadAll();
-		bool Load(const std::string &filename);
+		bool Load(const std::string &filename, const std::string &type);
 		bool Unload(const std::string &filename);
 		Resource &Get(const std::string &filename);
 

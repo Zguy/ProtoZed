@@ -19,31 +19,73 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Archive_h__
-#define PZ_Archive_h__
-
-#include <ProtoZed/DataChunk.h>
-
-#include <string>
+#ifndef PZ_DataChunk_h__
+#define PZ_DataChunk_h__
 
 namespace PZ
 {
-	class Archive
+	class DataChunk
 	{
 	public:
-		Archive()
+		DataChunk() : data(nullptr), size(0), references(new unsigned int(1))
 		{}
-		virtual ~Archive()
+		DataChunk(const char *data, unsigned int size) : data(data), size(size), references(new unsigned int(1))
 		{}
+		DataChunk(const DataChunk &other) : data(other.data), size(other.size), references(other.references)
+		{
+			addReference();
+		}
+		~DataChunk()
+		{
+			release();
+		}
 
-		virtual bool Open(const std::string &filename) = 0;
-		virtual bool Close() = 0;
-		virtual bool IsOpen() = 0;
+		const DataChunk &operator=(const DataChunk &other)
+		{
+			if (this != &other)
+			{
+				release();
 
-		virtual DataChunk Get(const std::string &filename) const = 0;
+				data = other.data;
+				size = other.size;
 
-		virtual bool Has(const std::string &filename) const = 0;
+				references = other.references;
+				addReference();
+			}
+
+			return *this;
+		}
+
+		const char *GetData() const
+		{
+			return data;
+		}
+
+		unsigned int GetSize() const
+		{
+			return size;
+		}
+
+	private:
+		const char *data;
+		unsigned int size;
+
+		void addReference()
+		{
+			++(*references);
+		}
+		void release()
+		{
+			if (--(*references) == 0)
+			{
+				delete[] data;
+				data = nullptr;
+				delete references;
+				references = nullptr;
+			}
+		}
+		unsigned int *references;
 	};
 }
 
-#endif // PZ_Archive_h__
+#endif // PZ_DataChunk_h__
