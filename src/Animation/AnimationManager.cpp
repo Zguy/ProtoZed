@@ -44,7 +44,10 @@ namespace PZ
 	AnimationManager::~AnimationManager()
 	{
 		for (AnimationMap::iterator it = p->animationMap.begin(); it != p->animationMap.end(); ++it)
+		{
 			delete (*it).second;
+			(*it).second = nullptr;
+		}
 		p->animationMap.clear();
 
 		delete p;

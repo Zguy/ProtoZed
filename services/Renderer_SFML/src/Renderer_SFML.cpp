@@ -118,6 +118,7 @@ namespace PZ
 		for (LayerList::iterator it = p->layers.begin(); it != p->layers.end(); ++it)
 		{
 			delete (*it).drawable;
+			(*it).drawable = nullptr;
 		}
 		p->layers.clear();
 

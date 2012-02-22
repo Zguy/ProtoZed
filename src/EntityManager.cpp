@@ -232,8 +232,6 @@ namespace PZ
 	{
 		p->emitEntitiesClearedPre();
 
-		p->entities.clear();
-
 		for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
 		{
 			EntityComponentMap &ecm = (*it).second;
@@ -241,9 +239,12 @@ namespace PZ
 			for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
 			{
 				delete (*it2).second;
+				(*it2).second = nullptr;
 			}
 		}
 		p->components.clear();
+
+		p->entities.clear();
 
 		p->emitEntitiesClearedPost();
 	}

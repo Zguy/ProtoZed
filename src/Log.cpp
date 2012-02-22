@@ -24,7 +24,6 @@ THE SOFTWARE.
 #include <boost/date_time.hpp>
 
 #include <fstream>
-#include <ctime>
 #include <iostream>
 #include <map>
 
@@ -46,6 +45,7 @@ namespace PZ
 		for (LogMap::iterator it = p->logs.begin(); it != p->logs.end(); ++it)
 		{
 			delete (*it).second;
+			(*it).second = nullptr;
 		}
 		p->logs.clear();
 

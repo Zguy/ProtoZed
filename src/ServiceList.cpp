@@ -162,6 +162,7 @@ namespace PZ
 			}
 
 			delete (*it);
+			(*it) = nullptr;
 		}
 		p->services.clear();
 	}
