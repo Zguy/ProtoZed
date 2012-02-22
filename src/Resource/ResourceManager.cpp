@@ -48,12 +48,14 @@ namespace PZ
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
 			delete (*it).second;
+			(*it).second = nullptr;
 		}
 		p->archives.clear();
 
 		for (ResourceMap::iterator it = p->resources.begin(); it != p->resources.end(); ++it)
 		{
 			delete (*it).second;
+			(*it).second = nullptr;
 		}
 		p->resources.clear();
 
