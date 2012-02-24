@@ -31,6 +31,8 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	typedef std::string ResourceType;
+
 	class ResourceManager
 	{
 	public:
@@ -48,22 +50,29 @@ namespace PZ
 		}
 
 		template<class T>
-		bool RegisterResourceType(const std::string &type)
+		bool RegisterResourceType(const ResourceType &type)
 		{
 			return getResourceFactory().Register<T>(type);
 		}
-		bool UnregisterResourceType(const std::string &type)
+		bool UnregisterResourceType(const ResourceType &type)
 		{
 			return getResourceFactory().Unregister(type);
 		}
 
-		bool AddArchive(const std::string &filename, const ArchiveType &type);
+		void SetType(const std::string &extension, const ResourceType &type);
+
+		bool AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll = true);
 		bool RemoveArchive(const std::string &filename);
 
-		bool LoadAll();
-		bool Load(const std::string &filename, const std::string &type);
+		void IndexAll();
+		bool IndexFile(const std::string &filename);
+
+		void LoadAll();
+		void UnloadAll();
+		bool Load(const std::string &filename);
 		bool Unload(const std::string &filename);
-		Resource &Get(const std::string &filename);
+
+		const Resource &Get(const std::string &filename, bool autoLoad = true);
 
 	private:
 		class Impl;
@@ -72,7 +81,7 @@ namespace PZ
 		typedef ::ObjectFactory<Archive*(), ArchiveType> ArchiveFactory;
 		ArchiveFactory &getArchiveFactory() const;
 
-		typedef ::ObjectFactory<Resource*(), std::string> ResourceFactory;
+		typedef ::ObjectFactory<Resource*(), ResourceType> ResourceFactory;
 		ResourceFactory &getResourceFactory() const;
 	};
 }

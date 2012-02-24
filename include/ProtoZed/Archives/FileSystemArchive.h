@@ -36,15 +36,13 @@ namespace PZ
 		virtual bool Close();
 		virtual bool IsOpen();
 
+		virtual bool Has(const std::string &filename) const;
 		virtual DataChunk Get(const std::string &filename) const;
 
-		virtual bool Has(const std::string &filename) const;
+		virtual void GetAllFiles(FileList &list) const;
 
 	private:
 		std::string basePath;
-
-		/*typedef std::vector<std::string> FileList;
-		FileList files;*/
 	};
 }
 

@@ -22,29 +22,150 @@ THE SOFTWARE.
 #include <ProtoZed/Resource/ResourceManager.h>
 
 #include <ProtoZed/Archive.h>
+#include <ProtoZed/Log.h>
 
 #include <vector>
 
 namespace PZ
 {
 	typedef std::vector<std::pair<std::string, Archive*>> ArchiveList;
-	typedef std::map<std::string, Resource*> ResourceMap;
+	typedef std::map<std::string, std::pair<Resource*, Archive*>> FileIndex;
+	typedef std::map<std::string, ResourceType> TypeMap;
 
 	class ResourceManager::Impl
 	{
 	public:
+		void indexArchive(Archive *archive)
+		{
+			FileList list;
+			archive->GetAllFiles(list);
+
+			for (FileList::iterator it = list.begin(); it != list.end(); ++it)
+			{
+				addFile((*it), archive);
+			}
+		}
+
+		void addFile(const std::string &filename, Archive *archive)
+		{
+			fileIndex.insert(std::make_pair(filename, std::make_pair<Resource*, Archive*>(nullptr, archive)));
+		}
+		FileIndex::iterator getFile(const std::string &filename)
+		{
+			return fileIndex.find(filename);
+		}
+
+		bool loadFile(FileIndex::iterator fileIt)
+		{
+			Archive *archive = nullptr;
+
+			if (fileIt == fileIndex.end())
+			{
+				return false;
+			}
+			else
+			{
+				if ((*fileIt).second.first != nullptr)
+				{
+					return true;
+				}
+				else
+				{
+					archive = (*fileIt).second.second;
+				}
+			}
+
+			const std::string &filename = (*fileIt).first;
+
+			DataChunk data = archive->Get(filename);
+
+			ResourceType resType = getType(filename);
+			if (resType.empty())
+			{
+				Log::Error("ProtoZed", "No ResourceType is registered for \""+filename+"\"");
+			}
+			else
+			{
+				Resource *resource = resourceFactory.Create(resType);
+				if (resource == nullptr)
+				{
+					Log::Error("ProtoZed", "Resource \""+resType+"\" does not exist");
+				}
+				else
+				{
+					resource->filename = filename;
+					if (resource->load(data))
+					{
+						(*fileIt).second.first = resource;
+
+						return true;
+					}
+					else
+					{
+						Log::Error("ProtoZed", "Resource \""+resType+"\" failed to load \""+filename+"\"");
+
+						delete resource;
+					}
+				}
+			}
+
+			return false;
+		}
+		bool unloadFile(FileIndex::iterator fileIt)
+		{
+			if (fileIt != fileIndex.end())
+			{
+				delete (*fileIt).second.first;
+				(*fileIt).second.first = nullptr;
+
+				return true;
+			}
+
+			return false;
+		}
+
+		const ResourceType &getType(const std::string &filename) const
+		{
+			std::string extension = filename.substr(filename.find_last_of('.')+1);
+			TypeMap::const_iterator it = typeMap.find(extension);
+			if (it != typeMap.cend())
+			{
+				return (*it).second;
+			}
+			else
+			{
+				return nullType;
+			}
+		}
+
 		ArchiveList archives;
-		ResourceMap resources;
+		FileIndex fileIndex;
+
+		TypeMap typeMap;
+
+		static const ResourceType nullType;
+		static const NullResource nullResource;
 
 		ResourceManager::ArchiveFactory archiveFactory;
 		ResourceManager::ResourceFactory resourceFactory;
 	};
+
+	const ResourceType ResourceManager::Impl::nullType = "";
+	const NullResource ResourceManager::Impl::nullResource = NullResource();
 
 	ResourceManager::ResourceManager() : p(new Impl)
 	{
 	}
 	ResourceManager::~ResourceManager()
 	{
+		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
+		{
+			delete (*it).second.first;
+			(*it).second.first  = nullptr;
+			(*it).second.second = nullptr;
+		}
+		p->fileIndex.clear();
+
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
 			delete (*it).second;
@@ -52,22 +173,27 @@ namespace PZ
 		}
 		p->archives.clear();
 
-		for (ResourceMap::iterator it = p->resources.begin(); it != p->resources.end(); ++it)
-		{
-			delete (*it).second;
-			(*it).second = nullptr;
-		}
-		p->resources.clear();
-
 		delete p;
 	}
 
-	bool ResourceManager::AddArchive(const std::string &filename, const std::string &type)
+	void ResourceManager::SetType(const std::string &extension, const ResourceType &type)
+	{
+		p->typeMap[extension] = type;
+	}
+
+	bool ResourceManager::AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll)
 	{
 		Archive *archive = p->archiveFactory.Create(type);
 		if (archive != nullptr && archive->Open(filename))
 		{
 			p->archives.push_back(std::make_pair(filename, archive));
+
+			if (indexAll)
+			{
+				p->indexArchive(archive);
+			}
+
+			return true;
 		}
 		else
 		{
@@ -82,8 +208,11 @@ namespace PZ
 		{
 			if ((*it).first == filename)
 			{
+				//FIXME: Remove all files from fileIndex belonging to this archive
+
 				delete (*it).second;
 				p->archives.erase(it);
+
 				return true;
 			}
 		}
@@ -91,40 +220,94 @@ namespace PZ
 		return false;
 	}
 
-
-	bool ResourceManager::LoadAll()
+	void ResourceManager::IndexAll()
 	{
-		return false;
-	}
-	bool ResourceManager::Load(const std::string &filename, const std::string &type)
-	{
-		Archive *archive = nullptr;
-		for (ArchiveList::const_iterator it = p->archives.cbegin(); it != p->archives.cend(); ++it)
+		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
-			if ((*it).second->Has(filename))
-			{
-				archive = (*it).second;
-				break;
-			}
+			p->indexArchive((*it).second);
 		}
-
-		if (archive != nullptr)
+	}
+	bool ResourceManager::IndexFile(const std::string &filename)
+	{
+		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
-			DataChunk data = archive->Get(filename);
-
-			Resource *resource = p->resourceFactory.Create(type);
-			if (resource != nullptr)
+			Archive *archive = (*it).second;
+			if (archive->Has(filename))
 			{
-				resource->filename = filename;
-				resource->load(data);
-
-				p->resources.insert(std::make_pair(filename, resource));
+				p->addFile(filename, archive);
 
 				return true;
 			}
 		}
 
+		Log::Error("ProtoZed", "Tried to index file \""+filename+"\", but no archive contains it");
 		return false;
+	}
+
+	void ResourceManager::LoadAll()
+	{
+		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
+		{
+			p->loadFile(it);
+		}
+	}
+	void ResourceManager::UnloadAll()
+	{
+		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
+		{
+			p->unloadFile(it);
+		}
+	}
+	bool ResourceManager::Load(const std::string &filename)
+	{
+		FileIndex::iterator fileIt = p->getFile(filename);
+		if (fileIt == p->fileIndex.end())
+		{
+			Log::Error("ProtoZed", "The file \""+filename+"\" could not be loaded, because it's not indexed.");
+		}
+		else
+		{
+			return p->loadFile(fileIt);
+		}
+
+		return false;
+	}
+	bool ResourceManager::Unload(const std::string &filename)
+	{
+		FileIndex::iterator fileIt = p->getFile(filename);
+		if (fileIt == p->fileIndex.end())
+		{
+			Log::Error("ProtoZed", "The file \""+filename+"\" could not be unloaded, because it's not indexed");
+		}
+		else
+		{
+			return p->unloadFile(fileIt);
+		}
+
+		return false;
+	}
+
+	const Resource &ResourceManager::Get(const std::string &filename, bool autoLoad)
+	{
+		FileIndex::iterator fileIt = p->getFile(filename);
+		if (fileIt == p->fileIndex.end())
+		{
+			Log::Error("ProtoZed", "The file \""+filename+"\" is not indexed");
+			return p->nullResource;
+		}
+		else
+		{
+			Resource *resource = (*fileIt).second.first;
+			if (!resource->IsLoaded())
+			{
+				if (!(autoLoad && p->loadFile(fileIt)))
+				{
+					Log::Warning("ProtoZed", "Returning unloaded resource");
+				}
+			}
+
+			return *resource;
+		}
 	}
 
 	ResourceManager::ArchiveFactory &ResourceManager::getArchiveFactory() const

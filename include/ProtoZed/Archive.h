@@ -25,9 +25,12 @@ THE SOFTWARE.
 #include <ProtoZed/DataChunk.h>
 
 #include <string>
+#include <vector>
 
 namespace PZ
 {
+	typedef std::vector<std::string> FileList;
+
 	class Archive
 	{
 	public:
@@ -40,9 +43,10 @@ namespace PZ
 		virtual bool Close() = 0;
 		virtual bool IsOpen() = 0;
 
+		virtual bool Has(const std::string &filename) const = 0;
 		virtual DataChunk Get(const std::string &filename) const = 0;
 
-		virtual bool Has(const std::string &filename) const = 0;
+		virtual void GetAllFiles(FileList &list) const = 0;
 	};
 }
 

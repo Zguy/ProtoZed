@@ -56,6 +56,13 @@ namespace PZ
 		return !basePath.empty();
 	}
 
+	bool FileSystemArchive::Has(const std::string &filename) const
+	{
+		boost::filesystem::path base(basePath);
+		boost::filesystem::path path(filename);
+		boost::filesystem::path fullPath = base / path;
+		return boost::filesystem::is_regular_file(fullPath);
+	}
 	DataChunk FileSystemArchive::Get(const std::string &filename) const
 	{
 		boost::filesystem::path base(basePath);
@@ -82,12 +89,19 @@ namespace PZ
 		return DataChunk();
 	}
 
-	bool FileSystemArchive::Has(const std::string &filename) const
+	void FileSystemArchive::GetAllFiles(FileList &list) const
 	{
-		boost::filesystem::path base(basePath);
-		boost::filesystem::path path(filename);
-		boost::filesystem::path fullPath = base / path;
-		return boost::filesystem::is_regular_file(fullPath);
-	}
+		list.clear();
 
+		boost::filesystem::path base(basePath);
+		for (boost::filesystem::recursive_directory_iterator it = boost::filesystem::recursive_directory_iterator(base); it != boost::filesystem::recursive_directory_iterator(); ++it)
+		{
+			boost::filesystem::path filePath = (*it).path();
+
+			if (boost::filesystem::is_regular_file(filePath))
+			{
+				list.push_back(filePath.relative_path().generic_string());
+			}
+		}
+	}
 }

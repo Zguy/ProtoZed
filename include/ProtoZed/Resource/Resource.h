@@ -41,11 +41,37 @@ namespace PZ
 			return filename;
 		}
 
+		virtual bool IsLoaded() const = 0;
+
 	private:
 		virtual bool load(const DataChunk &data) = 0;
 		virtual bool unload() = 0;
 
 		std::string filename;
+	};
+
+	class NullResource : public Resource
+	{
+	public:
+		NullResource()
+		{}
+		~NullResource()
+		{}
+
+		virtual bool IsLoaded() const
+		{
+			return false;
+		}
+
+	private:
+		virtual bool load(const DataChunk &data)
+		{
+			return false;
+		}
+		virtual bool unload()
+		{
+			return false;
+		}
 	};
 }
 
