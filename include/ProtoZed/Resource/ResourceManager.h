@@ -61,10 +61,10 @@ namespace PZ
 
 		void SetType(const std::string &extension, const ResourceType &type);
 
-		bool AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll = true);
+		bool AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll = true, bool onlyIndexRegisteredTypes = true);
 		bool RemoveArchive(const std::string &filename);
 
-		void IndexAll();
+		void IndexAll(bool onlyIndexRegisteredTypes = true);
 		bool IndexFile(const std::string &filename);
 
 		void LoadAll();
@@ -72,7 +72,12 @@ namespace PZ
 		bool Load(const std::string &filename);
 		bool Unload(const std::string &filename);
 
-		const Resource &Get(const std::string &filename, bool autoLoad = true);
+		template<class T>
+		const T *Get(const std::string &filename, bool autoLoad = true)
+		{
+			return dynamic_cast<const T*>(Get(filename, autoLoad));
+		}
+		const Resource *Get(const std::string &filename, bool autoLoad = true);
 
 	private:
 		class Impl;

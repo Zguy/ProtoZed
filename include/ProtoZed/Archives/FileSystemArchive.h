@@ -34,7 +34,7 @@ namespace PZ
 
 		virtual bool Open(const std::string &filename);
 		virtual bool Close();
-		virtual bool IsOpen();
+		virtual bool IsOpen() const;
 
 		virtual bool Has(const std::string &filename) const;
 		virtual DataChunk Get(const std::string &filename) const;

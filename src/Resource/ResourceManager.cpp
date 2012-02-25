@@ -35,14 +35,17 @@ namespace PZ
 	class ResourceManager::Impl
 	{
 	public:
-		void indexArchive(Archive *archive)
+		void indexArchive(Archive *archive, bool onlyIndexRegisteredTypes)
 		{
 			FileList list;
 			archive->GetAllFiles(list);
 
 			for (FileList::iterator it = list.begin(); it != list.end(); ++it)
 			{
-				addFile((*it), archive);
+				if (!onlyIndexRegisteredTypes || (onlyIndexRegisteredTypes && !getType(*it).empty()))
+				{
+					addFile((*it), archive);
+				}
 			}
 		}
 
@@ -82,7 +85,7 @@ namespace PZ
 			ResourceType resType = getType(filename);
 			if (resType.empty())
 			{
-				Log::Error("ProtoZed", "No ResourceType is registered for \""+filename+"\"");
+				Log::Error("ProtoZed", "No resource type is registered for \""+filename+"\"");
 			}
 			else
 			{
@@ -144,14 +147,12 @@ namespace PZ
 		TypeMap typeMap;
 
 		static const ResourceType nullType;
-		static const NullResource nullResource;
 
 		ResourceManager::ArchiveFactory archiveFactory;
 		ResourceManager::ResourceFactory resourceFactory;
 	};
 
 	const ResourceType ResourceManager::Impl::nullType = "";
-	const NullResource ResourceManager::Impl::nullResource = NullResource();
 
 	ResourceManager::ResourceManager() : p(new Impl)
 	{
@@ -181,7 +182,7 @@ namespace PZ
 		p->typeMap[extension] = type;
 	}
 
-	bool ResourceManager::AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll)
+	bool ResourceManager::AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
 	{
 		Archive *archive = p->archiveFactory.Create(type);
 		if (archive != nullptr && archive->Open(filename))
@@ -190,7 +191,7 @@ namespace PZ
 
 			if (indexAll)
 			{
-				p->indexArchive(archive);
+				p->indexArchive(archive, onlyIndexRegisteredTypes);
 			}
 
 			return true;
@@ -208,9 +209,21 @@ namespace PZ
 		{
 			if ((*it).first == filename)
 			{
-				//FIXME: Remove all files from fileIndex belonging to this archive
+				Archive *archive = (*it).second;
 
-				delete (*it).second;
+				for (FileIndex::iterator it2 = p->fileIndex.begin(); it2 != p->fileIndex.end();)
+				{
+					if ((*it2).second.second == archive)
+					{
+						it2 = p->fileIndex.erase(it2);
+					}
+					else
+					{
+						++it2;
+					}
+				}
+
+				delete archive;
 				p->archives.erase(it);
 
 				return true;
@@ -220,11 +233,11 @@ namespace PZ
 		return false;
 	}
 
-	void ResourceManager::IndexAll()
+	void ResourceManager::IndexAll(bool onlyIndexRegisteredTypes)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
-			p->indexArchive((*it).second);
+			p->indexArchive((*it).second, onlyIndexRegisteredTypes);
 		}
 	}
 	bool ResourceManager::IndexFile(const std::string &filename)
@@ -287,26 +300,27 @@ namespace PZ
 		return false;
 	}
 
-	const Resource &ResourceManager::Get(const std::string &filename, bool autoLoad)
+	const Resource *ResourceManager::Get(const std::string &filename, bool autoLoad)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
 		{
-			Log::Error("ProtoZed", "The file \""+filename+"\" is not indexed");
-			return p->nullResource;
+			Log::Warning("ProtoZed", "The file \""+filename+"\" is not indexed, returning null resource");
+			return nullptr;
 		}
 		else
 		{
-			Resource *resource = (*fileIt).second.first;
-			if (!resource->IsLoaded())
+			Resource *&resource = (*fileIt).second.first;
+			if (resource == nullptr)
 			{
 				if (!(autoLoad && p->loadFile(fileIt)))
 				{
-					Log::Warning("ProtoZed", "Returning unloaded resource");
+					Log::Warning("ProtoZed", "\""+filename+"\" is not loaded, returning null resource");
+					return nullptr;
 				}
 			}
 
-			return *resource;
+			return resource;
 		}
 	}
 

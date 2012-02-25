@@ -24,6 +24,39 @@ THE SOFTWARE.
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
+namespace
+{
+	boost::filesystem::path normalizePath(boost::filesystem::path &path)
+	{
+		std::vector<boost::filesystem::path> pathParts;
+
+		for (boost::filesystem::path::iterator it = path.begin(); it != path.end(); ++it)
+		{
+			std::string part = (*it).generic_string();
+
+			if (part == ".")
+			{
+				continue;
+			}
+			if (part == "..")
+			{
+				pathParts.pop_back();
+				continue;
+			}
+
+			pathParts.push_back(*it);
+		}
+
+		boost::filesystem::path final;
+		for (std::vector<boost::filesystem::path>::iterator it = pathParts.begin(); it != pathParts.end(); ++it)
+		{
+			final /= (*it);
+		}
+
+		return final;
+	}
+}
+
 namespace PZ
 {
 	FileSystemArchive::FileSystemArchive() : basePath("")
@@ -38,7 +71,7 @@ namespace PZ
 		boost::filesystem::path path(filename);
 		if (boost::filesystem::is_directory(path))
 		{
-			basePath = filename;
+			basePath = path.generic_string();
 
 			return true;
 		}
@@ -51,38 +84,48 @@ namespace PZ
 
 		return true;
 	}
-	bool FileSystemArchive::IsOpen()
+	bool FileSystemArchive::IsOpen() const
 	{
 		return !basePath.empty();
 	}
 
 	bool FileSystemArchive::Has(const std::string &filename) const
 	{
-		boost::filesystem::path base(basePath);
-		boost::filesystem::path path(filename);
-		boost::filesystem::path fullPath = base / path;
-		return boost::filesystem::is_regular_file(fullPath);
+		if (IsOpen())
+		{
+			boost::filesystem::path base(basePath);
+			boost::filesystem::path path(filename);
+			boost::filesystem::path fullPath = base / path;
+			return boost::filesystem::is_regular_file(fullPath);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	DataChunk FileSystemArchive::Get(const std::string &filename) const
 	{
-		boost::filesystem::path base(basePath);
-		boost::filesystem::path path(filename);
-		boost::filesystem::path fullPath = base / path;
-		if (boost::filesystem::is_regular_file(fullPath))
+		if (IsOpen())
 		{
-			boost::filesystem::fstream file(fullPath, std::ios::in | std::ios::binary);
-			if (file.is_open())
+			boost::filesystem::path base(basePath);
+			boost::filesystem::path path(filename);
+			boost::filesystem::path fullPath = base / path;
+			if (boost::filesystem::is_regular_file(fullPath))
 			{
-				file.seekg(0, std::ios::end);
-				unsigned int size = static_cast<unsigned int>(file.tellg());
-				file.seekg(0, std::ios::beg);
+				boost::filesystem::fstream file(fullPath, std::ios::in | std::ios::binary);
+				if (file.is_open())
+				{
+					file.seekg(0, std::ios::end);
+					unsigned int size = static_cast<unsigned int>(file.tellg());
+					file.seekg(0, std::ios::beg);
 
-				char *data = new char[size];
-				file.read(data, size);
+					char *data = new char[size];
+					file.read(data, size);
 
-				file.close();
+					file.close();
 
-				return DataChunk(data, size);
+					return DataChunk(data, size);
+				}
 			}
 		}
 
@@ -91,16 +134,19 @@ namespace PZ
 
 	void FileSystemArchive::GetAllFiles(FileList &list) const
 	{
-		list.clear();
-
-		boost::filesystem::path base(basePath);
-		for (boost::filesystem::recursive_directory_iterator it = boost::filesystem::recursive_directory_iterator(base); it != boost::filesystem::recursive_directory_iterator(); ++it)
+		if (IsOpen())
 		{
-			boost::filesystem::path filePath = (*it).path();
+			list.clear();
 
-			if (boost::filesystem::is_regular_file(filePath))
+			boost::filesystem::path base(basePath);
+			for (boost::filesystem::recursive_directory_iterator it = boost::filesystem::recursive_directory_iterator(base); it != boost::filesystem::recursive_directory_iterator(); ++it)
 			{
-				list.push_back(filePath.relative_path().generic_string());
+				boost::filesystem::path filePath = (*it).path();
+
+				if (boost::filesystem::is_regular_file(filePath))
+				{
+					list.push_back(normalizePath(filePath).generic_string());
+				}
 			}
 		}
 	}
