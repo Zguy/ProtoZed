@@ -24,10 +24,154 @@ THE SOFTWARE.
 
 #include <ProtoZed/Service.h>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 namespace PZ
 {
+	namespace Key
+	{
+		enum Code
+		{
+			A = 'a',
+			B = 'b',
+			C = 'c',
+			D = 'd',
+			E = 'e',
+			F = 'f',
+			G = 'g',
+			H = 'h',
+			I = 'i',
+			J = 'j',
+			K = 'k',
+			L = 'l',
+			M = 'm',
+			N = 'n',
+			O = 'o',
+			P = 'p',
+			Q = 'q',
+			R = 'r',
+			S = 's',
+			T = 't',
+			U = 'u',
+			V = 'v',
+			W = 'w',
+			X = 'x',
+			Y = 'y',
+			Z = 'z',
+			Num0 = '0',
+			Num1 = '1',
+			Num2 = '2',
+			Num3 = '3',
+			Num4 = '4',
+			Num5 = '5',
+			Num6 = '6',
+			Num7 = '7',
+			Num8 = '8',
+			Num9 = '9', 
+			Escape = 256,
+			LControl,
+			LShift,
+			LAlt,
+			LSystem,      ///< OS specific key (left side) : windows (Win and Linux), apple (MacOS), ...
+			RControl,
+			RShift,
+			RAlt,
+			RSystem,      ///< OS specific key (right side) : windows (Win and Linux), apple (MacOS), ...
+			Menu,
+			LBracket,     ///< [
+			RBracket,     ///< ]
+			SemiColon,    ///< ;
+			Comma,        ///< ,
+			Period,       ///< .
+			Quote,        ///< '
+			Slash,        ///< /
+			BackSlash,
+			Tilde,        ///< ~
+			Equal,        ///< =
+			Dash,         ///< -
+			Space,
+			Return,
+			Back,
+			Tab,
+			PageUp,
+			PageDown,
+			End,
+			Home,
+			Insert,
+			Delete,
+			Add,          ///< +
+			Subtract,     ///< -
+			Multiply,     ///< *
+			Divide,       ///< /
+			Left,         ///< Left arrow
+			Right,        ///< Right arrow
+			Up,           ///< Up arrow
+			Down,         ///< Down arrow
+			Numpad0,
+			Numpad1,
+			Numpad2,
+			Numpad3,
+			Numpad4,
+			Numpad5,
+			Numpad6,
+			Numpad7,
+			Numpad8,
+			Numpad9,
+			F1,
+			F2,
+			F3,
+			F4,
+			F5,
+			F6,
+			F7,
+			F8,
+			F9,
+			F10,
+			F11,
+			F12,
+			F13,
+			F14,
+			F15,
+			Pause,
+
+			Count // Keep last -- total number of keyboard keys
+		};
+	}
+
+	namespace Mouse
+	{
+		enum Button
+		{
+			Left,
+			Right,
+			Middle,
+			XButton1,
+			XButton2,
+
+			ButtonCount // Keep last -- total number of mouse buttons
+		};
+	}
+
+	namespace Joy
+	{
+		enum Axis
+		{
+			AxisX,
+			AxisY,
+			AxisZ,
+			AxisR,
+			AxisU,
+			AxisV,
+			AxisPOV,
+
+			AxisCount // Keep last -- total number of joystick axis
+		};
+
+		enum
+		{
+			Count       = 4, ///< Total number of supported joysticks
+			ButtonCount = 32 ///< Total number of supported joystick buttons
+		};
+	}
+
 	class Input : public Service
 	{
 	public:
@@ -36,13 +180,13 @@ namespace PZ
 	
 		virtual void Update(float deltaTime) = 0;
 
-		bool IsKeyDown(sf::Key::Code KeyCode) const;
+		bool IsKeyDown(Key::Code KeyCode) const;
 	
 		float GetMouseX() const;
 		float GetMouseY() const;
-		bool IsMouseButtonDown(sf::Mouse::Button Button) const;
+		bool IsMouseButtonDown(Mouse::Button Button) const;
 	
-		float GetJoystickAxis(unsigned int JoyId, sf::Joy::Axis Axis) const;
+		float GetJoystickAxis(unsigned int JoyId, Joy::Axis Axis) const;
 		bool IsJoystickButtonDown(unsigned int JoyId, unsigned int Button) const;
 	
 		Input &operator=(const Input &rhs);
@@ -53,12 +197,12 @@ namespace PZ
 	protected:
 		void ResetStates();
 	
-		bool  myKeys[sf::Key::Count];
-		bool  myMouseButtons[sf::Mouse::ButtonCount];
+		bool  myKeys[Key::Count];
+		bool  myMouseButtons[Mouse::ButtonCount];
 		float myMouseX;
 		float myMouseY;
-		bool  myJoystickButtons[sf::Joy::Count][sf::Joy::ButtonCount];
-		float myJoystickAxis[sf::Joy::Count][sf::Joy::AxisCount];
+		bool  myJoystickButtons[Joy::Count][Joy::ButtonCount];
+		float myJoystickAxis[Joy::Count][Joy::AxisCount];
 	};
 }
 

@@ -22,22 +22,13 @@ THE SOFTWARE.
 #ifndef PZ_Application_h__
 #define PZ_Application_h__
 
-#include <ProtoZed/AssetStorage.h>
-
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Audio/SoundBuffer.hpp>
-
 namespace PZ
 {
 	class ServiceList;
 	class AppStateManager;
 	class EntityManager;
 	class AnimationManager;
-
-	typedef AssetStorage<sf::Image>       ImageStorage;
-	typedef AssetStorage<sf::Font>        FontStorage;
-	typedef AssetStorage<sf::SoundBuffer> SoundBufferStorage;
+	class ResourceManager;
 
 	class Application
 	{
@@ -51,14 +42,11 @@ namespace PZ
 
 		void RequestShutdown();
 
-		ServiceList        &GetServiceList() const;
-		AppStateManager    &GetStateManager() const;
-		EntityManager      &GetEntityManager() const;
-		AnimationManager   &GetAnimationManager() const;
-
-		ImageStorage       &GetImageStorage() const;
-		FontStorage        &GetFontStorage() const;
-		SoundBufferStorage &GetSoundBufferStorage() const;
+		ServiceList      &GetServiceList() const;
+		AppStateManager  &GetStateManager() const;
+		EntityManager    &GetEntityManager() const;
+		AnimationManager &GetAnimationManager() const;
+		ResourceManager  &GetResourceManager() const;
 
 	private:
 		class Impl;

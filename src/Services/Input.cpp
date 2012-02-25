@@ -32,7 +32,7 @@ namespace PZ
 
 	}
 
-	bool Input::IsKeyDown(sf::Key::Code KeyCode) const
+	bool Input::IsKeyDown(Key::Code KeyCode) const
 	{
 		return myKeys[KeyCode];
 	}
@@ -45,21 +45,21 @@ namespace PZ
 	{
 		return myMouseY;
 	}
-	bool Input::IsMouseButtonDown(sf::Mouse::Button Button) const
+	bool Input::IsMouseButtonDown(Mouse::Button Button) const
 	{
 		return myMouseButtons[Button];
 	}
 	
-	float Input::GetJoystickAxis(unsigned int JoyId, sf::Joy::Axis Axis) const
+	float Input::GetJoystickAxis(unsigned int JoyId, Joy::Axis Axis) const
 	{
-		if (JoyId < sf::Joy::Count)
+		if (JoyId < Joy::Count)
 			return myJoystickAxis[JoyId][Axis];
 		else
 			return 0.f;
 	}
 	bool Input::IsJoystickButtonDown(unsigned int JoyId, unsigned int Button) const
 	{
-		if ((JoyId < sf::Joy::Count) && (Button < sf::Joy::ButtonCount))
+		if ((JoyId < Joy::Count) && (Button < Joy::ButtonCount))
 			return myJoystickButtons[JoyId][Button];
 		else
 			return false;
@@ -70,20 +70,20 @@ namespace PZ
 		if (this == &rhs)
 			return *this;
 	
-		for (int i = 0; i < sf::Key::Count; ++i)
+		for (int i = 0; i < Key::Count; ++i)
 			myKeys[i] = rhs.myKeys[i];
 	
-		for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
+		for (int i = 0; i < Mouse::ButtonCount; ++i)
 			myMouseButtons[i] = rhs.myMouseButtons[i];
 	
-		for (int i = 0; i < sf::Joy::Count; ++i)
+		for (int i = 0; i < Joy::Count; ++i)
 		{
-			for (int j = 0; j < sf::Joy::ButtonCount; ++j)
+			for (int j = 0; j < Joy::ButtonCount; ++j)
 				myJoystickButtons[i][j] = rhs.myJoystickButtons[i][j];
 	
-			for (int j = 0; j < sf::Joy::AxisCount; ++j)
+			for (int j = 0; j < Joy::AxisCount; ++j)
 				myJoystickAxis[i][j] = rhs.myJoystickAxis[i][j];
-			myJoystickAxis[i][sf::Joy::AxisPOV] = rhs.myJoystickAxis[i][sf::Joy::AxisPOV];
+			myJoystickAxis[i][Joy::AxisPOV] = rhs.myJoystickAxis[i][Joy::AxisPOV];
 		}
 	
 		myMouseX = rhs.myMouseX;
@@ -94,24 +94,24 @@ namespace PZ
 	
 	bool Input::operator==(const Input &rhs)
 	{
-		for (int i = 0; i < sf::Key::Count; ++i)
+		for (int i = 0; i < Key::Count; ++i)
 			if (myKeys[i] != rhs.myKeys[i])
 				return false;
 	
-		for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
+		for (int i = 0; i < Mouse::ButtonCount; ++i)
 			if (myMouseButtons[i] != rhs.myMouseButtons[i])
 				return false;
 	
-		for (int i = 0; i < sf::Joy::Count; ++i)
+		for (int i = 0; i < Joy::Count; ++i)
 		{
-			for (int j = 0; j < sf::Joy::ButtonCount; ++j)
+			for (int j = 0; j < Joy::ButtonCount; ++j)
 				if (myJoystickButtons[i][j] != rhs.myJoystickButtons[i][j])
 					return false;
 	
-			for (int j = 0; j < sf::Joy::AxisCount; ++j)
+			for (int j = 0; j < Joy::AxisCount; ++j)
 				if (myJoystickAxis[i][j] != rhs.myJoystickAxis[i][j])
 					return false;
-			if (myJoystickAxis[i][sf::Joy::AxisPOV] != rhs.myJoystickAxis[i][sf::Joy::AxisPOV])
+			if (myJoystickAxis[i][Joy::AxisPOV] != rhs.myJoystickAxis[i][Joy::AxisPOV])
 				return false;
 		}
 	
@@ -129,20 +129,20 @@ namespace PZ
 
 	void Input::ResetStates()
 	{
-		for (int i = 0; i < sf::Key::Count; ++i)
+		for (int i = 0; i < Key::Count; ++i)
 			myKeys[i] = false;
 	
-		for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
+		for (int i = 0; i < Mouse::ButtonCount; ++i)
 			myMouseButtons[i] = false;
 	
-		for (int i = 0; i < sf::Joy::Count; ++i)
+		for (int i = 0; i < Joy::Count; ++i)
 		{
-			for (int j = 0; j < sf::Joy::ButtonCount; ++j)
+			for (int j = 0; j < Joy::ButtonCount; ++j)
 				myJoystickButtons[i][j] = false;
 	
-			for (int j = 0; j < sf::Joy::AxisCount; ++j)
+			for (int j = 0; j < Joy::AxisCount; ++j)
 				myJoystickAxis[i][j] = 0.f;
-			myJoystickAxis[i][sf::Joy::AxisPOV] = -1.f;
+			myJoystickAxis[i][Joy::AxisPOV] = -1.f;
 		}
 	}
 }

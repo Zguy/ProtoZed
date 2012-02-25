@@ -21,10 +21,13 @@ THE SOFTWARE.
 */
 #include <Renderer_SFML.h>
 
+#include <sfImageResource.h>
+
 #include <ProtoZed/Components/Sprite.h>
 #include <ProtoZed/Components/Position2D.h>
 
 #include <ProtoZed/Application.h>
+#include <ProtoZed/Resource/ResourceManager.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -223,7 +226,18 @@ namespace PZ
 				if (layerIt == p->layers.end())
 				{
 					profiler.Begin("CreateLayer");
-					sf::Sprite *sfSprite = new sf::Sprite(GetApplication().GetImageStorage().GetAsset(sprite->GetSprite()));
+
+					sf::Sprite *sfSprite = nullptr;
+
+					const sfImageResource *image = GetApplication().GetResourceManager().Get<sfImageResource>(sprite->GetSprite());
+					if (image != nullptr)
+					{
+						sfSprite = new sf::Sprite(image->GetImage());
+					}
+					else
+					{
+						sfSprite = new sf::Sprite;
+					}
 
 					const Vector2f &center = sprite->GetCenter();
 					sfSprite->SetCenter(sf::Vector2f(center.x, center.y));

@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
+#include <ProtoZed/Resource/ResourceManager.h>
 
 #include <ProtoZed/Components/SceneNode.h>
 #include <ProtoZed/Components/Position2D.h>
@@ -104,12 +105,9 @@ namespace PZ
 		AppStateManager  stateManager;
 		EntityManager    entityManager;
 		AnimationManager animationManager;
+		ResourceManager  resourceManager;
 		LogManager       logManager;
 		Profiler         profiler;
-
-		ImageStorage       imageStorage;
-		FontStorage        fontStorage;
-		SoundBufferStorage soundBufferStorage;
 	};
 
 	Application::Application()
@@ -192,17 +190,8 @@ namespace PZ
 	{
 		return p->animationManager;
 	}
-
-	ImageStorage &Application::GetImageStorage() const
+	ResourceManager &Application::GetResourceManager() const
 	{
-		return p->imageStorage;
-	}
-	FontStorage  &Application::GetFontStorage() const
-	{
-		return p->fontStorage;
-	}
-	SoundBufferStorage &Application::GetSoundBufferStorage() const
-	{
-		return p->soundBufferStorage;
+		return p->resourceManager;
 	}
 }
