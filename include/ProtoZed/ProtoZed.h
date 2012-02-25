@@ -36,6 +36,7 @@ THE SOFTWARE.
 #include <ProtoZed/ServiceList.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
+#include <ProtoZed/Resource/ResourceManager.h>
 
 #include <ProtoZed/Animation/Animation.h>
 
