@@ -52,6 +52,9 @@ THE SOFTWARE.
 #include <ProtoZed/Services/Renderer.h>
 #include <ProtoZed/Services/Input.h>
 
+#include <ProtoZed/Archive.h>
+#include <ProtoZed/Archives/FileSystemArchive.h>
+
 #include <ProtoZed/IncludeFilter.h>
 #include <ProtoZed/IncludeFilters/NoFilter.h>
 #include <ProtoZed/IncludeFilters/DistanceFilter.h>

@@ -19,8 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef sfImageResource_h__
-#define sfImageResource_h__
+#ifndef PZ_sfImageResource_h__
+#define PZ_sfImageResource_h__
 
 #include <ProtoZed/Resource/Resource.h>
 
@@ -55,4 +55,4 @@ namespace PZ
 	};
 }
 
-#endif // sfImageResource_h__
+#endif // PZ_sfImageResource_h__
