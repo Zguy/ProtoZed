@@ -26,6 +26,11 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	namespace Archives
+	{
+		static const ArchiveType FILESYSTEM = "FileSystem";
+	}
+
 	class FileSystemArchive : public Archive
 	{
 	public:

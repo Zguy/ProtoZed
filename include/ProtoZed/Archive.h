@@ -30,6 +30,8 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	typedef std::string ArchiveType;
+
 	typedef std::vector<Path> FileList;
 
 	class Archive

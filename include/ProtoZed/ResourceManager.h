@@ -25,7 +25,6 @@ THE SOFTWARE.
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Archive.h>
-#include <ProtoZed/ArchiveType.h>
 #include <ProtoZed/Resource.h>
 
 #include <string>
