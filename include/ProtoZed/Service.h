@@ -23,13 +23,14 @@ THE SOFTWARE.
 #define PZ_Service_h__
 
 #include <ProtoZed/NonCopyable.h>
-#include <ProtoZed/ServiceType.h>
 
 #include <string>
 
 namespace PZ
 {
 	class Application;
+
+	typedef std::string ServiceType;
 
 	class Service : public NonCopyable
 	{

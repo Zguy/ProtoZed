@@ -172,6 +172,11 @@ namespace PZ
 		};
 	}
 
+	namespace Services
+	{
+		static const ServiceType INPUT = "Input";
+	}
+
 	class Input : public Service
 	{
 	public:

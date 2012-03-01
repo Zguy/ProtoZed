@@ -28,6 +28,11 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	namespace Services
+	{
+		static const ServiceType RENDERER = "Renderer";
+	}
+
 	class Renderer : public Service
 	{
 	public:
