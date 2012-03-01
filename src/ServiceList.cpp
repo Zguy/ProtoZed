@@ -59,88 +59,20 @@ namespace PZ
 		delete p;
 	}
 
-	Service *ServiceList::Add(const ServiceType &type)
-	{
-		if (Has(type))
-		{
-			return nullptr;
-		}
-		else
-		{
-			Service *service = factory.Create(type, type, application);
-			if (service != nullptr)
-			{
-				p->services.push_back(service);
-			}
-
-			return service;
-		}
-	}
-	Service *ServiceList::InsertAfter(const ServiceType &type, const ServiceType &after)
-	{
-		if (Has(type))
-		{
-			return nullptr;
-		}
-		else
-		{
-			Service *service = factory.Create(type, type, application);
-			if (service != nullptr)
-			{
-				ServiceStore::iterator it = p->findService(after);
-				if (it != p->services.end() && ++it != p->services.end())
-				{
-					p->services.insert(it, service);
-				}
-				else
-				{
-					// If "after" was not found, insert at the end
-					p->services.push_back(service);
-				}
-			}
-
-			return service;
-		}
-	}
-	Service *ServiceList::InsertBefore(const ServiceType &type, const ServiceType &before)
-	{
-		if (Has(type))
-		{
-			return nullptr;
-		}
-		else
-		{
-			Service *service = factory.Create(type, type, application);
-			if (service != nullptr)
-			{
-				ServiceStore::iterator it = p->findService(before);
-				if (it != p->services.end())
-				{
-					p->services.insert(it, service);
-				}
-				else
-				{
-					// If "before" was not found, insert at the end
-					p->services.push_back(service);
-				}
-			}
-
-			return service;
-		}
-	}
-
 	bool ServiceList::Remove(const ServiceType &type)
 	{
 		ServiceStore::iterator it = p->findService(type);
 		if (it != p->services.end())
 		{
+			Service *service (*it);
+
 			// Warn if service not stopped
-			if ((*it)->IsStarted())
+			if (service->IsStarted())
 			{
-				Log::Warning("ProtoZed", "Removing service \""+(*it)->GetType()+"\" without stopping it");
+				Log::Warning("ProtoZed", "Removing service \""+service->GetType()+"\" without stopping it");
 			}
 
-			delete (*it);
+			delete service;
 
 			p->services.erase(it);
 
@@ -155,20 +87,24 @@ namespace PZ
 	{
 		for (ServiceStore::reverse_iterator it = p->services.rbegin(); it != p->services.rend(); ++it)
 		{
+			Service *&service = (*it);
+
 			// Warn if service not stopped
-			if ((*it)->IsStarted())
+			if (service->IsStarted())
 			{
-				Log::Warning("ProtoZed", "Removing service \""+(*it)->GetType()+"\" without stopping it");
+				Log::Warning("ProtoZed", "Removing service \""+service->GetType()+"\" without stopping it");
 			}
 
-			delete (*it);
-			(*it) = nullptr;
+			delete service;
+			service = nullptr;
 		}
 		p->services.clear();
 	}
 
 	Service *ServiceList::Get(const ServiceType &type) const
 	{
+		Profile profile("GetService");
+
 		Service *service = nullptr;
 
 		ServiceStore::iterator it = p->findService(type);
@@ -184,14 +120,22 @@ namespace PZ
 	{
 		for (ServiceStore::iterator it = p->services.begin(); it != p->services.end(); ++it)
 		{
-			(*it)->Start();
+			Service *service = (*it);
+			if (!service->IsStarted())
+			{
+				service->Start();
+			}
 		}
 	}
 	void ServiceList::StopAll()
 	{
 		for (ServiceStore::reverse_iterator it = p->services.rbegin(); it != p->services.rend(); ++it)
 		{
-			(*it)->Stop();
+			Service *service = (*it);
+			if (service->IsStarted())
+			{
+				(*it)->Stop();
+			}
 		}
 	}
 	void ServiceList::UpdateAll(float deltaTime)
@@ -200,25 +144,71 @@ namespace PZ
 
 		for (ServiceStore::iterator it = p->services.begin(); it != p->services.end(); ++it)
 		{
-			if ((*it)->IsStarted())
+			Service *service = (*it);
+			if (service->IsStarted())
 			{
-				Profile profile((*it)->GetType());
+				Profile profile(service->GetType());
 
-				(*it)->Update(deltaTime);
+				service->Update(deltaTime);
 			}
 		}
 	}
 
-	bool ServiceList::hasType(const ServiceType &type) const
+	bool ServiceList::AddImpl(const ServiceType &type, Service *service)
 	{
-		for (ServiceFactory::ConstIterator it = factory.GetBegin(); it != factory.GetEnd(); ++it)
+		if (Has(type))
 		{
-			if ((*it).first == type)
-			{
-				return true;
-			}
+			return false;
 		}
+		else
+		{
+			p->services.push_back(service);
 
-		return false;
+			return true;
+		}
+	}
+	bool ServiceList::InsertAfterImpl(const ServiceType &type, const ServiceType &after, Service *service)
+	{
+		if (Has(type))
+		{
+			return false;
+		}
+		else
+		{
+			ServiceStore::iterator it = p->findService(after);
+			if (it != p->services.end() && ++it != p->services.end())
+			{
+				p->services.insert(it, service);
+			}
+			else
+			{
+				// If "after" was not found, insert at the end
+				p->services.push_back(service);
+			}
+
+			return true;
+		}
+	}
+	bool ServiceList::InsertBeforeImpl(const ServiceType &type, const ServiceType &before, Service *service)
+	{
+		if (Has(type))
+		{
+			return false;
+		}
+		else
+		{
+			ServiceStore::iterator it = p->findService(before);
+			if (it != p->services.end())
+			{
+				p->services.insert(it, service);
+			}
+			else
+			{
+				// If "before" was not found, insert at the end
+				p->services.push_back(service);
+			}
+
+			return true;
+		}
 	}
 }

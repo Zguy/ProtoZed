@@ -24,51 +24,56 @@ THE SOFTWARE.
 
 #include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Service.h>
-#include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
 namespace PZ
 {
 	class ServiceList : public NonCopyable
 	{
-		friend class Application;
 	public:
 		ServiceList(Application &application);
 		~ServiceList();
 
 		template<class T>
-		bool Register(const ServiceType &type)
-		{
-			if (hasType(type))
-			{
-				Unregister(type);
-			}
-
-			return factory.Register<T>(type);
-		}
-		bool Unregister(const ServiceType &type)
-		{
-			Remove(type);
-			return factory.Unregister(type);
-		}
-
-		Service *Add(const ServiceType &type);
-		Service *InsertAfter(const ServiceType &type, const ServiceType &after);
-		Service *InsertBefore(const ServiceType &type, const ServiceType &before);
-
-		template<class T>
 		T *Add(const ServiceType &type)
 		{
-			return dynamic_cast<T*>(Add(type));
+			T *service = new T(type, application);
+			if (AddImpl(type, service))
+			{
+				return service;
+			}
+			else
+			{
+				delete service;
+				return nullptr;
+			}
 		}
 		template<class T>
 		T *InsertAfter(const ServiceType &type, const ServiceType &after)
 		{
-			return dynamic_cast<T*>(InsertAfter(type, after));
+			T *service = new T(type, application);
+			if (InsertAfterImpl(type, after, service))
+			{
+				return service;
+			}
+			else
+			{
+				delete service;
+				return nullptr;
+			}
 		}
 		template<class T>
 		T *InsertBefore(const ServiceType &type, const ServiceType &before)
 		{
-			return dynamic_cast<T*>(InsertBefore(type, before));
+			T *service = new T(type, application);
+			if (InsertBeforeImpl(type, before, service))
+			{
+				return service;
+			}
+			else
+			{
+				delete service;
+				return nullptr;
+			}
 		}
 
 		bool Remove(const ServiceType &type);
@@ -78,30 +83,28 @@ namespace PZ
 		{
 			return (Get(type) != nullptr);
 		}
-		Service *Get(const ServiceType &type) const;
 		
 		template<class T>
 		T *Get(const ServiceType &type) const
 		{
 			return dynamic_cast<T*>(Get(type));
 		}
+		Service *Get(const ServiceType &type) const;
 
 		void StartAll();
 		void StopAll();
 
-	protected:
 		void UpdateAll(float deltaTime);
 
 	private:
-		bool hasType(const ServiceType &type) const;
+		bool AddImpl(const ServiceType &type, Service *service);
+		bool InsertAfterImpl(const ServiceType &type, const ServiceType &after, Service *service);
+		bool InsertBeforeImpl(const ServiceType &type, const ServiceType &before, Service *service);
 
 		class Impl;
 		Impl *p;
 
 		Application &application;
-
-		typedef ObjectFactory<Service*(const ServiceType&, Application&), ServiceType> ServiceFactory;
-		ServiceFactory factory;
 	};
 }
 
