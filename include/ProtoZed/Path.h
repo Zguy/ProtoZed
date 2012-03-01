@@ -19,45 +19,63 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Sprite_h__
-#define PZ_Sprite_h__
+#ifndef PZ_Path_h__
+#define PZ_Path_h__
 
-#include <ProtoZed/Component.h>
-#include <ProtoZed/Vector2.h>
-#include <ProtoZed/Path.h>
+#include <string>
 
 namespace PZ
 {
-	class Sprite : public Component
+	class Path
 	{
 	public:
-		static const HashString Family;
+		Path();
+		Path(const Path &other);
+		Path(const std::string &path);
+		Path(const char *path);
+		~Path();
 
-		Sprite(const EntityID &owner, EntityManager &manager);
-		~Sprite();
+		Path &operator=(const Path &other);
+		Path &operator=(const std::string &path);
+		Path &operator=(const char *path);
 
-		inline const Path &GetSprite() const
+		inline bool operator==(const Path &other) const
 		{
-			return sprite;
+			return (path == other.path);
 		}
-		inline void SetSprite(const Path &newSprite)
+		inline bool operator!=(const Path &other) const
 		{
-			sprite = newSprite;
+			return (path != other.path);
 		}
 
-		inline const Vector2f &GetCenter() const
+		inline bool operator<(const Path &other) const
 		{
-			return center;
+			return (path < other.path);
 		}
-		inline void SetCenter(const Vector2f &newCenter)
+		inline bool operator>(const Path &other) const
 		{
-			center = newCenter;
+			return (path > other.path);
+		}
+
+		inline bool IsEmpty() const
+		{
+			return path.empty();
+		}
+		inline void Clear()
+		{
+			path.clear();
+		}
+
+		const std::string &ToString() const
+		{
+			return path;
 		}
 
 	private:
-		Path sprite;
-		Vector2f center;
+		void normalize();
+
+		std::string path;
 	};
 }
 
-#endif // PZ_Sprite_h__
+#endif // PZ_Path_h__

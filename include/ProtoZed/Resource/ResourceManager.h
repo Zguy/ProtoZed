@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_ResourceManager_h__
 
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+#include <ProtoZed/Path.h>
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/ArchiveType.h>
 #include <ProtoZed/Resource/Resource.h>
@@ -61,23 +62,23 @@ namespace PZ
 
 		void SetType(const std::string &extension, const ResourceType &type);
 
-		bool AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll = true, bool onlyIndexRegisteredTypes = true);
-		bool RemoveArchive(const std::string &filename);
+		bool AddArchive(const Path &filename, const ArchiveType &type, bool indexAll = true, bool onlyIndexRegisteredTypes = true);
+		bool RemoveArchive(const Path &filename);
 
 		void IndexAll(bool onlyIndexRegisteredTypes = true);
-		bool IndexFile(const std::string &filename);
+		bool IndexFile(const Path &filename);
 
 		void LoadAll();
 		void UnloadAll();
-		bool Load(const std::string &filename);
-		bool Unload(const std::string &filename);
+		bool Load(const Path &filename);
+		bool Unload(const Path &filename);
 
 		template<class T>
-		const T *Get(const std::string &filename, bool autoLoad = true)
+		const T *Get(const Path &filename, bool autoLoad = true)
 		{
 			return dynamic_cast<const T*>(Get(filename, autoLoad));
 		}
-		const Resource *Get(const std::string &filename, bool autoLoad = true);
+		const Resource *Get(const Path &filename, bool autoLoad = true);
 
 	private:
 		class Impl;

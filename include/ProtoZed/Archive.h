@@ -23,13 +23,14 @@ THE SOFTWARE.
 #define PZ_Archive_h__
 
 #include <ProtoZed/DataChunk.h>
+#include <ProtoZed/Path.h>
 
 #include <string>
 #include <vector>
 
 namespace PZ
 {
-	typedef std::vector<std::string> FileList;
+	typedef std::vector<Path> FileList;
 
 	class Archive
 	{
@@ -39,12 +40,12 @@ namespace PZ
 		virtual ~Archive()
 		{}
 
-		virtual bool Open(const std::string &filename) = 0;
+		virtual bool Open(const Path &filename) = 0;
 		virtual bool Close() = 0;
 		virtual bool IsOpen() const = 0;
 
-		virtual bool Has(const std::string &filename) const = 0;
-		virtual DataChunk Get(const std::string &filename) const = 0;
+		virtual bool Has(const Path &filename) const = 0;
+		virtual DataChunk Get(const Path &filename) const = 0;
 
 		virtual void GetAllFiles(FileList &list) const = 0;
 	};

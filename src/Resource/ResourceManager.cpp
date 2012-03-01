@@ -28,8 +28,8 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	typedef std::vector<std::pair<std::string, Archive*>> ArchiveList;
-	typedef std::map<std::string, std::pair<Resource*, Archive*>> FileIndex;
+	typedef std::vector<std::pair<Path, Archive*>> ArchiveList;
+	typedef std::map<Path, std::pair<Resource*, Archive*>> FileIndex;
 	typedef std::map<std::string, ResourceType> TypeMap;
 
 	class ResourceManager::Impl
@@ -49,11 +49,11 @@ namespace PZ
 			}
 		}
 
-		void addFile(const std::string &filename, Archive *archive)
+		void addFile(const Path &filename, Archive *archive)
 		{
 			fileIndex.insert(std::make_pair(filename, std::make_pair<Resource*, Archive*>(nullptr, archive)));
 		}
-		FileIndex::iterator getFile(const std::string &filename)
+		FileIndex::iterator getFile(const Path &filename)
 		{
 			return fileIndex.find(filename);
 		}
@@ -78,14 +78,14 @@ namespace PZ
 				}
 			}
 
-			const std::string &filename = (*fileIt).first;
+			const Path &filename = (*fileIt).first;
 
 			DataChunk data = archive->Get(filename);
 
 			ResourceType resType = getType(filename);
 			if (resType.empty())
 			{
-				Log::Error("ProtoZed", "No resource type is registered for \""+filename+"\"");
+				Log::Error("ProtoZed", "No resource type is registered for \""+filename.ToString()+"\"");
 			}
 			else
 			{
@@ -105,7 +105,7 @@ namespace PZ
 					}
 					else
 					{
-						Log::Error("ProtoZed", "Resource \""+resType+"\" failed to load \""+filename+"\"");
+						Log::Error("ProtoZed", "Resource \""+resType+"\" failed to load \""+filename.ToString()+"\"");
 
 						delete resource;
 					}
@@ -127,9 +127,10 @@ namespace PZ
 			return false;
 		}
 
-		const ResourceType &getType(const std::string &filename) const
+		const ResourceType &getType(const Path &filename) const
 		{
-			std::string extension = filename.substr(filename.find_last_of('.')+1);
+			const std::string &fname = filename.ToString();
+			std::string extension = fname.substr(fname.find_last_of('.')+1);
 			TypeMap::const_iterator it = typeMap.find(extension);
 			if (it != typeMap.cend())
 			{
@@ -182,7 +183,7 @@ namespace PZ
 		p->typeMap[extension] = type;
 	}
 
-	bool ResourceManager::AddArchive(const std::string &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
+	bool ResourceManager::AddArchive(const Path &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
 	{
 		Archive *archive = p->archiveFactory.Create(type);
 		if (archive != nullptr && archive->Open(filename))
@@ -203,7 +204,7 @@ namespace PZ
 
 		return false;
 	}
-	bool ResourceManager::RemoveArchive(const std::string &filename)
+	bool ResourceManager::RemoveArchive(const Path &filename)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
@@ -240,7 +241,7 @@ namespace PZ
 			p->indexArchive((*it).second, onlyIndexRegisteredTypes);
 		}
 	}
-	bool ResourceManager::IndexFile(const std::string &filename)
+	bool ResourceManager::IndexFile(const Path &filename)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
@@ -253,7 +254,7 @@ namespace PZ
 			}
 		}
 
-		Log::Error("ProtoZed", "Tried to index file \""+filename+"\", but no archive contains it");
+		Log::Error("ProtoZed", "Tried to index file \""+filename.ToString()+"\", but no archive contains it");
 		return false;
 	}
 
@@ -271,12 +272,12 @@ namespace PZ
 			p->unloadFile(it);
 		}
 	}
-	bool ResourceManager::Load(const std::string &filename)
+	bool ResourceManager::Load(const Path &filename)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
 		{
-			Log::Error("ProtoZed", "The file \""+filename+"\" could not be loaded, because it's not indexed.");
+			Log::Error("ProtoZed", "The file \""+filename.ToString()+"\" could not be loaded, because it's not indexed.");
 		}
 		else
 		{
@@ -285,12 +286,12 @@ namespace PZ
 
 		return false;
 	}
-	bool ResourceManager::Unload(const std::string &filename)
+	bool ResourceManager::Unload(const Path &filename)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
 		{
-			Log::Error("ProtoZed", "The file \""+filename+"\" could not be unloaded, because it's not indexed");
+			Log::Error("ProtoZed", "The file \""+filename.ToString()+"\" could not be unloaded, because it's not indexed");
 		}
 		else
 		{
@@ -300,12 +301,12 @@ namespace PZ
 		return false;
 	}
 
-	const Resource *ResourceManager::Get(const std::string &filename, bool autoLoad)
+	const Resource *ResourceManager::Get(const Path &filename, bool autoLoad)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
 		{
-			Log::Warning("ProtoZed", "The file \""+filename+"\" is not indexed, returning null resource");
+			Log::Warning("ProtoZed", "The file \""+filename.ToString()+"\" is not indexed, returning null resource");
 			return nullptr;
 		}
 		else
@@ -315,7 +316,7 @@ namespace PZ
 			{
 				if (!(autoLoad && p->loadFile(fileIt)))
 				{
-					Log::Warning("ProtoZed", "\""+filename+"\" is not loaded, returning null resource");
+					Log::Warning("ProtoZed", "\""+filename.ToString()+"\" is not loaded, returning null resource");
 					return nullptr;
 				}
 			}

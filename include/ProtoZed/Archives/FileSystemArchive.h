@@ -32,17 +32,17 @@ namespace PZ
 		FileSystemArchive();
 		~FileSystemArchive();
 
-		virtual bool Open(const std::string &filename);
+		virtual bool Open(const Path &filename);
 		virtual bool Close();
 		virtual bool IsOpen() const;
 
-		virtual bool Has(const std::string &filename) const;
-		virtual DataChunk Get(const std::string &filename) const;
+		virtual bool Has(const Path &filename) const;
+		virtual DataChunk Get(const Path &filename) const;
 
 		virtual void GetAllFiles(FileList &list) const;
 
 	private:
-		std::string basePath;
+		Path basePath;
 	};
 }
 

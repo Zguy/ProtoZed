@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_Resource_h__
 
 #include <ProtoZed/DataChunk.h>
+#include <ProtoZed/Path.h>
 
 namespace PZ
 {
@@ -36,7 +37,7 @@ namespace PZ
 		virtual ~Resource()
 		{}
 
-		const std::string &GetFilename() const
+		const Path &GetFilename() const
 		{
 			return filename;
 		}
@@ -45,7 +46,7 @@ namespace PZ
 		virtual bool load(const DataChunk &data) = 0;
 		virtual bool unload() = 0;
 
-		std::string filename;
+		Path filename;
 	};
 }
 

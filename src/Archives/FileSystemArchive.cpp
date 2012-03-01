@@ -24,39 +24,6 @@ THE SOFTWARE.
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-namespace
-{
-	boost::filesystem::path normalizePath(boost::filesystem::path &path)
-	{
-		std::vector<boost::filesystem::path> pathParts;
-
-		for (boost::filesystem::path::iterator it = path.begin(); it != path.end(); ++it)
-		{
-			std::string part = (*it).generic_string();
-
-			if (part == ".")
-			{
-				continue;
-			}
-			if (part == "..")
-			{
-				pathParts.pop_back();
-				continue;
-			}
-
-			pathParts.push_back(*it);
-		}
-
-		boost::filesystem::path final;
-		for (std::vector<boost::filesystem::path>::iterator it = pathParts.begin(); it != pathParts.end(); ++it)
-		{
-			final /= (*it);
-		}
-
-		return final;
-	}
-}
-
 namespace PZ
 {
 	FileSystemArchive::FileSystemArchive() : basePath("")
@@ -66,9 +33,9 @@ namespace PZ
 	{
 	}
 
-	bool FileSystemArchive::Open(const std::string &filename)
+	bool FileSystemArchive::Open(const Path &filename)
 	{
-		boost::filesystem::path path(filename);
+		boost::filesystem::path path(filename.ToString());
 		if (boost::filesystem::is_directory(path))
 		{
 			basePath = path.generic_string();
@@ -80,21 +47,21 @@ namespace PZ
 	}
 	bool FileSystemArchive::Close()
 	{
-		basePath = "";
+		basePath.Clear();
 
 		return true;
 	}
 	bool FileSystemArchive::IsOpen() const
 	{
-		return !basePath.empty();
+		return !basePath.IsEmpty();
 	}
 
-	bool FileSystemArchive::Has(const std::string &filename) const
+	bool FileSystemArchive::Has(const Path &filename) const
 	{
 		if (IsOpen())
 		{
-			boost::filesystem::path base(basePath);
-			boost::filesystem::path path(filename);
+			boost::filesystem::path base(basePath.ToString());
+			boost::filesystem::path path(filename.ToString());
 			boost::filesystem::path fullPath = base / path;
 			return boost::filesystem::is_regular_file(fullPath);
 		}
@@ -103,12 +70,12 @@ namespace PZ
 			return false;
 		}
 	}
-	DataChunk FileSystemArchive::Get(const std::string &filename) const
+	DataChunk FileSystemArchive::Get(const Path &filename) const
 	{
 		if (IsOpen())
 		{
-			boost::filesystem::path base(basePath);
-			boost::filesystem::path path(filename);
+			boost::filesystem::path base(basePath.ToString());
+			boost::filesystem::path path(filename.ToString());
 			boost::filesystem::path fullPath = base / path;
 			if (boost::filesystem::is_regular_file(fullPath))
 			{
@@ -138,14 +105,14 @@ namespace PZ
 		{
 			list.clear();
 
-			boost::filesystem::path base(basePath);
+			boost::filesystem::path base(basePath.ToString());
 			for (boost::filesystem::recursive_directory_iterator it = boost::filesystem::recursive_directory_iterator(base); it != boost::filesystem::recursive_directory_iterator(); ++it)
 			{
-				boost::filesystem::path filePath = (*it).path();
+				const boost::filesystem::path &filePath = (*it).path();
 
 				if (boost::filesystem::is_regular_file(filePath))
 				{
-					list.push_back(normalizePath(filePath).generic_string());
+					list.push_back(filePath.generic_string());
 				}
 			}
 		}
