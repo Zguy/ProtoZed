@@ -26,7 +26,7 @@ THE SOFTWARE.
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/ArchiveType.h>
-#include <ProtoZed/Resource/Resource.h>
+#include <ProtoZed/Resource.h>
 
 #include <string>
 

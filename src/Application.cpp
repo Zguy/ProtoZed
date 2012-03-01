@@ -31,7 +31,7 @@ THE SOFTWARE.
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
-#include <ProtoZed/Resource/ResourceManager.h>
+#include <ProtoZed/ResourceManager.h>
 
 #include <ProtoZed/Components/SceneNode.h>
 #include <ProtoZed/Components/Position2D.h>

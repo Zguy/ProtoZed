@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Position2D.h>
 
 #include <ProtoZed/Application.h>
-#include <ProtoZed/Resource/ResourceManager.h>
+#include <ProtoZed/ResourceManager.h>
 
 #include <SFML/Graphics.hpp>
 

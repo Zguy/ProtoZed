@@ -22,7 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_sfImageResource_h__
 #define PZ_sfImageResource_h__
 
-#include <ProtoZed/Resource/Resource.h>
+#include <ProtoZed/Resource.h>
 
 #include <SFML/Graphics/Image.hpp>
 
