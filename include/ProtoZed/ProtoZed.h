@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <ProtoZed/Convert.h>
 #include <ProtoZed/Helpers.h>
 #include <ProtoZed/Vector2.h>
+#include <ProtoZed/Vector3.h>
 #include <ProtoZed/Angle.h>
 #include <ProtoZed/Math.h>
 #include <ProtoZed/UniqueIDGenerator.h>
