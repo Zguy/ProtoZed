@@ -56,7 +56,7 @@ namespace PZ
 
 			Profile profile("Boot");
 
-			logManager.OpenLog("ProtoZed");
+			logManager.Open("ProtoZed");
 			Log::Info("ProtoZed", std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
 			entityManager.RegisterComponent<SceneNode>();

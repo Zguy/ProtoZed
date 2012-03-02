@@ -36,19 +36,22 @@ namespace PZ
 		LogManager();
 		~LogManager();
 
-		void OpenLog(const std::string &name);
-		void CloseLog(const std::string &name);
+		void Open(const std::string &name, bool consoleOutput = true, bool fileOutput = true, bool timestamp = true);
+		void Close(const std::string &name);
 
-		Log &GetLog(const std::string &name);
+		Log &Get(const std::string &name);
 
 	private:
 		class Impl;
 		Impl *p;
 	};
 
+	class LogListener;
+
 	class Log
 	{
 		friend class LogManager;
+
 	public:
 		enum Type
 		{
@@ -59,10 +62,18 @@ namespace PZ
 		};
 
 	private:
-		Log(const std::string &file);
+		Log(const std::string &file, bool consoleOutput = true, bool fileOutput = true, bool timestamp = true);
 		~Log();
 
 	public:
+		void SetConsoleOutput(bool enable);
+		bool IsConsoleOutputEnabled() const;
+
+		bool IsFileOutputEnabled() const;
+
+		void SetTimestamp(bool enable);
+		bool IsTimestampEnabled() const;
+
 		void Message(Type type, const std::string &message);
 
 		inline void Info(const std::string &message) { Message(LT_INFO, message); }
@@ -70,16 +81,30 @@ namespace PZ
 		inline void Warning(const std::string &message) { Message(LT_WARNING, message); }
 		inline void Debug(const std::string &message) { Message(LT_DEBUG, message); }
 
-		static inline void Message(const std::string &name, Type type, const std::string &message) { LogManager::GetSingleton().GetLog(name).Message(type, message); }
+		static inline void Message(const std::string &name, Type type, const std::string &message) { LogManager::GetSingleton().Get(name).Message(type, message); }
 
 		static inline void Info(const std::string &name, const std::string &message) { Message(name, LT_INFO, message); }
 		static inline void Error(const std::string &name, const std::string &message) { Message(name, LT_ERROR, message); }
 		static inline void Warning(const std::string &name, const std::string &message) { Message(name, LT_WARNING, message); }
 		static inline void Debug(const std::string &name, const std::string &message) { Message(name, LT_DEBUG, message); }
 
+		void RegisterListener(LogListener *listener);
+		void UnregisterListener(LogListener *listener);
+
 	private:
 		class Impl;
 		Impl *p;
+	};
+
+	class LogListener
+	{
+	public:
+		LogListener()
+		{}
+		virtual ~LogListener()
+		{}
+
+		virtual void MessageLogged(Log::Type type, const std::string &message) {}
 	};
 }
 

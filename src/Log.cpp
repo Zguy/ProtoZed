@@ -52,14 +52,14 @@ namespace PZ
 		delete p;
 	}
 
-	void LogManager::OpenLog(const std::string &name)
+	void LogManager::Open(const std::string &name, bool consoleOutput, bool fileOutput, bool timestamp)
 	{
 		if (p->logs.find(name) == p->logs.end())
 		{
-			p->logs.insert(std::make_pair(name, new Log(name+".log")));
+			p->logs.insert(std::make_pair(name, new Log(name+".log", consoleOutput, fileOutput, timestamp)));
 		}
 	}
-	void LogManager::CloseLog(const std::string &name)
+	void LogManager::Close(const std::string &name)
 	{
 		LogMap::iterator it = p->logs.find(name);
 		if (it != p->logs.end())
@@ -69,13 +69,15 @@ namespace PZ
 		}
 	}
 
-	Log &LogManager::GetLog(const std::string &name)
+	Log &LogManager::Get(const std::string &name)
 	{
-		OpenLog(name);
+		Open(name);
 
 		return *p->logs.at(name);
 	}
 
+
+	typedef std::vector<LogListener*> ListenerList;
 
 	class Log::Impl
 	{
@@ -113,19 +115,46 @@ namespace PZ
 
 		void logIntroLine()
 		{
-			std::string dateTimeStr = currentDateTime();
-			std::string introLine = "Log opened "+dateTimeStr+"\n--------";
-			logFile << introLine << std::endl;
+			if (fileOutput)
+			{
+				std::string introLine = "Log opened";
+				if (timestamp)
+					introLine += " "+currentDateTime();
+				introLine += "\n--------";
+
+				logFile << introLine << std::endl;
+			}
+		}
+
+		void emitMessageLogged(Log::Type type, const std::string &message)
+		{
+			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
+			{
+				(*it)->MessageLogged(type, message);
+			}
 		}
 
 		std::fstream logFile;
+
+		bool consoleOutput;
+		bool fileOutput;
+		bool timestamp;
+
+		ListenerList listeners;
 	};
 
-	Log::Log(const std::string &file) : p(new Impl)
+	Log::Log(const std::string &file, bool consoleOutput, bool fileOutput, bool timestamp) : p(new Impl)
 	{
-		p->logFile.open(file.c_str(), std::ios::out | std::ios::trunc);
+		p->consoleOutput = consoleOutput;
+		p->fileOutput    = fileOutput;
+		p->timestamp     = timestamp;
 
-		p->logIntroLine();
+		if (p->fileOutput)
+		{
+			p->logFile.open(file.c_str(), std::ios::out | std::ios::trunc);
+
+			p->logIntroLine();
+		}
 	}
 	Log::~Log()
 	{
@@ -134,13 +163,63 @@ namespace PZ
 		delete p;
 	}
 
+	void Log::SetConsoleOutput(bool enable)
+	{
+		p->consoleOutput = enable;
+	}
+	bool Log::IsConsoleOutputEnabled() const
+	{
+		return p->consoleOutput;
+	}
+
+	bool Log::IsFileOutputEnabled() const
+	{
+		return p->fileOutput;
+	}
+
+	void Log::SetTimestamp(bool enable)
+	{
+		p->timestamp = enable;
+	}
+	bool Log::IsTimestampEnabled() const
+	{
+		return p->timestamp;
+	}
+
 	void Log::Message(Type type, const std::string &message)
 	{
 		std::string typeStr = p->typeToString(type);
 		std::string timeStr = p->currentTime();
 
-		std::string line = typeStr + " ("+timeStr+"): " + message;
-		p->logFile << line << std::endl;
-		std::cout << line << std::endl;
+		std::string line = typeStr;
+		if (p->timestamp)
+			line += " ("+timeStr+")";
+		line += ": " + message;
+
+		if (p->fileOutput)
+			p->logFile << line << std::endl;
+		if (p->consoleOutput)
+			std::cout << line << std::endl;
+
+		p->emitMessageLogged(type, message);
+	}
+
+	void Log::RegisterListener(LogListener *listener)
+	{
+		if (listener != nullptr)
+		{
+			p->listeners.push_back(listener);
+		}
+	}
+	void Log::UnregisterListener(LogListener *listener)
+	{
+		for (ListenerList::iterator it = p->listeners.begin(); it != p->listeners.end(); ++it)
+		{
+			if ((*it) == listener)
+			{
+				p->listeners.erase(it);
+				break;
+			}
+		}
 	}
 }
