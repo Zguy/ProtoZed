@@ -19,40 +19,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageResource_h__
-#define PZ_sfImageResource_h__
+#ifndef PZ_Asset_h__
+#define PZ_Asset_h__
 
-#include <ProtoZed/Resource.h>
-
-#include <SFML/Graphics/Image.hpp>
+#include <ProtoZed/DataChunk.h>
+#include <ProtoZed/Path.h>
 
 namespace PZ
 {
-	class sfImageResource : public Resource
+	class Asset
 	{
+		friend class AssetManager;
+
 	public:
-		sfImageResource()
+		Asset()
 		{}
-		~sfImageResource()
+		virtual ~Asset()
 		{}
 
-		const sf::Image &GetImage() const
+		const Path &GetFilename() const
 		{
-			return image;
+			return filename;
 		}
 
 	private:
-		virtual bool load(const PZ::DataChunk &data)
-		{
-			return image.LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			return image.Create(0,0);
-		}
+		virtual bool load(const DataChunk &data) = 0;
+		virtual bool unload() = 0;
 
-		sf::Image image;
+		Path filename;
 	};
 }
 
-#endif // PZ_sfImageResource_h__
+#endif // PZ_Asset_h__

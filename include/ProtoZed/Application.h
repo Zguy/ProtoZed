@@ -28,7 +28,7 @@ namespace PZ
 	class AppStateManager;
 	class EntityManager;
 	class AnimationManager;
-	class ResourceManager;
+	class AssetManager;
 
 	class Application
 	{
@@ -46,7 +46,7 @@ namespace PZ
 		AppStateManager  &GetStateManager() const;
 		EntityManager    &GetEntityManager() const;
 		AnimationManager &GetAnimationManager() const;
-		ResourceManager  &GetResourceManager() const;
+		AssetManager     &GetAssetManager() const;
 
 	private:
 		class Impl;

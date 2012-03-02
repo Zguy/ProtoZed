@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 #include <Renderer_SFML.h>
 
-#include <sfImageResource.h>
+#include <sfImageAsset.h>
 
 #include <ProtoZed/Components/Sprite.h>
 #include <ProtoZed/Components/Position2D.h>
 
 #include <ProtoZed/Application.h>
-#include <ProtoZed/ResourceManager.h>
+#include <ProtoZed/AssetManager.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -229,7 +229,7 @@ namespace PZ
 
 					sf::Sprite *sfSprite = nullptr;
 
-					const sfImageResource *image = GetApplication().GetResourceManager().Get<sfImageResource>(sprite->GetSprite());
+					const sfImageAsset *image = GetApplication().GetAssetManager().Get<sfImageAsset>(sprite->GetSprite());
 					if (image != nullptr)
 					{
 						sfSprite = new sf::Sprite(image->GetImage());

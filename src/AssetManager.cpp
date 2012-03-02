@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <ProtoZed/ResourceManager.h>
+#include <ProtoZed/AssetManager.h>
 
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/Log.h>
@@ -29,10 +29,10 @@ THE SOFTWARE.
 namespace PZ
 {
 	typedef std::vector<std::pair<Path, Archive*>> ArchiveList;
-	typedef std::map<Path, std::pair<Resource*, Archive*>> FileIndex;
-	typedef std::map<std::string, ResourceType> TypeMap;
+	typedef std::map<Path, std::pair<Asset*, Archive*>> FileIndex;
+	typedef std::map<std::string, AssetType> TypeMap;
 
-	class ResourceManager::Impl
+	class AssetManager::Impl
 	{
 	public:
 		void indexArchive(Archive *archive, bool onlyIndexRegisteredTypes)
@@ -51,7 +51,7 @@ namespace PZ
 
 		void addFile(const Path &filename, Archive *archive)
 		{
-			fileIndex.insert(std::make_pair(filename, std::make_pair<Resource*, Archive*>(nullptr, archive)));
+			fileIndex.insert(std::make_pair(filename, std::make_pair<Asset*, Archive*>(nullptr, archive)));
 		}
 		FileIndex::iterator getFile(const Path &filename)
 		{
@@ -82,32 +82,32 @@ namespace PZ
 
 			DataChunk data = archive->Get(filename);
 
-			ResourceType resType = getType(filename);
+			AssetType resType = getType(filename);
 			if (resType.empty())
 			{
-				Log::Error("ProtoZed", "No resource type is registered for \""+filename.ToString()+"\"");
+				Log::Error("ProtoZed", "No asset type is registered for \""+filename.ToString()+"\"");
 			}
 			else
 			{
-				Resource *resource = resourceFactory.Create(resType);
-				if (resource == nullptr)
+				Asset *asset = assetFactory.Create(resType);
+				if (asset == nullptr)
 				{
-					Log::Error("ProtoZed", "Resource \""+resType+"\" does not exist");
+					Log::Error("ProtoZed", "Asset \""+resType+"\" does not exist");
 				}
 				else
 				{
-					resource->filename = filename;
-					if (resource->load(data))
+					asset->filename = filename;
+					if (asset->load(data))
 					{
-						(*fileIt).second.first = resource;
+						(*fileIt).second.first = asset;
 
 						return true;
 					}
 					else
 					{
-						Log::Error("ProtoZed", "Resource \""+resType+"\" failed to load \""+filename.ToString()+"\"");
+						Log::Error("ProtoZed", "Asset \""+resType+"\" failed to load \""+filename.ToString()+"\"");
 
-						delete resource;
+						delete asset;
 					}
 				}
 			}
@@ -127,7 +127,7 @@ namespace PZ
 			return false;
 		}
 
-		const ResourceType &getType(const Path &filename) const
+		const AssetType &getType(const Path &filename) const
 		{
 			const std::string &fname = filename.ToString();
 			std::string extension = fname.substr(fname.find_last_of('.')+1);
@@ -147,18 +147,18 @@ namespace PZ
 
 		TypeMap typeMap;
 
-		static const ResourceType nullType;
+		static const AssetType nullType;
 
-		ResourceManager::ArchiveFactory archiveFactory;
-		ResourceManager::ResourceFactory resourceFactory;
+		AssetManager::ArchiveFactory archiveFactory;
+		AssetManager::AssetFactory assetFactory;
 	};
 
-	const ResourceType ResourceManager::Impl::nullType = "";
+	const AssetType AssetManager::Impl::nullType = "";
 
-	ResourceManager::ResourceManager() : p(new Impl)
+	AssetManager::AssetManager() : p(new Impl)
 	{
 	}
-	ResourceManager::~ResourceManager()
+	AssetManager::~AssetManager()
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
@@ -178,12 +178,12 @@ namespace PZ
 		delete p;
 	}
 
-	void ResourceManager::SetType(const std::string &extension, const ResourceType &type)
+	void AssetManager::SetType(const std::string &extension, const AssetType &type)
 	{
 		p->typeMap[extension] = type;
 	}
 
-	bool ResourceManager::AddArchive(const Path &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
+	bool AssetManager::AddArchive(const Path &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
 	{
 		Archive *archive = p->archiveFactory.Create(type);
 		if (archive != nullptr && archive->Open(filename))
@@ -204,7 +204,7 @@ namespace PZ
 
 		return false;
 	}
-	bool ResourceManager::RemoveArchive(const Path &filename)
+	bool AssetManager::RemoveArchive(const Path &filename)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
@@ -234,14 +234,14 @@ namespace PZ
 		return false;
 	}
 
-	void ResourceManager::IndexAll(bool onlyIndexRegisteredTypes)
+	void AssetManager::IndexAll(bool onlyIndexRegisteredTypes)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
 			p->indexArchive((*it).second, onlyIndexRegisteredTypes);
 		}
 	}
-	bool ResourceManager::IndexFile(const Path &filename)
+	bool AssetManager::IndexFile(const Path &filename)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
@@ -258,21 +258,21 @@ namespace PZ
 		return false;
 	}
 
-	void ResourceManager::LoadAll()
+	void AssetManager::LoadAll()
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
 			p->loadFile(it);
 		}
 	}
-	void ResourceManager::UnloadAll()
+	void AssetManager::UnloadAll()
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
 			p->unloadFile(it);
 		}
 	}
-	bool ResourceManager::Load(const Path &filename)
+	bool AssetManager::Load(const Path &filename)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
@@ -286,7 +286,7 @@ namespace PZ
 
 		return false;
 	}
-	bool ResourceManager::Unload(const Path &filename)
+	bool AssetManager::Unload(const Path &filename)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
@@ -301,36 +301,36 @@ namespace PZ
 		return false;
 	}
 
-	const Resource *ResourceManager::Get(const Path &filename, bool autoLoad)
+	const Asset *AssetManager::Get(const Path &filename, bool autoLoad)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
 		{
-			Log::Warning("ProtoZed", "The file \""+filename.ToString()+"\" is not indexed, returning null resource");
+			Log::Warning("ProtoZed", "The file \""+filename.ToString()+"\" is not indexed, returning null asset");
 			return nullptr;
 		}
 		else
 		{
-			Resource *&resource = (*fileIt).second.first;
-			if (resource == nullptr)
+			Asset *&asset = (*fileIt).second.first;
+			if (asset == nullptr)
 			{
 				if (!(autoLoad && p->loadFile(fileIt)))
 				{
-					Log::Warning("ProtoZed", "\""+filename.ToString()+"\" is not loaded, returning null resource");
+					Log::Warning("ProtoZed", "\""+filename.ToString()+"\" is not loaded, returning null asset");
 					return nullptr;
 				}
 			}
 
-			return resource;
+			return asset;
 		}
 	}
 
-	ResourceManager::ArchiveFactory &ResourceManager::getArchiveFactory() const
+	AssetManager::ArchiveFactory &AssetManager::getArchiveFactory() const
 	{
 		return p->archiveFactory;
 	}
-	ResourceManager::ResourceFactory &ResourceManager::getResourceFactory() const
+	AssetManager::AssetFactory &AssetManager::getAssetFactory() const
 	{
-		return p->resourceFactory;
+		return p->assetFactory;
 	}
 }

@@ -19,25 +19,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_ResourceManager_h__
-#define PZ_ResourceManager_h__
+#ifndef PZ_AssetManager_h__
+#define PZ_AssetManager_h__
 
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Archive.h>
-#include <ProtoZed/Resource.h>
+#include <ProtoZed/Asset.h>
 
 #include <string>
 
 namespace PZ
 {
-	typedef std::string ResourceType;
+	typedef std::string AssetType;
 
-	class ResourceManager
+	class AssetManager
 	{
 	public:
-		ResourceManager();
-		~ResourceManager();
+		AssetManager();
+		~AssetManager();
 
 		template<class T>
 		bool RegisterArchiveHandler(const ArchiveType &type)
@@ -50,16 +50,16 @@ namespace PZ
 		}
 
 		template<class T>
-		bool RegisterResourceType(const ResourceType &type)
+		bool RegisterAssetType(const AssetType &type)
 		{
-			return getResourceFactory().Register<T>(type);
+			return getAssetFactory().Register<T>(type);
 		}
-		bool UnregisterResourceType(const ResourceType &type)
+		bool UnregisterAssetType(const AssetType &type)
 		{
-			return getResourceFactory().Unregister(type);
+			return getAssetFactory().Unregister(type);
 		}
 
-		void SetType(const std::string &extension, const ResourceType &type);
+		void SetType(const std::string &extension, const AssetType &type);
 
 		bool AddArchive(const Path &filename, const ArchiveType &type, bool indexAll = true, bool onlyIndexRegisteredTypes = true);
 		bool RemoveArchive(const Path &filename);
@@ -77,7 +77,7 @@ namespace PZ
 		{
 			return dynamic_cast<const T*>(Get(filename, autoLoad));
 		}
-		const Resource *Get(const Path &filename, bool autoLoad = true);
+		const Asset *Get(const Path &filename, bool autoLoad = true);
 
 	private:
 		class Impl;
@@ -86,9 +86,9 @@ namespace PZ
 		typedef ::ObjectFactory<Archive*(), ArchiveType> ArchiveFactory;
 		ArchiveFactory &getArchiveFactory() const;
 
-		typedef ::ObjectFactory<Resource*(), ResourceType> ResourceFactory;
-		ResourceFactory &getResourceFactory() const;
+		typedef ::ObjectFactory<Asset*(), AssetType> AssetFactory;
+		AssetFactory &getAssetFactory() const;
 	};
 }
 
-#endif // PZ_ResourceManager_h__
+#endif // PZ_AssetManager_h__
