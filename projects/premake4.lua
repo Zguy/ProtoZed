@@ -25,7 +25,7 @@ configuration "Debug"
 project "ProtoZed"
 	defines { "PROFILER" }
 	files { "../src/**.*", "../include/ProtoZed/**.*" }
-	includedirs { "../include/", "C:/SDK/SFML-1.6/include", "C:/SDK/boost_1_48_0" }
+	includedirs { "../include/", "C:/SDK/boost_1_48_0" }
 	kind "StaticLib"
 	
 	configuration "Release"
