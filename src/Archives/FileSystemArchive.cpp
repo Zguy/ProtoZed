@@ -24,6 +24,38 @@ THE SOFTWARE.
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
+namespace
+{
+	boost::filesystem::path stripBase(const boost::filesystem::path &path, const boost::filesystem::path &base)
+	{
+		boost::filesystem::path final;
+
+		boost::filesystem::path::iterator baseIt = base.begin();
+		bool foundEnd = false;
+		for (boost::filesystem::path::iterator it = path.begin(); it != path.end(); ++it)
+		{
+			if (!foundEnd)
+			{
+				if ((baseIt == base.end()) || (*it) != (*baseIt))
+				{
+					foundEnd = true;
+				}
+				else
+				{
+					++baseIt;
+				}
+			}
+
+			if (foundEnd)
+			{
+				final /= (*it);
+			}
+		}
+
+		return final;
+	}
+}
+
 namespace PZ
 {
 	FileSystemArchive::FileSystemArchive() : basePath("")
@@ -112,7 +144,7 @@ namespace PZ
 
 				if (boost::filesystem::is_regular_file(filePath))
 				{
-					list.push_back(filePath.generic_string());
+					list.push_back(stripBase(filePath, base).generic_string());
 				}
 			}
 		}

@@ -54,6 +54,8 @@ namespace PZ
 		if (!IsStarted() || canChangeTitle())
 		{
 			title = newTitle;
+
+			titleUpdated();
 		}
 	}
 }

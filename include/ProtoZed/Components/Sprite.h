@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 #include <ProtoZed/Component.h>
 #include <ProtoZed/Vector2.h>
-#include <ProtoZed/Path.h>
 
 namespace PZ
 {
@@ -36,11 +35,11 @@ namespace PZ
 		Sprite(const EntityID &owner, EntityManager &manager);
 		~Sprite();
 
-		inline const Path &GetSprite() const
+		inline const std::string &GetSprite() const
 		{
 			return sprite;
 		}
-		inline void SetSprite(const Path &newSprite)
+		inline void SetSprite(const std::string &newSprite)
 		{
 			sprite = newSprite;
 		}
@@ -55,7 +54,7 @@ namespace PZ
 		}
 
 	private:
-		Path sprite;
+		std::string sprite;
 		Vector2f center;
 	};
 }

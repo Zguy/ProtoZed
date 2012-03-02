@@ -92,8 +92,11 @@ namespace PZ
 				}
 				if (part == "..")
 				{
-					pathParts.pop_back();
-					continue;
+					if (!pathParts.empty() && pathParts.back() != "..")
+					{
+						pathParts.pop_back();
+						continue;
+					}
 				}
 
 				pathParts.push_back(*it);

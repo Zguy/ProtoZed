@@ -53,6 +53,8 @@ namespace PZ
 	protected:
 		virtual void videoModeUpdated()
 		{}
+		virtual void titleUpdated()
+		{}
 		virtual bool canChangeTitle() const
 		{
 			return false;

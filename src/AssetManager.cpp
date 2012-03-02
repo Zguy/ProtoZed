@@ -80,8 +80,6 @@ namespace PZ
 
 			const Path &filename = (*fileIt).first;
 
-			DataChunk data = archive->Get(filename);
-
 			AssetType resType = getType(filename);
 			if (resType.empty())
 			{
@@ -96,6 +94,8 @@ namespace PZ
 				}
 				else
 				{
+					DataChunk data = archive->Get(filename);
+
 					asset->filename = filename;
 					if (asset->load(data))
 					{
