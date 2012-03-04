@@ -85,6 +85,8 @@ namespace PZ
 
 				entityManager.ClearEntities();
 
+				assetManager.UnloadAll();
+
 				// Shutdown services
 				services.StopAll();
 				services.RemoveAll();
