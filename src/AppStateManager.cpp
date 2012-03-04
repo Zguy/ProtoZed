@@ -61,7 +61,7 @@ namespace PZ
 			return appStateFactory.Create(stateName, application);
 		}
 
-		void changeState(const std::string &stateName, StringMap &options)
+		void change(const std::string &stateName, StringMap &options)
 		{
 			Log::Info("ProtoZed", "Changing state to \""+stateName+"\"");
 			AppState *state = getNewStateByName(stateName);
@@ -83,7 +83,7 @@ namespace PZ
 			}
 		}
 
-		void pushState(const std::string &stateName, StringMap &options)
+		void push(const std::string &stateName, StringMap &options)
 		{
 			Log::Info("ProtoZed", "Pushing state \""+stateName+"\"");
 			AppState *state = getNewStateByName(stateName);
@@ -104,7 +104,7 @@ namespace PZ
 			}
 		}
 
-		void popState()
+		void pop()
 		{
 			if (!stateStack.empty())
 			{
@@ -122,7 +122,7 @@ namespace PZ
 			}
 		}
 
-		void popAllStates()
+		void popAll()
 		{
 			if (!stateStack.empty())
 			{
@@ -154,7 +154,7 @@ namespace PZ
 	}
 	AppStateManager::~AppStateManager()
 	{
-		p->popAllStates();
+		p->popAll();
 
 		delete p;
 	}
@@ -166,23 +166,23 @@ namespace PZ
 			Todo::Entry &entry = p->todoQueue.front();
 			switch (entry.type)
 			{
-			case Todo::CHANGE  : p->changeState(entry.stateName, entry.options); break;
-			case Todo::PUSH    : p->pushState(entry.stateName, entry.options);   break;
-			case Todo::POP     : p->popState();                                  break;
-			case Todo::POP_ALL : p->popAllStates();                              break;
+			case Todo::CHANGE  : p->change(entry.stateName, entry.options); break;
+			case Todo::PUSH    : p->push(entry.stateName, entry.options);   break;
+			case Todo::POP     : p->pop();                                  break;
+			case Todo::POP_ALL : p->popAll();                               break;
 			}
 			p->todoQueue.pop();
 		}
 	}
 
-	void AppStateManager::ChangeState(const std::string &stateName)
+	void AppStateManager::Change(const std::string &stateName)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::CHANGE;
 		todo.stateName = stateName;
 		p->todoQueue.push(todo);
 	}
-	void AppStateManager::ChangeState(const std::string &stateName, StringMap &options)
+	void AppStateManager::Change(const std::string &stateName, StringMap &options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::CHANGE;
@@ -191,14 +191,14 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void AppStateManager::PushState(const std::string &stateName)
+	void AppStateManager::Push(const std::string &stateName)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::PUSH;
 		todo.stateName = stateName;
 		p->todoQueue.push(todo);
 	}
-	void AppStateManager::PushState(const std::string &stateName, StringMap &options)
+	void AppStateManager::Push(const std::string &stateName, StringMap &options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::PUSH;
@@ -207,7 +207,7 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void AppStateManager::PopState()
+	void AppStateManager::Pop()
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::POP;
@@ -215,7 +215,7 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void AppStateManager::PopAllStates()
+	void AppStateManager::PopAll()
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::POP_ALL;
@@ -228,7 +228,7 @@ namespace PZ
 		return p->stateStack.empty();
 	}
 
-	AppState *AppStateManager::GetCurrentState() const
+	AppState *AppStateManager::GetCurrent() const
 	{
 		if (!p->stateStack.empty())
 			return p->stateStack.top();

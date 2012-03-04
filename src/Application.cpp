@@ -80,7 +80,7 @@ namespace PZ
 
 				Log::Info("ProtoZed", "Shutting down ProtoZed");
 
-				stateManager.PopAllStates();
+				stateManager.PopAll();
 				stateManager.Update();
 
 				entityManager.ClearEntities();
@@ -146,7 +146,7 @@ namespace PZ
 
 			{
 				Profile profile("CurrentState");
-				AppState *state = p->stateManager.GetCurrentState();
+				AppState *state = p->stateManager.GetCurrent();
 				if (state != nullptr)
 				{
 					state->Update(deltaTime);

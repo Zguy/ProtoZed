@@ -41,25 +41,25 @@ namespace PZ
 		void Update();
 
 		template<class T>
-		bool RegisterState(const std::string &stateName)
+		bool Register(const std::string &stateName)
 		{
 			return getAppStateFactory().Register<T>(stateName);
 		}
-		bool UnregisterState(const std::string &stateName)
+		bool Unregister(const std::string &stateName)
 		{
 			return getAppStateFactory().Unregister(stateName);
 		}
 
-		void ChangeState(const std::string &stateName);
-		void ChangeState(const std::string &stateName, StringMap &options);
-		void PushState(const std::string &stateName);
-		void PushState(const std::string &stateName, StringMap &options);
-		void PopState();
-		void PopAllStates();
+		void Change(const std::string &stateName);
+		void Change(const std::string &stateName, StringMap &options);
+		void Push(const std::string &stateName);
+		void Push(const std::string &stateName, StringMap &options);
+		void Pop();
+		void PopAll();
 
 		bool IsEmpty();
 
-		AppState *GetCurrentState() const;
+		AppState *GetCurrent() const;
 
 	private:
 		class Impl;
