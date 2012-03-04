@@ -58,6 +58,9 @@ namespace PZ
 		bool operator==(const Vector2<T> &other) const;
 		bool operator!=(const Vector2<T> &other) const;
 
+		float Dot(const Vector2<T> &other) const;
+		float Cross(const Vector2<T> &other) const;
+
 		void Normalize();
 
 		float GetLength() const;
@@ -182,6 +185,17 @@ namespace PZ
 	bool Vector2<T>::operator!=(const Vector2<T> &other) const
 	{
 		return !(*this == other);
+	}
+
+	template<typename T>
+	float Vector2<T>::Dot(const Vector2<T> &other) const
+	{
+		return x * other.x + y * other.y;
+	}
+	template<typename T>
+	float Vector2<T>::Cross(const Vector2<T> &other) const
+	{
+		return x * other.y - y * other.x;
 	}
 
 	template<typename T>
