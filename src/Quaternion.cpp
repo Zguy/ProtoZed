@@ -95,8 +95,34 @@ namespace PZ
 		return *this;
 	}
 
+	PZ::Vector3f Quaternion::operator*(const Vector3f &v) const
+	{
+		Vector3f uv, uuv;
+		Vector3f qvec(x, y, z);
+		uv = qvec.Cross(v);
+		uuv = qvec.Cross(uv);
+		uv *= (2.f * w);
+		uuv *= 2.f;
+
+		return v + uv + uuv;
+	}
+
 	bool Quaternion::operator==(const Quaternion &other) const
 	{
 		return (x == other.x)&&(y == other.y)&&(z == other.z)&&(w == other.w);
+	}
+
+	Quaternion Quaternion::Inverse() const
+	{
+		float norm = x*x+y*y+z*z+w*w;
+		if (norm > 0.f)
+		{
+			float invNorm = 1.f / norm;
+			return Quaternion(-x*invNorm, -y*invNorm, -z*invNorm, w*invNorm);
+		}
+		else
+		{
+			return Quaternion(0.f, 0.f, 0.f, 0.f); // Error
+		}
 	}
 }
