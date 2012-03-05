@@ -69,7 +69,7 @@ template <typename CtorSignature, typename UniqueIdType> class ObjectFactory;
          Iterator iter = m_object_creator.find(unique_id);                                                  \
                                                                                                             \
          if (iter == m_object_creator.end())                                                                \
-            return NULL;                                                                                    \
+            return nullptr;                                                                                    \
                                                                                                             \
          return ((*iter).second)(MACRO_LIST(num, MACRO_FUNCTION_ARGUMENT));                                 \
       }                                                                                                     \
