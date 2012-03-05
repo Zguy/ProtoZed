@@ -63,6 +63,8 @@ namespace PZ
 			entityManager.RegisterComponent<Position2D>();
 			entityManager.RegisterComponent<Sprite>();
 
+			i.Start();
+
 			// Start services
 			services.StartAll();
 
@@ -82,6 +84,8 @@ namespace PZ
 
 				stateManager.PopAll();
 				stateManager.Update();
+
+				i.Stop();
 
 				entityManager.ClearEntities();
 

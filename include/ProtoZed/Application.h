@@ -36,6 +36,9 @@ namespace PZ
 		Application();
 		virtual ~Application();
 
+		virtual void Start() {}
+		virtual void Stop() {}
+
 		virtual void Update(float deltaTime) {}
 
 		int Run();
