@@ -49,9 +49,10 @@ namespace PZ
 			}
 		}
 
-		void addFile(const Path &filename, Archive *archive)
+		bool addFile(const Path &filename, Archive *archive)
 		{
-			fileIndex.insert(std::make_pair(filename, std::make_pair<Asset*, Archive*>(nullptr, archive)));
+			Asset *asset = nullptr;
+			return fileIndex.insert(std::make_pair(filename, std::make_pair(asset, archive))).second;
 		}
 		FileIndex::iterator getFile(const Path &filename)
 		{
@@ -186,7 +187,11 @@ namespace PZ
 	bool AssetManager::AddArchive(const Path &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
 	{
 		Archive *archive = p->archiveFactory.Create(type);
-		if (archive != nullptr && archive->Open(filename))
+		if (archive == nullptr)
+		{
+			Log::Error("ProtoZed", "No archive registered for \""+type+"\"");
+		}
+		else if (archive->Open(filename))
 		{
 			p->archives.push_back(std::make_pair(filename, archive));
 
@@ -199,6 +204,7 @@ namespace PZ
 		}
 		else
 		{
+			Log::Error("ProtoZed", "Could not open archive \""+filename.ToString()+"\"");
 			delete archive;
 		}
 
@@ -248,9 +254,15 @@ namespace PZ
 			Archive *archive = (*it).second;
 			if (archive->Has(filename))
 			{
-				p->addFile(filename, archive);
-
-				return true;
+				if (!p->addFile(filename, archive))
+				{
+					Log::Warning("ProtoZed", "The file \""+filename.ToString()+"\" is already indexed");
+					return false;
+				}
+				else
+				{
+					return true;
+				}
 			}
 		}
 
