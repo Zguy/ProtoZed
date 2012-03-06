@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Vector3_h__
 #define PZ_Vector3_h__
 
+#include <ProtoZed/Math.h>
+
 namespace PZ
 {
 	template<typename T>
@@ -219,7 +221,7 @@ namespace PZ
 	template<typename T>
 	float Vector3<T>::GetLength() const
 	{
-		return std::sqrt(GetLengthSquared());
+		return Math::Sqrt(GetLengthSquared());
 	}
 	template<typename T>
 	T Vector3<T>::GetLengthSquared() const

@@ -22,6 +22,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Position2D.h>
 
 #include <ProtoZed/Messages.h>
+#include <ProtoZed/Math.h>
 
 namespace PZ
 {
@@ -106,8 +107,8 @@ namespace PZ
 		if (inheritAxes)
 		{
 			Angle::Radians angle = parentRotationCache;
-			_axes.x.x = std::cos(angle.ToFloat());
-			_axes.x.y = std::sin(angle.ToFloat());
+			_axes.x.x = Math::Cos(angle.ToFloat());
+			_axes.x.y = Math::Sin(angle.ToFloat());
 			_axes.y.x = -_axes.x.y;
 			_axes.y.y = _axes.x.x;
 		}
@@ -139,8 +140,8 @@ namespace PZ
 	void Position2D::updateAxes()
 	{
 		Angle::Radians angle = -GetRotation(Scope::GLOBAL);
-		axes.x.x = std::cos(angle.ToFloat());
-		axes.x.y = std::sin(angle.ToFloat());
+		axes.x.x = Math::Cos(angle.ToFloat());
+		axes.x.y = Math::Sin(angle.ToFloat());
 		axes.y.x = -axes.x.y;
 		axes.y.y = axes.x.x;
 
