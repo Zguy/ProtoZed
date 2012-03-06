@@ -24,7 +24,10 @@ THE SOFTWARE.
 
 #include <ProtoZed/Services/Renderer.h>
 
-#include <SFML/Graphics/RenderWindow.hpp>
+namespace sf
+{
+	class RenderWindow;
+}
 
 namespace PZ
 {

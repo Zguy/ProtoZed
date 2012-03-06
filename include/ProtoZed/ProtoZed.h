@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include <ProtoZed/UniqueIDGenerator.h>
 #include <ProtoZed/Messages.h>
 #include <ProtoZed/Path.h>
+#include <ProtoZed/Random.h>
 
 #include <ProtoZed/ServiceList.h>
 #include <ProtoZed/AppStateManager.h>

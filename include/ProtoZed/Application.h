@@ -31,6 +31,7 @@ namespace PZ
 	class EntityManager;
 	class AnimationManager;
 	class AssetManager;
+	class RandomManager;
 
 	class Application : public NonCopyable
 	{
@@ -52,6 +53,7 @@ namespace PZ
 		EntityManager    &GetEntityManager() const;
 		AnimationManager &GetAnimationManager() const;
 		AssetManager     &GetAssetManager() const;
+		RandomManager    &GetRandomManager() const;
 
 	private:
 		class Impl;

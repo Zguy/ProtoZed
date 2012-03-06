@@ -26,6 +26,8 @@ THE SOFTWARE.
 
 #include <Renderer_SFML.h>
 
+#include <SFML/Graphics/RenderWindow.hpp>
+
 namespace PZ
 {
 	Input_SFML::Input_SFML(const ServiceType &type, Application &application) : Input(type, application)
