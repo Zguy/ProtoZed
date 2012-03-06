@@ -77,7 +77,7 @@ namespace PZ
 	}
 
 
-	typedef std::vector<LogListener*> ListenerList;
+	typedef std::vector<Log::Listener*> ListenerList;
 
 	class Log::Impl
 	{
@@ -204,14 +204,14 @@ namespace PZ
 		p->emitMessageLogged(type, message);
 	}
 
-	void Log::RegisterListener(LogListener *listener)
+	void Log::RegisterListener(Listener *listener)
 	{
 		if (listener != nullptr)
 		{
 			p->listeners.push_back(listener);
 		}
 	}
-	void Log::UnregisterListener(LogListener *listener)
+	void Log::UnregisterListener(Listener *listener)
 	{
 		for (ListenerList::iterator it = p->listeners.begin(); it != p->listeners.end(); ++it)
 		{

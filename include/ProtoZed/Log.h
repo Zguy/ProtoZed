@@ -47,8 +47,6 @@ namespace PZ
 		Impl *p;
 	};
 
-	class LogListener;
-
 	class Log : public NonCopyable
 	{
 		friend class LogManager;
@@ -60,6 +58,17 @@ namespace PZ
 			LT_ERROR,
 			LT_WARNING,
 			LT_DEBUG
+		};
+
+		class Listener
+		{
+		public:
+			Listener()
+			{}
+			virtual ~Listener()
+			{}
+
+			virtual void MessageLogged(Type type, const std::string &message) {}
 		};
 
 	private:
@@ -89,23 +98,12 @@ namespace PZ
 		static inline void Warning(const std::string &name, const std::string &message) { Message(name, LT_WARNING, message); }
 		static inline void Debug(const std::string &name, const std::string &message) { Message(name, LT_DEBUG, message); }
 
-		void RegisterListener(LogListener *listener);
-		void UnregisterListener(LogListener *listener);
+		void RegisterListener(Listener *listener);
+		void UnregisterListener(Listener *listener);
 
 	private:
 		class Impl;
 		Impl *p;
-	};
-
-	class LogListener
-	{
-	public:
-		LogListener()
-		{}
-		virtual ~LogListener()
-		{}
-
-		virtual void MessageLogged(Log::Type type, const std::string &message) {}
 	};
 }
 
