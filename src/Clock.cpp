@@ -44,6 +44,16 @@ namespace PZ
 		delete p;
 	}
 
+	const Clock &Clock::operator=(const Clock &rhs)
+	{
+		if (this != &rhs)
+		{
+			p->startTime = rhs.p->startTime;
+		}
+
+		return *this;
+	}
+
 	void Clock::Reset()
 	{
 		p->startTime = boost::chrono::high_resolution_clock::now();

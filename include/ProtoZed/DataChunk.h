@@ -40,16 +40,16 @@ namespace PZ
 			release();
 		}
 
-		const DataChunk &operator=(const DataChunk &other)
+		const DataChunk &operator=(const DataChunk &rhs)
 		{
-			if (this != &other)
+			if (this != &rhs)
 			{
 				release();
 
-				data = other.data;
-				size = other.size;
+				data = rhs.data;
+				size = rhs.size;
 
-				references = other.references;
+				references = rhs.references;
 				addReference();
 			}
 

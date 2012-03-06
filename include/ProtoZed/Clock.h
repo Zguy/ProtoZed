@@ -31,6 +31,8 @@ namespace PZ
 		Clock(const Clock &other);
 		~Clock();
 
+		const Clock &operator=(const Clock &rhs);
+
 		void Reset();
 
 		float GetElapsedTime();
