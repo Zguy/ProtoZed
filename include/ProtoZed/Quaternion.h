@@ -67,6 +67,11 @@ namespace PZ
 			return !(*this == other);
 		}
 
+		void Normalize();
+
+		float GetLength() const;
+		float GetLengthSquared() const;
+
 		Quaternion Inverse() const;
 
 		float x, y, z, w;

@@ -114,9 +114,28 @@ namespace PZ
 		return (x == other.x)&&(y == other.y)&&(z == other.z)&&(w == other.w);
 	}
 
+	void Quaternion::Normalize()
+	{
+		float len = GetLength();
+		if (len > 0.f)
+		{
+			float factor = 1.f / len;
+			(*this) *= factor;
+		}
+	}
+
+	float Quaternion::GetLength() const
+	{
+		return Math::Sqrt(GetLengthSquared());
+	}
+	float Quaternion::GetLengthSquared() const
+	{
+		return (x*x + y*y + z*z + w*w);
+	}
+
 	Quaternion Quaternion::Inverse() const
 	{
-		float norm = x*x+y*y+z*z+w*w;
+		float norm = GetLengthSquared();
 		if (norm > 0.f)
 		{
 			float invNorm = 1.f / norm;
