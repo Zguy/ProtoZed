@@ -201,9 +201,12 @@ namespace PZ
 	template<typename T>
 	void Vector2<T>::Normalize()
 	{
-		const float length = GetLength();
-		if (length > 0.f)
-			(*this) /= length;
+		float len = GetLength();
+		if (len > 0.f)
+		{
+			float factor = 1.f / len;
+			(*this) *= factor;
+		}
 	}
 
 	template<typename T>
