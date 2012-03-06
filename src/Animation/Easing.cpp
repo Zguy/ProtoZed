@@ -23,8 +23,6 @@ THE SOFTWARE.
 
 #include <ProtoZed/Math.h>
 
-#include <cmath>
-
 namespace PZ
 {
 	namespace Easing
@@ -50,16 +48,16 @@ namespace PZ
 		/**** SINE ****/
 		float Sine::easeIn(float t, float b, float c, float d) const
 		{
-			return -c * std::cos(t/d * (Math::PI_2)) + c + b;
+			return -c * Math::Cos(t/d * (Math::PI_2)) + c + b;
 		}
 		float Sine::easeOut(float t, float b, float c, float d) const
 		{
-			return c * std::sin(t/d * (Math::PI_2)) + b;
+			return c * Math::Sin(t/d * (Math::PI_2)) + b;
 		}
 
 		float Sine::easeInOut(float t, float b, float c, float d) const
 		{
-			return -c/2 * (std::cos(Math::PI*t/d) - 1) + b;
+			return -c/2 * (Math::Cos(Math::PI*t/d) - 1) + b;
 		}
 
 		/**** QUINT ****/
@@ -110,18 +108,18 @@ namespace PZ
 		/**** EXPO ****/
 		float Expo::easeIn(float t, float b, float c, float d) const
 		{
-			return (t==0) ? b : c * std::pow(2, 10 * (t/d - 1)) + b;
+			return (t==0) ? b : c * Math::Pow(2, 10 * (t/d - 1)) + b;
 		}
 		float Expo::easeOut(float t, float b, float c, float d) const
 		{
-			return (t==d) ? b+c : c * (-std::pow(2, -10 * t/d) + 1) + b;
+			return (t==d) ? b+c : c * (-Math::Pow(2, -10 * t/d) + 1) + b;
 		}
 		float Expo::easeInOut(float t, float b, float c, float d) const
 		{
 			if (t==0) return b;
 			if (t==d) return b+c;
-			if ((t/=d/2) < 1) return c/2 * std::pow(2, 10 * (t - 1)) + b;
-			return c/2 * (-std::pow(2, -10 * --t) + 2) + b;
+			if ((t/=d/2) < 1) return c/2 * Math::Pow(2, 10 * (t - 1)) + b;
+			return c/2 * (-Math::Pow(2, -10 * --t) + 2) + b;
 		}
 
 		/****  ELASTIC ****/
@@ -131,8 +129,8 @@ namespace PZ
 			float p=d*.3f;
 			float a=c;
 			float s=p/4;
-			float postFix =a*std::pow(2,10*(t-=1));
-			return -(postFix * std::sin((t*d-s)*(2*Math::PI)/p )) + b;
+			float postFix =a*Math::Pow(2,10*(t-=1));
+			return -(postFix * Math::Sin((t*d-s)*(2*Math::PI)/p )) + b;
 		}
 		float Elastic::easeOut(float t, float b, float c, float d) const
 		{
@@ -140,7 +138,7 @@ namespace PZ
 			float p=d*.3f;
 			float a=c;
 			float s=p/4;
-			return (a*std::pow(2,-10*t) * std::sin( (t*d-s)*(2*Math::PI)/p ) + c + b);
+			return (a*Math::Pow(2,-10*t) * Math::Sin( (t*d-s)*(2*Math::PI)/p ) + c + b);
 		}
 		float Elastic::easeInOut(float t, float b, float c, float d) const
 		{
@@ -151,11 +149,11 @@ namespace PZ
 
 			if (t < 1)
 			{
-				float postFix =a*std::pow(2,10*(t-=1));
-				return -.5f*(postFix* std::sin( (t*d-s)*(2*Math::PI)/p )) + b;
+				float postFix =a*Math::Pow(2,10*(t-=1));
+				return -.5f*(postFix* Math::Sin( (t*d-s)*(2*Math::PI)/p )) + b;
 			}
-			float postFix =  a*std::pow(2,-10*(t-=1));
-			return postFix * std::sin( (t*d-s)*(2*Math::PI)/p )*.5f + c + b;
+			float postFix =  a*Math::Pow(2,-10*(t-=1));
+			return postFix * Math::Sin( (t*d-s)*(2*Math::PI)/p )*.5f + c + b;
 		}
 
 		/****  CUBIC ****/
@@ -177,16 +175,16 @@ namespace PZ
 		/*** CIRC ***/
 		float Circ::easeIn(float t, float b, float c, float d) const
 		{
-			return -c * (std::sqrt(1 - (t/=d)*t) - 1) + b;
+			return -c * (Math::Sqrt(1 - (t/=d)*t) - 1) + b;
 		}
 		float Circ::easeOut(float t, float b, float c, float d) const
 		{
-			return c * std::sqrt(1 - (t=t/d-1)*t) + b;
+			return c * Math::Sqrt(1 - (t=t/d-1)*t) + b;
 		}
 		float Circ::easeInOut(float t, float b, float c, float d) const
 		{
-			if ((t/=d/2) < 1) return -c/2 * (std::sqrt(1 - t*t) - 1) + b;
-			return c/2 * (std::sqrt(1 - t*(t-=2)) + 1) + b;
+			if ((t/=d/2) < 1) return -c/2 * (Math::Sqrt(1 - t*t) - 1) + b;
+			return c/2 * (Math::Sqrt(1 - t*(t-=2)) + 1) + b;
 		}
 
 		/****  BOUNCE ****/

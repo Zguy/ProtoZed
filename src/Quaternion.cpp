@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Quaternion.h>
 
+#include <ProtoZed/Math.h>
+
 namespace PZ
 {
 	Quaternion::Quaternion(float x, float y, float z , float w) : x(x), y(y), z(z), w(w)
@@ -29,12 +31,12 @@ namespace PZ
 	Quaternion::Quaternion(const Vector3f &axis, Angle::Radians angle)
 	{
 		float halfAngle = angle.ToFloat() * 0.5f;
-		float sinAngle  = std::sin(halfAngle);
+		float sinAngle  = Math::Sin(halfAngle);
 
 		x = axis.x * sinAngle;
 		y = axis.y * sinAngle;
 		z = axis.z * sinAngle;
-		w = std::cos(halfAngle);
+		w = Math::Cos(halfAngle);
 	}
 	Quaternion::Quaternion(const Quaternion &other) : x(other.x), y(other.y), z(other.z), w(other.w)
 	{

@@ -22,8 +22,6 @@ THE SOFTWARE.
 #ifndef PZ_Vector3_h__
 #define PZ_Vector3_h__
 
-#include <cmath>
-
 namespace PZ
 {
 	template<typename T>

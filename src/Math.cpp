@@ -19,47 +19,49 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Math_h__
-#define PZ_Math_h__
+#include <ProtoZed/Math.h>
+
+#include <cmath>
 
 namespace PZ
 {
 	namespace Math
 	{
-		static const float PI   = 3.14159265358979323846f;
-		static const float PI_2 = 1.57079632679489661923f;
-
-		float Sqrt(float value);
-		float Sin(float value);
-		float Cos(float value);
-		float Tan(float value);
-		float ASin(float value);
-		float ACos(float value);
-		float ATan(float value);
-		float ATan2(float x, float y);
-		float Pow(float value, float pow);
-
-		template <class T>
-		T Clamp(T value, T min, T max)
+		float Sqrt(float value)
 		{
-			if (value < min)
-				return min;
-			else if (value > max)
-				return max;
-			else
-				return value;
+			return std::sqrt(value);
 		}
-		template <class T>
-		T Wrap(T value, T min, T max)
+		float Sin(float value)
 		{
-			int range_size = max - min + 1;
-
-			if (value < min)
-				value += range_size * ((min - value) / range_size + 1);
-
-			return min + (value - min) % range_size;
+			return std::sin(value);
 		}
-	}
+		float Cos(float value)
+		{
+			return std::cos(value);
+		}
+		float Tan(float value)
+		{
+			return std::tan(value);
+		}
+		float ASin(float value)
+		{
+			return std::asin(value);
+		}
+		float ACos(float value)
+		{
+			return std::acos(value);
+		}
+		float ATan(float value)
+		{
+			return std::atan(value);
+		}
+		float ATan2(float x, float y)
+		{
+			return std::atan2(x, y);
+		}
+		float Pow(float value, float pow)
+		{
+			return std::pow(value, pow);
+		}
 }
-
-#endif // PZ_Math_h__
+}

@@ -23,15 +23,13 @@ THE SOFTWARE.
 
 #include <ProtoZed/Math.h>
 
-#include <cmath>
-
 namespace PZ
 {
 	namespace Helpers
 	{
 		Vector2f GetForwardVector(Angle::Radians rotation, float length)
 		{
-			return Vector2f(std::cos(rotation.ToFloat()) * length * -1, std::sin(rotation.ToFloat()) * length);
+			return Vector2f(Math::Cos(rotation.ToFloat()) * length * -1, Math::Sin(rotation.ToFloat()) * length);
 		}
 
 		Angle::Radians GetRotationTo(const Vector2f &from, const Vector2f &to)
@@ -39,7 +37,7 @@ namespace PZ
 			float x = to.x - from.x;
 			float y = to.y - from.y;
 
-			return (Angle::Radians(std::atan2(x, y) + Math::PI));
+			return (Angle::Radians(Math::ATan2(x, y) + Math::PI));
 		}
 	}
 }
