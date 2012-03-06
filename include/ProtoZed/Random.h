@@ -22,13 +22,15 @@ THE SOFTWARE.
 #ifndef PZ_Random_h__
 #define PZ_Random_h__
 
+#include <ProtoZed/NonCopyable.h>
+
 #include <string>
 
 namespace PZ
 {
 	class Random;
 
-	class RandomManager
+	class RandomManager : public NonCopyable
 	{
 	public:
 		RandomManager();
@@ -52,7 +54,7 @@ namespace PZ
 		static Random *global;
 	};
 
-	class Random
+	class Random : public NonCopyable
 	{
 	public:
 		Random();
