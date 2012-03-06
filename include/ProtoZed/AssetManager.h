@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_AssetManager_h__
 
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/Asset.h>
@@ -33,7 +34,7 @@ namespace PZ
 {
 	typedef std::string AssetType;
 
-	class AssetManager
+	class AssetManager : public NonCopyable
 	{
 	public:
 		AssetManager();

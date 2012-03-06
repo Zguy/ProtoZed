@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_Log_h__
 
 #include <ProtoZed/Singleton.h>
+#include <ProtoZed/NonCopyable.h>
 
 #include <string>
 
@@ -48,7 +49,7 @@ namespace PZ
 
 	class LogListener;
 
-	class Log
+	class Log : public NonCopyable
 	{
 		friend class LogManager;
 

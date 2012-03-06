@@ -22,12 +22,13 @@ THE SOFTWARE.
 #ifndef PZ_Asset_h__
 #define PZ_Asset_h__
 
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/DataChunk.h>
 #include <ProtoZed/Path.h>
 
 namespace PZ
 {
-	class Asset
+	class Asset : public NonCopyable
 	{
 		friend class AssetManager;
 

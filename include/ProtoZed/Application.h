@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Application_h__
 #define PZ_Application_h__
 
+#include <ProtoZed/NonCopyable.h>
+
 namespace PZ
 {
 	class ServiceList;
@@ -30,7 +32,7 @@ namespace PZ
 	class AnimationManager;
 	class AssetManager;
 
-	class Application
+	class Application : public NonCopyable
 	{
 	public:
 		Application();

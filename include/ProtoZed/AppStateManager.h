@@ -22,6 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_AppStateManager_h__
 #define PZ_AppStateManager_h__
 
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/AppState.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 
@@ -32,7 +33,7 @@ namespace PZ
 {
 	class Application;
 
-	class AppStateManager
+	class AppStateManager : public NonCopyable
 	{
 	public:
 		AppStateManager(Application &application);

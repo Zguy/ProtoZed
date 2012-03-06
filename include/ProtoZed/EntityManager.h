@@ -22,6 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_EntityManager_h__
 #define PZ_EntityManager_h__
 
+#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/HashString.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
@@ -67,7 +68,7 @@ namespace PZ
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
 	 */
-	class EntityManager
+	class EntityManager : public NonCopyable
 	{
 	public:
 		EntityManager();
