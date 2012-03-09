@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/EntityManager.h>
+#include <ProtoZed/Timestamp.h>
 #include <ProtoZed/MetaEntity.h>
 #include <ProtoZed/Message.h>
 
@@ -34,6 +35,7 @@ namespace PZ
 	class Component : public NonCopyable
 	{
 		friend class EntityManager;
+
 	protected:
 		Component(const EntityID &owner, EntityManager &manager) : owner(owner), manager(manager)
 		{}
@@ -59,10 +61,23 @@ namespace PZ
 			return manager;
 		}
 
+		const Timestamp &GetTimestamp() const
+		{
+			return stamp;
+		}
+
+	protected:
+		Timestamp &GetTimestamp()
+		{
+			return stamp;
+		}
+
 	private:
 		EntityID owner;
 
 		EntityManager &manager;
+
+		Timestamp stamp;
 	};
 }
 

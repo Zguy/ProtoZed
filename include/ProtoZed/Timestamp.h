@@ -19,48 +19,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Sprite_h__
-#define PZ_Sprite_h__
-
-#include <ProtoZed/Component.h>
-#include <ProtoZed/Vector2.h>
+#ifndef PZ_Timestamp_h__
+#define PZ_Timestamp_h__
 
 namespace PZ
 {
-	class Sprite : public Component
+	class Timestamp
 	{
 	public:
-		static const HashString Family;
+		Timestamp();
+		Timestamp(const Timestamp &other);
+		~Timestamp();
 
-		Sprite(const EntityID &owner, EntityManager &manager);
-		~Sprite();
+		const Timestamp &operator=(const Timestamp &rhs);
 
-		inline const std::string &GetSprite() const
+		bool operator==(const Timestamp &other) const;
+		bool operator!=(const Timestamp &other) const
 		{
-			return sprite;
-		}
-		inline void SetSprite(const std::string &newSprite)
-		{
-			sprite = newSprite;
-
-			GetTimestamp().Now();
+			return !(*this == other);
 		}
 
-		inline const Vector2f &GetCenter() const
-		{
-			return center;
-		}
-		inline void SetCenter(const Vector2f &newCenter)
-		{
-			center = newCenter;
-
-			GetTimestamp().Now();
-		}
+		void Now();
 
 	private:
-		std::string sprite;
-		Vector2f center;
+		class Impl;
+		Impl *p;
 	};
 }
 
-#endif // PZ_Sprite_h__
+#endif // PZ_Timestamp_h__

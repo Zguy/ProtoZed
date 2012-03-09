@@ -62,6 +62,7 @@ namespace PZ
 			pos = newPos;
 		}
 
+		GetTimestamp().Now();
 		updateChildren();
 	}
 
@@ -97,6 +98,7 @@ namespace PZ
 				rotation = newRotation;
 		}
 
+		GetTimestamp().Now();
 		updateAxes();
 	}
 

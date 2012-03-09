@@ -67,6 +67,7 @@ namespace PZ
 				}
 
 				parent = id;
+				GetTimestamp().Now();
 
 				if (parent != EntityID())
 				{
@@ -88,6 +89,7 @@ namespace PZ
 			else if (!HasChild(id))
 			{
 				children.push_back(id);
+				GetTimestamp().Now();
 
 				SceneNode *node = GetManager().GetComponent<SceneNode>(id);
 				node->_SetParent(GetOwnerID());
@@ -103,6 +105,7 @@ namespace PZ
 				if ((*it) == id)
 				{
 					children.erase(it);
+					GetTimestamp().Now();
 
 					SceneNode *node = GetManager().GetComponent<SceneNode>(id);
 					node->_SetParent(EntityID(), false);
@@ -134,6 +137,7 @@ namespace PZ
 		}
 
 		parent = id;
+		GetTimestamp().Now();
 	}
 	void SceneNode::_AddChild(const EntityID &id)
 	{
@@ -142,6 +146,7 @@ namespace PZ
 			if (!HasChild(id))
 			{
 				children.push_back(id);
+				GetTimestamp().Now();
 			}
 		}
 	}
@@ -154,6 +159,7 @@ namespace PZ
 				if ((*it) == id)
 				{
 					children.erase(it);
+					GetTimestamp().Now();
 
 					break;
 				}

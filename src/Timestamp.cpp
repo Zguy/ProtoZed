@@ -19,48 +19,48 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Sprite_h__
-#define PZ_Sprite_h__
+#include <ProtoZed/Timestamp.h>
 
-#include <ProtoZed/Component.h>
-#include <ProtoZed/Vector2.h>
+#include <boost/chrono.hpp>
 
 namespace PZ
 {
-	class Sprite : public Component
+	class Timestamp::Impl
 	{
 	public:
-		static const HashString Family;
-
-		Sprite(const EntityID &owner, EntityManager &manager);
-		~Sprite();
-
-		inline const std::string &GetSprite() const
-		{
-			return sprite;
-		}
-		inline void SetSprite(const std::string &newSprite)
-		{
-			sprite = newSprite;
-
-			GetTimestamp().Now();
-		}
-
-		inline const Vector2f &GetCenter() const
-		{
-			return center;
-		}
-		inline void SetCenter(const Vector2f &newCenter)
-		{
-			center = newCenter;
-
-			GetTimestamp().Now();
-		}
-
-	private:
-		std::string sprite;
-		Vector2f center;
+		boost::chrono::high_resolution_clock::time_point stamp;
 	};
-}
 
-#endif // PZ_Sprite_h__
+	Timestamp::Timestamp() : p(new Impl)
+	{
+		Now();
+	}
+	Timestamp::Timestamp(const Timestamp &other) : p(new Impl)
+	{
+		p->stamp = other.p->stamp;
+	}
+	Timestamp::~Timestamp()
+	{
+		delete p;
+	}
+
+	const Timestamp &Timestamp::operator=(const Timestamp &rhs)
+	{
+		if (this != &rhs)
+		{
+			p->stamp = rhs.p->stamp;
+		}
+
+		return *this;
+	}
+
+	bool Timestamp::operator==(const Timestamp &other) const
+	{
+		return p->stamp == other.p->stamp;
+	}
+
+	void Timestamp::Now()
+	{
+		p->stamp = boost::chrono::high_resolution_clock::now();
+	}
+}
