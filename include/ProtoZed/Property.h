@@ -90,7 +90,7 @@ namespace PZ
 
 		const StringProperty &operator=(const std::string &str);
 
-		operator std::string()
+		operator const std::string&() const
 		{
 			return str;
 		}
@@ -108,7 +108,7 @@ namespace PZ
 
 		const IntProperty &operator=(int value);
 
-		operator int()
+		operator int() const
 		{
 			return value;
 		}
@@ -126,7 +126,7 @@ namespace PZ
 
 		const FloatProperty &operator=(float value);
 
-		operator float()
+		operator float() const
 		{
 			return value;
 		}
@@ -144,7 +144,7 @@ namespace PZ
 
 		const BoolProperty &operator=(bool value);
 
-		operator bool()
+		operator bool() const
 		{
 			return value;
 		}

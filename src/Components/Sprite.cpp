@@ -24,11 +24,4 @@ THE SOFTWARE.
 namespace PZ
 {
 	const HashString Sprite::Family = "Sprite";
-
-	Sprite::Sprite(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
-	{
-	}
-	Sprite::~Sprite()
-	{
-	}
 }

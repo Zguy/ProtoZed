@@ -29,21 +29,29 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	typedef std::map<std::string, Property*> PropertyMap;
+
 	class PropertyList
 	{
 	public:
 		PropertyList();
 		virtual ~PropertyList();
 
-		bool Add(const std::string &name, Property::Type type);
-		bool Remove(const std::string &name);
-		void Clear();
+		bool AddProperty(const std::string &name, Property::Type type);
+		bool RemoveProperty(const std::string &name);
+		void ClearProperties();
 
-		Property &Get(const std::string &name);
-		const Property &Get(const std::string &name) const;
+		bool HasProperty(const std::string &name) const;
+
+		Property &GetProperty(const std::string &name);
+		const Property &GetProperty(const std::string &name) const;
+
+		const PropertyMap &GetAllProperties() const
+		{
+			return properties;
+		}
 
 	private:
-		typedef std::map<std::string, Property*> PropertyMap;
 		PropertyMap properties;
 
 		static Property invalidProperty;

@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_Component_h__
 
 #include <ProtoZed/NonCopyable.h>
+#include <ProtoZed/PropertyList.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Timestamp.h>
 #include <ProtoZed/MetaEntity.h>
@@ -32,7 +33,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	class Component : public NonCopyable
+	class Component : public NonCopyable, public PropertyList
 	{
 		friend class EntityManager;
 

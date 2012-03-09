@@ -30,14 +30,14 @@ namespace PZ
 	}
 	PropertyList::~PropertyList()
 	{
-		Clear();
+		ClearProperties();
 	}
 
-	bool PropertyList::Add(const std::string &name, Property::Type type)
+	bool PropertyList::AddProperty(const std::string &name, Property::Type type)
 	{
 		return properties.insert(std::make_pair(name, Property::Create(type))).second;
 	}
-	bool PropertyList::Remove(const std::string &name)
+	bool PropertyList::RemoveProperty(const std::string &name)
 	{
 		PropertyMap::iterator it = properties.find(name);
 		if (it != properties.end())
@@ -50,7 +50,7 @@ namespace PZ
 
 		return false;
 	}
-	void PropertyList::Clear()
+	void PropertyList::ClearProperties()
 	{
 		for (PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
 		{
@@ -59,7 +59,12 @@ namespace PZ
 		properties.clear();
 	}
 
-	Property &PropertyList::Get(const std::string &name)
+	bool PropertyList::HasProperty(const std::string &name) const
+	{
+		return (properties.find(name) != properties.end());
+	}
+
+	Property &PropertyList::GetProperty(const std::string &name)
 	{
 		PropertyMap::iterator it = properties.find(name);
 		if (it != properties.end())
@@ -69,7 +74,7 @@ namespace PZ
 
 		return invalidProperty;
 	}
-	const Property &PropertyList::Get(const std::string &name) const
+	const Property &PropertyList::GetProperty(const std::string &name) const
 	{
 		PropertyMap::const_iterator it = properties.find(name);
 		if (it != properties.end())
