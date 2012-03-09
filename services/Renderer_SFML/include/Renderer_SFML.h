@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_Renderer_SFML_h__
 
 #include <ProtoZed/Services/Renderer.h>
+#include <ProtoZed/EntityManager.h>
 
 namespace sf
 {
@@ -31,7 +32,7 @@ namespace sf
 
 namespace PZ
 {
-	class Renderer_SFML : public Renderer
+	class Renderer_SFML : public Renderer, public EntityListener
 	{
 	public:
 		Renderer_SFML(const ServiceType &type, Application &application);
@@ -49,6 +50,11 @@ namespace PZ
 		virtual void videoModeUpdated();
 
 	private:
+		virtual void EntityDestroyedPost(const PZ::EntityID &id);
+
+		virtual void ComponentAddedPost(const PZ::EntityID &id, const PZ::HashString &family);
+		virtual void ComponentRemovedPost(const PZ::EntityID &id, const PZ::HashString &family);
+
 		class Impl;
 		Impl *p;
 	};

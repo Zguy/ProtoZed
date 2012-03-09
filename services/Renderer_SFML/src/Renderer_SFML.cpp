@@ -37,7 +37,7 @@ namespace PZ
 {
 	struct Layer
 	{
-		Layer(const EntityID &id, sf::Drawable *drawable, float depth) : id(id), drawable(drawable), depth(depth), used(true)
+		Layer(const EntityID &id, sf::Drawable *drawable, float depth) : id(id), drawable(drawable), depth(depth)
 		{}
 		~Layer()
 		{}
@@ -46,11 +46,16 @@ namespace PZ
 		sf::Drawable *drawable;
 		float depth;
 
-		bool used;
+		Timestamp timestamp;
 
 		bool operator<(const Layer &other) const
 		{
 			return depth < other.depth;
+		}
+
+		bool operator==(const EntityID &id) const
+		{
+			return this->id == id;
 		}
 	};
 
@@ -59,7 +64,7 @@ namespace PZ
 	class Renderer_SFML::Impl
 	{
 	public:
-		Impl() : isFullscreen(false), clearLayerAcc(0.f), clearLayerLimit(60.f)
+		Impl(Renderer_SFML *i) : i(i), isFullscreen(false), clearLayerAcc(0.f), clearLayerLimit(60.f)
 		{}
 
 		void calculateView(const VideoMode &videoMode)
@@ -69,39 +74,60 @@ namespace PZ
 
 		LayerList::iterator findLayer(const EntityID &id)
 		{
-			for (LayerList::iterator it = layers.begin(); it != layers.end(); ++it)
-			{
-				if ((*it).id == id)
-				{
-					return it;
-				}
-			}
-			return layers.end();
+			return std::find(layers.begin(), layers.end(), id);
 		}
 
-		LayerList::iterator newLayer(const EntityID &id, sf::Drawable *drawable, float depth)
+		void updateLayer(Layer &layer, const Sprite *sprite)
 		{
-			/*for (LayerList::iterator it = layers.begin(); it != layers.end(); ++it)
+			AssetManager &assetManager = i->GetApplication().GetAssetManager();
+
+			sf::Sprite *drawable = new sf::Sprite;
+
+			if (!sprite->GetSprite().empty())
 			{
-				if (!(*it).used)
+				const sfImageAsset *image = assetManager.Get<sfImageAsset>(sprite->GetSprite());
+				if (image != nullptr)
 				{
-					Layer &layer = (*it);
-					layer.id = id;
-					delete layer.drawable;
-					layer.drawable = drawable;
-					layer.depth = depth;
-					layer.used = true;
-
-					return it;
+					drawable->SetImage(image->GetImage());
 				}
-			}*/
+			}
 
-			// No unused layer found
-			Layer layer(id, drawable, depth);
+			drawable->SetCenter(sprite->GetCenter().x, sprite->GetCenter().y);
+
+			delete layer.drawable;
+			layer.drawable = drawable;
+		}
+		LayerList::iterator createLayer(const EntityID &id, const Sprite *sprite)
+		{
+			Layer layer(id, nullptr, 0);
+
+			updateLayer(layer, sprite);
+
 			layers.push_back(layer);
 
 			return layers.end()-1;
 		}
+		void deleteLayer(const PZ::EntityID &id)
+		{
+			LayerList::iterator it = findLayer(id);
+			if (it != layers.end())
+			{
+				delete (*it).drawable;
+				
+				layers.erase(it);
+			}
+		}
+		void clearLayers()
+		{
+			for (LayerList::iterator it = layers.begin(); it != layers.end(); ++it)
+			{
+				delete (*it).drawable;
+				(*it).drawable = nullptr;
+			}
+			layers.clear();
+		}
+
+		Renderer_SFML *i;
 
 		sf::View view;
 		bool isFullscreen;
@@ -113,17 +139,13 @@ namespace PZ
 		float clearLayerLimit;
 	};
 
-	Renderer_SFML::Renderer_SFML(const ServiceType &type, Application &application) : Renderer(type, application), p(new Impl)
+	Renderer_SFML::Renderer_SFML(const ServiceType &type, Application &application) : Renderer(type, application)
 	{
+		p = new Impl(this);
 	}
 	Renderer_SFML::~Renderer_SFML()
 	{
-		for (LayerList::iterator it = p->layers.begin(); it != p->layers.end(); ++it)
-		{
-			delete (*it).drawable;
-			(*it).drawable = nullptr;
-		}
-		p->layers.clear();
+		Stop();
 
 		delete p;
 	}
@@ -148,12 +170,18 @@ namespace PZ
 		p->calculateView(videoMode);
 		p->window.SetView(p->view);
 
+		GetApplication().GetEntityManager().RegisterListener(this);
+
 		return true;
 	}
 	bool Renderer_SFML::Stop()
 	{
 		if (!Renderer::Stop())
 			return false;
+
+		GetApplication().GetEntityManager().UnregisterListener(this);
+
+		p->clearLayers();
 
 		p->window.Close();
 
@@ -175,41 +203,6 @@ namespace PZ
 		}
 		profiler.End();
 
-		profiler.Begin("ClearWindow");
-		p->window.Clear();
-		profiler.End();
-
-		p->clearLayerAcc += deltaTime;
-		if (p->clearLayerAcc >= p->clearLayerLimit)
-		{
-			p->clearLayerAcc -= p->clearLayerLimit;
-
-			profiler.Begin("ClearUnusedLayers");
-			for (LayerList::iterator it = p->layers.begin(); it != p->layers.end();)
-			{
-				if (!(*it).used)
-				{
-					delete (*it).drawable;
-					it = p->layers.erase(it);
-				}
-				else
-				{
-					(*it).used = false;
-					++it;
-				}
-			}
-			profiler.End();
-		}
-		else
-		{
-			profiler.Begin("MarkLayersUnused");
-			for (LayerList::iterator it = p->layers.begin(); it != p->layers.end(); ++it)
-			{
-				(*it).used = false;
-			}
-			profiler.End();
-		}
-
 		profiler.Begin("IterateEntities");
 		{
 			Profile profile("Sprite");
@@ -217,36 +210,33 @@ namespace PZ
 			const EntityComponentMap &ecm = GetApplication().GetEntityManager().GetEntitiesWith<Sprite>();
 			for (EntityComponentMap::const_iterator it = ecm.cbegin(); it != ecm.cend(); ++it)
 			{
-				EntityID id = (*it).first;
-				Sprite *sprite = static_cast<Sprite*>((*it).second);
+				const EntityID &id = (*it).first;
+				const Sprite *sprite = static_cast<Sprite*>((*it).second);
 
 				profiler.Begin("FindSprite");
 				LayerList::iterator layerIt = p->findLayer(id);
-				//TODO: What if the sprite has changed?
 				if (layerIt == p->layers.end())
 				{
 					profiler.Begin("CreateLayer");
 
-					sf::Sprite *sfSprite = nullptr;
+					layerIt = p->createLayer(id, sprite);
 
-					const sfImageAsset *image = GetApplication().GetAssetManager().Get<sfImageAsset>(sprite->GetSprite());
-					if (image != nullptr)
-					{
-						sfSprite = new sf::Sprite(image->GetImage());
-					}
-					else
-					{
-						sfSprite = new sf::Sprite;
-					}
-
-					const Vector2f &center = sprite->GetCenter();
-					sfSprite->SetCenter(sf::Vector2f(center.x, center.y));
-
-					layerIt = p->newLayer(id, sfSprite, 0);
 					profiler.End();
 				}
+
 				Layer &layer = (*layerIt);
-				layer.used = true;
+
+				profiler.End();
+
+				profiler.Begin("CheckTimestamp");
+
+				Timestamp &timestamp = layer.timestamp;
+				if (sprite->GetTimestamp() != timestamp)
+				{
+					p->updateLayer(layer, sprite);
+					timestamp = sprite->GetTimestamp();
+				}
+
 				profiler.End();
 
 				profiler.Begin("GetPosition");
@@ -268,21 +258,27 @@ namespace PZ
 		std::sort(p->layers.begin(), p->layers.end());
 		profiler.End();
 
+		profiler.Begin("ClearWindow");
+		p->window.Clear();
+		profiler.End();
+
 		profiler.Begin("DrawLayers");
 		for (LayerList::const_iterator it = p->layers.cbegin(); it != p->layers.cend(); ++it)
 		{
 			const Layer &layer = (*it);
 
-			if (layer.used)
-			{
-				p->window.Draw(*layer.drawable);
-			}
+			p->window.Draw(*layer.drawable);
 		}
 		profiler.End();
 
 		profiler.Begin("Display");
 		p->window.Display();
 		profiler.End();
+	}
+
+	sf::RenderWindow &Renderer_SFML::GetWindow() const
+	{
+		return p->window;
 	}
 
 	void Renderer_SFML::videoModeUpdated()
@@ -301,8 +297,24 @@ namespace PZ
 		}
 	}
 
-	sf::RenderWindow &Renderer_SFML::GetWindow() const
+	void Renderer_SFML::EntityDestroyedPost(const PZ::EntityID &id)
 	{
-		return p->window;
+		p->deleteLayer(id);
+	}
+
+	void Renderer_SFML::ComponentAddedPost(const PZ::EntityID &id, const PZ::HashString &family)
+	{
+		if (family == Sprite::Family)
+		{
+			const Sprite *sprite = GetApplication().GetEntityManager().GetComponent<Sprite>(id);
+			p->createLayer(id, sprite);
+		}
+	}
+	void Renderer_SFML::ComponentRemovedPost(const PZ::EntityID &id, const PZ::HashString &family)
+	{
+		if (family == Sprite::Family)
+		{
+			p->deleteLayer(id);
+		}
 	}
 }
