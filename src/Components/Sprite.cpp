@@ -24,4 +24,8 @@ THE SOFTWARE.
 namespace PZ
 {
 	const HashString Sprite::Family = "Sprite";
+
+	const std::string Sprite::SPRITE   = "Sprite";
+	const std::string Sprite::CENTER_X = "CenterX";
+	const std::string Sprite::CENTER_Y = "CenterY";
 }

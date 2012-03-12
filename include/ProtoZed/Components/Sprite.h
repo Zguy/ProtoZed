@@ -32,11 +32,15 @@ namespace PZ
 	public:
 		static const HashString Family;
 
+		static const std::string SPRITE;
+		static const std::string CENTER_X;
+		static const std::string CENTER_Y;
+
 		Sprite(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
 		{
-			AddProperty("Sprite", Property::STRING);
-			AddProperty("CenterX", Property::FLOAT);
-			AddProperty("CenterY", Property::FLOAT);
+			AddProperty(SPRITE, Property::STRING);
+			AddProperty(CENTER_X, Property::FLOAT);
+			AddProperty(CENTER_Y, Property::FLOAT);
 		}
 		~Sprite()
 		{
@@ -44,21 +48,21 @@ namespace PZ
 
 		inline const std::string &GetSprite() const
 		{
-			return GetProperty("Sprite").AsString();
+			return GetProperty(SPRITE).AsString();
 		}
 		inline void SetSprite(const std::string &newSprite)
 		{
-			GetProperty("Sprite") = newSprite;
+			GetProperty(SPRITE) = newSprite;
 		}
 
 		inline const Vector2f GetCenter() const
 		{
-			return Vector2f(GetProperty("CenterX").AsFloat(), GetProperty("CenterY").AsFloat());
+			return Vector2f(GetProperty(CENTER_X).AsFloat(), GetProperty(CENTER_Y).AsFloat());
 		}
 		inline void SetCenter(const Vector2f &newCenter)
 		{
-			GetProperty("CenterX").AsFloat() = newCenter.x;
-			GetProperty("CenterY").AsFloat() = newCenter.y;
+			GetProperty(CENTER_X).AsFloat() = newCenter.x;
+			GetProperty(CENTER_Y).AsFloat() = newCenter.y;
 		}
 	};
 }
