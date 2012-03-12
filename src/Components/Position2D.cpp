@@ -32,7 +32,19 @@ namespace PZ
 
 	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos(0.f,0.f), depth(0.f), rotation(0.f), axes(globalAxes), parentAxesCache(globalAxes), inheritAxes(true), inheritPosition(true), inheritRotation(true)
 	{
-		updateChildren();
+		SceneNode *node = GetManager().GetComponent<SceneNode>(GetOwnerID());
+		if (node != nullptr)
+		{
+			Position2D *parentPosition = GetManager().GetComponent<Position2D>(node->GetParentID());
+			if (parentPosition != nullptr)
+			{
+				parentPosition->updateChildren();
+			}
+			else
+			{
+				updateChildren();
+			}
+		}
 	}
 	Position2D::~Position2D()
 	{
@@ -163,6 +175,8 @@ namespace PZ
 					childPosition->parentAxesCache = axes;
 					childPosition->parentPosCache = parentPosCache+pos;
 					childPosition->parentRotationCache = parentRotationCache+rotation;
+
+					childPosition->updateChildren();
 				}
 			}
 		}
