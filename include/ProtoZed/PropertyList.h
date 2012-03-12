@@ -33,6 +33,8 @@ namespace PZ
 
 	class PropertyList
 	{
+		friend class Property;
+
 	public:
 		PropertyList();
 		virtual ~PropertyList();
@@ -51,7 +53,15 @@ namespace PZ
 			return properties;
 		}
 
+	protected:
+		// We pass a const Property because if it is changed within this method we might get infinite recursion
+		virtual void PropertyUpdated(const std::string &name, const Property &prop)
+		{}
+
 	private:
+		bool _AddProperty(const std::string &name, Property *prop);
+		bool _RemoveProperty(const std::string &name);
+
 		PropertyMap properties;
 
 		static Property invalidProperty;

@@ -35,7 +35,13 @@ namespace PZ
 
 	bool PropertyList::AddProperty(const std::string &name, Property::Type type)
 	{
-		return properties.insert(std::make_pair(name, Property::Create(type))).second;
+		if (!name.empty())
+		{
+			Property::Create(name, type, this);
+			return HasProperty(name);
+		}
+
+		return false;
 	}
 	bool PropertyList::RemoveProperty(const std::string &name)
 	{
@@ -43,20 +49,17 @@ namespace PZ
 		if (it != properties.end())
 		{
 			Property::Destroy((*it).second);
-			properties.erase(it);
-
-			return true;
+			return !HasProperty(name);
 		}
 
 		return false;
 	}
 	void PropertyList::ClearProperties()
 	{
-		for (PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
+		while (!properties.empty())
 		{
-			Property::Destroy((*it).second);
+			Property::Destroy((*properties.begin()).second);
 		}
-		properties.clear();
 	}
 
 	bool PropertyList::HasProperty(const std::string &name) const
@@ -83,5 +86,25 @@ namespace PZ
 		}
 
 		return invalidProperty;
+	}
+
+	bool PropertyList::_AddProperty(const std::string &name, Property *prop)
+	{
+		if (prop != nullptr)
+			return properties.insert(std::make_pair(name, prop)).second;
+		else
+			return false;
+	}
+	bool PropertyList::_RemoveProperty(const std::string &name)
+	{
+		PropertyMap::iterator it = properties.find(name);
+		if (it != properties.end())
+		{
+			properties.erase(it);
+
+			return true;
+		}
+
+		return false;
 	}
 }

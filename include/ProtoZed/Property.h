@@ -26,6 +26,8 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class PropertyList;
+
 	class StringProperty;
 	class IntProperty;
 	class FloatProperty;
@@ -44,12 +46,17 @@ namespace PZ
 		};
 
 	protected:
-		Property(Type type);
+		Property(const std::string &name, Type type, PropertyList *list);
 
 	public:
+		Property(const std::string &name, PropertyList *list);
 		Property();
 		virtual ~Property();
 
+		const std::string &GetName() const
+		{
+			return name;
+		}
 		Type GetType() const
 		{
 			return type;
@@ -57,11 +64,11 @@ namespace PZ
 
 		bool IsValid() const
 		{
-			return type != INVALID;
+			return (!name.empty() && type != INVALID && list != nullptr);
 		}
 
-		static Property *Create(Type type);
-		static void Destroy(Property *&property);
+		static Property *Create(const std::string &name, Type type, PropertyList *list);
+		static void Destroy(Property *&prop);
 
 		const StringProperty &AsString() const;
 		StringProperty &AsString();
@@ -77,15 +84,21 @@ namespace PZ
 		const FloatProperty &operator=(float value);
 		const BoolProperty &operator=(bool value);
 
+	protected:
+		void NotifyList();
+
 	private:
+		std::string name;
 		Type type;
+
+		PropertyList *list;
 	};
 
 	class StringProperty : public Property
 	{
 	public:
-		StringProperty();
-		StringProperty(const std::string &str);
+		StringProperty(const std::string &name, PropertyList *list);
+		StringProperty(const std::string &name, const std::string &str, PropertyList *list);
 		~StringProperty();
 
 		const StringProperty &operator=(const std::string &str);
@@ -102,8 +115,8 @@ namespace PZ
 	class IntProperty : public Property
 	{
 	public:
-		IntProperty();
-		IntProperty(int value);
+		IntProperty(const std::string &name, PropertyList *list);
+		IntProperty(const std::string &name, int value, PropertyList *list);
 		~IntProperty();
 
 		const IntProperty &operator=(int value);
@@ -120,8 +133,8 @@ namespace PZ
 	class FloatProperty : public Property
 	{
 	public:
-		FloatProperty();
-		FloatProperty(float value);
+		FloatProperty(const std::string &name, PropertyList *list);
+		FloatProperty(const std::string &name, float value, PropertyList *list);
 		~FloatProperty();
 
 		const FloatProperty &operator=(float value);
@@ -138,8 +151,8 @@ namespace PZ
 	class BoolProperty : public Property
 	{
 	public:
-		BoolProperty();
-		BoolProperty(bool value);
+		BoolProperty(const std::string &name, PropertyList *list);
+		BoolProperty(const std::string &name, bool value, PropertyList *list);
 		~BoolProperty();
 
 		const BoolProperty &operator=(bool value);

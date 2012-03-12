@@ -70,12 +70,12 @@ namespace PZ
 		inline void SetDepth(float newDepth)
 		{
 			depth = newDepth;
-			GetTimestamp().Now();
+			UpdateTimestamp();
 		}
 		inline void MoveDepth(float dDepth)
 		{
 			depth += dDepth;
-			GetTimestamp().Now();
+			UpdateTimestamp();
 		}
 
 		Angle::Degrees GetRotation(Scope::Level scope = Scope::LOCAL) const;
@@ -92,7 +92,7 @@ namespace PZ
 		void SetInheritAxes(bool inherit)
 		{
 			inheritAxes = inherit;
-			GetTimestamp().Now();
+			UpdateTimestamp();
 		}
 		bool GetInheritPosition() const
 		{
@@ -101,7 +101,7 @@ namespace PZ
 		void SetInheritPosition(bool inherit)
 		{
 			inheritPosition = inherit;
-			GetTimestamp().Now();
+			UpdateTimestamp();
 		}
 		bool GetInheritRotation() const
 		{
@@ -110,7 +110,7 @@ namespace PZ
 		void SetInheritRotation(bool inherit)
 		{
 			inheritRotation = inherit;
-			GetTimestamp().Now();
+			UpdateTimestamp();
 		}
 
 		Vector2f ConvertGlobalToLocal(const Vector2f &position) const;

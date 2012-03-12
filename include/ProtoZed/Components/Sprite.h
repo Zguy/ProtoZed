@@ -49,7 +49,6 @@ namespace PZ
 		inline void SetSprite(const std::string &newSprite)
 		{
 			GetProperty("Sprite") = newSprite;
-			GetTimestamp().Now();
 		}
 
 		inline const Vector2f GetCenter() const
@@ -60,8 +59,6 @@ namespace PZ
 		{
 			GetProperty("CenterX").AsFloat() = newCenter.x;
 			GetProperty("CenterY").AsFloat() = newCenter.y;
-
-			GetTimestamp().Now();
 		}
 	};
 }

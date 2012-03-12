@@ -21,39 +21,63 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Property.h>
 
+#include <ProtoZed/PropertyList.h>
+
 #include <cassert>
 
 namespace PZ
 {
-	Property::Property(Type type) : type(type)
+	Property::Property(const std::string &name, Type type, PropertyList *list) : name(name), type(type), list(list)
 	{
+		if (list != nullptr)
+		{
+			if (!list->_AddProperty(name, this))
+			{
+				list = nullptr;
+			}
+		}
 	}
-	Property::Property() : type(INVALID)
+	Property::Property(const std::string &name, PropertyList *list) : name(name), type(INVALID), list(list)
+	{
+		if (list != nullptr)
+		{
+			if (!list->_AddProperty(name, this))
+			{
+				list = nullptr;
+			}
+		}
+	}
+	Property::Property() : name(""), type(INVALID), list(nullptr)
 	{
 	}
 	Property::~Property()
 	{
+		if (list != nullptr)
+		{
+			list->_RemoveProperty(name);
+		}
 	}
 
-	Property *Property::Create(Type type)
+	Property *Property::Create(const std::string &name, Type type, PropertyList *list)
 	{
-		Property *property = nullptr;
+		Property *prop = nullptr;
 
 		switch (type)
 		{
-		case STRING : property = new StringProperty; break;
-		case INT    : property = new IntProperty;    break;
-		case FLOAT  : property = new FloatProperty;  break;
-		case BOOL   : property = new BoolProperty;   break;
-		default     : property = new Property;       break;
+		case STRING : prop = new StringProperty(name, list); break;
+		case INT    : prop = new IntProperty(name, list);    break;
+		case FLOAT  : prop = new FloatProperty(name, list);  break;
+		case BOOL   : prop = new BoolProperty(name, list);   break;
+		default     : prop = new Property(name, list);       break;
 		}
 
-		return property;
+		return prop;
 	}
-	void Property::Destroy(Property *&property)
+	void Property::Destroy(Property *&prop)
 	{
-		delete property;
-		property = nullptr;
+		Property *toDelete = prop;
+		prop = nullptr;
+		delete toDelete;
 	}
 
 	const StringProperty &Property::AsString() const
@@ -114,11 +138,16 @@ namespace PZ
 		return (AsBool() = value);
 	}
 
+	void Property::NotifyList()
+	{
+		list->PropertyUpdated(name, *this);
+	}
 
-	StringProperty::StringProperty() : Property(STRING), str("")
+
+	StringProperty::StringProperty(const std::string &name, PropertyList *list) : Property(name, STRING, list), str("")
 	{
 	}
-	StringProperty::StringProperty(const std::string &str) : Property(STRING), str(str)
+	StringProperty::StringProperty(const std::string &name, const std::string &str, PropertyList *list) : Property(name, STRING, list), str(str)
 	{
 	}
 	StringProperty::~StringProperty()
@@ -129,14 +158,16 @@ namespace PZ
 	{
 		this->str = str;
 
+		NotifyList();
+
 		return *this;
 	}
 
 
-	IntProperty::IntProperty() : Property(INT), value(0)
+	IntProperty::IntProperty(const std::string &name, PropertyList *list) : Property(name, INT, list), value(0)
 	{
 	}
-	IntProperty::IntProperty(int value) : Property(INT), value(value)
+	IntProperty::IntProperty(const std::string &name, int value, PropertyList *list) : Property(name, INT, list), value(value)
 	{
 	}
 	IntProperty::~IntProperty()
@@ -147,14 +178,16 @@ namespace PZ
 	{
 		this->value = value;
 
+		NotifyList();
+
 		return *this;
 	}
 
 
-	FloatProperty::FloatProperty() : Property(FLOAT), value(0.f)
+	FloatProperty::FloatProperty(const std::string &name, PropertyList *list) : Property(name, FLOAT, list), value(0.f)
 	{
 	}
-	FloatProperty::FloatProperty(float value) : Property(FLOAT), value(value)
+	FloatProperty::FloatProperty(const std::string &name, float value, PropertyList *list) : Property(name, FLOAT, list), value(value)
 	{
 	}
 	FloatProperty::~FloatProperty()
@@ -165,14 +198,16 @@ namespace PZ
 	{
 		this->value = value;
 
+		NotifyList();
+
 		return *this;
 	}
 
 
-	BoolProperty::BoolProperty() : Property(BOOL), value(false)
+	BoolProperty::BoolProperty(const std::string &name, PropertyList *list) : Property(name, BOOL, list), value(false)
 	{
 	}
-	BoolProperty::BoolProperty(bool value) : Property(BOOL), value(value)
+	BoolProperty::BoolProperty(const std::string &name, bool value, PropertyList *list) : Property(name, BOOL, list), value(value)
 	{
 	}
 	BoolProperty::~BoolProperty()
@@ -182,6 +217,8 @@ namespace PZ
 	const BoolProperty &BoolProperty::operator=(bool value)
 	{
 		this->value = value;
+
+		NotifyList();
 
 		return *this;
 	}

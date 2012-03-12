@@ -68,9 +68,14 @@ namespace PZ
 		}
 
 	protected:
-		Timestamp &GetTimestamp()
+		void UpdateTimestamp()
 		{
-			return stamp;
+			stamp.Now();
+		}
+
+		virtual void PropertyUpdated(const std::string &name, const Property &prop)
+		{
+			UpdateTimestamp();
 		}
 
 	private:
