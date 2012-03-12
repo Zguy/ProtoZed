@@ -22,7 +22,6 @@ THE SOFTWARE.
 #include <ProtoZed/Components/SceneNode.h>
 
 #include <ProtoZed/Log.h>
-#include <ProtoZed/Messages.h>
 
 namespace PZ
 {

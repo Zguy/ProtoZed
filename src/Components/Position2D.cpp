@@ -21,7 +21,6 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Components/Position2D.h>
 
-#include <ProtoZed/Messages.h>
 #include <ProtoZed/Math.h>
 
 namespace PZ

@@ -23,7 +23,6 @@ THE SOFTWARE.
 #define PZ_SceneNode_h__
 
 #include <ProtoZed/Component.h>
-#include <ProtoZed/MetaEntity.h>
 
 namespace PZ
 {
