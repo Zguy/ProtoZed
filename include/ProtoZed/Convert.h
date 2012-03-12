@@ -40,6 +40,10 @@ namespace PZ
 		{
 			return boost::lexical_cast<T, std::string>(str);
 		}
+
+		// Bool
+		template<> std::string ToString<bool>(const bool &value);
+		template<> bool FromString<bool>(const std::string &str);
 	}
 }
 
