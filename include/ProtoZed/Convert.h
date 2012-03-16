@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Convert_h__
 #define PZ_Convert_h__
 
+#include <ProtoZed/Vector2.h>
+
 #include <boost/lexical_cast.hpp>
 
 #include <string>
@@ -44,6 +46,10 @@ namespace PZ
 		// Bool
 		template<> std::string ToString<bool>(const bool &value);
 		template<> bool FromString<bool>(const std::string &str);
+
+		// Vector2
+		template<> std::string ToString<Vector2f>(const Vector2f &value);
+		template<> Vector2f FromString<Vector2f>(const std::string &str);
 	}
 }
 

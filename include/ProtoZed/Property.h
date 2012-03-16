@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Property_h__
 #define PZ_Property_h__
 
+#include <ProtoZed/Vector2.h>
+
 #include <string>
 
 namespace PZ
@@ -32,6 +34,7 @@ namespace PZ
 	class IntProperty;
 	class FloatProperty;
 	class BoolProperty;
+	class Vector2Property;
 
 	class Property
 	{
@@ -42,7 +45,8 @@ namespace PZ
 			STRING,
 			INT,
 			FLOAT,
-			BOOL
+			BOOL,
+			VECTOR2
 		};
 
 	protected:
@@ -78,11 +82,14 @@ namespace PZ
 		FloatProperty &AsFloat();
 		const BoolProperty &AsBool() const;
 		BoolProperty &AsBool();
+		const Vector2Property &AsVector2() const;
+		Vector2Property &AsVector2();
 
 		const StringProperty &operator=(const std::string &str);
 		const IntProperty &operator=(int value);
 		const FloatProperty &operator=(float value);
 		const BoolProperty &operator=(bool value);
+		const Vector2Property &operator=(const Vector2f &value);
 
 	protected:
 		void NotifyList();
@@ -164,6 +171,24 @@ namespace PZ
 
 	private:
 		bool value;
+	};
+
+	class Vector2Property : public Property
+	{
+	public:
+		Vector2Property(const std::string &name, PropertyList *list);
+		Vector2Property(const std::string &name, const Vector2f &value, PropertyList *list);
+		~Vector2Property();
+
+		const Vector2Property &operator=(const Vector2f &value);
+
+		operator const Vector2f&() const
+		{
+			return value;
+		}
+
+	private:
+		Vector2f value;
 	};
 }
 

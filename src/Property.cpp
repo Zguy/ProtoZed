@@ -64,11 +64,12 @@ namespace PZ
 
 		switch (type)
 		{
-		case STRING : prop = new StringProperty(name, list); break;
-		case INT    : prop = new IntProperty(name, list);    break;
-		case FLOAT  : prop = new FloatProperty(name, list);  break;
-		case BOOL   : prop = new BoolProperty(name, list);   break;
-		default     : prop = new Property(name, list);       break;
+		case STRING  : prop = new StringProperty(name, list);  break;
+		case INT     : prop = new IntProperty(name, list);     break;
+		case FLOAT   : prop = new FloatProperty(name, list);   break;
+		case BOOL    : prop = new BoolProperty(name, list);    break;
+		case VECTOR2 : prop = new Vector2Property(name, list); break;
+		default      : prop = new Property(name, list);        break;
 		}
 
 		return prop;
@@ -120,6 +121,16 @@ namespace PZ
 		assert(type == BOOL);
 		return *static_cast<BoolProperty*>(this);
 	}
+	const Vector2Property &Property::AsVector2() const
+	{
+		assert(type == VECTOR2);
+		return *static_cast<const Vector2Property*>(this);
+	}
+	Vector2Property &Property::AsVector2()
+	{
+		assert(type == VECTOR2);
+		return *static_cast<Vector2Property*>(this);
+	}
 
 	const StringProperty &Property::operator=(const std::string &str)
 	{
@@ -136,6 +147,10 @@ namespace PZ
 	const BoolProperty &Property::operator=(bool value)
 	{
 		return (AsBool() = value);
+	}
+	const Vector2Property &Property::operator=(const Vector2f &value)
+	{
+		return (AsVector2() = value);
 	}
 
 	void Property::NotifyList()
@@ -215,6 +230,26 @@ namespace PZ
 	}
 
 	const BoolProperty &BoolProperty::operator=(bool value)
+	{
+		this->value = value;
+
+		NotifyList();
+
+		return *this;
+	}
+
+
+	Vector2Property::Vector2Property(const std::string &name, PropertyList *list) : Property(name, VECTOR2, list)
+	{
+	}
+	Vector2Property::Vector2Property(const std::string &name, const Vector2f &value, PropertyList *list) : Property(name, VECTOR2, list), value(value)
+	{
+	}
+	Vector2Property::~Vector2Property()
+	{
+	}
+
+	const Vector2Property &Vector2Property::operator=(const Vector2f &value)
 	{
 		this->value = value;
 

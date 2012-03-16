@@ -33,14 +33,12 @@ namespace PZ
 		static const HashString Family;
 
 		static const std::string SPRITE;
-		static const std::string CENTER_X;
-		static const std::string CENTER_Y;
+		static const std::string CENTER;
 
 		Sprite(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
 		{
 			AddProperty(SPRITE, Property::STRING);
-			AddProperty(CENTER_X, Property::FLOAT);
-			AddProperty(CENTER_Y, Property::FLOAT);
+			AddProperty(CENTER, Property::VECTOR2);
 		}
 		~Sprite()
 		{
@@ -57,12 +55,11 @@ namespace PZ
 
 		inline const Vector2f GetCenter() const
 		{
-			return Vector2f(GetProperty(CENTER_X).AsFloat(), GetProperty(CENTER_Y).AsFloat());
+			return GetProperty(CENTER).AsVector2();
 		}
 		inline void SetCenter(const Vector2f &newCenter)
 		{
-			GetProperty(CENTER_X).AsFloat() = newCenter.x;
-			GetProperty(CENTER_Y).AsFloat() = newCenter.y;
+			GetProperty(CENTER) = newCenter;
 		}
 	};
 }
