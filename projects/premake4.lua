@@ -42,7 +42,7 @@ function DefineService(name, includes)
 	project ("Service_"..name)
 	defines { "PROFILER" }
 	files { "../services/"..name.."/**.*" }
-	includedirs { "../services/"..name.."/include/", "../include/", includes }
+	includedirs { "../services/"..name.."/include/", "../include/", "C:/SDK/boost_1_48_0", includes }
 	kind "StaticLib"
 	
 	configuration "Release"
