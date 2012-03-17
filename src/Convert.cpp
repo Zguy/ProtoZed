@@ -57,5 +57,23 @@ namespace PZ
 
 			return Vector2f(Convert::FromString<float>(left), Convert::FromString<float>(right));
 		}
+
+		// Angle
+		template<> std::string ToString<Angle::Degrees>(const Angle::Degrees &value)
+		{
+			return ToString(value.ToFloat());
+		}
+		template<> Angle::Degrees FromString<Angle::Degrees>(const std::string &str)
+		{
+			return Angle::Degrees(FromString<float>(str));
+		}
+		template<> std::string ToString<Angle::Radians>(const Angle::Radians &value)
+		{
+			return ToString(value.ToFloat());
+		}
+		template<> Angle::Radians FromString<Angle::Radians>(const std::string &str)
+		{
+			return Angle::Radians(FromString<float>(str));
+		}
 	}
 }

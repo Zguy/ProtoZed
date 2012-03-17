@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_Convert_h__
 
 #include <ProtoZed/Vector2.h>
+#include <ProtoZed/Angle.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -50,6 +51,12 @@ namespace PZ
 		// Vector2
 		template<> std::string ToString<Vector2f>(const Vector2f &value);
 		template<> Vector2f FromString<Vector2f>(const std::string &str);
+
+		// Angle
+		template<> std::string ToString<Angle::Degrees>(const Angle::Degrees &value);
+		template<> Angle::Degrees FromString<Angle::Degrees>(const std::string &str);
+		template<> std::string ToString<Angle::Radians>(const Angle::Radians &value);
+		template<> Angle::Radians FromString<Angle::Radians>(const std::string &str);
 	}
 }
 
