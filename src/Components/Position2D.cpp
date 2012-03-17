@@ -29,8 +29,16 @@ namespace PZ
 
 	const Axes Position2D::globalAxes(Vector2f(1.f,0.f), Vector2f(0.f,1.f));
 
-	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos(0.f,0.f), depth(0.f), rotation(0.f), axes(globalAxes), parentAxesCache(globalAxes), inheritAxes(true), inheritPosition(true), inheritRotation(true)
+	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos("Position", Vector2f(0.f,0.f)), depth("Depth", 0.f), rotation("Rotation", Angle::Degrees(0.f)), axes(globalAxes), parentAxesCache(globalAxes), inheritAxes("InheritAxes", true), inheritPosition("InheritPosition", true), inheritRotation("InheritRotation", true)
 	{
+		AddProperty(pos);
+		AddProperty(depth);
+		AddProperty(rotation);
+
+		AddProperty(inheritAxes);
+		AddProperty(inheritPosition);
+		AddProperty(inheritRotation);
+
 		SceneNode *node = GetManager().GetComponent<SceneNode>(GetOwnerID());
 		if (node != nullptr)
 		{
@@ -73,7 +81,6 @@ namespace PZ
 			pos = newPos;
 		}
 
-		UpdateTimestamp();
 		updateChildren();
 	}
 
@@ -109,7 +116,6 @@ namespace PZ
 				rotation = newRotation;
 		}
 
-		UpdateTimestamp();
 		updateAxes();
 	}
 
@@ -148,6 +154,13 @@ namespace PZ
 	bool Position2D::HandleMessage(const Message &message)
 	{
 		return false;
+	}
+
+	void Position2D::PropertyUpdated(const PropertyBase &prop)
+	{
+		Component::PropertyUpdated(prop);
+
+		updateAxes();
 	}
 
 	void Position2D::updateAxes()

@@ -23,8 +23,6 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	Property PropertyList::invalidProperty = Property();
-
 	PropertyList::PropertyList()
 	{
 	}
@@ -33,14 +31,14 @@ namespace PZ
 		ClearProperties();
 	}
 
-	bool PropertyList::AddProperty(const std::string &name, Property::Type type)
+	bool PropertyList::AddProperty(PropertyBase &prop)
 	{
-		if (!name.empty())
+		if (_AddProperty(&prop))
 		{
-			Property::Create(name, type, this);
-			return HasProperty(name);
+			prop.list = this;
+			return true;
 		}
-
+		
 		return false;
 	}
 	bool PropertyList::RemoveProperty(const std::string &name)
@@ -48,18 +46,26 @@ namespace PZ
 		PropertyMap::iterator it = properties.find(name);
 		if (it != properties.end())
 		{
-			Property::Destroy((*it).second);
-			return !HasProperty(name);
+			PropertyBase *prop = (*it).second;
+			prop->list = nullptr;
+
+			properties.erase(it);
+
+			return true;
 		}
 
 		return false;
 	}
 	void PropertyList::ClearProperties()
 	{
-		while (!properties.empty())
+		for (PropertyMap::iterator it = properties.begin(); it != properties.end(); ++it)
 		{
-			Property::Destroy((*properties.begin()).second);
+			PropertyBase *&prop = (*it).second;
+			prop->list = nullptr;
+
+			prop = nullptr;
 		}
+		properties.clear();
 	}
 
 	bool PropertyList::HasProperty(const std::string &name) const
@@ -67,31 +73,31 @@ namespace PZ
 		return (properties.find(name) != properties.end());
 	}
 
-	Property &PropertyList::GetProperty(const std::string &name)
+	PropertyBase *PropertyList::GetProperty(const std::string &name)
 	{
 		PropertyMap::iterator it = properties.find(name);
 		if (it != properties.end())
 		{
-			return *(*it).second;
+			return (*it).second;
 		}
 
-		return invalidProperty;
+		return nullptr;
 	}
-	const Property &PropertyList::GetProperty(const std::string &name) const
+	const PropertyBase *PropertyList::GetProperty(const std::string &name) const
 	{
 		PropertyMap::const_iterator it = properties.find(name);
 		if (it != properties.end())
 		{
-			return *(*it).second;
+			return (*it).second;
 		}
 
-		return invalidProperty;
+		return nullptr;
 	}
 
-	bool PropertyList::_AddProperty(const std::string &name, Property *prop)
+	bool PropertyList::_AddProperty(PropertyBase *prop)
 	{
-		if (prop != nullptr)
-			return properties.insert(std::make_pair(name, prop)).second;
+		if (prop != nullptr && prop->IsValid() && !prop->IsInList())
+			return properties.insert(std::make_pair(prop->GetName(), prop)).second;
 		else
 			return false;
 	}

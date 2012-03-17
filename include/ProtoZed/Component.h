@@ -73,7 +73,7 @@ namespace PZ
 			stamp.Now();
 		}
 
-		virtual void PropertyUpdated(const std::string &name, const Property &prop)
+		virtual void PropertyUpdated(const PropertyBase &prop)
 		{
 			UpdateTimestamp();
 		}

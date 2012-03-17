@@ -22,7 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Property_h__
 #define PZ_Property_h__
 
-#include <ProtoZed/Vector2.h>
+#include <ProtoZed/NonCopyable.h>
+#include <ProtoZed/Convert.h>
 
 #include <string>
 
@@ -30,165 +31,80 @@ namespace PZ
 {
 	class PropertyList;
 
-	class StringProperty;
-	class IntProperty;
-	class FloatProperty;
-	class BoolProperty;
-	class Vector2Property;
-
-	class Property
+	class PropertyBase : public NonCopyable
 	{
-	public:
-		enum Type
-		{
-			INVALID,
-			STRING,
-			INT,
-			FLOAT,
-			BOOL,
-			VECTOR2
-		};
-
-	protected:
-		Property(const std::string &name, Type type, PropertyList *list);
+		friend class PropertyList;
 
 	public:
-		Property(const std::string &name, PropertyList *list);
-		Property();
-		virtual ~Property();
+		explicit PropertyBase(const std::string &name, PropertyList *list = nullptr);
+		virtual ~PropertyBase();
 
 		const std::string &GetName() const
 		{
 			return name;
 		}
-		Type GetType() const
-		{
-			return type;
-		}
 
 		bool IsValid() const
 		{
-			return (!name.empty() && type != INVALID && list != nullptr);
+			return (!name.empty());
+		}
+		bool IsInList() const
+		{
+			return (list != nullptr);
 		}
 
-		static Property *Create(const std::string &name, Type type, PropertyList *list);
-		static void Destroy(Property *&prop);
-
-		const StringProperty &AsString() const;
-		StringProperty &AsString();
-		const IntProperty &AsInt() const;
-		IntProperty &AsInt();
-		const FloatProperty &AsFloat() const;
-		FloatProperty &AsFloat();
-		const BoolProperty &AsBool() const;
-		BoolProperty &AsBool();
-		const Vector2Property &AsVector2() const;
-		Vector2Property &AsVector2();
-
-		const StringProperty &operator=(const std::string &str);
-		const IntProperty &operator=(int value);
-		const FloatProperty &operator=(float value);
-		const BoolProperty &operator=(bool value);
-		const Vector2Property &operator=(const Vector2f &value);
+		// Is this the best way?
+		virtual std::string ToString() const = 0;
+		virtual void FromString(const std::string &str) = 0;
 
 	protected:
 		void NotifyList();
 
 	private:
 		std::string name;
-		Type type;
 
 		PropertyList *list;
 	};
 
-	class StringProperty : public Property
+	template<typename T>
+	class Property : public PropertyBase
 	{
 	public:
-		StringProperty(const std::string &name, PropertyList *list);
-		StringProperty(const std::string &name, const std::string &str, PropertyList *list);
-		~StringProperty();
-
-		const StringProperty &operator=(const std::string &str);
-
-		operator const std::string&() const
+		explicit Property(const std::string &name, PropertyList *list = nullptr) : PropertyBase(name, list)
 		{
-			return str;
+		}
+		Property(const std::string &name, const T &value, PropertyList *list = nullptr) : PropertyBase(name, list), value(value)
+		{
+		}
+		~Property()
+		{
 		}
 
-	private:
-		std::string str;
-	};
+		const Property &operator=(const T &value)
+		{
+			this->value = value;
 
-	class IntProperty : public Property
-	{
-	public:
-		IntProperty(const std::string &name, PropertyList *list);
-		IntProperty(const std::string &name, int value, PropertyList *list);
-		~IntProperty();
+			NotifyList();
 
-		const IntProperty &operator=(int value);
+			return *this;
+		}
 
-		operator int() const
+		operator const T&() const
 		{
 			return value;
 		}
 
-	private:
-		int value;
-	};
-
-	class FloatProperty : public Property
-	{
-	public:
-		FloatProperty(const std::string &name, PropertyList *list);
-		FloatProperty(const std::string &name, float value, PropertyList *list);
-		~FloatProperty();
-
-		const FloatProperty &operator=(float value);
-
-		operator float() const
+		std::string ToString() const
 		{
-			return value;
+			return Convert::ToString(value);
+		}
+		void FromString(const std::string &str)
+		{
+			(*this) = Convert::FromString<T>(str);
 		}
 
 	private:
-		float value;
-	};
-
-	class BoolProperty : public Property
-	{
-	public:
-		BoolProperty(const std::string &name, PropertyList *list);
-		BoolProperty(const std::string &name, bool value, PropertyList *list);
-		~BoolProperty();
-
-		const BoolProperty &operator=(bool value);
-
-		operator bool() const
-		{
-			return value;
-		}
-
-	private:
-		bool value;
-	};
-
-	class Vector2Property : public Property
-	{
-	public:
-		Vector2Property(const std::string &name, PropertyList *list);
-		Vector2Property(const std::string &name, const Vector2f &value, PropertyList *list);
-		~Vector2Property();
-
-		const Vector2Property &operator=(const Vector2f &value);
-
-		operator const Vector2f&() const
-		{
-			return value;
-		}
-
-	private:
-		Vector2f value;
+		T value;
 	};
 }
 

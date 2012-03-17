@@ -70,12 +70,10 @@ namespace PZ
 		inline void SetDepth(float newDepth)
 		{
 			depth = newDepth;
-			UpdateTimestamp();
 		}
 		inline void MoveDepth(float dDepth)
 		{
-			depth += dDepth;
-			UpdateTimestamp();
+			depth = depth + dDepth;
 		}
 
 		Angle::Degrees GetRotation(Scope::Level scope = Scope::LOCAL) const;
@@ -92,7 +90,6 @@ namespace PZ
 		void SetInheritAxes(bool inherit)
 		{
 			inheritAxes = inherit;
-			UpdateTimestamp();
 		}
 		bool GetInheritPosition() const
 		{
@@ -101,7 +98,6 @@ namespace PZ
 		void SetInheritPosition(bool inherit)
 		{
 			inheritPosition = inherit;
-			UpdateTimestamp();
 		}
 		bool GetInheritRotation() const
 		{
@@ -110,7 +106,6 @@ namespace PZ
 		void SetInheritRotation(bool inherit)
 		{
 			inheritRotation = inherit;
-			UpdateTimestamp();
 		}
 
 		Vector2f ConvertGlobalToLocal(const Vector2f &position) const;
@@ -118,13 +113,16 @@ namespace PZ
 
 		virtual bool HandleMessage(const Message &message);
 
+	protected:
+		virtual void PropertyUpdated(const PropertyBase &prop);
+
 	private:
 		void updateAxes();
 		void updateChildren();
 
-		Vector2f pos;
-		float depth;
-		Angle::Degrees rotation;
+		Property<Vector2f> pos;
+		Property<float> depth;
+		Property<Angle::Degrees> rotation;
 
 		Axes axes;
 
@@ -132,9 +130,9 @@ namespace PZ
 		Vector2f parentPosCache;
 		Angle::Degrees parentRotationCache;
 
-		bool inheritAxes;
-		bool inheritPosition;
-		bool inheritRotation;
+		Property<bool> inheritAxes;
+		Property<bool> inheritPosition;
+		Property<bool> inheritRotation;
 
 		static const Axes globalAxes;
 	};

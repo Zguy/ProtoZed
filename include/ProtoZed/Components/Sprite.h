@@ -32,35 +32,30 @@ namespace PZ
 	public:
 		static const HashString Family;
 
-		static const std::string SPRITE;
-		static const std::string CENTER;
-
-		Sprite(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
-		{
-			AddProperty(SPRITE, Property::STRING);
-			AddProperty(CENTER, Property::VECTOR2);
-		}
-		~Sprite()
-		{
-		}
+		Sprite(const EntityID &owner, EntityManager &manager);
+		~Sprite();
 
 		inline const std::string &GetSprite() const
 		{
-			return GetProperty(SPRITE).AsString();
+			return sprite;
 		}
 		inline void SetSprite(const std::string &newSprite)
 		{
-			GetProperty(SPRITE) = newSprite;
+			sprite = newSprite;
 		}
 
 		inline const Vector2f GetCenter() const
 		{
-			return GetProperty(CENTER).AsVector2();
+			return center;
 		}
 		inline void SetCenter(const Vector2f &newCenter)
 		{
-			GetProperty(CENTER) = newCenter;
+			center = newCenter;
 		}
+
+	private:
+		Property<std::string> sprite;
+		Property<Vector2f> center;
 	};
 }
 

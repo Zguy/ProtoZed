@@ -29,24 +29,35 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	typedef std::map<std::string, Property*> PropertyMap;
+	typedef std::map<std::string, PropertyBase*> PropertyMap;
 
 	class PropertyList
 	{
-		friend class Property;
+		friend class PropertyBase;
 
 	public:
 		PropertyList();
 		virtual ~PropertyList();
 
-		bool AddProperty(const std::string &name, Property::Type type);
+		bool AddProperty(PropertyBase &prop);
 		bool RemoveProperty(const std::string &name);
 		void ClearProperties();
 
 		bool HasProperty(const std::string &name) const;
 
-		Property &GetProperty(const std::string &name);
-		const Property &GetProperty(const std::string &name) const;
+		PropertyBase *GetProperty(const std::string &name);
+		const PropertyBase *GetProperty(const std::string &name) const;
+
+		template<typename T>
+		Property<T> *GetProperty(const std::string &name)
+		{
+			return dynamic_cast<Property<T>*>(GetProperty(name));
+		}
+		template<typename T>
+		const Property<T> *GetProperty(const std::string &name) const
+		{
+			return dynamic_cast<const Property<T>*>(GetProperty(name));
+		}
 
 		const PropertyMap &GetAllProperties() const
 		{
@@ -54,17 +65,15 @@ namespace PZ
 		}
 
 	protected:
-		// We pass a const Property because if it is changed within this method we might get infinite recursion
-		virtual void PropertyUpdated(const std::string &name, const Property &prop)
+		// We pass a const PropertyBase because if it is changed within this method we might get infinite recursion
+		virtual void PropertyUpdated(const PropertyBase &prop)
 		{}
 
 	private:
-		bool _AddProperty(const std::string &name, Property *prop);
+		bool _AddProperty(PropertyBase *prop);
 		bool _RemoveProperty(const std::string &name);
 
 		PropertyMap properties;
-
-		static Property invalidProperty;
 	};
 }
 

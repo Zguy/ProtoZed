@@ -25,6 +25,12 @@ namespace PZ
 {
 	const HashString Sprite::Family = "Sprite";
 
-	const std::string Sprite::SPRITE = "Sprite";
-	const std::string Sprite::CENTER = "Center";
+	Sprite::Sprite(const EntityID &owner, EntityManager &manager) : Component(owner, manager), sprite("Sprite"), center("Center")
+	{
+		AddProperty(sprite);
+		AddProperty(center);
+	}
+	Sprite::~Sprite()
+	{
+	}
 }
