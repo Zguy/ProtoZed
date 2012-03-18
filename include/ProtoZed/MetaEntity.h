@@ -167,12 +167,27 @@ namespace PZ
 				return nullptr;
 		}
 
+		void GetAllComponents(ComponentList &list) const
+		{
+			if (IsValid())
+				return manager->GetAllComponents(id, list);
+		}
+
 		bool SendMessage(const Message &message) const
 		{
 			if (IsValid())
 				return manager->SendMessage(message, id);
 			else
 				return false;
+		}
+
+		bool operator==(const MetaEntity &other)
+		{
+			return (GetID() == other.GetID());
+		}
+		bool operator!=(const MetaEntity &other)
+		{
+			return !(*this == other);
 		}
 
 	private:
