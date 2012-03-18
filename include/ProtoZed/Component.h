@@ -44,6 +44,9 @@ namespace PZ
 		{}
 
 	public:
+		virtual void Update(float deltaTime)
+		{}
+
 		virtual bool HandleMessage(const Message &message)
 		{
 			return false;

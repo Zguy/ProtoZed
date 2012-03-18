@@ -249,6 +249,8 @@ namespace PZ
 			return GetEntitiesWithImpl(family);
 		}
 
+		void UpdateAll(float deltaTime);
+
 		void SendMessageToAll(const Message &message) const;
 		bool SendMessage(const Message &message, const EntityID &to) const;
 

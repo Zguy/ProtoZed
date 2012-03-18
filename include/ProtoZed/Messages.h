@@ -28,10 +28,9 @@ namespace PZ
 {
 	namespace Messages
 	{
-		static const MessageType UPDATE = "Update";
 	}
 
-	struct UpdateMessage
+	/*struct UpdateMessage
 	{
 		UpdateMessage(const Message &message)
 		{
@@ -47,7 +46,7 @@ namespace PZ
 		}
 
 		float deltaTime;
-	};
+	};*/
 }
 
 #endif // PZ_Messages_h__

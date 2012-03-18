@@ -142,6 +142,7 @@ namespace PZ
 			float deltaTime = frameTimer.GetElapsedTime();
 			frameTimer.Reset();
 
+			Update(deltaTime);
 
 			p->services.UpdateAll(deltaTime);
 
@@ -149,8 +150,6 @@ namespace PZ
 				Profile profile("StateManager");
 				p->stateManager.Update();
 			}
-
-			Update(deltaTime);
 
 			{
 				Profile profile("CurrentState");
@@ -163,7 +162,7 @@ namespace PZ
 
 			{
 				Profile profile("UpdateComponents");
-				p->entityManager.SendMessageToAll(UpdateMessage::Create(deltaTime));
+				p->entityManager.UpdateAll(deltaTime);
 			}
 
 			if (p->stateManager.IsEmpty())
