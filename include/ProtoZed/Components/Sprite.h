@@ -35,13 +35,13 @@ namespace PZ
 		Sprite(const EntityID &owner, EntityManager &manager);
 		~Sprite();
 
-		inline const std::string &GetSprite() const
+		inline const std::string &GetImage() const
 		{
-			return sprite;
+			return image;
 		}
-		inline void SetSprite(const std::string &newSprite)
+		inline void SetImage(const std::string &newImage)
 		{
-			sprite = newSprite;
+			image = newImage;
 		}
 
 		inline const Vector2f GetCenter() const
@@ -54,7 +54,7 @@ namespace PZ
 		}
 
 	private:
-		Property<std::string> sprite;
+		Property<std::string> image;
 		Property<Vector2f> center;
 	};
 }

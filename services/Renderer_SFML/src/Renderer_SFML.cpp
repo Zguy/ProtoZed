@@ -83,9 +83,9 @@ namespace PZ
 
 			sf::Sprite *drawable = new sf::Sprite;
 
-			if (!sprite->GetSprite().empty())
+			if (!sprite->GetImage().empty())
 			{
-				const sfImageAsset *image = assetManager.Get<sfImageAsset>(sprite->GetSprite());
+				const sfImageAsset *image = assetManager.Get<sfImageAsset>(sprite->GetImage());
 				if (image != nullptr)
 				{
 					drawable->SetImage(image->GetImage());
