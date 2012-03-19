@@ -45,18 +45,18 @@ namespace PZ
 
 		bool HasProperty(const std::string &name) const;
 
-		PropertyBase *GetProperty(const std::string &name);
-		const PropertyBase *GetProperty(const std::string &name) const;
+		PropertyBase &GetProperty(const std::string &name);
+		const PropertyBase &GetProperty(const std::string &name) const;
 
 		template<typename T>
-		Property<T> *GetProperty(const std::string &name)
+		Property<T> &GetProperty(const std::string &name)
 		{
-			return dynamic_cast<Property<T>*>(GetProperty(name));
+			return dynamic_cast<Property<T>&>(GetProperty(name));
 		}
 		template<typename T>
-		const Property<T> *GetProperty(const std::string &name) const
+		const Property<T> &GetProperty(const std::string &name) const
 		{
-			return dynamic_cast<const Property<T>*>(GetProperty(name));
+			return dynamic_cast<const Property<T>&>(GetProperty(name));
 		}
 
 		const PropertyMap &GetAllProperties() const

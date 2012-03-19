@@ -73,25 +73,31 @@ namespace PZ
 		return (properties.find(name) != properties.end());
 	}
 
-	PropertyBase *PropertyList::GetProperty(const std::string &name)
+	PropertyBase &PropertyList::GetProperty(const std::string &name)
 	{
+		PropertyBase *prop = nullptr;
+
 		PropertyMap::iterator it = properties.find(name);
 		if (it != properties.end())
 		{
-			return (*it).second;
+			prop = (*it).second;
 		}
 
-		return nullptr;
+		assert(prop != nullptr);
+		return *prop;
 	}
-	const PropertyBase *PropertyList::GetProperty(const std::string &name) const
+	const PropertyBase &PropertyList::GetProperty(const std::string &name) const
 	{
+		const PropertyBase *prop = nullptr;
+
 		PropertyMap::const_iterator it = properties.find(name);
 		if (it != properties.end())
 		{
-			return (*it).second;
+			prop = (*it).second;
 		}
 
-		return nullptr;
+		assert(prop != nullptr);
+		return *prop;
 	}
 
 	bool PropertyList::_AddProperty(PropertyBase *prop)
