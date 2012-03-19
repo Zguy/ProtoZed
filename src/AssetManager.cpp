@@ -119,13 +119,26 @@ namespace PZ
 		{
 			if (fileIt != fileIndex.end())
 			{
-				delete (*fileIt).second.first;
-				(*fileIt).second.first = nullptr;
+				if (isLoaded(fileIt))
+				{
+					if (!(*fileIt).second.first->unload())
+					{
+						Log::Warning("ProtoZed", "The file \""+(*fileIt).first.ToString()+" failed to unload");
+					}
+
+					delete (*fileIt).second.first;
+					(*fileIt).second.first = nullptr;
+				}
 
 				return true;
 			}
 
 			return false;
+		}
+
+		bool isLoaded(FileIndex::iterator fileIt)
+		{
+			return ((*fileIt).second.first != nullptr);
 		}
 
 		const AssetType &getType(const Path &filename) const
