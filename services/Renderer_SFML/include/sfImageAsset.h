@@ -32,26 +32,33 @@ namespace PZ
 	{
 	public:
 		sfImageAsset()
-		{}
+		{
+			image = new sf::Image;
+		}
 		~sfImageAsset()
-		{}
+		{
+			delete image;
+		}
 
 		const sf::Image &GetImage() const
 		{
-			return image;
+			return *image;
 		}
 
 	private:
 		virtual bool load(const PZ::DataChunk &data)
 		{
-			return image.LoadFromMemory(data.GetData(), data.GetSize());
+			return image->LoadFromMemory(data.GetData(), data.GetSize());
 		}
 		virtual bool unload()
 		{
-			return image.Create(0,0);
+			image->~Image();
+			new (image) sf::Image;
+
+			return true;
 		}
 
-		sf::Image image;
+		sf::Image *image;
 	};
 }
 
