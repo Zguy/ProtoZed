@@ -53,12 +53,12 @@ namespace PZ
 	class AppStateManager::Impl
 	{
 	public:
-		Impl(Application &application) : application(application)
+		Impl(Application *application) : application(application)
 		{}
 
 		AppState *getNewStateByName(const std::string &stateName)
 		{
-			return appStateFactory.Create(stateName, application);
+			return appStateFactory.Create(stateName, *application);
 		}
 
 		void change(const std::string &stateName, StringMap &options)
@@ -142,14 +142,14 @@ namespace PZ
 			}
 		}
 
-		Application &application;
+		Application *application;
 
 		StateStack stateStack;
 		TodoQueue  todoQueue;
 		AppStateManager::AppStateFactory appStateFactory;
 	};
 
-	AppStateManager::AppStateManager(Application &application) : p(new Impl(application))
+	AppStateManager::AppStateManager(Application &application) : p(new Impl(&application))
 	{
 	}
 	AppStateManager::~AppStateManager()
