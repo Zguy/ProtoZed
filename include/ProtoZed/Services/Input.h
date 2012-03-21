@@ -180,34 +180,21 @@ namespace PZ
 	class Input : public Service
 	{
 	public:
-		Input(const ServiceType &type, Application &application);
-		~Input();
+		Input(const ServiceType &type, Application &application) : Service(type, application)
+		{}
+		virtual ~Input()
+		{}
 	
 		virtual void Update(float deltaTime) = 0;
 
-		bool IsKeyDown(Key::Code KeyCode) const;
+		virtual bool IsKeyDown(Key::Code keyCode) const = 0;
 	
-		float GetMouseX() const;
-		float GetMouseY() const;
-		bool IsMouseButtonDown(Mouse::Button Button) const;
+		virtual float GetMouseX() const = 0;
+		virtual float GetMouseY() const = 0;
+		virtual bool IsMouseButtonDown(Mouse::Button button) const = 0;
 	
-		float GetJoystickAxis(unsigned int JoyId, Joy::Axis Axis) const;
-		bool IsJoystickButtonDown(unsigned int JoyId, unsigned int Button) const;
-	
-		Input &operator=(const Input &rhs);
-	
-		bool operator==(const Input &rhs);
-		bool operator!=(const Input &rhs);
-	
-	protected:
-		void ResetStates();
-	
-		bool  myKeys[Key::Count];
-		bool  myMouseButtons[Mouse::ButtonCount];
-		float myMouseX;
-		float myMouseY;
-		bool  myJoystickButtons[Joy::Count][Joy::ButtonCount];
-		float myJoystickAxis[Joy::Count][Joy::AxisCount];
+		virtual float GetJoystickAxis(unsigned int joyId, Joy::Axis axis) const = 0;
+		virtual bool IsJoystickButtonDown(unsigned int joyId, unsigned int button) const = 0;
 	};
 }
 

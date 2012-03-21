@@ -30,8 +30,9 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	Input_SFML::Input_SFML(const ServiceType &type, Application &application) : Input(type, application)
+	Input_SFML::Input_SFML(const ServiceType &type, Application &application) : Input(type, application), myMouseX(0.f), myMouseY(0.f)
 	{
+		ResetStates();
 	}
 	Input_SFML::~Input_SFML()
 	{
@@ -64,6 +65,58 @@ namespace PZ
 			const sf::Vector2f mouse = renderer->GetWindow().ConvertCoords(input.GetMouseX(), input.GetMouseY());
 			myMouseX = mouse.x;
 			myMouseY = mouse.y;
+		}
+	}
+
+	bool Input_SFML::IsKeyDown(Key::Code keyCode) const
+	{
+		return myKeys[keyCode];
+	}
+
+	float Input_SFML::GetMouseX() const
+	{
+		return myMouseX;
+	}
+	float Input_SFML::GetMouseY() const
+	{
+		return myMouseY;
+	}
+	bool Input_SFML::IsMouseButtonDown(Mouse::Button button) const
+	{
+		return myMouseButtons[button];
+	}
+
+	float Input_SFML::GetJoystickAxis(unsigned int joyId, Joy::Axis axis) const
+	{
+		if (joyId < Joy::Count)
+			return myJoystickAxis[joyId][axis];
+		else
+			return 0.f;
+	}
+	bool Input_SFML::IsJoystickButtonDown(unsigned int joyId, unsigned int button) const
+	{
+		if ((joyId < Joy::Count) && (button < Joy::ButtonCount))
+			return myJoystickButtons[joyId][button];
+		else
+			return false;
+	}
+
+	void Input_SFML::ResetStates()
+	{
+		for (int i = 0; i < Key::Count; ++i)
+			myKeys[i] = false;
+
+		for (int i = 0; i < Mouse::ButtonCount; ++i)
+			myMouseButtons[i] = false;
+
+		for (int i = 0; i < Joy::Count; ++i)
+		{
+			for (int j = 0; j < Joy::ButtonCount; ++j)
+				myJoystickButtons[i][j] = false;
+
+			for (int j = 0; j < Joy::AxisCount; ++j)
+				myJoystickAxis[i][j] = 0.f;
+			myJoystickAxis[i][Joy::AxisPOV] = -1.f;
 		}
 	}
 }

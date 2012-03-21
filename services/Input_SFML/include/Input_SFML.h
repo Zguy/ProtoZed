@@ -33,6 +33,25 @@ namespace PZ
 		~Input_SFML();
 
 		virtual void Update(float deltaTime);
+
+		virtual bool IsKeyDown(Key::Code keyCode) const;
+
+		virtual float GetMouseX() const;
+		virtual float GetMouseY() const;
+		virtual bool IsMouseButtonDown(Mouse::Button button) const;
+
+		virtual float GetJoystickAxis(unsigned int joyId, Joy::Axis axis) const;
+		virtual bool IsJoystickButtonDown(unsigned int joyId, unsigned int button) const;
+
+	private:
+		void ResetStates();
+
+		bool  myKeys[Key::Count];
+		bool  myMouseButtons[Mouse::ButtonCount];
+		float myMouseX;
+		float myMouseY;
+		bool  myJoystickButtons[Joy::Count][Joy::ButtonCount];
+		float myJoystickAxis[Joy::Count][Joy::AxisCount];
 	};
 }
 
