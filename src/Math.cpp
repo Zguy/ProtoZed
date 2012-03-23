@@ -63,5 +63,5 @@ namespace PZ
 		{
 			return std::pow(value, pow);
 		}
-}
+	}
 }

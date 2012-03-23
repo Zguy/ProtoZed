@@ -59,7 +59,7 @@ namespace PZ
 			return fileIndex.find(filename);
 		}
 
-		bool loadFile(FileIndex::iterator fileIt)
+		bool loadFile(FileIndex::iterator fileIt, const AssetType &resType)
 		{
 			Archive *archive = nullptr;
 
@@ -81,7 +81,6 @@ namespace PZ
 
 			const Path &filename = (*fileIt).first;
 
-			AssetType resType = getType(filename);
 			if (resType.empty())
 			{
 				Log::Error("ProtoZed", "No asset type is registered for \""+filename.ToString()+"\"");
@@ -154,6 +153,10 @@ namespace PZ
 			{
 				return nullType;
 			}
+		}
+		const AssetType &getType(FileIndex::iterator fileIt)
+		{
+			return getType((*fileIt).first);
 		}
 
 		ArchiveList archives;
@@ -287,7 +290,7 @@ namespace PZ
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
-			p->loadFile(it);
+			p->loadFile(it, p->getType(it));
 		}
 	}
 	void AssetManager::UnloadAll()
@@ -306,7 +309,21 @@ namespace PZ
 		}
 		else
 		{
-			return p->loadFile(fileIt);
+			return p->loadFile(fileIt, p->getType(fileIt));
+		}
+
+		return false;
+	}
+	bool AssetManager::LoadAs(const Path &filename, const AssetType &type)
+	{
+		FileIndex::iterator fileIt = p->getFile(filename);
+		if (fileIt == p->fileIndex.end())
+		{
+			Log::Error("ProtoZed", "The file \""+filename.ToString()+"\" could not be loaded, because it's not indexed.");
+		}
+		else
+		{
+			return p->loadFile(fileIt, type);
 		}
 
 		return false;
@@ -339,7 +356,7 @@ namespace PZ
 			Asset *&asset = (*fileIt).second.first;
 			if (asset == nullptr)
 			{
-				if (!(autoLoad && p->loadFile(fileIt)))
+				if (!(autoLoad && p->loadFile(fileIt, p->getType(fileIt))))
 				{
 					Log::Warning("ProtoZed", "\""+filename.ToString()+"\" is not loaded, returning null asset");
 					return nullptr;

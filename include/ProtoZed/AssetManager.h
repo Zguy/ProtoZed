@@ -71,6 +71,7 @@ namespace PZ
 		void LoadAll();
 		void UnloadAll();
 		bool Load(const Path &filename);
+		bool LoadAs(const Path &filename, const AssetType &type);
 		bool Unload(const Path &filename);
 
 		template<class T>
