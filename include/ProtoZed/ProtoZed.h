@@ -48,12 +48,13 @@ THE SOFTWARE.
 #include <ProtoZed/Component.h>
 #include <ProtoZed/Components/Position2D.h>
 #include <ProtoZed/Components/Sprite.h>
+#include <ProtoZed/Components/SoundEmitter.h>
 //#include <ProtoZed/Components/SpritesheetComponent.h>
-//#include <ProtoZed/Components/SoundComponent.h>
 
 #include <ProtoZed/Service.h>
 #include <ProtoZed/Services/Renderer.h>
 #include <ProtoZed/Services/Input.h>
+#include <ProtoZed/Services/Sound.h>
 
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/Archives/FileSystemArchive.h>

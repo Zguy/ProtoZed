@@ -55,3 +55,4 @@ end
 
 DefineService("Renderer_SFML", { "C:/SDK/SFML-1.6/include" })
 DefineService("Input_SFML", { "C:/SDK/SFML-1.6/include", "../services/Renderer_SFML/include" })
+DefineService("Sound_SFML", { "C:/SDK/SFML-1.6/include" })

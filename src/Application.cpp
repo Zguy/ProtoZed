@@ -37,6 +37,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/SceneNode.h>
 #include <ProtoZed/Components/Position2D.h>
 #include <ProtoZed/Components/Sprite.h>
+#include <ProtoZed/Components/SoundEmitter.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
 #include <ProtoZed/Animation/Tween.h>
@@ -63,6 +64,7 @@ namespace PZ
 			entityManager.RegisterComponent<SceneNode>();
 			entityManager.RegisterComponent<Position2D>();
 			entityManager.RegisterComponent<Sprite>();
+			entityManager.RegisterComponent<SoundEmitter>();
 
 			i.Start();
 
