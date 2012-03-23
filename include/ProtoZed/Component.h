@@ -35,15 +35,14 @@ namespace PZ
 {
 	class Component : public NonCopyable, public PropertyList
 	{
-		friend class EntityManager;
-
 	protected:
 		Component(const EntityID &owner, EntityManager &manager) : owner(owner), manager(manager)
 		{}
+
+	public:
 		virtual ~Component()
 		{}
 
-	public:
 		virtual void Update(float deltaTime)
 		{}
 
