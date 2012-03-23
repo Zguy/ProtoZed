@@ -64,7 +64,7 @@ namespace PZ
 	class Renderer_SFML::Impl
 	{
 	public:
-		Impl(Renderer_SFML *i) : i(i), isFullscreen(false), clearLayerAcc(0.f), clearLayerLimit(60.f)
+		Impl(Renderer_SFML *i) : i(i), isFullscreen(false)
 		{}
 
 		void calculateView(const VideoMode &videoMode)
@@ -134,9 +134,6 @@ namespace PZ
 		sf::RenderWindow window;
 
 		LayerList layers;
-
-		float clearLayerAcc;
-		float clearLayerLimit;
 	};
 
 	Renderer_SFML::Renderer_SFML(const ServiceType &type, Application &application) : Renderer(type, application)
