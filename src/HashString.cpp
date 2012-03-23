@@ -22,10 +22,7 @@ THE SOFTWARE.
 #include <ProtoZed/HashString.h>
 
 #include <ProtoZed/Profiler.h>
-
-#ifndef _DEBUG
 #include <ProtoZed/Convert.h>
-#endif
 
 #include <boost/crc.hpp>
 
@@ -60,7 +57,7 @@ namespace PZ
 	HashString::HashString(unsigned int hash) : hash(hash)
 	{
 #ifdef _DEBUG
-		readable = "???Unknown???";
+		readable = Convert::ToString(hash);
 #endif
 	}
 	HashString::~HashString()
