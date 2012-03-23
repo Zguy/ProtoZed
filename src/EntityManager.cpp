@@ -259,6 +259,16 @@ namespace PZ
 		return p->entities.size();
 	}
 
+	void EntityManager::GetAllRegisteredComponents(std::vector<HashString> &list) const
+	{
+		list.clear();
+
+		for (ComponentFactory::ConstIterator it = factory.GetBegin(); it != factory.GetEnd(); ++it)
+		{
+			list.push_back((*it).first);
+		}
+	}
+
 	void EntityManager::GetAllComponents(const EntityID &id, ComponentList &list) const
 	{
 		list.clear();

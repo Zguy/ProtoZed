@@ -136,6 +136,8 @@ namespace PZ
 			return factory.Unregister(T::Family);
 		}
 
+		void GetAllRegisteredComponents(std::vector<HashString> &list) const;
+
 		/**
 		 * \brief	Adds a component to 'id'.
 		 *
