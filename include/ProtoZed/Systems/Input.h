@@ -22,7 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_Input_h__
 #define PZ_Input_h__
 
-#include <ProtoZed/Service.h>
+#include <ProtoZed/System.h>
 
 namespace PZ
 {
@@ -172,15 +172,15 @@ namespace PZ
 		};
 	}
 
-	namespace Services
+	namespace Systems
 	{
-		static const ServiceType INPUT = "Input";
+		static const SystemType INPUT = "Input";
 	}
 
-	class Input : public Service
+	class Input : public System
 	{
 	public:
-		Input(const ServiceType &type, Application &application) : Service(type, application)
+		Input(const SystemType &type, Application &application) : System(type, application)
 		{}
 		virtual ~Input()
 		{}

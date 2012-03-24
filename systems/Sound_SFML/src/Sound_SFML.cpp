@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	typedef std::map<PZ::EntityID, std::pair<PZ::Timestamp, sf::Sound>> SoundMap;
+	typedef std::map<EntityID, std::pair<Timestamp, sf::Sound>> SoundMap;
 
 	class Sound_SFML::Impl
 	{
@@ -70,7 +70,7 @@ namespace PZ
 
 			return sounds.insert(std::make_pair(id, std::make_pair(emitter->GetTimestamp(), sound))).first;
 		}
-		void deleteLayer(const PZ::EntityID &id)
+		void deleteLayer(const EntityID &id)
 		{
 			SoundMap::iterator it = findSound(id);
 			if (it != sounds.end())
@@ -88,7 +88,7 @@ namespace PZ
 		SoundMap sounds;
 	};
 
-	Sound_SFML::Sound_SFML(const ServiceType &type, Application &application) : Sound(type, application)
+	Sound_SFML::Sound_SFML(const SystemType &type, Application &application) : Sound(type, application)
 	{
 		p = new Impl(this);
 	}

@@ -35,14 +35,14 @@ project "ProtoZed"
 		targetname "ProtoZed_d"
 		
 --
--- Services
+-- Systems
 --
-function DefineService(name, includes)
+function DefineSystem(name, includes)
 
-	project ("Service_"..name)
+	project ("System_"..name)
 	defines { "PROFILER" }
-	files { "../services/"..name.."/**.*" }
-	includedirs { "../services/"..name.."/include/", "../include/", "C:/SDK/boost_1_48_0", includes }
+	files { "../systems/"..name.."/**.*" }
+	includedirs { "../systems/"..name.."/include/", "../include/", "C:/SDK/boost_1_48_0", includes }
 	kind "StaticLib"
 	
 	configuration "Release"
@@ -53,6 +53,6 @@ function DefineService(name, includes)
 
 end
 
-DefineService("Renderer_SFML", { "C:/SDK/SFML-1.6/include" })
-DefineService("Input_SFML", { "C:/SDK/SFML-1.6/include", "../services/Renderer_SFML/include" })
-DefineService("Sound_SFML", { "C:/SDK/SFML-1.6/include" })
+DefineSystem("Renderer_SFML", { "C:/SDK/SFML-1.6/include" })
+DefineSystem("Input_SFML", { "C:/SDK/SFML-1.6/include", "../systems/Renderer_SFML/include" })
+DefineSystem("Sound_SFML", { "C:/SDK/SFML-1.6/include" })

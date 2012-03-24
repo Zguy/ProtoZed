@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	class ServiceList;
+	class SystemList;
 	class AppStateManager;
 	class EntityManager;
 	class AnimationManager;
@@ -48,7 +48,7 @@ namespace PZ
 
 		void RequestShutdown();
 
-		ServiceList      &GetServiceList() const;
+		SystemList       &GetSystemList() const;
 		AppStateManager  &GetStateManager() const;
 		EntityManager    &GetEntityManager() const;
 		AnimationManager &GetAnimationManager() const;

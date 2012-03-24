@@ -19,77 +19,77 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_ServiceList_h__
-#define PZ_ServiceList_h__
+#ifndef PZ_SystemList_h__
+#define PZ_SystemList_h__
 
 #include <ProtoZed/NonCopyable.h>
-#include <ProtoZed/Service.h>
+#include <ProtoZed/System.h>
 
 namespace PZ
 {
-	class ServiceList : public NonCopyable
+	class SystemList : public NonCopyable
 	{
 	public:
-		ServiceList(Application &application);
-		~ServiceList();
+		SystemList(Application &application);
+		~SystemList();
 
 		template<class T>
-		T *Add(const ServiceType &type)
+		T *Add(const SystemType &type)
 		{
-			T *service = new T(type, application);
-			if (AddImpl(type, service))
+			T *system = new T(type, application);
+			if (AddImpl(type, system))
 			{
-				return service;
+				return system;
 			}
 			else
 			{
-				delete service;
+				delete system;
 				return nullptr;
 			}
 		}
 		template<class T>
-		T *InsertAfter(const ServiceType &type, const ServiceType &after)
+		T *InsertAfter(const SystemType &type, const SystemType &after)
 		{
-			T *service = new T(type, application);
-			if (InsertAfterImpl(type, after, service))
+			T *system = new T(type, application);
+			if (InsertAfterImpl(type, after, system))
 			{
-				return service;
+				return system;
 			}
 			else
 			{
-				delete service;
+				delete system;
 				return nullptr;
 			}
 		}
 		template<class T>
-		T *InsertBefore(const ServiceType &type, const ServiceType &before)
+		T *InsertBefore(const SystemType &type, const SystemType &before)
 		{
-			T *service = new T(type, application);
-			if (InsertBeforeImpl(type, before, service))
+			T *system = new T(type, application);
+			if (InsertBeforeImpl(type, before, system))
 			{
-				return service;
+				return system;
 			}
 			else
 			{
-				delete service;
+				delete system;
 				return nullptr;
 			}
 		}
 
-		bool Remove(const ServiceType &type);
+		bool Remove(const SystemType &type);
 		void RemoveAll();
 		
-		inline bool Has(const ServiceType &type) const
+		inline bool Has(const SystemType &type) const
 		{
 			return (Get(type) != nullptr);
 		}
 		
 		template<class T>
-		T *Get(const ServiceType &type) const
+		T *Get(const SystemType &type) const
 		{
 			return dynamic_cast<T*>(Get(type));
 		}
-		Service *Get(const ServiceType &type) const;
+		System *Get(const SystemType &type) const;
 
 		void StartAll();
 		void StopAll();
@@ -97,9 +97,9 @@ namespace PZ
 		void UpdateAll(float deltaTime);
 
 	private:
-		bool AddImpl(const ServiceType &type, Service *service);
-		bool InsertAfterImpl(const ServiceType &type, const ServiceType &after, Service *service);
-		bool InsertBeforeImpl(const ServiceType &type, const ServiceType &before, Service *service);
+		bool AddImpl(const SystemType &type, System *system);
+		bool InsertAfterImpl(const SystemType &type, const SystemType &after, System *system);
+		bool InsertBeforeImpl(const SystemType &type, const SystemType &before, System *system);
 
 		class Impl;
 		Impl *p;
@@ -108,4 +108,4 @@ namespace PZ
 	};
 }
 
-#endif // PZ_ServiceList_h__
+#endif // PZ_SystemList_h__

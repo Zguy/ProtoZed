@@ -22,20 +22,20 @@ THE SOFTWARE.
 #ifndef PZ_Sound_h__
 #define PZ_Sound_h__
 
-#include <ProtoZed/Service.h>
+#include <ProtoZed/System.h>
 #include <ProtoZed/Vector3.h>
 
 namespace PZ
 {
-	namespace Services
+	namespace Systems
 	{
-		static const ServiceType SOUND = "Sound";
+		static const SystemType SOUND = "Sound";
 	}
 
-	class Sound : public Service
+	class Sound : public System
 	{
 	public:
-		Sound(const ServiceType &type, Application &application);
+		Sound(const SystemType &type, Application &application);
 		virtual ~Sound();
 
 		virtual bool Start();

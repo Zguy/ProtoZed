@@ -36,7 +36,7 @@ THE SOFTWARE.
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Random.h>
 
-#include <ProtoZed/ServiceList.h>
+#include <ProtoZed/SystemList.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/AssetManager.h>
@@ -51,10 +51,10 @@ THE SOFTWARE.
 #include <ProtoZed/Components/SoundEmitter.h>
 //#include <ProtoZed/Components/SpritesheetComponent.h>
 
-#include <ProtoZed/Service.h>
-#include <ProtoZed/Services/Renderer.h>
-#include <ProtoZed/Services/Input.h>
-#include <ProtoZed/Services/Sound.h>
+#include <ProtoZed/System.h>
+#include <ProtoZed/Systems/Renderer.h>
+#include <ProtoZed/Systems/Input.h>
+#include <ProtoZed/Systems/Sound.h>
 
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/Archives/FileSystemArchive.h>

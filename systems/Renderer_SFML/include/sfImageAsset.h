@@ -19,28 +19,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Sound_SFML_h__
-#define PZ_Sound_SFML_h__
+#ifndef PZ_sfImageAsset_h__
+#define PZ_sfImageAsset_h__
 
-#include <ProtoZed/Services/Sound.h>
+#include <ProtoZed/Asset.h>
+
+#include <SFML/Graphics/Image.hpp>
 
 namespace PZ
 {
-	class Sound_SFML : public Sound
+	class sfImageAsset : public Asset
 	{
 	public:
-		Sound_SFML(const ServiceType &type, Application &application);
-		~Sound_SFML();
+		sfImageAsset()
+		{
+			image = new sf::Image;
+		}
+		~sfImageAsset()
+		{
+			delete image;
+		}
 
-		virtual bool Start();
-		virtual bool Stop();
-
-		virtual void Update(float deltaTime);
+		const sf::Image &GetImage() const
+		{
+			return *image;
+		}
 
 	private:
-		class Impl;
-		Impl *p;
+		virtual bool load(const DataChunk &data)
+		{
+			return image->LoadFromMemory(data.GetData(), data.GetSize());
+		}
+		virtual bool unload()
+		{
+			image->~Image();
+			new (image) sf::Image;
+
+			return true;
+		}
+
+		sf::Image *image;
 	};
 }
 
-#endif // PZ_Sound_SFML_h__
+#endif // PZ_sfImageAsset_h__

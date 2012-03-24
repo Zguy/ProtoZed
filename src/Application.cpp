@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include <ProtoZed/Log.h>
 #include <ProtoZed/Messages.h>
 
-#include <ProtoZed/ServiceList.h>
+#include <ProtoZed/SystemList.h>
 #include <ProtoZed/AppStateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
@@ -47,7 +47,7 @@ namespace PZ
 	class Application::Impl
 	{
 	public:
-		Impl(Application &i) : i(i), running(false), services(i), stateManager(i)
+		Impl(Application &i) : i(i), running(false), systems(i), stateManager(i)
 		{
 		}
 
@@ -68,8 +68,8 @@ namespace PZ
 
 			i.Start();
 
-			// Start services
-			services.StartAll();
+			// Start systems
+			systems.StartAll();
 
 			running = true;
 
@@ -94,9 +94,9 @@ namespace PZ
 
 				assetManager.UnloadAll();
 
-				// Shutdown services
-				services.StopAll();
-				services.RemoveAll();
+				// Shutdown systems
+				systems.StopAll();
+				systems.RemoveAll();
 
 				running = false;
 
@@ -110,7 +110,7 @@ namespace PZ
 
 		bool running;
 
-		ServiceList      services;
+		SystemList       systems;
 		AppStateManager  stateManager;
 		EntityManager    entityManager;
 		AnimationManager animationManager;
@@ -146,7 +146,7 @@ namespace PZ
 
 			Update(deltaTime);
 
-			p->services.UpdateAll(deltaTime);
+			p->systems.UpdateAll(deltaTime);
 
 			{
 				Profile profile("StateManager");
@@ -183,9 +183,9 @@ namespace PZ
 		p->running = false;
 	}
 
-	ServiceList &Application::GetServiceList() const
+	SystemList &Application::GetSystemList() const
 	{
-		return p->services;
+		return p->systems;
 	}
 	AppStateManager &Application::GetStateManager() const
 	{

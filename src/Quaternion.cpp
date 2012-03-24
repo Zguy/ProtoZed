@@ -97,7 +97,7 @@ namespace PZ
 		return *this;
 	}
 
-	PZ::Vector3f Quaternion::operator*(const Vector3f &v) const
+	Vector3f Quaternion::operator*(const Vector3f &v) const
 	{
 		Vector3f uv, uuv;
 		Vector3f qvec(x, y, z);

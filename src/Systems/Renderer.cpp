@@ -19,70 +19,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Service_h__
-#define PZ_Service_h__
+#include <ProtoZed/Systems/Renderer.h>
 
-#include <ProtoZed/NonCopyable.h>
-
-#include <string>
+#include <ProtoZed/Version.h>
 
 namespace PZ
 {
-	class Application;
+	Renderer::Renderer(const SystemType &type, Application &application) : System(type, application), title(std::string("ProtoZed ")+Version::VERSION_STRING)
+	{}
+	Renderer::~Renderer()
+	{}
 
-	typedef std::string ServiceType;
-
-	class Service : public NonCopyable
+	bool Renderer::Start()
 	{
-	public:
-		Service(const ServiceType &type, Application &application) : type(type), started(false), application(application)
-		{}
-		virtual ~Service()
-		{}
+		return System::Start();
+	}
+	bool Renderer::Stop()
+	{
+		return System::Stop();
+	}
 
-		virtual bool Start()
+	void Renderer::SetVideoMode(const VideoMode &newVideoMode)
+	{
+		videoMode = newVideoMode;
+
+		if (IsStarted())
 		{
-			if (!started)
-			{
-				started = true;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			videoModeUpdated();
 		}
-		virtual bool Stop()
+	}
+
+	void Renderer::SetTitle(const std::string &newTitle)
+	{
+		if (!IsStarted() || canChangeTitle())
 		{
-			if (started)
-			{
-				started = false;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			title = newTitle;
+
+			titleUpdated();
 		}
-
-		virtual void Update(float deltaTime) = 0;
-
-		inline const ServiceType &GetType() const { return type; }
-
-		inline bool IsStarted() const { return started; }
-
-	protected:
-		inline Application &GetApplication() const
-		{
-			return application;
-		}
-
-	private:
-		ServiceType type;
-		bool started;
-
-		Application &application;
-	};
+	}
 }
-
-#endif // PZ_Service_h__

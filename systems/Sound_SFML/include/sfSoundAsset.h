@@ -46,7 +46,7 @@ namespace PZ
 		}
 
 	private:
-		virtual bool load(const PZ::DataChunk &data)
+		virtual bool load(const DataChunk &data)
 		{
 			return sound->LoadFromMemory(data.GetData(), data.GetSize());
 		}

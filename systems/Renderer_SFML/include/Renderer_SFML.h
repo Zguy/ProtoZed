@@ -19,43 +19,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <ProtoZed/Services/Renderer.h>
+#ifndef PZ_Renderer_SFML_h__
+#define PZ_Renderer_SFML_h__
 
-#include <ProtoZed/Version.h>
+#include <ProtoZed/Systems/Renderer.h>
+#include <ProtoZed/EntityManager.h>
+
+namespace sf
+{
+	class RenderWindow;
+}
 
 namespace PZ
 {
-	Renderer::Renderer(const ServiceType &type, Application &application) : Service(type, application), title(std::string("ProtoZed ")+Version::VERSION_STRING)
-	{}
-	Renderer::~Renderer()
-	{}
-
-	bool Renderer::Start()
+	class Renderer_SFML : public Renderer, public EntityListener
 	{
-		return Service::Start();
-	}
-	bool Renderer::Stop()
-	{
-		return Service::Stop();
-	}
+	public:
+		Renderer_SFML(const SystemType &type, Application &application);
+		~Renderer_SFML();
 
-	void Renderer::SetVideoMode(const VideoMode &newVideoMode)
-	{
-		videoMode = newVideoMode;
+		virtual bool Start();
+		virtual bool Stop();
 
-		if (IsStarted())
-		{
-			videoModeUpdated();
-		}
-	}
+		virtual void Update(float deltaTime);
 
-	void Renderer::SetTitle(const std::string &newTitle)
-	{
-		if (!IsStarted() || canChangeTitle())
-		{
-			title = newTitle;
+		//FIXME: Highly temporary
+		sf::RenderWindow &GetWindow() const;
 
-			titleUpdated();
-		}
-	}
+	protected:
+		virtual void videoModeUpdated();
+
+	private:
+		virtual void EntityDestroyedPost(const EntityID &id);
+
+		virtual void ComponentAddedPost(const EntityID &id, const HashString &family);
+		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family);
+
+		class Impl;
+		Impl *p;
+	};
 }
+
+#endif // PZ_Renderer_SFML_h__

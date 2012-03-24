@@ -19,50 +19,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Renderer_h__
-#define PZ_Renderer_h__
+#ifndef PZ_Sound_SFML_h__
+#define PZ_Sound_SFML_h__
 
-#include <ProtoZed/Service.h>
-
-#include <ProtoZed/VideoMode.h>
+#include <ProtoZed/Systems/Sound.h>
 
 namespace PZ
 {
-	namespace Services
-	{
-		static const ServiceType RENDERER = "Renderer";
-	}
-
-	class Renderer : public Service
+	class Sound_SFML : public Sound
 	{
 	public:
-		Renderer(const ServiceType &type, Application &application);
-		virtual ~Renderer();
+		Sound_SFML(const SystemType &type, Application &application);
+		~Sound_SFML();
 
 		virtual bool Start();
 		virtual bool Stop();
 
-		virtual void Update(float deltaTime) = 0;
+		virtual void Update(float deltaTime);
 
-		void SetVideoMode(const VideoMode &newVideoMode);
-		inline const VideoMode &GetVideMode() const { return videoMode; }
-
-		void SetTitle(const std::string &newTitle);
-		inline const std::string &GetTitle() const { return title; }
-
-	protected:
-		virtual void videoModeUpdated()
-		{}
-		virtual void titleUpdated()
-		{}
-		virtual bool canChangeTitle() const
-		{
-			return false;
-		}
-
-		VideoMode videoMode;
-		std::string title;
+	private:
+		class Impl;
+		Impl *p;
 	};
 }
 
-#endif // PZ_Renderer_h__
+#endif // PZ_Sound_SFML_h__

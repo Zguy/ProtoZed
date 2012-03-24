@@ -19,23 +19,70 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <ProtoZed/Services/Sound.h>
+#ifndef PZ_System_h__
+#define PZ_System_h__
+
+#include <ProtoZed/NonCopyable.h>
+
+#include <string>
 
 namespace PZ
 {
-	Sound::Sound(const ServiceType &type, Application &application) : Service(type, application)
-	{
-	}
-	Sound::~Sound()
-	{
-	}
+	class Application;
 
-	bool Sound::Start()
+	typedef std::string SystemType;
+
+	class System : public NonCopyable
 	{
-		return Service::Start();
-	}
-	bool Sound::Stop()
-	{
-		return Service::Stop();
-	}
+	public:
+		System(const SystemType &type, Application &application) : type(type), started(false), application(application)
+		{}
+		virtual ~System()
+		{}
+
+		virtual bool Start()
+		{
+			if (!started)
+			{
+				started = true;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		virtual bool Stop()
+		{
+			if (started)
+			{
+				started = false;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		virtual void Update(float deltaTime) = 0;
+
+		inline const SystemType &GetType() const { return type; }
+
+		inline bool IsStarted() const { return started; }
+
+	protected:
+		inline Application &GetApplication() const
+		{
+			return application;
+		}
+
+	private:
+		SystemType type;
+		bool started;
+
+		Application &application;
+	};
 }
+
+#endif // PZ_System_h__

@@ -19,47 +19,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#ifndef PZ_Input_SFML_h__
+#define PZ_Input_SFML_h__
 
-#include <ProtoZed/Asset.h>
-
-#include <SFML/Graphics/Image.hpp>
+#include <ProtoZed/Systems/Input.h>
 
 namespace PZ
 {
-	class sfImageAsset : public Asset
+	class Input_SFML : public Input
 	{
 	public:
-		sfImageAsset()
-		{
-			image = new sf::Image;
-		}
-		~sfImageAsset()
-		{
-			delete image;
-		}
+		Input_SFML(const SystemType &type, Application &application);
+		~Input_SFML();
 
-		const sf::Image &GetImage() const
-		{
-			return *image;
-		}
+		virtual void Update(float deltaTime);
+
+		virtual bool IsKeyDown(Key::Code keyCode) const;
+
+		virtual float GetMouseX() const;
+		virtual float GetMouseY() const;
+		virtual bool IsMouseButtonDown(Mouse::Button button) const;
+
+		virtual float GetJoystickAxis(unsigned int joyId, Joy::Axis axis) const;
+		virtual bool IsJoystickButtonDown(unsigned int joyId, unsigned int button) const;
 
 	private:
-		virtual bool load(const PZ::DataChunk &data)
-		{
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			image->~Image();
-			new (image) sf::Image;
+		void ResetStates();
 
-			return true;
-		}
-
-		sf::Image *image;
+		bool  myKeys[Key::Count];
+		bool  myMouseButtons[Mouse::ButtonCount];
+		float myMouseX;
+		float myMouseY;
+		bool  myJoystickButtons[Joy::Count][Joy::ButtonCount];
+		float myJoystickAxis[Joy::Count][Joy::AxisCount];
 	};
 }
 
-#endif // PZ_sfImageAsset_h__
+#endif // PZ_Input_SFML_h__
