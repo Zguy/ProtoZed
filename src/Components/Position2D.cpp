@@ -29,15 +29,17 @@ namespace PZ
 
 	const Axes Position2D::globalAxes(Vector2f(1.f,0.f), Vector2f(0.f,1.f));
 
-	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos("Position", Vector2f(0.f,0.f)), depth("Depth", 0.f), rotation("Rotation", Angle::Degrees(0.f)), axes(globalAxes), parentAxesCache(globalAxes), inheritAxes("InheritAxes", true), inheritPosition("InheritPosition", true), inheritRotation("InheritRotation", true)
+	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos("Position", Vector2f(0.f,0.f)), depth("Depth", 0.f), rotation("Rotation", Angle::Degrees(0.f)), scale("Scale", Vector2f(1.f,1.f)), axes(globalAxes), parentAxesCache(globalAxes), parentScaleCache(Vector2f(1.f,1.f)), inheritAxes("InheritAxes", true), inheritPosition("InheritPosition", true), inheritRotation("InheritRotation", true), inheritScale("InheritScale", true)
 	{
 		AddProperty(pos);
 		AddProperty(depth);
 		AddProperty(rotation);
+		AddProperty(scale);
 
 		AddProperty(inheritAxes);
 		AddProperty(inheritPosition);
 		AddProperty(inheritRotation);
+		AddProperty(inheritScale);
 
 		SceneNode *node = GetManager().GetComponent<SceneNode>(GetOwnerID());
 		if (node != nullptr)
@@ -119,6 +121,41 @@ namespace PZ
 		updateAxes();
 	}
 
+	const Vector2f Position2D::GetScale(Scope::Level scope) const
+	{
+		if (scope == Scope::LOCAL)
+		{
+			return scale;
+		}
+		else if (scope == Scope::GLOBAL)
+		{
+			if (inheritScale)
+				return parentScaleCache * scale;
+			else
+				return scale;
+		}
+		else
+		{
+			return scale;
+		}
+	}
+	void Position2D::SetScale(const Vector2f &newScale, Scope::Level scope)
+	{
+		if (scope == Scope::LOCAL)
+		{
+			scale = newScale;
+		}
+		else if (scope == Scope::GLOBAL)
+		{
+			if (inheritRotation)
+				scale = newScale / parentScaleCache;
+			else
+				scale = newScale;
+		}
+
+		updateChildren();
+	}
+
 	Vector2f Position2D::ConvertGlobalToLocal(const Vector2f &position) const
 	{
 		Axes _axes = globalAxes;
@@ -136,7 +173,11 @@ namespace PZ
 		if (inheritPosition)
 			aaPos -= parentPosCache;
 
-		const Vector2f _pos = aaPos.x * _axes.x + aaPos.y * _axes.y;
+		Vector2f _scale(1.f,1.f);
+		if (inheritScale)
+			_scale *= parentScaleCache;
+
+		Vector2f _pos = aaPos.x * _axes.x / _scale.x + aaPos.y * _axes.y / _scale.y;
 
 		return _pos;
 	}
@@ -144,7 +185,11 @@ namespace PZ
 	{
 		const Axes &_axes = (inheritAxes ? parentAxesCache : globalAxes);
 
-		Vector2f _pos = position.x * _axes.x + position.y * _axes.y;
+		Vector2f _scale(1.f,1.f);
+		if (inheritScale)
+			_scale *= parentScaleCache;
+
+		Vector2f _pos = position.x * _axes.x * _scale.x + position.y * _axes.y * _scale.y;
 		if (inheritPosition)
 			_pos += parentPosCache;
 
@@ -187,6 +232,7 @@ namespace PZ
 					childPosition->parentAxesCache = axes;
 					childPosition->parentPosCache = parentPosCache+pos;
 					childPosition->parentRotationCache = parentRotationCache+rotation;
+					childPosition->parentScaleCache = parentScaleCache*scale;
 
 					childPosition->updateChildren();
 				}

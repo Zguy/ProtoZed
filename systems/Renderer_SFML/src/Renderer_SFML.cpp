@@ -240,9 +240,11 @@ namespace PZ
 				Position2D *position = GetApplication().GetEntityManager().GetComponent<Position2D>(id);
 				if (position != nullptr)
 				{
-					const Vector2f &pos = position->GetPosition(Scope::GLOBAL);
+					const Vector2f &pos   = position->GetPosition(Scope::GLOBAL);
+					const Vector2f &scale = position->GetScale(Scope::GLOBAL);
 					layer.drawable->SetPosition(sf::Vector2f(pos.x, pos.y));
 					layer.drawable->SetRotation(position->GetRotation(Scope::GLOBAL).ToFloat());
+					layer.drawable->SetScale(sf::Vector2f(scale.x, scale.y));
 
 					layer.depth = position->GetDepth();
 				}

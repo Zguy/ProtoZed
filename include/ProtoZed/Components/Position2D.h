@@ -83,6 +83,29 @@ namespace PZ
 			SetRotation(GetRotation(scope)+angle, scope);
 		}
 
+		const Vector2f GetScale(Scope::Level scope = Scope::LOCAL) const;
+		void SetScale(const Vector2f &newScale, Scope::Level scope = Scope::LOCAL);
+		inline void SetScale(float scaleX, float scaleY, Scope::Level scope = Scope::LOCAL)
+		{
+			SetScale(Vector2f(scaleX, scaleY), scope);
+		}
+		inline void SetScaleX(float scaleX, Scope::Level scope = Scope::LOCAL)
+		{
+			SetScale(Vector2f(scaleX, GetScale(scope).y), scope);
+		}
+		inline void SetScaleY(float scaleY, Scope::Level scope = Scope::LOCAL)
+		{
+			SetScale(Vector2f(GetScale(scope).x, scaleY), scope);
+		}
+		inline void Scale(const Vector2f &dScale, Scope::Level scope = Scope::LOCAL)
+		{
+			SetScale(GetScale(scope)+dScale, scope);
+		}
+		inline void Scale(float dX, float dY, Scope::Level scope = Scope::LOCAL)
+		{
+			Scale(Vector2f(dX,dY), scope);
+		}
+
 		bool GetInheritAxes() const
 		{
 			return inheritAxes;
@@ -107,6 +130,14 @@ namespace PZ
 		{
 			inheritRotation = inherit;
 		}
+		bool GetInheritScale() const
+		{
+			return inheritScale;
+		}
+		void SetInheritScale(bool inherit)
+		{
+			inheritScale = inherit;
+		}
 
 		Vector2f ConvertGlobalToLocal(const Vector2f &position) const;
 		Vector2f ConvertLocalToGlobal(const Vector2f &position) const;
@@ -123,16 +154,19 @@ namespace PZ
 		Property<Vector2f> pos;
 		Property<float> depth;
 		Property<Angle::Degrees> rotation;
+		Property<Vector2f> scale;
 
 		Axes axes;
 
 		Axes parentAxesCache;
 		Vector2f parentPosCache;
 		Angle::Degrees parentRotationCache;
+		Vector2f parentScaleCache;
 
 		Property<bool> inheritAxes;
 		Property<bool> inheritPosition;
 		Property<bool> inheritRotation;
+		Property<bool> inheritScale;
 
 		static const Axes globalAxes;
 	};
