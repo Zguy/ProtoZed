@@ -23,13 +23,13 @@ THE SOFTWARE.
 #define PZ_Message_h__
 
 #include <ProtoZed/HashString.h>
-#include <ProtoZed/Jzon.h>
+#include <ProtoZed/PropertyList.h>
 
 namespace PZ
 {
 	typedef HashString MessageType;
 
-	struct Message
+	class Message : public PropertyList
 	{
 		Message(const MessageType &type) : type(type)
 		{}
@@ -37,8 +37,6 @@ namespace PZ
 		{}
 
 		MessageType type;
-
-		Jzon::Object args;
 	};
 }
 

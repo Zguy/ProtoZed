@@ -34,7 +34,7 @@ namespace PZ
 {
 	class MetaEntity;
 	class Component;
-	struct Message;
+	class Message;
 
 	typedef HashString EntityID;
 	typedef std::vector<EntityID> EntityList;
