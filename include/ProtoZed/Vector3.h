@@ -32,34 +32,34 @@ namespace PZ
 	public:
 		Vector3() : x(0), y(0), z(0)
 		{}
-		Vector3(const Vector3<T> &other) : x(other.x), y(other.y), z(other.z)
+		Vector3(const Vector3 &other) : x(other.x), y(other.y), z(other.z)
 		{}
 		Vector3(T x, T y, T z) : x(x), y(y), z(z)
 		{}
 		~Vector3()
 		{}
 
-		Vector3<T> &operator=(const Vector3<T> &rhs);
+		Vector3 &operator=(const Vector3 &rhs);
 
-		Vector3<T> &operator+=(const Vector3<T> &rhs);
-		Vector3<T> &operator-=(const Vector3<T> &rhs);
-		Vector3<T> &operator*=(const Vector3<T> &rhs);
-		Vector3<T> &operator/=(const Vector3<T> &rhs);
-		Vector3<T> &operator*=(T scalar);
-		Vector3<T> &operator/=(T scalar);
+		Vector3 &operator+=(const Vector3 &rhs);
+		Vector3 &operator-=(const Vector3 &rhs);
+		Vector3 &operator*=(const Vector3 &rhs);
+		Vector3 &operator/=(const Vector3 &rhs);
+		Vector3 &operator*=(T scalar);
+		Vector3 &operator/=(T scalar);
 
-		const Vector3<T> operator+(const Vector3<T> &other) const;
-		const Vector3<T> operator-(const Vector3<T> &other) const;
-		const Vector3<T> operator*(const Vector3<T> &other) const;
-		const Vector3<T> operator/(const Vector3<T> &other) const;
-		const Vector3<T> operator*(T scalar) const;
-		const Vector3<T> operator/(T scalar) const;
+		const Vector3 operator+(const Vector3 &other) const;
+		const Vector3 operator-(const Vector3 &other) const;
+		const Vector3 operator*(const Vector3 &other) const;
+		const Vector3 operator/(const Vector3 &other) const;
+		const Vector3 operator*(T scalar) const;
+		const Vector3 operator/(T scalar) const;
 
-		bool operator==(const Vector3<T> &other) const;
-		bool operator!=(const Vector3<T> &other) const;
+		bool operator==(const Vector3 &other) const;
+		bool operator!=(const Vector3 &other) const;
 
-		float Dot(const Vector3<T> &other) const;
-		Vector3<T> Cross(const Vector3<T> &other) const;
+		float Dot(const Vector3 &other) const;
+		Vector3 Cross(const Vector3 &other) const;
 
 		void Normalize();
 

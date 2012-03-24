@@ -32,34 +32,34 @@ namespace PZ
 	public:
 		Vector2() : x(0), y(0)
 		{}
-		Vector2(const Vector2<T> &other) : x(other.x), y(other.y)
+		Vector2(const Vector2 &other) : x(other.x), y(other.y)
 		{}
 		Vector2(T x, T y) : x(x), y(y)
 		{}
 		~Vector2()
 		{}
 
-		Vector2<T> &operator=(const Vector2<T> &rhs);
+		Vector2 &operator=(const Vector2 &rhs);
 
-		Vector2<T> &operator+=(const Vector2<T> &rhs);
-		Vector2<T> &operator-=(const Vector2<T> &rhs);
-		Vector2<T> &operator*=(const Vector2<T> &rhs);
-		Vector2<T> &operator/=(const Vector2<T> &rhs);
-		Vector2<T> &operator*=(T scalar);
-		Vector2<T> &operator/=(T scalar);
+		Vector2 &operator+=(const Vector2 &rhs);
+		Vector2 &operator-=(const Vector2 &rhs);
+		Vector2 &operator*=(const Vector2 &rhs);
+		Vector2 &operator/=(const Vector2 &rhs);
+		Vector2 &operator*=(T scalar);
+		Vector2 &operator/=(T scalar);
 
-		const Vector2<T> operator+(const Vector2<T> &other) const;
-		const Vector2<T> operator-(const Vector2<T> &other) const;
-		const Vector2<T> operator*(const Vector2<T> &other) const;
-		const Vector2<T> operator/(const Vector2<T> &other) const;
-		const Vector2<T> operator*(T scalar) const;
-		const Vector2<T> operator/(T scalar) const;
+		const Vector2 operator+(const Vector2 &other) const;
+		const Vector2 operator-(const Vector2 &other) const;
+		const Vector2 operator*(const Vector2 &other) const;
+		const Vector2 operator/(const Vector2 &other) const;
+		const Vector2 operator*(T scalar) const;
+		const Vector2 operator/(T scalar) const;
 
-		bool operator==(const Vector2<T> &other) const;
-		bool operator!=(const Vector2<T> &other) const;
+		bool operator==(const Vector2 &other) const;
+		bool operator!=(const Vector2 &other) const;
 
-		float Dot(const Vector2<T> &other) const;
-		float Cross(const Vector2<T> &other) const;
+		float Dot(const Vector2 &other) const;
+		float Cross(const Vector2 &other) const;
 
 		void Normalize();
 
