@@ -52,6 +52,8 @@ namespace PZ
 	private:
 		virtual void EntityDestroyedPost(const EntityID &id);
 
+		virtual void EntitiesClearedPost();
+
 		virtual void ComponentAddedPost(const EntityID &id, const HashString &family);
 		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family);
 

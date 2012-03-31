@@ -301,6 +301,11 @@ namespace PZ
 		p->deleteLayer(id);
 	}
 
+	void Renderer_SFML::EntitiesClearedPost()
+	{
+		p->clearLayers();
+	}
+
 	void Renderer_SFML::ComponentAddedPost(const EntityID &id, const HashString &family)
 	{
 		if (family == Sprite::Family)
