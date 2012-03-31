@@ -50,9 +50,9 @@ namespace PZ
 		{
 			AssetManager &assetManager = i->GetApplication().GetAssetManager();
 
-			if (!emitter->GetFile().empty())
+			if (!emitter->GetSound().empty())
 			{
-				const sfSoundAsset *soundAsset = assetManager.Get<sfSoundAsset>(emitter->GetFile());
+				const sfSoundAsset *soundAsset = assetManager.Get<sfSoundAsset>(emitter->GetSound());
 				if (soundAsset != nullptr)
 				{
 					sound.SetBuffer(soundAsset->GetSound());
@@ -61,6 +61,8 @@ namespace PZ
 
 			sound.SetLoop(emitter->IsRepeating());
 			sound.SetVolume(emitter->GetVolume());
+			sound.SetMinDistance(emitter->GetMinDistance());
+			sound.SetAttenuation(emitter->GetAttenuation());
 		}
 		SoundMap::iterator createSound(const EntityID &id, const SoundEmitter *emitter)
 		{
@@ -70,7 +72,7 @@ namespace PZ
 
 			return sounds.insert(std::make_pair(id, std::make_pair(emitter->GetTimestamp(), sound))).first;
 		}
-		void deleteLayer(const EntityID &id)
+		void deleteSound(const EntityID &id)
 		{
 			SoundMap::iterator it = findSound(id);
 			if (it != sounds.end())
@@ -78,7 +80,7 @@ namespace PZ
 				sounds.erase(it);
 			}
 		}
-		void clearLayers()
+		void clearSounds()
 		{
 			sounds.clear();
 		}
@@ -94,6 +96,8 @@ namespace PZ
 	}
 	Sound_SFML::~Sound_SFML()
 	{
+		Stop();
+
 		delete p;
 	}
 
@@ -102,12 +106,16 @@ namespace PZ
 		if (!Sound::Start())
 			return false;
 
+		GetApplication().GetEntityManager().RegisterListener(this);
+
 		return true;
 	}
 	bool Sound_SFML::Stop()
 	{
 		if (!Sound::Stop())
 			return false;
+
+		GetApplication().GetEntityManager().UnregisterListener(this);
 
 		return true;
 	}
@@ -150,6 +158,37 @@ namespace PZ
 				const Vector2f &pos = position->GetPosition(Scope::GLOBAL);
 				sound.SetPosition(sf::Vector3f(pos.x, pos.y, 0.f));
 			}
+			else
+			{
+				sound.SetRelativeToListener(true);
+				sound.SetPosition(0.f,0.f,0.f);
+			}
+		}
+	}
+
+	void Sound_SFML::EntityDestroyedPost(const EntityID &id)
+	{
+		p->deleteSound(id);
+	}
+
+	void Sound_SFML::EntitiesClearedPost()
+	{
+		p->clearSounds();
+	}
+
+	void Sound_SFML::ComponentAddedPost(const EntityID &id, const HashString &family)
+	{
+		if (family == SoundEmitter::Family)
+		{
+			const SoundEmitter *emitter = GetApplication().GetEntityManager().GetComponent<SoundEmitter>(id);
+			p->createSound(id, emitter);
+		}
+	}
+	void Sound_SFML::ComponentRemovedPost(const EntityID &id, const HashString &family)
+	{
+		if (family == SoundEmitter::Family)
+		{
+			p->deleteSound(id);
 		}
 	}
 }

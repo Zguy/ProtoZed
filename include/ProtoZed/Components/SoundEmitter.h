@@ -37,9 +37,9 @@ namespace PZ
 		void Play();
 		void Stop();
 
-		const std::string &GetFile() const
+		const std::string &GetSound() const
 		{
-			return file;
+			return sound;
 		}
 		float GetVolume() const
 		{
@@ -54,11 +54,23 @@ namespace PZ
 			return repeat;
 		}
 
+		float GetMinDistance() const
+		{
+			return minDistance;
+		}
+		float GetAttenuation() const
+		{
+			return attenuation;
+		}
+
 	private:
-		Property<std::string> file;
+		Property<std::string> sound;
 		Property<float> volume;
 		Property<bool> playing;
 		Property<bool> repeat;
+
+		Property<float> minDistance;
+		Property<float> attenuation;
 	};
 }
 

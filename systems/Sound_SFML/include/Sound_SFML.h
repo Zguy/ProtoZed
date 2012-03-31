@@ -23,10 +23,11 @@ THE SOFTWARE.
 #define PZ_Sound_SFML_h__
 
 #include <ProtoZed/Systems/Sound.h>
+#include <ProtoZed/EntityManager.h>
 
 namespace PZ
 {
-	class Sound_SFML : public Sound
+	class Sound_SFML : public Sound, public EntityListener
 	{
 	public:
 		Sound_SFML(const SystemType &type, Application &application);
@@ -38,6 +39,13 @@ namespace PZ
 		virtual void Update(float deltaTime);
 
 	private:
+		virtual void EntityDestroyedPost(const EntityID &id);
+
+		virtual void EntitiesClearedPost();
+
+		virtual void ComponentAddedPost(const EntityID &id, const HashString &family);
+		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family);
+
 		class Impl;
 		Impl *p;
 	};
