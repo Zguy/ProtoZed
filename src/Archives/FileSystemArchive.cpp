@@ -115,7 +115,7 @@ namespace PZ
 				if (file.is_open())
 				{
 					file.seekg(0, std::ios::end);
-					unsigned int size = static_cast<unsigned int>(file.tellg());
+					size_t size = static_cast<size_t>(file.tellg());
 					file.seekg(0, std::ios::beg);
 
 					char *data = new char[size];
