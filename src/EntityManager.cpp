@@ -49,28 +49,28 @@ namespace PZ
 		}
 
 		// Listener emits
-		virtual void emitEntityCreatedPre(const EntityID &id)
+		void emitEntityCreatedPre(const EntityID &id)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->EntityCreatedPre(id);
 			}
 		}
-		virtual void emitEntityCreatedPost(const EntityID &id)
+		void emitEntityCreatedPost(const EntityID &id)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->EntityCreatedPost(id);
 			}
 		}
-		virtual void emitEntityDestroyedPre(const EntityID &id)
+		void emitEntityDestroyedPre(const EntityID &id)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->EntityDestroyedPre(id);
 			}
 		}
-		virtual void emitEntityDestroyedPost(const EntityID &id)
+		void emitEntityDestroyedPost(const EntityID &id)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
@@ -78,14 +78,14 @@ namespace PZ
 			}
 		}
 
-		virtual void emitEntitiesClearedPre()
+		void emitEntitiesClearedPre()
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->EntitiesClearedPre();
 			}
 		}
-		virtual void emitEntitiesClearedPost()
+		void emitEntitiesClearedPost()
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
@@ -93,28 +93,28 @@ namespace PZ
 			}
 		}
 
-		virtual void emitComponentAddedPre(const EntityID &id, const HashString &family)
+		void emitComponentAddedPre(const EntityID &id, const HashString &family)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->ComponentAddedPre(id, family);
 			}
 		}
-		virtual void emitComponentAddedPost(const EntityID &id, const HashString &family)
+		void emitComponentAddedPost(const EntityID &id, const HashString &family)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->ComponentAddedPost(id, family);
 			}
 		}
-		virtual void emitComponentRemovedPre(const EntityID &id, const HashString &family)
+		void emitComponentRemovedPre(const EntityID &id, const HashString &family)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{
 				(*it)->ComponentRemovedPre(id, family);
 			}
 		}
-		virtual void emitComponentRemovedPost(const EntityID &id, const HashString &family)
+		void emitComponentRemovedPost(const EntityID &id, const HashString &family)
 		{
 			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
 			{

@@ -51,6 +51,7 @@ namespace PZ
 		{
 		public:
 			EasingBase() {}
+			virtual ~EasingBase() {}
 			virtual float easeIn(float t, float b, float c, float d) const    = 0;
 			virtual float easeOut(float t, float b, float c, float d) const   = 0;
 			virtual float easeInOut(float t, float b, float c, float d) const = 0;
