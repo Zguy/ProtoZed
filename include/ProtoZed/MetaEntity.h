@@ -55,6 +55,12 @@ namespace PZ
 		{
 			return id;
 		}
+
+		/**
+		 * \brief	Gets the manager.
+		 *
+		 * \return	The manager.
+		 */
 		inline EntityManager &GetManager() const
 		{
 			return *manager;
@@ -96,6 +102,14 @@ namespace PZ
 			else
 				return nullptr;
 		}
+
+		/**
+		 * \brief	Adds a component.
+		 *
+		 * \param	family	The family of the component.
+		 *
+		 * \return	null if it fails, else.
+		 */
 		Component *AddComponent(const HashString &family)
 		{
 			if (IsValid())
@@ -117,6 +131,14 @@ namespace PZ
 			else
 				return false;
 		}
+
+		/**
+		 * \brief	Removes a component.
+		 *
+		 * \param	family	The family of the component.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		bool RemoveComponent(const HashString &family)
 		{
 			if (IsValid())
@@ -126,7 +148,7 @@ namespace PZ
 		}
 
 		/**
-		 * \brief	Query if the entity has component 'name'.
+		 * \brief	Query if the entity has a component.
 		 *
 		 * \return	true if it has the component, false if not.
 		 */
@@ -138,6 +160,14 @@ namespace PZ
 			else
 				return false;
 		}
+
+		/**
+		 * \brief	Query if the entity has a component.
+		 *
+		 * \param	family	The family of the component.
+		 *
+		 * \return	true if it has the component, false if not.
+		 */
 		bool HasComponent(const HashString &family) const
 		{
 			if (IsValid())
@@ -159,6 +189,14 @@ namespace PZ
 			else
 				return nullptr;
 		}
+
+		/**
+		 * \brief	Gets a component.
+		 *
+		 * \param	family	The family of the component.
+		 *
+		 * \return	null if it fails, else the component.
+		 */
 		Component *GetComponent(const HashString &family) const
 		{
 			if (IsValid())
@@ -167,12 +205,24 @@ namespace PZ
 				return nullptr;
 		}
 
+		/**
+		 * \brief	Gets all components.
+		 *
+		 * \param [in,out]	list	The list.
+		 */
 		void GetAllComponents(ComponentList &list) const
 		{
 			if (IsValid())
 				return manager->GetAllComponents(id, list);
 		}
 
+		/**
+		 * \brief	Sends a message.
+		 *
+		 * \param	message	The message.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		bool SendMessage(const Message &message) const
 		{
 			if (IsValid())

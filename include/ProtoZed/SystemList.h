@@ -27,12 +27,22 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	/**
+	 * \brief	List of systems.
+	 */
 	class SystemList : public NonCopyable
 	{
 	public:
 		SystemList(Application &application);
 		~SystemList();
 
+		/**
+		 * \brief	Adds a system at the end.
+		 *
+		 * \param	type	The type of the system.
+		 *
+		 * \return	null if it fails, else the system.
+		 */
 		template<class T>
 		T *Add(const SystemType &type)
 		{
@@ -47,6 +57,15 @@ namespace PZ
 				return nullptr;
 			}
 		}
+
+		/**
+		 * \brief	Inserts a system after another system.
+		 *
+		 * \param	type 	The type of the system.
+		 * \param	after	The type of the system to insert after.
+		 *
+		 * \return	null if it fails, else the system.
+		 */
 		template<class T>
 		T *InsertAfter(const SystemType &type, const SystemType &after)
 		{
@@ -61,6 +80,15 @@ namespace PZ
 				return nullptr;
 			}
 		}
+
+		/**
+		 * \brief	Inserts a system before another system.
+		 *
+		 * \param	type		The type of the system.
+		 * \param	before	The type of the system to insert before.
+		 *
+		 * \return	null if it fails, else the system.
+		 */
 		template<class T>
 		T *InsertBefore(const SystemType &type, const SystemType &before)
 		{
@@ -76,9 +104,27 @@ namespace PZ
 			}
 		}
 
+		/**
+		 * \brief	Removes a system.
+		 *
+		 * \param	type	The type of the system to remove.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		bool Remove(const SystemType &type);
+
+		/**
+		 * \brief	Removes all systems.
+		 */
 		void RemoveAll();
-		
+
+		/**
+		 * \brief	Query if a system is in the list.
+		 *
+		 * \param	type	The type of the system.
+		 *
+		 * \return	true if the system is in the list, false if not.
+		 */
 		inline bool Has(const SystemType &type) const
 		{
 			return (Get(type) != nullptr);
@@ -89,6 +135,14 @@ namespace PZ
 		{
 			return dynamic_cast<T*>(Get(type));
 		}
+
+		/**
+		 * \brief	Gets a system.
+		 *
+		 * \param	type	The type of the system.
+		 *
+		 * \return	null if it fails, else the system.
+		 */
 		System *Get(const SystemType &type) const;
 
 		void StartAll();

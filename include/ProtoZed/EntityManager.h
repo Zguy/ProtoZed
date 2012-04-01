@@ -92,6 +92,13 @@ namespace PZ
 		 */
 		bool DestroyEntity(const EntityID &id);
 
+		/**
+		 * \brief	Query if 'id' has entity.
+		 *
+		 * \param	id	The identifier.
+		 *
+		 * \return	true if it has the entity, false if not.
+		 */
 		bool HasEntity(const EntityID &id) const;
 
 		/**
@@ -103,6 +110,9 @@ namespace PZ
 		 */
 		MetaEntity GetEntity(const EntityID &id) const;
 
+		/**
+		 * \brief	Clears all entities.
+		 */
 		void ClearEntities();
 
 		/**
@@ -112,6 +122,11 @@ namespace PZ
 		 */
 		const EntityList &GetAllEntities() const;
 
+		/**
+		 * \brief	Gets the number of entities.
+		 *
+		 * \return	The entity count.
+		 */
 		unsigned int GetEntityCount() const;
 
 		/**
@@ -136,6 +151,11 @@ namespace PZ
 			return factory.Unregister(T::Family);
 		}
 
+		/**
+		 * \brief	Gets all registered components.
+		 *
+		 * \param [in,out]	list	The list.
+		 */
 		void GetAllRegisteredComponents(std::vector<HashString> &list) const;
 
 		/**
@@ -164,6 +184,15 @@ namespace PZ
 
 			return nullptr;
 		}
+
+		/**
+		 * \brief	Adds a component to 'id'.
+		 *
+		 * \param	id			The identifier.
+		 * \param	family	The family of the component.
+		 *
+		 * \return	null if it fails, else the component.
+		 */
 		Component *AddComponent(const EntityID &id, const HashString &family)
 		{
 			Component *component = factory.Create(family, id, *this);
@@ -195,6 +224,15 @@ namespace PZ
 		{
 			return RemoveComponentImpl(id, T::Family);
 		}
+
+		/**
+		 * \brief	Removes the component.
+		 *
+		 * \param	id			The identifier.
+		 * \param	family	The family of the component.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		bool RemoveComponent(const EntityID &id, const HashString &family)
 		{
 			return RemoveComponentImpl(id, family);
@@ -212,6 +250,15 @@ namespace PZ
 		{
 			return HasComponentImpl(id, T::Family);
 		}
+
+		/**
+		 * \brief	Query if 'id' has a component.
+		 *
+		 * \param	id			The identifier.
+		 * \param	family	The family of the component.
+		 *
+		 * \return	true if it has the component, false if not.
+		 */
 		bool HasComponent(const EntityID &id, const HashString &family) const
 		{
 			return HasComponentImpl(id, family);
@@ -229,11 +276,26 @@ namespace PZ
 		{
 			return dynamic_cast<T*>(GetComponentImpl(id, T::Family));
 		}
+
+		/**
+		 * \brief	Gets a component.
+		 *
+		 * \param	id			The identifier.
+		 * \param	family	The family of the component.
+		 *
+		 * \return	null if it fails, else the component.
+		 */
 		Component *GetComponent(const EntityID &id, const HashString &family) const
 		{
 			return GetComponentImpl(id, family);
 		}
 
+		/**
+		 * \brief	Gets all components for an entity.
+		 *
+		 * \param	id							The identifier.
+		 * \param [in,out]	list	The list.
+		 */
 		void GetAllComponents(const EntityID &id, ComponentList &list) const;
 
 		/**
@@ -246,6 +308,14 @@ namespace PZ
 		{
 			return GetEntitiesWithImpl(T::Family);
 		}
+
+		/**
+		 * \brief	Gets all components for an entity.
+		 *
+		 * \param	family	The family of the component.
+		 *
+		 * \return	The entities with the component.
+		 */
 		const EntityComponentMap &GetEntitiesWith(const HashString &family) const
 		{
 			return GetEntitiesWithImpl(family);
@@ -253,10 +323,35 @@ namespace PZ
 
 		void UpdateAll(float deltaTime);
 
+		/**
+		 * \brief	Sends a message to all entities.
+		 *
+		 * \param	message	The message.
+		 */
 		void SendMessageToAll(const Message &message) const;
+
+		/**
+		 * \brief	Sends a message.
+		 *
+		 * \param	message	The message.
+		 * \param	to		 	The receiving entity.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		bool SendMessage(const Message &message, const EntityID &to) const;
 
+		/**
+		 * \brief	Registers a listener.
+		 *
+		 * \param	listener	The listener.
+		 */
 		void RegisterListener(EntityListener *listener);
+
+		/**
+		 * \brief	Unregisters a listener.
+		 *
+		 * \param	listener	The listener.
+		 */
 		void UnregisterListener(EntityListener *listener);
 
 	private:

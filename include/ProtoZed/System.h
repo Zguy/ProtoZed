@@ -32,6 +32,12 @@ namespace PZ
 
 	typedef std::string SystemType;
 
+	/**
+	 * \brief	A system.
+	 * 				
+	 * This is something that will run
+	 * every frame and do some work.
+	 */
 	class System : public NonCopyable
 	{
 	public:
@@ -40,6 +46,11 @@ namespace PZ
 		virtual ~System()
 		{}
 
+		/**
+		 * \brief	Starts the system.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		virtual bool Start()
 		{
 			if (!started)
@@ -52,6 +63,12 @@ namespace PZ
 				return false;
 			}
 		}
+
+		/**
+		 * \brief	Stops the system.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
 		virtual bool Stop()
 		{
 			if (started)
@@ -65,8 +82,18 @@ namespace PZ
 			}
 		}
 
+		/**
+		 * \brief	Runs an update.
+		 *
+		 * \param	deltaTime	Time since the last frame.
+		 */
 		virtual void Update(float deltaTime) = 0;
 
+		/**
+		 * \brief	Gets the type.
+		 *
+		 * \return	The type.
+		 */
 		inline const SystemType &GetType() const { return type; }
 
 		inline bool IsStarted() const { return started; }
