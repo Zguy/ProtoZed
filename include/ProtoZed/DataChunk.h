@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_DataChunk_h__
 #define PZ_DataChunk_h__
 
+#include <cstring>
+
 namespace PZ
 {
 	class DataChunk
