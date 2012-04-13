@@ -127,7 +127,7 @@ namespace PZ
 		 *
 		 * \return	The entity count.
 		 */
-		unsigned int GetEntityCount() const;
+		EntityList::size_type GetEntityCount() const;
 
 		/**
 		 * \brief	Registers a component.

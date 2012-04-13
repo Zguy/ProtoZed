@@ -254,7 +254,7 @@ namespace PZ
 		return p->entities;
 	}
 
-	unsigned int EntityManager::GetEntityCount() const
+	EntityList::size_type EntityManager::GetEntityCount() const
 	{
 		return p->entities.size();
 	}
