@@ -66,6 +66,8 @@ namespace PZ
 			entityManager.RegisterComponent<Sprite>();
 			entityManager.RegisterComponent<SoundEmitter>();
 
+			i.SetTimescale(1.f);
+
 			i.Start();
 
 			// Start systems
@@ -110,6 +112,8 @@ namespace PZ
 
 		bool running;
 
+		float timescale;
+
 		SystemList       systems;
 		AppStateManager  stateManager;
 		EntityManager    entityManager;
@@ -141,7 +145,8 @@ namespace PZ
 		{
 			Profile profile("MainLoop");
 
-			float deltaTime = frameTimer.GetElapsedTime();
+			float deltaTimeNonScaled = frameTimer.GetElapsedTime();
+			float deltaTime = deltaTimeNonScaled * p->timescale;
 			frameTimer.Reset();
 
 			Update(deltaTime);
@@ -181,6 +186,15 @@ namespace PZ
 	void Application::RequestShutdown()
 	{
 		p->running = false;
+	}
+
+	float Application::GetTimescale() const
+	{
+		return p->timescale;
+	}
+	void Application::SetTimescale(float timescale)
+	{
+		p->timescale = timescale;
 	}
 
 	SystemList &Application::GetSystemList() const

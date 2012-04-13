@@ -48,6 +48,9 @@ namespace PZ
 
 		void RequestShutdown();
 
+		float GetTimescale() const;
+		void SetTimescale(float timescale);
+
 		SystemList       &GetSystemList() const;
 		AppStateManager  &GetStateManager() const;
 		EntityManager    &GetEntityManager() const;
