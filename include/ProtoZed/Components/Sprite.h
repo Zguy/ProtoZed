@@ -32,7 +32,7 @@ namespace PZ
 	public:
 		static const HashString Family;
 
-		Sprite(const EntityID &owner, EntityManager &manager);
+		Sprite();
 		~Sprite();
 
 		inline const std::string &GetImage() const

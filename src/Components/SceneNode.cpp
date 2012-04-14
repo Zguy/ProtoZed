@@ -27,10 +27,14 @@ namespace PZ
 {
 	const HashString SceneNode::Family = "SceneNode";
 
-	SceneNode::SceneNode(const EntityID &owner, EntityManager &manager) : Component(owner, manager)
+	SceneNode::SceneNode()
 	{
 	}
 	SceneNode::~SceneNode()
+	{
+	}
+
+	void SceneNode::Destroy()
 	{
 		if (parent != EntityID())
 		{

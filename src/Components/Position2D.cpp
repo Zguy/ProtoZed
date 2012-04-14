@@ -29,7 +29,7 @@ namespace PZ
 
 	const Axes Position2D::globalAxes(Vector2f(1.f,0.f), Vector2f(0.f,1.f));
 
-	Position2D::Position2D(const EntityID &owner, EntityManager &manager) : Component(owner, manager), pos("Position", Vector2f(0.f,0.f)), depth("Depth", 0.f), rotation("Rotation", Angle::Degrees(0.f)), scale("Scale", Vector2f(1.f,1.f)), axes(globalAxes), parentAxesCache(globalAxes), parentScaleCache(Vector2f(1.f,1.f)), inheritAxes("InheritAxes", true), inheritPosition("InheritPosition", true), inheritRotation("InheritRotation", true), inheritScale("InheritScale", true)
+	Position2D::Position2D() : pos("Position", Vector2f(0.f,0.f)), depth("Depth", 0.f), rotation("Rotation", Angle::Degrees(0.f)), scale("Scale", Vector2f(1.f,1.f)), axes(globalAxes), parentAxesCache(globalAxes), parentScaleCache(Vector2f(1.f,1.f)), inheritAxes("InheritAxes", true), inheritPosition("InheritPosition", true), inheritRotation("InheritRotation", true), inheritScale("InheritScale", true)
 	{
 		AddProperty(pos);
 		AddProperty(depth);
@@ -40,7 +40,13 @@ namespace PZ
 		AddProperty(inheritPosition);
 		AddProperty(inheritRotation);
 		AddProperty(inheritScale);
+	}
+	Position2D::~Position2D()
+	{
+	}
 
+	void Position2D::Init()
+	{
 		SceneNode *node = GetManager().GetComponent<SceneNode>(GetOwnerID());
 		if (node != nullptr)
 		{
@@ -54,9 +60,6 @@ namespace PZ
 				updateChildren();
 			}
 		}
-	}
-	Position2D::~Position2D()
-	{
 	}
 
 	const Vector2f Position2D::GetPosition(Scope::Level scope) const

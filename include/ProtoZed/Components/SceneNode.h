@@ -40,8 +40,10 @@ namespace PZ
 	public:
 		static const HashString Family;
 
-		SceneNode(const EntityID &owner, EntityManager &manager);
+		SceneNode();
 		~SceneNode();
+
+		virtual void Destroy();
 
 		void SetParent(const EntityID &id);
 		inline const EntityID &GetParentID() const

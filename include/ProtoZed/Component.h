@@ -35,12 +35,19 @@ namespace PZ
 {
 	class Component : public NonCopyable, public PropertyList
 	{
+		friend class EntityManager;
+
 	protected:
-		Component(const EntityID &owner, EntityManager &manager) : owner(owner), manager(manager)
+		Component() : manager(nullptr)
 		{}
 
 	public:
 		virtual ~Component()
+		{}
+
+		virtual void Init()
+		{}
+		virtual void Destroy()
 		{}
 
 		virtual void Update(float deltaTime)
@@ -57,11 +64,13 @@ namespace PZ
 		}
 		MetaEntity GetOwnerEntity() const
 		{
-			return manager.GetEntity(owner);
+			assert(manager != nullptr);
+			return manager->GetEntity(owner);
 		}
 		EntityManager &GetManager() const
 		{
-			return manager;
+			assert(manager != nullptr);
+			return *manager;
 		}
 
 		const Timestamp &GetTimestamp() const
@@ -83,7 +92,7 @@ namespace PZ
 	private:
 		EntityID owner;
 
-		EntityManager &manager;
+		EntityManager *manager;
 
 		Timestamp stamp;
 	};

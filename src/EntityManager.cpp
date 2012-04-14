@@ -365,7 +365,12 @@ namespace PZ
 
 		p->emitComponentAddedPre(id, name);
 
+		component->owner = id;
+		component->manager = this;
+
 		bool success = p->components[name].insert(std::make_pair(id, component)).second;
+
+		component->Init();
 
 		p->emitComponentAddedPost(id, name);
 
@@ -389,6 +394,8 @@ namespace PZ
 			else
 			{
 				p->emitComponentRemovedPre(id, name);
+
+				(*it2).second->Destroy();
 
 				p->eraseComponent(it, it2);
 

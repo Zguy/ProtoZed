@@ -25,7 +25,7 @@ namespace PZ
 {
 	const HashString SoundEmitter::Family = "SoundEmitter";
 
-	SoundEmitter::SoundEmitter(const EntityID &owner, EntityManager &manager) : Component(owner, manager), sound("Sound"), volume("Volume", 100.f), playing("Playing", false), repeat("Repeat", false), minDistance("MinDistance", 1.f), attenuation("Attenuation", 1.f)
+	SoundEmitter::SoundEmitter() : sound("Sound"), volume("Volume", 100.f), playing("Playing", false), repeat("Repeat", false), minDistance("MinDistance", 1.f), attenuation("Attenuation", 1.f)
 	{
 		AddProperty(sound);
 		AddProperty(volume);

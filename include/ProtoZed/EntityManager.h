@@ -168,7 +168,7 @@ namespace PZ
 		template<class T>
 		T *AddComponent(const EntityID &id)
 		{
-			T *component = dynamic_cast<T*>(factory.Create(T::Family, id, *this));
+			T *component = dynamic_cast<T*>(factory.Create(T::Family));
 
 			if (component != nullptr)
 			{
@@ -195,7 +195,7 @@ namespace PZ
 		 */
 		Component *AddComponent(const EntityID &id, const HashString &family)
 		{
-			Component *component = factory.Create(family, id, *this);
+			Component *component = factory.Create(family);
 
 			if (component != nullptr)
 			{
@@ -363,7 +363,7 @@ namespace PZ
 
 		static void deleteComponent(Component *component); // This is to avoid having to #include Component.h here
 
-		typedef ObjectFactory<Component*(const EntityID&, EntityManager&), HashString> ComponentFactory;
+		typedef ObjectFactory<Component*(), HashString> ComponentFactory;
 		ComponentFactory factory;
 
 		class Impl;

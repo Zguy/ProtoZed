@@ -31,7 +31,7 @@ namespace PZ
 	public:
 		static const HashString Family;
 
-		SoundEmitter(const EntityID &owner, EntityManager &manager);
+		SoundEmitter();
 		~SoundEmitter();
 
 		void Play();
