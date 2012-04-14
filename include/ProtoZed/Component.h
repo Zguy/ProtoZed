@@ -33,11 +33,22 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	/**
+	 * \brief	Small reusable block of behavior.
+	 */
 	class Component : public NonCopyable, public PropertyList
 	{
 		friend class EntityManager;
 
 	protected:
+
+		/**
+		 * \brief	Default constructor.
+		 * 
+		 * Don't put any initialization logic inside
+		 * the constructor (anything that will call GetManager() or GetOwnerID()).
+		 * Use Init() instead.
+		 */
 		Component() : manager(nullptr)
 		{}
 
@@ -45,14 +56,42 @@ namespace PZ
 		virtual ~Component()
 		{}
 
+		/**
+		 * \brief	Initializes the component.
+		 * 
+		 * You should not call this method.
+		 * It will be called by EntityManager.
+		 */
 		virtual void Init()
 		{}
+
+		/**
+		 * \brief	Destroys the component.
+		 * 
+		 * This is provided for consistency with Init().
+		 * It is okay to put destruction logic inside the destructor.
+		 * 
+		 * You should not call this method.
+		 * It will be called by EntityManager.
+		 */
 		virtual void Destroy()
 		{}
 
+		/**
+		 * \brief	Runs an update.
+		 *
+		 * \param	deltaTime	Time since the last frame.
+		 */
 		virtual void Update(float deltaTime)
 		{}
 
+		/**
+		 * \brief	Handles a message.
+		 *
+		 * \param	message	The message.
+		 *
+		 * \return	true if the message was handled.
+		 */
 		virtual bool HandleMessage(const Message &message)
 		{
 			return false;
@@ -73,6 +112,13 @@ namespace PZ
 			return *manager;
 		}
 
+		/**
+		 * \brief	Gets the timestamp for when this component was last updated.
+		 * 
+		 * This can be used to do an update only when the component has changed.
+		 *
+		 * \return	The timestamp.
+		 */
 		const Timestamp &GetTimestamp() const
 		{
 			return stamp;
