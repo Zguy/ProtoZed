@@ -39,7 +39,7 @@ namespace PZ
 		float ATan2(float x, float y);
 		float Pow(float value, float pow);
 
-		template <class T>
+		template<typename T>
 		T Clamp(T value, T min, T max)
 		{
 			if (value < min)
@@ -49,7 +49,7 @@ namespace PZ
 			else
 				return value;
 		}
-		template <class T>
+		template<typename T>
 		T Wrap(T value, T min, T max)
 		{
 			int range_size = max - min + 1;
@@ -58,6 +58,17 @@ namespace PZ
 				value += range_size * ((min - value) / range_size + 1);
 
 			return min + (value - min) % range_size;
+		}
+
+		template<typename T>
+		T Min(T a, T b)
+		{
+			return (a < b ? a : b);
+		}
+		template<typename T>
+		T Max(T a, T b)
+		{
+			return (a < b ? b : a);
 		}
 	}
 }
