@@ -52,7 +52,7 @@ namespace PZ
 		template<typename T>
 		T Wrap(T value, T min, T max)
 		{
-			int range_size = max - min + 1;
+			T range_size = max - min + 1;
 
 			if (value < min)
 				value += range_size * ((min - value) / range_size + 1);
