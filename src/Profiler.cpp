@@ -249,6 +249,8 @@ namespace PZ
 			std::string path;
 			for (ProfileBlock *current = root; current != nullptr;)
 			{
+				if (current != root)
+					path += '/';
 				path += current->name;
 
 				float avgOfFrame = (current->GetAverage() / root->GetAverage()) * 100.f;
@@ -266,18 +268,16 @@ namespace PZ
 				if (current->firstChild != nullptr)
 				{
 					current = current->firstChild;
-
-					path += '/';
 				}
 				else if (current->nextSibling != nullptr)
 				{
 					current = current->nextSibling;
 
-					path = path.substr(0, path.rfind('/')+1);
+					path = path.substr(0, path.rfind('/'));
 				}
 				else
 				{
-					path = path.substr(0, path.rfind('/')+1);
+					path = path.substr(0, path.rfind('/'));
 
 					ProfileBlock *currParent = current->parent;
 					current = nullptr;
@@ -286,7 +286,7 @@ namespace PZ
 						current = currParent->nextSibling;
 						currParent = currParent->parent;
 
-						path = path.substr(0, path.rfind('/')+1);
+						path = path.substr(0, path.rfind('/'));
 					}
 				}
 			}
