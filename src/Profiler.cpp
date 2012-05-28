@@ -31,8 +31,24 @@ namespace PZ
 {
 	struct ProfileBlock
 	{
-		ProfileBlock(const std::string &name) : name(name), totalTime(0.f), calls(0), parent(nullptr), nextSibling(nullptr), firstChild(nullptr), lastChild(nullptr)
+		ProfileBlock(const std::string &name) : name(name), totalTime(0.f), bestTime(std::numeric_limits<float>::max()), worstTime(0.f), calls(0), bestCall(0), worstCall(0), parent(nullptr), nextSibling(nullptr), firstChild(nullptr), lastChild(nullptr)
 		{}
+
+		void AddTime(float time)
+		{
+			totalTime += time;
+
+			if (time < bestTime)
+			{
+				bestTime = time;
+				bestCall = calls;
+			}
+			if (time > worstTime)
+			{
+				worstTime = time;
+				worstCall = calls;
+			}
+		}
 
 		float GetAverage() const
 		{
@@ -41,8 +57,14 @@ namespace PZ
 
 		std::string name;
 		float beginTime;
+
 		float totalTime;
+		float bestTime;
+		float worstTime;
+
 		int calls;
+		int bestCall;
+		int worstCall;
 
 		ProfileBlock *parent;
 		ProfileBlock *nextSibling;
@@ -122,7 +144,7 @@ namespace PZ
 
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - block->beginTime;
-		block->totalTime += callTime;
+		block->AddTime(callTime);
 
 		p->currentBlock = block->parent;
 	}
@@ -143,7 +165,7 @@ namespace PZ
 	{
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - p->rootBlock->beginTime;
-		p->rootBlock->totalTime += callTime;
+		p->rootBlock->AddTime(callTime);
 	}
 
 	void Profiler::NextFrame()
@@ -152,7 +174,7 @@ namespace PZ
 
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - p->rootBlock->beginTime;
-		p->rootBlock->totalTime += callTime;
+		p->rootBlock->AddTime(callTime);
 
 		p->rootBlock->beginTime = endTime;
 		p->rootBlock->calls++;
@@ -174,12 +196,18 @@ namespace PZ
 			path += current->name;
 
 			float avgOfFrame = (current->GetAverage() / p->rootBlock->GetAverage()) * 100.f;
+			float minOfFrame = (current->bestTime / p->rootBlock->bestTime) * 100.f;
+			float maxOfFrame = (current->worstTime / p->rootBlock->worstTime) * 100.f;
 
 			log.precision(3);
-			log << "avg: " << current->GetAverage()*1000.f << " ms";
+			log << "avg: " << current->GetAverage() * 1000.f << " ms";
 			log << " (" << avgOfFrame << "%)\t";
-			log << "best: " << "0" << " ms\t";
-			log << "worst: " << "0" << " ms\t";
+			log << "best: " << current->bestTime * 1000.f << " ms";
+			log << " [" << current->bestCall << "]";
+			log << " (" << minOfFrame << "%)\t";
+			log << "worst: " << current->worstTime * 1000.f << " ms";
+			log << " [" << current->worstCall << "]";
+			log << " (" << maxOfFrame << "%)\t";
 			log << "calls: " << current->calls << "\t";
 			log << path << "\n";
 
