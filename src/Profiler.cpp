@@ -22,6 +22,7 @@ THE SOFTWARE.
 #include <ProtoZed/Profiler.h>
 
 #include <ProtoZed/Clock.h>
+#include <ProtoZed/Convert.h>
 
 #include <vector>
 #include <fstream>
@@ -126,11 +127,12 @@ namespace PZ
 				else
 				{
 					ProfileBlock *currParent = current->parent;
-					do
+					current = nullptr;
+					while (current == nullptr && currParent != nullptr)
 					{
 						current = currParent->nextSibling;
 						currParent = currParent->parent;
-					} while (current == nullptr && currParent != nullptr);
+					}
 				}
 			}
 		}
@@ -141,6 +143,8 @@ namespace PZ
 
 		ProfileBlock *rootBlock;
 		ProfileBlock *currentBlock;
+
+		std::vector<ProfileBlock*> frames;
 	};
 
 	Profiler::Profiler() : p(new Impl)
@@ -150,12 +154,16 @@ namespace PZ
 	{
 		// Clear blocks
 		std::vector<ProfileBlock*> allBlocks;
-		p->getAllBlocks(p->rootBlock, allBlocks);
-		for (std::vector<ProfileBlock*>::iterator it = allBlocks.begin(); it != allBlocks.end(); ++it)
+		for (std::vector<ProfileBlock*>::const_iterator it = p->frames.begin(); it != p->frames.end(); ++it)
 		{
-			delete (*it);
+			p->getAllBlocks((*it), allBlocks);
+			for (std::vector<ProfileBlock*>::iterator it = allBlocks.begin(); it != allBlocks.end(); ++it)
+			{
+				delete (*it);
+			}
+			allBlocks.clear();
 		}
-		allBlocks.clear();
+		p->frames.clear();
 
 		delete p;
 	}
@@ -190,7 +198,7 @@ namespace PZ
 		if (p->rootBlock != nullptr)
 			return;
 
-		p->rootBlock = new ProfileBlock("Frame");
+		p->rootBlock = new ProfileBlock("Frame #"+Convert::ToString(p->frames.size()));
 
 		p->rootBlock->beginTime = p->frameClock.GetElapsedTime();
 		p->rootBlock->calls++;
@@ -202,18 +210,18 @@ namespace PZ
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - p->rootBlock->beginTime;
 		p->rootBlock->AddTime(callTime);
+
+		p->frames.push_back(p->rootBlock);
+		p->rootBlock = nullptr;
+		p->currentBlock = nullptr;
 	}
 
 	void Profiler::NextFrame()
 	{
 		assert(p->currentBlock == p->rootBlock); // Assert that there aren't any currently active blocks when we're switching to the next frame (this probably means a Begin() call without an End() call)
 
-		float endTime  = p->frameClock.GetElapsedTime();
-		float callTime = endTime - p->rootBlock->beginTime;
-		p->rootBlock->AddTime(callTime);
-
-		p->rootBlock->beginTime = endTime;
-		p->rootBlock->calls++;
+		Stop();
+		Start();
 	}
 
 	void Profiler::SetTargetFrameTime(float target)
@@ -226,48 +234,59 @@ namespace PZ
 		//TODO: Maybe output as json instead?
 		std::fstream log(filename+".log", std::ios::out | std::ios::trunc);
 
-		std::string path;
-		for (ProfileBlock *current = p->rootBlock; current != nullptr;)
+		ProfileBlock *root;
+		for (std::vector<ProfileBlock*>::const_iterator it = p->frames.begin(); it != p->frames.end(); ++it)
 		{
-			path += current->name;
+			root = (*it);
 
-			float avgOfFrame = (current->GetAverage() / p->rootBlock->GetAverage()) * 100.f;
+			log << root->name << "\n";
 
-			log.precision(3);
-			log << "avg: " << current->GetAverage() * 1000.f << " ms";
-			log << " (" << avgOfFrame << "%)\t";
-			log << "best: " << current->bestTime * 1000.f << " ms";
-			log << " [" << current->bestCall << "]\t";
-			log << "worst: " << current->worstTime * 1000.f << " ms";
-			log << " [" << current->worstCall << "]\t";
-			log << "calls: " << current->calls << "\t";
-			log << path << "\n";
-
-			if (current->firstChild != nullptr)
+			std::string path;
+			for (ProfileBlock *current = root; current != nullptr;)
 			{
-				current = current->firstChild;
+				path += current->name;
 
-				path += '/';
-			}
-			else if (current->nextSibling != nullptr)
-			{
-				current = current->nextSibling;
+				float avgOfFrame = (current->GetAverage() / root->GetAverage()) * 100.f;
 
-				path = path.substr(0, path.rfind('/')+1);
-			}
-			else
-			{
-				path = path.substr(0, path.rfind('/')+1);
+				log.precision(3);
+				log << "avg: " << current->GetAverage() * 1000.f << " ms";
+				log << " (" << avgOfFrame << "%)\t";
+				log << "best: " << current->bestTime * 1000.f << " ms";
+				log << " [" << current->bestCall << "]\t";
+				log << "worst: " << current->worstTime * 1000.f << " ms";
+				log << " [" << current->worstCall << "]\t";
+				log << "calls: " << current->calls << "\t";
+				log << path << "\n";
 
-				ProfileBlock *currParent = current->parent;
-				do
+				if (current->firstChild != nullptr)
 				{
-					current = currParent->nextSibling;
-					currParent = currParent->parent;
+					current = current->firstChild;
+
+					path += '/';
+				}
+				else if (current->nextSibling != nullptr)
+				{
+					current = current->nextSibling;
 
 					path = path.substr(0, path.rfind('/')+1);
-				} while (current == nullptr && currParent != nullptr);
+				}
+				else
+				{
+					path = path.substr(0, path.rfind('/')+1);
+
+					ProfileBlock *currParent = current->parent;
+					current = nullptr;
+					while (current == nullptr && currParent != nullptr)
+					{
+						current = currParent->nextSibling;
+						currParent = currParent->parent;
+
+						path = path.substr(0, path.rfind('/')+1);
+					}
+				}
 			}
+
+			log << "\n";
 		}
 
 		log.close();
