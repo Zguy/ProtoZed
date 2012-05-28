@@ -288,6 +288,8 @@ namespace PZ
 
 	void EntityManager::UpdateAll(float deltaTime)
 	{
+		Profile profile("UpdateComponents");
+
 		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
 		{
 			const EntityComponentMap &ecm = (*it).second;

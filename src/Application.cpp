@@ -56,7 +56,12 @@ namespace PZ
 			if (running)
 				return true;
 
-			logManager.Open("ProtoZed");
+			if (LogManager::GetSingletonPtr() == nullptr)
+				new LogManager;
+			if (Profiler::GetSingletonPtr() == nullptr)
+				new Profiler;
+
+			LogManager::GetSingleton().Open("ProtoZed");
 			Log::Info("ProtoZed", std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
 			entityManager.RegisterComponent<SceneNode>();
@@ -99,7 +104,10 @@ namespace PZ
 
 			Log::Info("ProtoZed", "ProtoZed has stopped");
 
-			profiler.WriteLog("Profile");
+			Profiler::GetSingleton().WriteLog("Profile");
+
+			delete LogManager::GetSingletonPtr();
+			delete Profiler::GetSingletonPtr();
 		}
 
 		Application &i;
@@ -114,8 +122,6 @@ namespace PZ
 		AnimationManager animationManager;
 		AssetManager     assetManager;
 		RandomManager    randomManager;
-		LogManager       logManager;
-		Profiler         profiler;
 	};
 
 	Application::Application()
@@ -161,10 +167,7 @@ namespace PZ
 				}
 			}
 
-			{
-				Profile profile("UpdateComponents");
-				p->entityManager.UpdateAll(deltaTime);
-			}
+			p->entityManager.UpdateAll(deltaTime);
 
 			if (p->stateManager.IsEmpty())
 			{
