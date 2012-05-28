@@ -140,7 +140,7 @@ namespace PZ
 	{
 		ProfileBlock *block = p->currentBlock;
 
-		assert(block != p->rootBlock); // Assert that we aren't removing the last block
+		assert(block != p->rootBlock); // Assert that we aren't removing the last block (this probably means an End() call without a Begin() call)
 
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - block->beginTime;
@@ -170,7 +170,7 @@ namespace PZ
 
 	void Profiler::NextFrame()
 	{
-		assert(p->currentBlock == p->rootBlock); // Assert that there aren't any currently active blocks when we're switching to the next frame (this probably means mismatched Begin() and End() calls)
+		assert(p->currentBlock == p->rootBlock); // Assert that there aren't any currently active blocks when we're switching to the next frame (this probably means a Begin() call without an End() call)
 
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - p->rootBlock->beginTime;
@@ -196,18 +196,14 @@ namespace PZ
 			path += current->name;
 
 			float avgOfFrame = (current->GetAverage() / p->rootBlock->GetAverage()) * 100.f;
-			float minOfFrame = (current->bestTime / p->rootBlock->bestTime) * 100.f;
-			float maxOfFrame = (current->worstTime / p->rootBlock->worstTime) * 100.f;
 
 			log.precision(3);
 			log << "avg: " << current->GetAverage() * 1000.f << " ms";
 			log << " (" << avgOfFrame << "%)\t";
 			log << "best: " << current->bestTime * 1000.f << " ms";
-			log << " [" << current->bestCall << "]";
-			log << " (" << minOfFrame << "%)\t";
+			log << " [" << current->bestCall << "]\t";
 			log << "worst: " << current->worstTime * 1000.f << " ms";
-			log << " [" << current->worstCall << "]";
-			log << " (" << maxOfFrame << "%)\t";
+			log << " [" << current->worstCall << "]\t";
 			log << "calls: " << current->calls << "\t";
 			log << path << "\n";
 
@@ -237,11 +233,6 @@ namespace PZ
 				} while (current == nullptr && currParent != nullptr);
 			}
 		}
-
-		/*for (EntryMap::const_iterator it = p->entries.cbegin(); it != p->entries.cend(); ++it)
-		{
-			log << "avg: " << (*it).second.GetAverage() << " ms\tbest: " << (*it).second.best << " ms\tworst: " << (*it).second.worst << " ms\t" << (*it).second.count << " times\t" << (*it).first << "\n";
-		}*/
 
 		log.close();
 	}
