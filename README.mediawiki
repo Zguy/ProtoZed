@@ -16,6 +16,7 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 ** Spritesheets.
 * An asset manager.
 * A log system.
+* A profiler.
 
 '''Dependencies:'''
 * [http://www.boost.org/ boost 1.48.0]
