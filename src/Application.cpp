@@ -56,8 +56,6 @@ namespace PZ
 			if (running)
 				return true;
 
-			//Profile profile("Boot");
-
 			logManager.Open("ProtoZed");
 			Log::Info("ProtoZed", std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
@@ -82,28 +80,24 @@ namespace PZ
 
 		void shutdown()
 		{
-			{
-				//Profile profile("Shutdown");
+			Log::Info("ProtoZed", "Shutting down ProtoZed");
 
-				Log::Info("ProtoZed", "Shutting down ProtoZed");
+			stateManager.PopAll();
+			stateManager.Update();
 
-				stateManager.PopAll();
-				stateManager.Update();
+			i.Stop();
 
-				i.Stop();
+			entityManager.ClearEntities();
 
-				entityManager.ClearEntities();
+			assetManager.UnloadAll();
 
-				assetManager.UnloadAll();
+			// Shutdown systems
+			systems.StopAll();
+			systems.RemoveAll();
 
-				// Shutdown systems
-				systems.StopAll();
-				systems.RemoveAll();
+			running = false;
 
-				running = false;
-
-				Log::Info("ProtoZed", "ProtoZed has stopped");
-			}
+			Log::Info("ProtoZed", "ProtoZed has stopped");
 
 			profiler.WriteLog("Profile");
 		}

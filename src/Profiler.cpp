@@ -171,6 +171,9 @@ namespace PZ
 #ifdef PROFILER
 	void Profiler::Begin(const std::string &name)
 	{
+		if (p->rootBlock == nullptr)
+			return;
+
 		ProfileBlock *block = p->getBlockByName(p->currentBlock, name);
 		if (block == nullptr)
 			block = p->getNewBlock(p->currentBlock, name);
@@ -184,7 +187,9 @@ namespace PZ
 	{
 		ProfileBlock *block = p->currentBlock;
 
-		assert(block != p->rootBlock); // Assert that we aren't removing the last block (this probably means an End() call without a Begin() call)
+		// Assert that we aren't removing the last block (this probably means an End() call without a Begin() call)
+		assert(block != p->rootBlock);
+		assert(block->parent != nullptr);
 
 		float endTime  = p->frameClock.GetElapsedTime();
 		float callTime = endTime - block->beginTime;
