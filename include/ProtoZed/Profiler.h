@@ -39,11 +39,26 @@ namespace PZ
 		void Begin(const std::string &name);
 		void End();
 
+		void Start();
+		void Stop();
+
+		void NextFrame();
+
+		void SetTargetFrameTime(float target);
+
 		void WriteLog(const std::string &filename) const;
 #else
 		inline void Begin(const std::string &name)
 		{}
 		inline void End()
+		{}
+
+		inline void Start()
+		{}
+		inline void Stop()
+		{}
+
+		inline void NextFrame()
 		{}
 
 		void WriteLog(const std::string &filename) const

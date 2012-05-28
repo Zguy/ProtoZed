@@ -23,60 +23,75 @@ THE SOFTWARE.
 
 #include <ProtoZed/Clock.h>
 
-#include <stack>
-#include <map>
+#include <vector>
 #include <fstream>
 #include <limits>
 
 namespace PZ
 {
-	struct ProfilerEntry
+	struct ProfileBlock
 	{
-		ProfilerEntry(const std::string &path, const std::string &name) : path(path), name(name)
+		ProfileBlock(const std::string &name) : name(name), totalTime(0.f), calls(0), parent(nullptr), nextSibling(nullptr), firstChild(nullptr), lastChild(nullptr)
 		{}
-
-		std::string path;
-		std::string name;
-		Clock clock;
-	};
-	struct ProfilerResult
-	{
-		ProfilerResult() : worst(0.f), best(std::numeric_limits<float>::max()), total(0.f), count(0)
-		{}
-
-		void AddTime(float time)
-		{
-			total += time;
-
-			++count;
-
-			if (time > worst)
-				worst = time;
-			if (time < best)
-				best = time;
-		}
 
 		float GetAverage() const
 		{
-			return total / static_cast<float>(count);
+			return (totalTime / static_cast<float>(calls));
 		}
 
-		float worst;
-		float best;
-		float total;
-		int count;
-	};
+		std::string name;
+		float beginTime;
+		float totalTime;
+		int calls;
 
-	typedef std::stack<ProfilerEntry> RunningStack;
-	typedef std::map<std::string, ProfilerResult> EntryMap;
+		ProfileBlock *parent;
+		ProfileBlock *nextSibling;
+		ProfileBlock *firstChild;
+		ProfileBlock *lastChild;
+	};
 
 	class Profiler::Impl
 	{
 	public:
-		RunningStack runningEntries;
-		EntryMap entries;
+		Impl() : rootBlock(nullptr), currentBlock(nullptr)
+		{}
 
-		std::string currentPath;
+		ProfileBlock *getNewBlock(ProfileBlock *parent, const std::string &name)
+		{
+			ProfileBlock *block = new ProfileBlock(name);
+
+			if (parent != nullptr)
+			{
+				if (parent->lastChild == nullptr)
+					parent->firstChild = block;
+				else
+					parent->lastChild->nextSibling = block;
+				parent->lastChild = block;
+				block->parent = parent;
+			}
+
+			return block;
+		}
+		ProfileBlock *getBlockByName(ProfileBlock *parent, const std::string &name)
+		{
+			if (parent != nullptr)
+			{
+				for (ProfileBlock *current = parent->firstChild; current != nullptr; current = current->nextSibling)
+				{
+					if (current->name == name)
+						return current;
+				}
+			}
+
+			return nullptr;
+		}
+
+		Clock frameClock;
+
+		float targetFrameTime;
+
+		ProfileBlock *rootBlock;
+		ProfileBlock *currentBlock;
 	};
 
 	Profiler::Profiler() : p(new Impl)
@@ -90,18 +105,62 @@ namespace PZ
 #ifdef PROFILER
 	void Profiler::Begin(const std::string &name)
 	{
-		p->runningEntries.push(ProfilerEntry(p->currentPath, name));
+		ProfileBlock *block = p->getBlockByName(p->currentBlock, name);
+		if (block == nullptr)
+			block = p->getNewBlock(p->currentBlock, name);
 
-		p->currentPath += name + '/';
+		block->beginTime = p->frameClock.GetElapsedTime();
+		block->calls++;
+
+		p->currentBlock = block;
 	}
 	void Profiler::End()
 	{
-		ProfilerEntry &entry = p->runningEntries.top();
-		p->entries[entry.path+entry.name].AddTime(entry.clock.GetElapsedTime()*1000.f);
+		ProfileBlock *block = p->currentBlock;
 
-		p->currentPath.erase(p->currentPath.rfind(entry.name+'/'));
+		assert(block != p->rootBlock); // Assert that we aren't removing the last block
 
-		p->runningEntries.pop();
+		float endTime  = p->frameClock.GetElapsedTime();
+		float callTime = endTime - block->beginTime;
+		block->totalTime += callTime;
+
+		p->currentBlock = block->parent;
+	}
+
+	void Profiler::Start()
+	{
+		if (p->rootBlock != nullptr)
+			return;
+
+		p->rootBlock = new ProfileBlock("Frame");
+
+		p->rootBlock->beginTime = p->frameClock.GetElapsedTime();
+		p->rootBlock->calls++;
+
+		p->currentBlock = p->rootBlock;
+	}
+	void Profiler::Stop()
+	{
+		float endTime  = p->frameClock.GetElapsedTime();
+		float callTime = endTime - p->rootBlock->beginTime;
+		p->rootBlock->totalTime += callTime;
+	}
+
+	void Profiler::NextFrame()
+	{
+		assert(p->currentBlock == p->rootBlock); // Assert that there aren't any currently active blocks when we're switching to the next frame (this probably means mismatched Begin() and End() calls)
+
+		float endTime  = p->frameClock.GetElapsedTime();
+		float callTime = endTime - p->rootBlock->beginTime;
+		p->rootBlock->totalTime += callTime;
+
+		p->rootBlock->beginTime = endTime;
+		p->rootBlock->calls++;
+	}
+
+	void Profiler::SetTargetFrameTime(float target)
+	{
+		p->targetFrameTime = target;
 	}
 
 	void Profiler::WriteLog(const std::string &filename) const
@@ -109,10 +168,52 @@ namespace PZ
 		//TODO: Maybe output as json instead?
 		std::fstream log(filename+".log", std::ios::out | std::ios::trunc);
 
-		for (EntryMap::const_iterator it = p->entries.cbegin(); it != p->entries.cend(); ++it)
+		std::string path;
+		for (ProfileBlock *current = p->rootBlock; current != nullptr;)
+		{
+			path += current->name;
+
+			float avgOfFrame = (current->GetAverage() / p->rootBlock->GetAverage()) * 100.f;
+
+			log.precision(3);
+			log << "avg: " << current->GetAverage()*1000.f << " ms";
+			log << " (" << avgOfFrame << "%)\t";
+			log << "best: " << "0" << " ms\t";
+			log << "worst: " << "0" << " ms\t";
+			log << "calls: " << current->calls << "\t";
+			log << path << "\n";
+
+			if (current->firstChild != nullptr)
+			{
+				current = current->firstChild;
+
+				path += '/';
+			}
+			else if (current->nextSibling != nullptr)
+			{
+				current = current->nextSibling;
+
+				path = path.substr(0, path.rfind('/')+1);
+			}
+			else
+			{
+				path = path.substr(0, path.rfind('/')+1);
+
+				ProfileBlock *currParent = current->parent;
+				do
+				{
+					current = currParent->nextSibling;
+					currParent = currParent->parent;
+
+					path = path.substr(0, path.rfind('/')+1);
+				} while (current == nullptr && currParent != nullptr);
+			}
+		}
+
+		/*for (EntryMap::const_iterator it = p->entries.cbegin(); it != p->entries.cend(); ++it)
 		{
 			log << "avg: " << (*it).second.GetAverage() << " ms\tbest: " << (*it).second.best << " ms\tworst: " << (*it).second.worst << " ms\t" << (*it).second.count << " times\t" << (*it).first << "\n";
-		}
+		}*/
 
 		log.close();
 	}

@@ -103,7 +103,7 @@ namespace PZ
 
 	System *SystemList::Get(const SystemType &type) const
 	{
-		Profile profile("GetSystem");
+		//Profile profile("GetSystem");
 
 		System *system = nullptr;
 

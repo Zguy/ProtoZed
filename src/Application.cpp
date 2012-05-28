@@ -56,7 +56,7 @@ namespace PZ
 			if (running)
 				return true;
 
-			Profile profile("Boot");
+			//Profile profile("Boot");
 
 			logManager.Open("ProtoZed");
 			Log::Info("ProtoZed", std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
@@ -83,7 +83,7 @@ namespace PZ
 		void shutdown()
 		{
 			{
-				Profile profile("Shutdown");
+				//Profile profile("Shutdown");
 
 				Log::Info("ProtoZed", "Shutting down ProtoZed");
 
@@ -140,11 +140,11 @@ namespace PZ
 			return 1;
 		}
 
+		Profiler::GetSingleton().Start();
+
 		Clock frameTimer;
 		while (p->running)
 		{
-			Profile profile("MainLoop");
-
 			float deltaTimeNonScaled = frameTimer.GetElapsedTime();
 			float deltaTime = deltaTimeNonScaled * p->timescale;
 			frameTimer.Reset();
@@ -176,7 +176,11 @@ namespace PZ
 			{
 				RequestShutdown();
 			}
+
+			Profiler::GetSingleton().NextFrame();
 		}
+
+		Profiler::GetSingleton().Stop();
 
 		p->shutdown();
 

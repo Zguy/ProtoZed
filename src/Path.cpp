@@ -76,7 +76,7 @@ namespace PZ
 	{
 		if (!path.empty())
 		{
-			Profile profile("NormalizePath");
+			//Profile profile("NormalizePath");
 
 			boost::filesystem::path dirtyPath = path;
 
