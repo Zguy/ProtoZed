@@ -240,7 +240,7 @@ namespace PZ
 		std::fstream log(filename+".log", std::ios::out | std::ios::trunc);
 
 		ProfileBlock *root;
-		for (std::vector<ProfileBlock*>::const_iterator it = p->frames.begin(); it != p->frames.end(); ++it)
+		for (std::vector<ProfileBlock*>::const_iterator it = p->frames.cbegin(); it != p->frames.cend(); ++it)
 		{
 			root = (*it);
 

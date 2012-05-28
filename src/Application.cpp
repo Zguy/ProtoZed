@@ -90,8 +90,6 @@ namespace PZ
 			stateManager.PopAll();
 			stateManager.Update();
 
-			i.Stop();
-
 			entityManager.ClearEntities();
 
 			assetManager.UnloadAll();
@@ -99,6 +97,8 @@ namespace PZ
 			// Shutdown systems
 			systems.StopAll();
 			systems.RemoveAll();
+
+			i.Stop();
 
 			running = false;
 
