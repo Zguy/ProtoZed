@@ -107,6 +107,33 @@ namespace PZ
 
 			return nullptr;
 		}
+		void getAllBlocks(ProfileBlock *parent, std::vector<ProfileBlock*> &list)
+		{
+			list.clear();
+
+			for (ProfileBlock *current = parent; current != nullptr;)
+			{
+				list.push_back(current);
+
+				if (current->firstChild != nullptr)
+				{
+					current = current->firstChild;
+				}
+				else if (current->nextSibling != nullptr)
+				{
+					current = current->nextSibling;
+				}
+				else
+				{
+					ProfileBlock *currParent = current->parent;
+					do
+					{
+						current = currParent->nextSibling;
+						currParent = currParent->parent;
+					} while (current == nullptr && currParent != nullptr);
+				}
+			}
+		}
 
 		Clock frameClock;
 
@@ -121,6 +148,15 @@ namespace PZ
 	}
 	Profiler::~Profiler()
 	{
+		// Clear blocks
+		std::vector<ProfileBlock*> allBlocks;
+		p->getAllBlocks(p->rootBlock, allBlocks);
+		for (std::vector<ProfileBlock*>::iterator it = allBlocks.begin(); it != allBlocks.end(); ++it)
+		{
+			delete (*it);
+		}
+		allBlocks.clear();
+
 		delete p;
 	}
 
