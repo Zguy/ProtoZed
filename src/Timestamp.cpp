@@ -21,34 +21,27 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Timestamp.h>
 
-#include <boost/chrono.hpp>
-
 namespace PZ
 {
-	class Timestamp::Impl
-	{
-	public:
-		boost::chrono::high_resolution_clock::time_point stamp;
-	};
+	Clock Timestamp::staticClock = Clock();
 
-	Timestamp::Timestamp() : p(new Impl)
+	Timestamp::Timestamp()
 	{
 		Now();
 	}
-	Timestamp::Timestamp(const Timestamp &other) : p(new Impl)
+	Timestamp::Timestamp(const Timestamp &other)
 	{
-		p->stamp = other.p->stamp;
+		stamp = other.stamp;
 	}
 	Timestamp::~Timestamp()
 	{
-		delete p;
 	}
 
 	const Timestamp &Timestamp::operator=(const Timestamp &rhs)
 	{
 		if (this != &rhs)
 		{
-			p->stamp = rhs.p->stamp;
+			stamp = rhs.stamp;
 		}
 
 		return *this;
@@ -56,11 +49,11 @@ namespace PZ
 
 	bool Timestamp::operator==(const Timestamp &other) const
 	{
-		return p->stamp == other.p->stamp;
+		return stamp == other.stamp;
 	}
 
 	void Timestamp::Now()
 	{
-		p->stamp = boost::chrono::high_resolution_clock::now();
+		stamp = staticClock.GetElapsedTimeDouble();
 	}
 }

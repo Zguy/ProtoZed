@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Timestamp_h__
 #define PZ_Timestamp_h__
 
+#include <ProtoZed/Clock.h>
+
 namespace PZ
 {
 	class Timestamp
@@ -42,8 +44,8 @@ namespace PZ
 		void Now();
 
 	private:
-		class Impl;
-		Impl *p;
+		static Clock staticClock;
+		double stamp;
 	};
 }
 

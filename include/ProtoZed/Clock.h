@@ -36,6 +36,7 @@ namespace PZ
 		void Reset();
 
 		float GetElapsedTime();
+		double GetElapsedTimeDouble();
 
 	private:
 		class Impl;

@@ -67,4 +67,12 @@ namespace PZ
 
 		return delta.count();
 	}
+	double Clock::GetElapsedTimeDouble()
+	{
+		boost::chrono::high_resolution_clock::time_point time = boost::chrono::high_resolution_clock::now();
+
+		boost::chrono::duration<double> delta = time - p->startTime;
+
+		return delta.count();
+	}
 }
