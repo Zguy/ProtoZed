@@ -39,6 +39,10 @@ namespace PZ
 		float ATan2(float x, float y);
 		float Pow(float value, float pow);
 
+		float Abs(float value);
+		double Abs(double value);
+		int Abs(int value);
+
 		template<typename T>
 		T Clamp(T value, T min, T max)
 		{
