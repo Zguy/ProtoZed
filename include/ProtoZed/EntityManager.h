@@ -84,7 +84,7 @@ namespace PZ
 		bool CreateEntity(const EntityID &id);
 
 		/**
-		 * \brief	Destroys the entity described by id.
+		 * \brief	Flags the entity for destruction.
 		 *
 		 * \param	id	The identifier.
 		 *
@@ -93,7 +93,12 @@ namespace PZ
 		bool DestroyEntity(const EntityID &id);
 
 		/**
-		 * \brief	Query if 'id' has entity.
+		 * \brief	Destroys flagged entities.
+		 */
+		void DestroyPendingEntities();
+
+		/**
+		 * \brief	Query if the entity 'id' exists.
 		 *
 		 * \param	id	The identifier.
 		 *

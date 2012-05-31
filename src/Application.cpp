@@ -169,6 +169,8 @@ namespace PZ
 
 			p->entityManager.UpdateAll(deltaTime);
 
+			p->entityManager.DestroyPendingEntities();
+
 			if (p->stateManager.IsEmpty())
 			{
 				RequestShutdown();
