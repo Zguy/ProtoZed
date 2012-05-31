@@ -32,12 +32,17 @@ namespace PZ
 		EventHandler();
 		~EventHandler();
 
-		void Subscribe(const EventHandler &handler, const EventType &eventType)
+		bool Subscribe(EventHandler &handler, const EventType &eventType);
+		bool Unsubscribe(EventHandler &handler, const EventType &eventType);
 
-		void HandleEvent(Event &e);
+		virtual bool HandleEvent(Event &e);
 
 	protected:
 		void EmitEvent(Event &e) const;
+
+	private:
+		class Impl;
+		Impl *p;
 	};
 }
 

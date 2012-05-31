@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Event_h__
 #define PZ_Event_h__
 
+#include <string>
+
 namespace PZ
 {
 	typedef std::string EventType;
@@ -31,6 +33,14 @@ namespace PZ
 	public:
 		Event();
 		~Event();
+
+		inline const EventType &GetType() const
+		{
+			return type;
+		}
+
+	private:
+		EventType type;
 	};
 }
 
