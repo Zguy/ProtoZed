@@ -63,5 +63,18 @@ namespace PZ
 		{
 			return std::pow(value, pow);
 		}
+
+		float Abs(float value)
+		{
+			return std::abs(value);
+		}
+		double Abs(double value)
+		{
+			return std::abs(value);
+		}
+		int Abs(int value)
+		{
+			return std::abs(value);
+		}
 	}
 }

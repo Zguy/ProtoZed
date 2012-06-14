@@ -77,6 +77,16 @@ namespace PZ
 		}
 
 		/**
+		 * \brief	Queries if this entity still exists.
+		 *
+		 * \return	true if it does, false if it does not.
+		 */
+		bool StillExists() const
+		{
+			return manager->HasEntity(id);
+		}
+
+		/**
 		 * \brief	Destroys this entity.
 		 *
 		 * \return	true if it succeeds, false if it fails.

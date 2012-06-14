@@ -29,6 +29,15 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	struct EntityData
+	{
+		EntityData() : destroy(false)
+		{}
+
+		bool destroy;
+	};
+	typedef std::unordered_map<EntityID, EntityData, std::hash<int>> EntityDataMap;
+
 	typedef std::unordered_map<HashString, EntityComponentMap, std::hash<int>> ComponentStore;
 	typedef std::vector<EntityListener*> ListenerList;
 
@@ -46,6 +55,11 @@ namespace PZ
 			{
 				components.erase(it);
 			}
+		}
+
+		EntityData &getDataFor(const EntityID &id)
+		{
+			return (*entityDataMap.find(id)).second;
 		}
 
 		// Listener emits
@@ -123,6 +137,7 @@ namespace PZ
 		}
 
 		EntityList entities;
+		EntityDataMap entityDataMap;
 
 		ComponentStore components;
 		static const EntityComponentMap emptyMap; //TODO: This solution sucks
@@ -138,20 +153,19 @@ namespace PZ
 	EntityManager::~EntityManager()
 	{
 		ClearEntities();
+		DestroyPendingEntities();
 
 		delete p;
 	}
 
 	bool EntityManager::CreateEntity(const EntityID &id)
 	{
-		if (id == HashString())
-			return false;
-
 		if (!HasEntity(id))
 		{
 			p->emitEntityCreatedPre(id);
 
 			p->entities.push_back(id);
+			p->entityDataMap.insert(std::make_pair(id, EntityData()));
 
 			p->emitEntityCreatedPost(id);
 
@@ -162,15 +176,26 @@ namespace PZ
 			return false;
 		}
 	}
+
 	bool EntityManager::DestroyEntity(const EntityID &id)
 	{
-		if (id == HashString())
-			return false;
-
-		for (EntityList::iterator it = p->entities.begin(); it != p->entities.end(); ++it)
+		if (HasEntity(id))
 		{
-			if ((*it) == id)
+			p->getDataFor(id).destroy = true;
+
+			return true;
+		}
+
+		return false;
+	}
+	void EntityManager::DestroyPendingEntities()
+	{
+		for (EntityList::iterator it = p->entities.begin(); it != p->entities.end();)
+		{
+			if (p->getDataFor(*it).destroy)
 			{
+				const EntityID id = (*it);
+
 				p->emitEntityDestroyedPre(id);
 
 				// Remove all components associated with this entity
@@ -190,18 +215,21 @@ namespace PZ
 					it2 = next_it2;
 				}
 
-				p->entities.erase(it);
+				p->entityDataMap.erase(id);
+				it = p->entities.erase(it);
 
 				p->emitEntityDestroyedPost(id);
-
-				return true;
+			}
+			else
+			{
+				++it;
 			}
 		}
-		return false;
 	}
+
 	bool EntityManager::HasEntity(const EntityID &id) const
 	{
-		if (id == HashString())
+		if (id == EntityID())
 			return false;
 
 		for (EntityList::const_iterator it = p->entities.begin(); it != p->entities.end(); ++it)
@@ -232,19 +260,10 @@ namespace PZ
 	{
 		p->emitEntitiesClearedPre();
 
-		for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
+		for (EntityList::const_iterator it = p->entities.cbegin(); it != p->entities.cend(); ++it)
 		{
-			EntityComponentMap &ecm = (*it).second;
-
-			for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
-			{
-				delete (*it2).second;
-				(*it2).second = nullptr;
-			}
+			p->getDataFor(*it).destroy = true;
 		}
-		p->components.clear();
-
-		p->entities.clear();
 
 		p->emitEntitiesClearedPost();
 	}
@@ -271,6 +290,9 @@ namespace PZ
 
 	void EntityManager::GetAllComponents(const EntityID &id, ComponentList &list) const
 	{
+		if (!HasEntity(id))
+			return;
+
 		list.clear();
 
 		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
@@ -362,7 +384,7 @@ namespace PZ
 
 	bool EntityManager::AddComponentImpl(const EntityID &id, const HashString &name, Component *component)
 	{
-		if (id == HashString())
+		if (!HasEntity(id) || HasComponentImpl(id, name))
 			return false;
 
 		p->emitComponentAddedPre(id, name);
