@@ -19,49 +19,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <ProtoZed/Clock.h>
+#ifndef PZ_Platform_h__
+#define PZ_Platform_h__
 
-#include <ProtoZed/Platform.h>
+#include <ProtoZed/Path.h>
+
+#include <vector>
+#include <string>
 
 namespace PZ
 {
-	Clock::Clock()
+	namespace Platform
 	{
-		Reset();
-	}
-	Clock::Clock(const Clock &other)
-	{
-		startTime = other.startTime;
-	}
-	Clock::~Clock()
-	{
-	}
+		double GetHighResolutionClock();
 
-	const Clock &Clock::operator=(const Clock &rhs)
-	{
-		if (this != &rhs)
-		{
-			startTime = rhs.startTime;
-		}
-
-		return *this;
-	}
-
-	void Clock::Reset()
-	{
-		startTime = Platform::GetHighResolutionClock();
-	}
-
-	float Clock::GetElapsedTime()
-	{
-		double time = Platform::GetHighResolutionClock();
-
-		return static_cast<float>(time - startTime);
-	}
-	double Clock::GetElapsedTimeDouble()
-	{
-		double time = Platform::GetHighResolutionClock();
-
-		return (time - startTime);
+		Path::Attributes GetAttributes(const std::string &file);
+		bool GetFileList(std::vector<std::string> &list, const std::string &folder, bool recursive = true);
 	}
 }
+
+#endif // PZ_Platform_h__

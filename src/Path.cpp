@@ -22,8 +22,9 @@ THE SOFTWARE.
 #include <ProtoZed/Path.h>
 
 #include <ProtoZed/Profiler.h>
+#include <ProtoZed/Platform.h>
 
-#include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <vector>
 
@@ -32,9 +33,8 @@ namespace PZ
 	Path::Path()
 	{
 	}
-	Path::Path(const Path &other)
+	Path::Path(const Path &other) : path(other.path)
 	{
-		path = other.path;
 	}
 	Path::Path(const std::string &path) : path(path)
 	{
@@ -72,49 +72,48 @@ namespace PZ
 		return *this;
 	}
 
+	Path &Path::operator+=(const Path &other)
+	{
+		path += "/" + other.path;
+
+		return *this;
+	}
+
+	Path::Attributes Path::GetAttributes() const
+	{
+		return Platform::GetAttributes(path);
+	}
+
+	bool Path::Exists() const
+	{
+		return (GetAttributes().type != T_NONEXISTANT);
+	}
+
 	void Path::normalize()
 	{
 		if (!path.empty())
 		{
 			//Profile profile("NormalizePath");
 
-			boost::filesystem::path dirtyPath = path;
+			std::string dirtyPath = path;
 
-			std::vector<boost::filesystem::path> pathParts;
+			std::vector<std::string> pathParts;
+			boost::split(pathParts, dirtyPath, boost::is_any_of("/\\"), boost::token_compress_on);
 
-			for (boost::filesystem::path::const_iterator it = dirtyPath.begin(); it != dirtyPath.end(); ++it)
+			std::string cleanPath;
+
+			for (std::vector<std::string>::const_iterator it = pathParts.cbegin(); it != pathParts.cend(); ++it)
 			{
-				std::string part = (*it).generic_string();
-
-				if (part == ".")
-				{
+				if ((*it).empty() || (*it) == "." || (*it) == "..")
 					continue;
-				}
-				if (part == "..")
-				{
-					if (!pathParts.empty() && pathParts.back() != "..")
-					{
-						pathParts.pop_back();
-						continue;
-					}
-				}
 
-				pathParts.push_back(*it);
+				if (!cleanPath.empty())
+					cleanPath += "/";
+
+				cleanPath += (*it);
 			}
 
-			if (pathParts.empty())
-			{
-				// If pathParts is empty, we want the current directory
-				pathParts.push_back(".");
-			}
-
-			boost::filesystem::path cleanPath;
-			for (std::vector<boost::filesystem::path>::iterator it = pathParts.begin(); it != pathParts.end(); ++it)
-			{
-				cleanPath /= (*it);
-			}
-
-			path = cleanPath.generic_string();
+			path = cleanPath;
 		}
 	}
 }
