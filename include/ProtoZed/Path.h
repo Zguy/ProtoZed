@@ -30,8 +30,8 @@ namespace PZ
 	 * \brief A file path.
 	 * 
 	 * All paths are guaranteed to:
-	 * - Not contain "." or "..".  
-	 * - Use "/" as separator.  
+	 * - Not contain "." or ".." (except when pointing to the current directory).
+	 * - Use "/" as separator.
 	 * - Not have a trailing "/".
 	 */
 	class Path

@@ -113,6 +113,12 @@ namespace PZ
 				cleanPath += (*it);
 			}
 
+			if (cleanPath.empty())
+			{
+				// If cleanPath is empty, we want the current directory
+				cleanPath = ".";
+			}
+
 			path = cleanPath;
 		}
 	}
