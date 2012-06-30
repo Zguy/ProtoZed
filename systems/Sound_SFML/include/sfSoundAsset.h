@@ -31,29 +31,31 @@ namespace PZ
 	class sfSoundAsset : public Asset
 	{
 	public:
-		sfSoundAsset()
+		sfSoundAsset() : sound(nullptr)
 		{
-			sound = new sf::SoundBuffer;
 		}
 		~sfSoundAsset()
 		{
 			delete sound;
+			sound = nullptr;
 		}
 
 		const sf::SoundBuffer &GetSound() const
 		{
+			assert(sound != nullptr);
 			return *sound;
 		}
 
 	private:
 		virtual bool load(const DataChunk &data)
 		{
+			sound = new sf::SoundBuffer();
 			return sound->LoadFromMemory(data.GetData(), data.GetSize());
 		}
 		virtual bool unload()
 		{
-			sound->~SoundBuffer();
-			new (sound) sf::SoundBuffer;
+			delete sound;
+			sound = nullptr;
 
 			return true;
 		}

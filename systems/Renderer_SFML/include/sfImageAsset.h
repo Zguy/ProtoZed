@@ -31,29 +31,31 @@ namespace PZ
 	class sfImageAsset : public Asset
 	{
 	public:
-		sfImageAsset()
+		sfImageAsset() : image(nullptr)
 		{
-			image = new sf::Image;
 		}
 		~sfImageAsset()
 		{
 			delete image;
+			image = nullptr;
 		}
 
 		const sf::Image &GetImage() const
 		{
+			assert(image != nullptr);
 			return *image;
 		}
 
 	private:
 		virtual bool load(const DataChunk &data)
 		{
+			image = new sf::Image();
 			return image->LoadFromMemory(data.GetData(), data.GetSize());
 		}
 		virtual bool unload()
 		{
-			image->~Image();
-			new (image) sf::Image;
+			delete image;
+			image = nullptr;
 
 			return true;
 		}
