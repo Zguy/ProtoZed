@@ -97,6 +97,12 @@ namespace PZ
 			return false;
 		}
 
+		Application &GetApplication() const
+		{
+			assert(application != nullptr);
+			return *application;
+		}
+
 		EntityID GetOwnerID() const
 		{
 			return owner;
@@ -138,6 +144,7 @@ namespace PZ
 	private:
 		EntityID owner;
 
+		Application *application;
 		EntityManager *manager;
 
 		Timestamp stamp;

@@ -32,6 +32,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class Application;
 	class MetaEntity;
 	class Component;
 	class Message;
@@ -71,7 +72,7 @@ namespace PZ
 	class EntityManager : public NonCopyable
 	{
 	public:
-		EntityManager();
+		EntityManager(Application &application);
 		~EntityManager();
 
 		/**

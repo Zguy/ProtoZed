@@ -44,6 +44,9 @@ namespace PZ
 	class EntityManager::Impl
 	{
 	public:
+		Impl(Application *application) : application(application)
+		{}
+
 		void eraseComponent(ComponentStore::iterator &it, EntityComponentMap::iterator &it2)
 		{
 			EntityComponentMap &ecm = (*it).second;
@@ -136,6 +139,8 @@ namespace PZ
 			}
 		}
 
+		Application *application;
+
 		EntityList entities;
 		EntityDataMap entityDataMap;
 
@@ -147,7 +152,7 @@ namespace PZ
 
 	const EntityComponentMap EntityManager::Impl::emptyMap;
 
-	EntityManager::EntityManager() : p(new Impl)
+	EntityManager::EntityManager(Application &application) : p(new Impl(&application))
 	{
 	}
 	EntityManager::~EntityManager()
@@ -389,6 +394,7 @@ namespace PZ
 
 		p->emitComponentAddedPre(id, name);
 
+		component->application = p->application;
 		component->owner = id;
 		component->manager = this;
 
