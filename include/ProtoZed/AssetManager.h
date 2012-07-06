@@ -32,12 +32,14 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class Application;
+
 	typedef std::string AssetType;
 
 	class AssetManager : public NonCopyable
 	{
 	public:
-		AssetManager();
+		AssetManager(Application &application);
 		~AssetManager();
 
 		template<class T>

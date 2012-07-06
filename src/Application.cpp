@@ -47,7 +47,7 @@ namespace PZ
 	class Application::Impl
 	{
 	public:
-		Impl(Application &i) : i(i), running(false), systems(i), stateManager(i), entityManager(i)
+		Impl(Application &i) : i(i), running(false), systems(i), stateManager(i), entityManager(i), assetManager(i)
 		{
 		}
 
