@@ -26,9 +26,29 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	/**
+	 * \brief A file path.
+	 * 
+	 * All paths are guaranteed to:
+	 * - Not contain "." or ".." (except when pointing to the current directory).
+	 * - Use "/" as separator.
+	 * - Not have a trailing "/".
+	 */
 	class Path
 	{
 	public:
+		enum Type
+		{
+			T_NONEXISTANT,
+			T_FILE,
+			T_DIRECTORY
+		};
+		struct Attributes
+		{
+			Type type;
+			std::size_t size;
+		};
+
 		Path();
 		Path(const Path &other);
 		Path(const std::string &path);
@@ -56,6 +76,16 @@ namespace PZ
 		{
 			return (path > other.path);
 		}
+
+		Path &operator+=(const Path &other);
+		const Path operator+(const Path &other) const
+		{
+			return Path(*this) += other;
+		}
+
+		Attributes GetAttributes() const;
+
+		bool Exists() const;
 
 		inline bool IsEmpty() const
 		{

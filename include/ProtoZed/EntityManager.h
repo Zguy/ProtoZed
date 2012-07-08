@@ -32,9 +32,11 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class Application;
 	class MetaEntity;
 	class Component;
 	class Message;
+	class Archetype;
 
 	typedef HashString EntityID;
 	typedef std::vector<EntityID> EntityList;
@@ -71,7 +73,7 @@ namespace PZ
 	class EntityManager : public NonCopyable
 	{
 	public:
-		EntityManager();
+		EntityManager(Application &application);
 		~EntityManager();
 
 		/**
@@ -82,6 +84,16 @@ namespace PZ
 		 * \return	true if it succeeds, false if it fails.
 		 */
 		bool CreateEntity(const EntityID &id);
+
+		/**
+		 * \brief	Creates an entity from an archetype.
+		 *
+		 * \param	name	The name of the archetype.
+		 * \param	id		The identifier.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
+		bool CreateFromArchetype(const std::string &name, const EntityID &id);
 
 		/**
 		 * \brief	Flags the entity for destruction.
@@ -133,6 +145,28 @@ namespace PZ
 		 * \return	The entity count.
 		 */
 		EntityList::size_type GetEntityCount() const;
+
+		/**
+		 * \brief	Registers an archetype.
+		 *
+		 * EntityManager takes ownership of the Archetype instance.
+		 *
+		 * \param [in]	archetype The archetype.
+		 *
+		 * \return	true if it succeeds, false if the archetype is already registered.
+		 */
+		bool RegisterArchetype(Archetype *archetype);
+
+		/**
+		 * \brief	Unregisters the archetype described by name.
+		 *
+		 * \param	name	The name.
+		 *
+		 * \return	true if it succeeds, false if the archetype wasn't found.
+		 */
+		bool UnregisterArchetype(const std::string &name);
+
+		void UnregisterAllArchetypes();
 
 		/**
 		 * \brief	Registers a component.

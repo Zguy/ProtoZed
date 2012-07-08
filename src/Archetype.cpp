@@ -19,49 +19,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#include <ProtoZed/Archetype.h>
 
-#include <ProtoZed/Asset.h>
-
-#include <SFML/Graphics/Image.hpp>
+#include <ProtoZed/Component.h>
+#include <ProtoZed/Log.h>
 
 namespace PZ
 {
-	class sfImageAsset : public Asset
+	Archetype::Archetype()
 	{
-	public:
-		sfImageAsset() : image(nullptr)
-		{
-		}
-		~sfImageAsset()
-		{
-			delete image;
-			image = nullptr;
-		}
+	}
+	Archetype::~Archetype()
+	{
+	}
 
-		const sf::Image &GetImage() const
+	bool Archetype::Create(EntityManager &manager, const EntityID &id) const
+	{
+		if (manager.CreateEntity(id))
 		{
-			assert(image != nullptr);
-			return *image;
-		}
+			for (ComponentList::const_iterator component_it = components.cbegin(); component_it != components.cend(); ++component_it)
+			{
+				const ComponentPropertyPair &cpp = (*component_it);
 
-	private:
-		virtual bool load(const DataChunk &data)
-		{
-			image = new sf::Image();
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			delete image;
-			image = nullptr;
+				Component *component = manager.AddComponent(id, cpp.first);
+				if (component == nullptr)
+				{
+					Log::Error("ProtoZed", "Creating archetype \""+name+"\" - Component \""+cpp.first+"\" could not be added");
+				}
+
+				for (PropertyValueList::const_iterator property_it = cpp.second.cbegin(); property_it != cpp.second.cend(); ++property_it)
+				{
+					const PropertyValuePair &pvp = (*property_it);
+
+					component->GetProperty(pvp.first).FromString(pvp.second);
+				}
+			}
 
 			return true;
 		}
 
-		sf::Image *image;
-	};
+		return false;
+	}
 }
-
-#endif // PZ_sfImageAsset_h__

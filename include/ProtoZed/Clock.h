@@ -39,8 +39,7 @@ namespace PZ
 		double GetElapsedTimeDouble();
 
 	private:
-		class Impl;
-		Impl *p;
+		double startTime;
 	};
 }
 

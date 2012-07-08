@@ -19,49 +19,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#ifndef PZ_ArchetypeAsset_h__
+#define PZ_ArchetypeAsset_h__
 
 #include <ProtoZed/Asset.h>
 
-#include <SFML/Graphics/Image.hpp>
-
 namespace PZ
 {
-	class sfImageAsset : public Asset
+	class Archetype;
+
+	class ArchetypeAsset : public Asset
 	{
 	public:
-		sfImageAsset() : image(nullptr)
-		{
-		}
-		~sfImageAsset()
-		{
-			delete image;
-			image = nullptr;
-		}
-
-		const sf::Image &GetImage() const
-		{
-			assert(image != nullptr);
-			return *image;
-		}
+		ArchetypeAsset();
+		~ArchetypeAsset();
 
 	private:
-		virtual bool load(const DataChunk &data)
-		{
-			image = new sf::Image();
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			delete image;
-			image = nullptr;
+		virtual bool loadData(const DataChunk &data, Archetype *archetype) = 0;
 
-			return true;
-		}
+		virtual bool load(const DataChunk &data);
+		virtual bool unload();
 
-		sf::Image *image;
+		std::string name;
 	};
 }
 
-#endif // PZ_sfImageAsset_h__
+#endif // PZ_ArchetypeAsset_h__

@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_ProtoZed_h__
 
 #include <ProtoZed/Application.h>
+#include <ProtoZed/Platform.h>
 #include <ProtoZed/Log.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/Convert.h>

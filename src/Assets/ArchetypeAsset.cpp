@@ -19,49 +19,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#include <ProtoZed/Assets/ArchetypeAsset.h>
 
-#include <ProtoZed/Asset.h>
-
-#include <SFML/Graphics/Image.hpp>
+#include <ProtoZed/Application.h>
+#include <ProtoZed/Archetype.h>
 
 namespace PZ
 {
-	class sfImageAsset : public Asset
+	ArchetypeAsset::ArchetypeAsset()
 	{
-	public:
-		sfImageAsset() : image(nullptr)
+	}
+	ArchetypeAsset::~ArchetypeAsset()
+	{
+	}
+
+	bool ArchetypeAsset::load(const DataChunk &data)
+	{
+		Archetype *archetype = new Archetype;
+
+		if (loadData(data, archetype))
 		{
-		}
-		~sfImageAsset()
-		{
-			delete image;
-			image = nullptr;
+			name = archetype->name;
+			return GetApplication().GetEntityManager().RegisterArchetype(archetype);
 		}
 
-		const sf::Image &GetImage() const
-		{
-			assert(image != nullptr);
-			return *image;
-		}
-
-	private:
-		virtual bool load(const DataChunk &data)
-		{
-			image = new sf::Image();
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			delete image;
-			image = nullptr;
-
-			return true;
-		}
-
-		sf::Image *image;
-	};
+		return false;
+	}
+	bool ArchetypeAsset::unload()
+	{
+		bool success = GetApplication().GetEntityManager().UnregisterArchetype(name);
+		name.clear();
+		return success;
+	}
 }
-
-#endif // PZ_sfImageAsset_h__

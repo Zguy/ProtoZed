@@ -21,34 +21,27 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Clock.h>
 
-#include <boost/chrono.hpp>
+#include <ProtoZed/Platform.h>
 
 namespace PZ
 {
-	class Clock::Impl
-	{
-	public:
-		boost::chrono::high_resolution_clock::time_point startTime;
-	};
-
-	Clock::Clock() : p(new Impl)
+	Clock::Clock()
 	{
 		Reset();
 	}
-	Clock::Clock(const Clock &other) : p(new Impl)
+	Clock::Clock(const Clock &other)
 	{
-		p->startTime = other.p->startTime;
+		startTime = other.startTime;
 	}
 	Clock::~Clock()
 	{
-		delete p;
 	}
 
 	const Clock &Clock::operator=(const Clock &rhs)
 	{
 		if (this != &rhs)
 		{
-			p->startTime = rhs.p->startTime;
+			startTime = rhs.startTime;
 		}
 
 		return *this;
@@ -56,23 +49,19 @@ namespace PZ
 
 	void Clock::Reset()
 	{
-		p->startTime = boost::chrono::high_resolution_clock::now();
+		startTime = Platform::GetHighResolutionClock();
 	}
 
 	float Clock::GetElapsedTime()
 	{
-		boost::chrono::high_resolution_clock::time_point time = boost::chrono::high_resolution_clock::now();
+		double time = Platform::GetHighResolutionClock();
 
-		boost::chrono::duration<float> delta = time - p->startTime;
-
-		return delta.count();
+		return static_cast<float>(time - startTime);
 	}
 	double Clock::GetElapsedTimeDouble()
 	{
-		boost::chrono::high_resolution_clock::time_point time = boost::chrono::high_resolution_clock::now();
+		double time = Platform::GetHighResolutionClock();
 
-		boost::chrono::duration<double> delta = time - p->startTime;
-
-		return delta.count();
+		return (time - startTime);
 	}
 }

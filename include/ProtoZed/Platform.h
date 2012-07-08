@@ -19,49 +19,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#ifndef PZ_Platform_h__
+#define PZ_Platform_h__
 
-#include <ProtoZed/Asset.h>
+#include <ProtoZed/Path.h>
 
-#include <SFML/Graphics/Image.hpp>
+#include <vector>
+#include <string>
 
 namespace PZ
 {
-	class sfImageAsset : public Asset
+	namespace Platform
 	{
-	public:
-		sfImageAsset() : image(nullptr)
-		{
-		}
-		~sfImageAsset()
-		{
-			delete image;
-			image = nullptr;
-		}
+		double GetHighResolutionClock();
 
-		const sf::Image &GetImage() const
-		{
-			assert(image != nullptr);
-			return *image;
-		}
-
-	private:
-		virtual bool load(const DataChunk &data)
-		{
-			image = new sf::Image();
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			delete image;
-			image = nullptr;
-
-			return true;
-		}
-
-		sf::Image *image;
-	};
+		Path::Attributes GetAttributes(const std::string &file);
+		bool GetFileList(std::vector<std::string> &list, const std::string &folder, bool recursive = true);
+	}
 }
 
-#endif // PZ_sfImageAsset_h__
+#endif // PZ_Platform_h__

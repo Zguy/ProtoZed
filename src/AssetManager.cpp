@@ -35,6 +35,9 @@ namespace PZ
 	class AssetManager::Impl
 	{
 	public:
+		Impl(Application *application) : application(application)
+		{}
+
 		void indexArchive(Archive *archive, bool onlyIndexRegisteredTypes)
 		{
 			FileList list;
@@ -97,6 +100,7 @@ namespace PZ
 					DataChunk data = archive->Get(filename);
 
 					asset->filename = filename;
+					asset->application = application;
 					if (asset->load(data))
 					{
 						(*fileIt).second.first = asset;
@@ -120,13 +124,14 @@ namespace PZ
 			{
 				if (isLoaded(fileIt))
 				{
-					if (!(*fileIt).second.first->unload())
+					Asset *&asset = (*fileIt).second.first;
+					if (!asset->unload())
 					{
 						Log::Warning("ProtoZed", "The file \""+(*fileIt).first.ToString()+" failed to unload");
 					}
 
-					delete (*fileIt).second.first;
-					(*fileIt).second.first = nullptr;
+					delete asset;
+					asset = nullptr;
 				}
 
 				return true;
@@ -159,6 +164,8 @@ namespace PZ
 			return getType((*fileIt).first);
 		}
 
+		Application *application;
+
 		ArchiveList archives;
 		FileIndex fileIndex;
 
@@ -172,7 +179,7 @@ namespace PZ
 
 	const AssetType AssetManager::Impl::nullType = "";
 
-	AssetManager::AssetManager() : p(new Impl)
+	AssetManager::AssetManager(Application &application) : p(new Impl(&application))
 	{
 	}
 	AssetManager::~AssetManager()

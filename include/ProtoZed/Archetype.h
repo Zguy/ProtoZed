@@ -19,49 +19,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#ifndef PZ_Archetype_h__
+#define PZ_Archetype_h__
 
-#include <ProtoZed/Asset.h>
+#include <ProtoZed/EntityManager.h>
 
-#include <SFML/Graphics/Image.hpp>
+#include <vector>
 
 namespace PZ
 {
-	class sfImageAsset : public Asset
+	class Archetype
 	{
 	public:
-		sfImageAsset() : image(nullptr)
-		{
-		}
-		~sfImageAsset()
-		{
-			delete image;
-			image = nullptr;
-		}
+		Archetype();
+		~Archetype();
 
-		const sf::Image &GetImage() const
-		{
-			assert(image != nullptr);
-			return *image;
-		}
+		bool Create(EntityManager &manager, const EntityID &id) const;
 
-	private:
-		virtual bool load(const DataChunk &data)
-		{
-			image = new sf::Image();
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			delete image;
-			image = nullptr;
+		typedef std::pair<std::string, std::string> PropertyValuePair;
+		typedef std::vector<PropertyValuePair> PropertyValueList;
+		typedef std::pair<std::string, PropertyValueList> ComponentPropertyPair;
+		typedef std::vector<ComponentPropertyPair> ComponentList;
 
-			return true;
-		}
-
-		sf::Image *image;
+		std::string name;
+		ComponentList components;
 	};
 }
 
-#endif // PZ_sfImageAsset_h__
+#endif // PZ_Archetype_h__

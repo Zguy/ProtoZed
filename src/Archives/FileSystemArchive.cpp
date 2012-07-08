@@ -21,36 +21,19 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Archives/FileSystemArchive.h>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <ProtoZed/Platform.h>
+
+#include <boost/algorithm/string.hpp>
+
+#include <fstream>
 
 namespace
 {
-	boost::filesystem::path stripBase(const boost::filesystem::path &path, const boost::filesystem::path &base)
+	std::string stripBase(const std::string &path, const std::string &base)
 	{
-		boost::filesystem::path final;
+		std::string final = path;
 
-		boost::filesystem::path::iterator baseIt = base.begin();
-		bool foundEnd = false;
-		for (boost::filesystem::path::iterator it = path.begin(); it != path.end(); ++it)
-		{
-			if (!foundEnd)
-			{
-				if ((baseIt == base.end()) || (*it) != (*baseIt))
-				{
-					foundEnd = true;
-				}
-				else
-				{
-					++baseIt;
-				}
-			}
-
-			if (foundEnd)
-			{
-				final /= (*it);
-			}
-		}
+		boost::replace_head(final, base.size()+1, "");
 
 		return final;
 	}
@@ -67,10 +50,9 @@ namespace PZ
 
 	bool FileSystemArchive::Open(const Path &filename)
 	{
-		boost::filesystem::path path(filename.ToString());
-		if (boost::filesystem::is_directory(path))
+		if (filename.GetAttributes().type == Path::T_DIRECTORY)
 		{
-			basePath = path.generic_string();
+			basePath = filename;
 
 			return true;
 		}
@@ -92,10 +74,7 @@ namespace PZ
 	{
 		if (IsOpen())
 		{
-			boost::filesystem::path base(basePath.ToString());
-			boost::filesystem::path path(filename.ToString());
-			boost::filesystem::path fullPath = base / path;
-			return boost::filesystem::is_regular_file(fullPath);
+			return ((basePath + filename).GetAttributes().type == Path::T_FILE);
 		}
 		else
 		{
@@ -106,12 +85,11 @@ namespace PZ
 	{
 		if (IsOpen())
 		{
-			boost::filesystem::path base(basePath.ToString());
-			boost::filesystem::path path(filename.ToString());
-			boost::filesystem::path fullPath = base / path;
-			if (boost::filesystem::is_regular_file(fullPath))
+			Path fullPath = basePath + filename;
+
+			if (fullPath.GetAttributes().type == Path::T_FILE)
 			{
-				boost::filesystem::fstream file(fullPath, std::ios::in | std::ios::binary);
+				std::fstream file(fullPath.ToString().c_str(), std::ios::in | std::ios::binary);
 				if (file.is_open())
 				{
 					file.seekg(0, std::ios::end);
@@ -137,15 +115,12 @@ namespace PZ
 		{
 			list.clear();
 
-			boost::filesystem::path base(basePath.ToString());
-			for (boost::filesystem::recursive_directory_iterator it = boost::filesystem::recursive_directory_iterator(base); it != boost::filesystem::recursive_directory_iterator(); ++it)
-			{
-				const boost::filesystem::path &filePath = (*it).path();
+			std::vector<std::string> tlist;
+			Platform::GetFileList(tlist, basePath.ToString());
 
-				if (boost::filesystem::is_regular_file(filePath))
-				{
-					list.push_back(stripBase(filePath, base).generic_string());
-				}
+			for (std::vector<std::string>::const_iterator it = tlist.cbegin(); it != tlist.cend(); ++it)
+			{
+				list.push_back(stripBase(*it, basePath.ToString()));
 			}
 		}
 	}

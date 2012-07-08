@@ -23,6 +23,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/MetaEntity.h>
 #include <ProtoZed/Component.h>
+#include <ProtoZed/Archetype.h>
 #include <ProtoZed/Log.h>
 
 #include <vector>
@@ -39,11 +40,15 @@ namespace PZ
 	typedef std::unordered_map<EntityID, EntityData, std::hash<int>> EntityDataMap;
 
 	typedef std::unordered_map<HashString, EntityComponentMap, std::hash<int>> ComponentStore;
+	typedef std::unordered_map<HashString, Archetype*, std::hash<int>> ArchetypeMap;
 	typedef std::vector<EntityListener*> ListenerList;
 
 	class EntityManager::Impl
 	{
 	public:
+		Impl(Application *application) : application(application)
+		{}
+
 		void eraseComponent(ComponentStore::iterator &it, EntityComponentMap::iterator &it2)
 		{
 			EntityComponentMap &ecm = (*it).second;
@@ -136,24 +141,30 @@ namespace PZ
 			}
 		}
 
+		Application *application;
+
 		EntityList entities;
 		EntityDataMap entityDataMap;
 
 		ComponentStore components;
 		static const EntityComponentMap emptyMap; //TODO: This solution sucks
 
+		ArchetypeMap archetypes;
+
 		ListenerList listeners;
 	};
 
 	const EntityComponentMap EntityManager::Impl::emptyMap;
 
-	EntityManager::EntityManager() : p(new Impl)
+	EntityManager::EntityManager(Application &application) : p(new Impl(&application))
 	{
 	}
 	EntityManager::~EntityManager()
 	{
 		ClearEntities();
 		DestroyPendingEntities();
+
+		UnregisterAllArchetypes();
 
 		delete p;
 	}
@@ -175,6 +186,18 @@ namespace PZ
 		{
 			return false;
 		}
+	}
+
+	bool EntityManager::CreateFromArchetype(const std::string &name, const EntityID &id)
+	{
+		ArchetypeMap::const_iterator it = p->archetypes.find(name);
+		if (it != p->archetypes.cend())
+		{
+			const Archetype *archetype = (*it).second;
+			return archetype->Create(*this, id);
+		}
+
+		return false;
 	}
 
 	bool EntityManager::DestroyEntity(const EntityID &id)
@@ -276,6 +299,45 @@ namespace PZ
 	EntityList::size_type EntityManager::GetEntityCount() const
 	{
 		return p->entities.size();
+	}
+
+	bool EntityManager::RegisterArchetype(Archetype *archetype)
+	{
+		if (archetype != nullptr)
+		{
+			if (!p->archetypes.insert(std::make_pair(archetype->name, archetype)).second)
+			{
+				delete archetype;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	bool EntityManager::UnregisterArchetype(const std::string &name)
+	{
+		ArchetypeMap::iterator it = p->archetypes.find(name);
+		if (it != p->archetypes.end())
+		{
+			delete (*it).second;
+			(*it).second = nullptr;
+			p->archetypes.erase(it);
+			return true;
+		}
+
+		return false;
+	}
+	void EntityManager::UnregisterAllArchetypes()
+	{
+		for (ArchetypeMap::iterator it = p->archetypes.begin(); it != p->archetypes.end(); ++it)
+		{
+			delete (*it).second;
+			(*it).second = nullptr;
+		}
+		p->archetypes.clear();
 	}
 
 	void EntityManager::GetAllRegisteredComponents(std::vector<HashString> &list) const
@@ -389,6 +451,7 @@ namespace PZ
 
 		p->emitComponentAddedPre(id, name);
 
+		component->application = p->application;
 		component->owner = id;
 		component->manager = this;
 

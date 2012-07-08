@@ -28,6 +28,8 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class Application;
+
 	class Asset : public NonCopyable
 	{
 		friend class AssetManager;
@@ -43,11 +45,19 @@ namespace PZ
 			return filename;
 		}
 
+	protected:
+		Application &GetApplication() const
+		{
+			return *application;
+		}
+
 	private:
 		virtual bool load(const DataChunk &data) = 0;
 		virtual bool unload() = 0;
 
 		Path filename;
+
+		Application *application;
 	};
 }
 
