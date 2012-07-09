@@ -69,8 +69,8 @@ namespace PZ
 		EventHandler();
 		virtual ~EventHandler();
 
-		bool SubscribeTo(EventHandler *handler);
-		bool UnsubscribeTo(EventHandler *handler);
+		bool SubscribeTo(EventHandler &handler);
+		bool UnsubscribeTo(EventHandler &handler);
 
 		template<class T, class EventT>
 		bool RegisterEvent(T *obj, void (T::*memFn)(EventT&))
@@ -95,8 +95,8 @@ namespace PZ
 		void EmitEvent(const Event &e) const;
 
 	private:
-		bool Subscribe(EventHandler *handler);
-		bool Unsubscribe(EventHandler *handler);
+		bool Subscribe(EventHandler &handler);
+		bool Unsubscribe(EventHandler &handler);
 
 		typedef std::map<TypeInfo, HandlerFunctionBase*> HandlerMap;
 		HandlerMap handlers;

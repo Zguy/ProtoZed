@@ -33,13 +33,13 @@ namespace PZ
 		while (!subscribers.empty())
 		{
 			EventHandler *handler = subscribers.front();
-			handler->UnsubscribeTo(this);
+			handler->UnsubscribeTo(*this);
 		}
 
 		while (!subscriptions.empty())
 		{
 			EventHandler *handler = subscriptions.front();
-			UnsubscribeTo(handler);
+			UnsubscribeTo(*handler);
 		}
 
 		for (HandlerMap::iterator it = handlers.begin(); it != handlers.end(); ++it)
@@ -50,21 +50,21 @@ namespace PZ
 		handlers.clear();
 	}
 
-	bool EventHandler::SubscribeTo(EventHandler *handler)
+	bool EventHandler::SubscribeTo(EventHandler &handler)
 	{
-		if (handler->Subscribe(this))
+		if (handler.Subscribe(*this))
 		{
-			subscriptions.push_back(handler);
+			subscriptions.push_back(&handler);
 			return true;
 		}
 
 		return false;
 	}
-	bool EventHandler::UnsubscribeTo(EventHandler *handler)
+	bool EventHandler::UnsubscribeTo(EventHandler &handler)
 	{
-		if (handler->Unsubscribe(this))
+		if (handler.Unsubscribe(*this))
 		{
-			subscriptions.erase(std::find(subscriptions.begin(), subscriptions.end(), handler));
+			subscriptions.erase(std::find(subscriptions.begin(), subscriptions.end(), &handler));
 			return true;
 		}
 
@@ -88,20 +88,20 @@ namespace PZ
 		}
 	}
 
-	bool EventHandler::Subscribe(EventHandler *handler)
+	bool EventHandler::Subscribe(EventHandler &handler)
 	{
-		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), handler);
+		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), &handler);
 		if (it == subscribers.end())
 		{
-			subscribers.push_back(handler);
+			subscribers.push_back(&handler);
 			return true;
 		}
 
 		return false;
 	}
-	bool EventHandler::Unsubscribe(EventHandler *handler)
+	bool EventHandler::Unsubscribe(EventHandler &handler)
 	{
-		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), handler);
+		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), &handler);
 		if (it != subscribers.end())
 		{
 			subscribers.erase(it);
