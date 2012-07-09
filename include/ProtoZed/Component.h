@@ -24,10 +24,10 @@ THE SOFTWARE.
 
 #include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/PropertyList.h>
+#include <ProtoZed/EventHandler.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Timestamp.h>
 #include <ProtoZed/MetaEntity.h>
-#include <ProtoZed/Message.h>
 
 #include <string>
 
@@ -36,7 +36,7 @@ namespace PZ
 	/**
 	 * \brief	Small reusable block of behavior.
 	 */
-	class Component : public NonCopyable, public PropertyList
+	class Component : public NonCopyable, public PropertyList, public EventHandler
 	{
 		friend class EntityManager;
 
@@ -84,18 +84,6 @@ namespace PZ
 		 */
 		virtual void Update(float deltaTime)
 		{}
-
-		/**
-		 * \brief	Handles a message.
-		 *
-		 * \param	message	The message.
-		 *
-		 * \return	true if the message was handled.
-		 */
-		virtual bool HandleMessage(const Message &message)
-		{
-			return false;
-		}
 
 		Application &GetApplication() const
 		{

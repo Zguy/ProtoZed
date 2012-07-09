@@ -93,6 +93,10 @@ namespace PZ
 	Sound_SFML::Sound_SFML(const SystemType &type, Application &application) : Sound(type, application)
 	{
 		p = new Impl(this);
+
+		RegisterEvent(this, &Sound_SFML::OnEntityEvent);
+		RegisterEvent(this, &Sound_SFML::OnEntitiesCleared);
+		RegisterEvent(this, &Sound_SFML::OnComponentEvent);
 	}
 	Sound_SFML::~Sound_SFML()
 	{
@@ -106,7 +110,7 @@ namespace PZ
 		if (!Sound::Start())
 			return false;
 
-		GetApplication().GetEntityManager().RegisterListener(this);
+		SubscribeTo(GetApplication().GetEntityManager());
 
 		return true;
 	}
@@ -115,7 +119,7 @@ namespace PZ
 		if (!Sound::Stop())
 			return false;
 
-		GetApplication().GetEntityManager().UnregisterListener(this);
+		UnsubscribeTo(GetApplication().GetEntityManager());
 
 		return true;
 	}
@@ -166,17 +170,40 @@ namespace PZ
 		}
 	}
 
-	void Sound_SFML::EntityDestroyedPost(const EntityID &id)
+	void Sound_SFML::OnEntityEvent(const EntityEvent &e)
+	{
+		if (e.post)
+		{
+			if (e.state == EntityEvent::DESTROYED)
+			{
+				EntityDestroyed(e.id);
+			}
+		}
+	}
+	void Sound_SFML::OnComponentEvent(const ComponentEvent &e)
+	{
+		if (e.post)
+		{
+			switch (e.state)
+			{
+			case ComponentEvent::ADDED   : ComponentAdded(e.id, e.family);   break;
+			case ComponentEvent::REMOVED : ComponentRemoved(e.id, e.family); break;
+			}
+		}
+	}
+	void Sound_SFML::OnEntitiesCleared(const EntitiesClearedEvent &e)
+	{
+		if (e.post)
+		{
+			p->clearSounds();
+		}
+	}
+
+	void Sound_SFML::EntityDestroyed(const EntityID &id)
 	{
 		p->deleteSound(id);
 	}
-
-	void Sound_SFML::EntitiesClearedPost()
-	{
-		p->clearSounds();
-	}
-
-	void Sound_SFML::ComponentAddedPost(const EntityID &id, const HashString &family)
+	void Sound_SFML::ComponentAdded(const EntityID &id, const HashString &family)
 	{
 		if (family == SoundEmitter::Family)
 		{
@@ -184,7 +211,7 @@ namespace PZ
 			p->createSound(id, emitter);
 		}
 	}
-	void Sound_SFML::ComponentRemovedPost(const EntityID &id, const HashString &family)
+	void Sound_SFML::ComponentRemoved(const EntityID &id, const HashString &family)
 	{
 		if (family == SoundEmitter::Family)
 		{

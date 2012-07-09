@@ -25,7 +25,6 @@ THE SOFTWARE.
 #include <ProtoZed/Clock.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/Log.h>
-#include <ProtoZed/Messages.h>
 
 #include <ProtoZed/SystemList.h>
 #include <ProtoZed/AppStateManager.h>

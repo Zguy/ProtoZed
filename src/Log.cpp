@@ -77,8 +77,6 @@ namespace PZ
 	}
 
 
-	typedef std::vector<Log::Listener*> ListenerList;
-
 	class Log::Impl
 	{
 	public:
@@ -128,21 +126,11 @@ namespace PZ
 			}
 		}
 
-		void emitMessageLogged(Log::Type type, const std::string &message)
-		{
-			for (ListenerList::iterator it = listeners.begin(); it != listeners.end(); ++it)
-			{
-				(*it)->MessageLogged(type, message);
-			}
-		}
-
 		std::fstream logFile;
 
 		bool consoleOutput;
 		bool fileOutput;
 		bool timestamp;
-
-		ListenerList listeners;
 	};
 
 	Log::Log(const std::string &file, bool consoleOutput, bool fileOutput, bool timestamp) : p(new Impl)
@@ -203,25 +191,6 @@ namespace PZ
 		if (p->consoleOutput)
 			std::cout << line << std::endl;
 
-		p->emitMessageLogged(type, message);
-	}
-
-	void Log::RegisterListener(Listener *listener)
-	{
-		if (listener != nullptr)
-		{
-			p->listeners.push_back(listener);
-		}
-	}
-	void Log::UnregisterListener(Listener *listener)
-	{
-		for (ListenerList::iterator it = p->listeners.begin(); it != p->listeners.end(); ++it)
-		{
-			if ((*it) == listener)
-			{
-				p->listeners.erase(it);
-				break;
-			}
-		}
+		EmitEvent(LogEvent(type, message));
 	}
 }

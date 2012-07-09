@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_System_h__
 
 #include <ProtoZed/NonCopyable.h>
+#include <ProtoZed/EventHandler.h>
 
 #include <string>
 
@@ -38,7 +39,7 @@ namespace PZ
 	 * This is something that will run
 	 * every frame and do some work.
 	 */
-	class System : public NonCopyable
+	class System : public NonCopyable, public EventHandler
 	{
 	public:
 		System(const SystemType &type, Application &application) : type(type), started(false), application(application)

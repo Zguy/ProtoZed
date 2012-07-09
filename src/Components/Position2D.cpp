@@ -199,11 +199,6 @@ namespace PZ
 		return _pos;
 	}
 
-	bool Position2D::HandleMessage(const Message &message)
-	{
-		return false;
-	}
-
 	void Position2D::PropertyUpdated(const PropertyBase &prop)
 	{
 		Component::PropertyUpdated(prop);

@@ -144,8 +144,6 @@ namespace PZ
 		Vector2f ConvertGlobalToLocal(const Vector2f &position) const;
 		Vector2f ConvertLocalToGlobal(const Vector2f &position) const;
 
-		virtual bool HandleMessage(const Message &message);
-
 	protected:
 		virtual void PropertyUpdated(const PropertyBase &prop);
 

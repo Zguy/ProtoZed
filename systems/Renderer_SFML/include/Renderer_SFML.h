@@ -32,7 +32,7 @@ namespace sf
 
 namespace PZ
 {
-	class Renderer_SFML : public Renderer, public EntityListener
+	class Renderer_SFML : public Renderer
 	{
 	public:
 		Renderer_SFML(const SystemType &type, Application &application);
@@ -50,12 +50,13 @@ namespace PZ
 		virtual void videoModeUpdated();
 
 	private:
-		virtual void EntityDestroyedPost(const EntityID &id);
+		void OnEntityEvent(const EntityEvent &e);
+		void OnComponentEvent(const ComponentEvent &e);
+		void OnEntitiesCleared(const EntitiesClearedEvent &e);
 
-		virtual void EntitiesClearedPost();
-
-		virtual void ComponentAddedPost(const EntityID &id, const HashString &family);
-		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family);
+		void EntityDestroyed(const EntityID &id);
+		void ComponentAdded(const EntityID &id, const HashString &family);
+		void ComponentRemoved(const EntityID &id, const HashString &family);
 
 		class Impl;
 		Impl *p;

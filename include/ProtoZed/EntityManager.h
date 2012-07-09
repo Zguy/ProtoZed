@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_EntityManager_h__
 
 #include <ProtoZed/NonCopyable.h>
+#include <ProtoZed/EventHandler.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/HashString.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
@@ -35,7 +36,6 @@ namespace PZ
 	class Application;
 	class MetaEntity;
 	class Component;
-	class Message;
 	class Archetype;
 
 	typedef HashString EntityID;
@@ -43,34 +43,36 @@ namespace PZ
 	typedef std::unordered_map<EntityID, Component*, std::hash<int>> EntityComponentMap;
 	typedef std::vector<HashString> ComponentList;
 
-	class EntityListener
+	class EntityEvent : public Event
 	{
 	public:
-		EntityListener()
-		{}
-		virtual ~EntityListener()
-		{}
-
-		virtual void EntityCreatedPre(const EntityID &id) {}
-		virtual void EntityCreatedPost(const EntityID &id) {}
-		
-		virtual void EntityDestroyedPre(const EntityID &id) {}
-		virtual void EntityDestroyedPost(const EntityID &id) {}
-
-		virtual void EntitiesClearedPre() {}
-		virtual void EntitiesClearedPost() {}
-
-		virtual void ComponentAddedPre(const EntityID &id, const HashString &family) {}
-		virtual void ComponentAddedPost(const EntityID &id, const HashString &family) {}
-		
-		virtual void ComponentRemovedPre(const EntityID &id, const HashString &family) {}
-		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family) {}
+		enum State { CREATED, DESTROYED };
+		EntityEvent(State state, const EntityID &id, bool post = true) : state(state), id(id), post(post) {};
+		State state;
+		EntityID id;
+		bool post;
+	};
+	class EntitiesClearedEvent : public Event
+	{
+	public:
+		EntitiesClearedEvent(bool post = true) : post(post) {};
+		bool post;
+	};
+	class ComponentEvent : public Event
+	{
+	public:
+		enum State { ADDED, REMOVED };
+		ComponentEvent(State state, const EntityID &id, const HashString &family, bool post = true) : state(state), id(id), family(family), post(post) {};
+		State state;
+		EntityID id;
+		HashString family;
+		bool post;
 	};
 
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
 	 */
-	class EntityManager : public NonCopyable
+	class EntityManager : public NonCopyable, public EventHandler
 	{
 	public:
 		EntityManager(Application &application);
@@ -361,37 +363,6 @@ namespace PZ
 		}
 
 		void UpdateAll(float deltaTime);
-
-		/**
-		 * \brief	Sends a message to all entities.
-		 *
-		 * \param	message	The message.
-		 */
-		void SendMessageToAll(const Message &message) const;
-
-		/**
-		 * \brief	Sends a message.
-		 *
-		 * \param	message	The message.
-		 * \param	to		 	The receiving entity.
-		 *
-		 * \return	true if it succeeds, false if it fails.
-		 */
-		bool SendMessage(const Message &message, const EntityID &to) const;
-
-		/**
-		 * \brief	Registers a listener.
-		 *
-		 * \param	listener	The listener.
-		 */
-		void RegisterListener(EntityListener *listener);
-
-		/**
-		 * \brief	Unregisters a listener.
-		 *
-		 * \param	listener	The listener.
-		 */
-		void UnregisterListener(EntityListener *listener);
 
 	private:
 		bool AddComponentImpl(const EntityID &id, const HashString &name, Component *component);

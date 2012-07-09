@@ -226,21 +226,6 @@ namespace PZ
 				return manager->GetAllComponents(id, list);
 		}
 
-		/**
-		 * \brief	Sends a message.
-		 *
-		 * \param	message	The message.
-		 *
-		 * \return	true if it succeeds, false if it fails.
-		 */
-		bool SendMessage(const Message &message) const
-		{
-			if (IsValid())
-				return manager->SendMessage(message, id);
-			else
-				return false;
-		}
-
 		bool operator==(const MetaEntity &other)
 		{
 			return (GetID() == other.GetID());

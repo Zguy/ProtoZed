@@ -139,6 +139,10 @@ namespace PZ
 	Renderer_SFML::Renderer_SFML(const SystemType &type, Application &application) : Renderer(type, application)
 	{
 		p = new Impl(this);
+
+		RegisterEvent(this, &Renderer_SFML::OnEntityEvent);
+		RegisterEvent(this, &Renderer_SFML::OnEntitiesCleared);
+		RegisterEvent(this, &Renderer_SFML::OnComponentEvent);
 	}
 	Renderer_SFML::~Renderer_SFML()
 	{
@@ -167,7 +171,7 @@ namespace PZ
 		p->calculateView(videoMode);
 		p->window.SetView(p->view);
 
-		GetApplication().GetEntityManager().RegisterListener(this);
+		SubscribeTo(GetApplication().GetEntityManager());
 
 		return true;
 	}
@@ -176,7 +180,7 @@ namespace PZ
 		if (!Renderer::Stop())
 			return false;
 
-		GetApplication().GetEntityManager().UnregisterListener(this);
+		UnsubscribeTo(GetApplication().GetEntityManager());
 
 		p->clearLayers();
 
@@ -296,17 +300,40 @@ namespace PZ
 		}
 	}
 
-	void Renderer_SFML::EntityDestroyedPost(const EntityID &id)
+	void Renderer_SFML::OnEntityEvent(const EntityEvent &e)
+	{
+		if (e.post)
+		{
+			if (e.state == EntityEvent::DESTROYED)
+			{
+				EntityDestroyed(e.id);
+			}
+		}
+	}
+	void Renderer_SFML::OnComponentEvent(const ComponentEvent &e)
+	{
+		if (e.post)
+		{
+			switch (e.state)
+			{
+			case ComponentEvent::ADDED   : ComponentAdded(e.id, e.family);   break;
+			case ComponentEvent::REMOVED : ComponentRemoved(e.id, e.family); break;
+			}
+		}
+	}
+	void Renderer_SFML::OnEntitiesCleared(const EntitiesClearedEvent &e)
+	{
+		if (e.post)
+		{
+			p->clearLayers();
+		}
+	}
+
+	void Renderer_SFML::EntityDestroyed(const EntityID &id)
 	{
 		p->deleteLayer(id);
 	}
-
-	void Renderer_SFML::EntitiesClearedPost()
-	{
-		p->clearLayers();
-	}
-
-	void Renderer_SFML::ComponentAddedPost(const EntityID &id, const HashString &family)
+	void Renderer_SFML::ComponentAdded(const EntityID &id, const HashString &family)
 	{
 		if (family == Sprite::Family)
 		{
@@ -314,7 +341,7 @@ namespace PZ
 			p->createLayer(id, sprite);
 		}
 	}
-	void Renderer_SFML::ComponentRemovedPost(const EntityID &id, const HashString &family)
+	void Renderer_SFML::ComponentRemoved(const EntityID &id, const HashString &family)
 	{
 		if (family == Sprite::Family)
 		{

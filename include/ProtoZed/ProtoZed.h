@@ -33,7 +33,6 @@ THE SOFTWARE.
 #include <ProtoZed/Angle.h>
 #include <ProtoZed/Math.h>
 #include <ProtoZed/UniqueIDGenerator.h>
-#include <ProtoZed/Messages.h>
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Random.h>
 

@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	class Sound_SFML : public Sound, public EntityListener
+	class Sound_SFML : public Sound
 	{
 	public:
 		Sound_SFML(const SystemType &type, Application &application);
@@ -39,12 +39,13 @@ namespace PZ
 		virtual void Update(float deltaTime);
 
 	private:
-		virtual void EntityDestroyedPost(const EntityID &id);
+		void OnEntityEvent(const EntityEvent &e);
+		void OnComponentEvent(const ComponentEvent &e);
+		void OnEntitiesCleared(const EntitiesClearedEvent &e);
 
-		virtual void EntitiesClearedPost();
-
-		virtual void ComponentAddedPost(const EntityID &id, const HashString &family);
-		virtual void ComponentRemovedPost(const EntityID &id, const HashString &family);
+		void EntityDestroyed(const EntityID &id);
+		void ComponentAdded(const EntityID &id, const HashString &family);
+		void ComponentRemoved(const EntityID &id, const HashString &family);
 
 		class Impl;
 		Impl *p;

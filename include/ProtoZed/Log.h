@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Singleton.h>
 #include <ProtoZed/NonCopyable.h>
+#include <ProtoZed/EventHandler.h>
 
 #include <string>
 
@@ -47,7 +48,7 @@ namespace PZ
 		Impl *p;
 	};
 
-	class Log : public NonCopyable
+	class Log : public NonCopyable, public EventHandler
 	{
 		friend class LogManager;
 
@@ -58,17 +59,6 @@ namespace PZ
 			LT_ERROR,
 			LT_WARNING,
 			LT_DEBUG
-		};
-
-		class Listener
-		{
-		public:
-			Listener()
-			{}
-			virtual ~Listener()
-			{}
-
-			virtual void MessageLogged(Type type, const std::string &message) {}
 		};
 
 	private:
@@ -98,12 +88,17 @@ namespace PZ
 		static inline void Warning(const std::string &name, const std::string &message) { Message(name, LT_WARNING, message); }
 		static inline void Debug(const std::string &name, const std::string &message) { Message(name, LT_DEBUG, message); }
 
-		void RegisterListener(Listener *listener);
-		void UnregisterListener(Listener *listener);
-
 	private:
 		class Impl;
 		Impl *p;
+	};
+
+	class LogEvent : public Event
+	{
+	public:
+		LogEvent(Log::Type type, const std::string &message) : type(type), message(message) {};
+		Log::Type type;
+		std::string message;
 	};
 }
 
