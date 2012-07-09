@@ -23,26 +23,87 @@ THE SOFTWARE.
 #define PZ_EventHandler_h__
 
 #include <ProtoZed/Event.h>
+#include <ProtoZed/TypeInfo.h>
+
+#include <map>
+#include <vector>
 
 namespace PZ
 {
+	class HandlerFunctionBase
+	{
+	public:
+		virtual ~HandlerFunctionBase()
+		{}
+
+		void Exec(const Event &e)
+		{
+			Call(e);
+		}
+
+	private:
+		virtual void Call(const Event &e) = 0;
+	};
+	template<class T, class EventT>
+	class MemberFunctionHandler : public HandlerFunctionBase
+	{
+	public:
+		typedef void (T::*MemberFunc)(EventT&);
+
+		MemberFunctionHandler(T *instance, MemberFunc fn) : instance(instance), fn(fn)
+		{}
+
+		virtual void Call(const Event &e)
+		{
+			(instance->*fn)(static_cast<EventT&>(e));
+		}
+
+	private:
+		T *instance;
+		MemberFunc fn;
+	};
+
 	class EventHandler
 	{
 	public:
 		EventHandler();
-		~EventHandler();
+		virtual ~EventHandler();
 
-		bool Subscribe(EventHandler &handler, const EventType &eventType);
-		bool Unsubscribe(EventHandler &handler, const EventType &eventType);
+		bool SubscribeTo(EventHandler *handler);
+		bool UnsubscribeTo(EventHandler *handler);
 
-		virtual bool HandleEvent(Event &e);
+		template<class T, class EventT>
+		bool RegisterEvent(T *obj, void (T::*memFn)(EventT&))
+		{
+			return handlers.insert(std::make_pair(TypeInfo(typeid(EventT)), new MemberFunctionHandler<T, EventT>(obj, memFn))).second;
+		}
+		template<class T, class EventT>
+		bool UnregisterEvent(T *obj, void (T::*memFn)(EventT&))
+		{
+			HandlerMap::iterator it = handlers.find(TypeInfo(typeid(EventT)));
+			if (it != handlers.end())
+			{
+				delete (*it).second;
+				handlers.erase(it);
+				return true;
+			}
 
-	protected:
-		void EmitEvent(Event &e) const;
+			return false;
+		}
+
+		void HandleEvent(const Event &e);
+		void EmitEvent(const Event &e) const;
 
 	private:
-		class Impl;
-		Impl *p;
+		bool Subscribe(EventHandler *handler);
+		bool Unsubscribe(EventHandler *handler);
+
+		typedef std::map<TypeInfo, HandlerFunctionBase*> HandlerMap;
+		HandlerMap handlers;
+
+		typedef std::vector<EventHandler*> SubscriberList;
+		SubscriberList subscribers;
+		SubscriberList subscriptions;
 	};
 }
 

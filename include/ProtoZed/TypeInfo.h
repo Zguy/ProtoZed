@@ -19,20 +19,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Event_h__
-#define PZ_Event_h__
+#ifndef PZ_TypeInfo_h__
+#define PZ_TypeInfo_h__
+
+#include <typeinfo>
 
 namespace PZ
 {
-	class Event
+	class TypeInfo
 	{
-	protected:
-		Event()
-		{}
 	public:
-		virtual ~Event()
+		explicit TypeInfo(const std::type_info &info) : info(info)
 		{}
+
+		bool operator<(const TypeInfo &rhs) const
+		{
+			return (info.before(rhs.info) != 0);
+		}
+
+	private:
+		TypeInfo &operator=(const TypeInfo &rhs);
+
+		const std::type_info &info;
 	};
 }
 
-#endif // PZ_Event_h__
+#endif // PZ_TypeInfo_h__

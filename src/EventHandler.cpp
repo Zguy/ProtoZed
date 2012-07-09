@@ -21,65 +21,93 @@ THE SOFTWARE.
 */
 #include <ProtoZed/EventHandler.h>
 
-#include <map>
-#include <vector>
 #include <algorithm>
 
 namespace PZ
 {
-	class EventHandler::Impl
-	{
-	public:
-		typedef std::vector<EventHandler*> EventHandlerList;
-		typedef std::map<EventType, EventHandlerList> EventSubscriberMap;
-		EventSubscriberMap eventSubscribers;
-	};
-
-	EventHandler::EventHandler() : p(new Impl)
+	EventHandler::EventHandler()
 	{
 	}
 	EventHandler::~EventHandler()
 	{
-		delete p;
+		while (!subscribers.empty())
+		{
+			EventHandler *handler = subscribers.front();
+			handler->UnsubscribeTo(this);
+		}
+
+		while (!subscriptions.empty())
+		{
+			EventHandler *handler = subscriptions.front();
+			UnsubscribeTo(handler);
+		}
+
+		for (HandlerMap::iterator it = handlers.begin(); it != handlers.end(); ++it)
+		{
+			delete (*it).second;
+			(*it).second = nullptr;
+		}
+		handlers.clear();
 	}
 
-	bool EventHandler::Subscribe(EventHandler &handler, const EventType &eventType)
+	bool EventHandler::SubscribeTo(EventHandler *handler)
 	{
-		Impl::EventSubscriberMap::iterator it = p->eventSubscribers.find(eventType);
-		if (it != p->eventSubscribers.end())
+		if (handler->Subscribe(this))
 		{
-			(*it).second.push_back(&handler);
+			subscriptions.push_back(handler);
 			return true;
 		}
 
 		return false;
 	}
-	bool EventHandler::Unsubscribe(EventHandler &handler, const EventType &eventType)
+	bool EventHandler::UnsubscribeTo(EventHandler *handler)
 	{
-		Impl::EventSubscriberMap::iterator it = p->eventSubscribers.find(eventType);
-		if (it != p->eventSubscribers.end())
+		if (handler->Unsubscribe(this))
 		{
-			Impl::EventHandlerList::const_iterator it2 = std::find((*it).second.cbegin(), (*it).second.cend(), &handler);
-			if (it2 != (*it).second.cend())
-			{
-				(*it).second.erase(it2);
-				return true;
-			}
+			subscriptions.erase(std::find(subscriptions.begin(), subscriptions.end(), handler));
+			return true;
 		}
 
 		return false;
 	}
 
-	void EventHandler::EmitEvent(Event &e) const
+	void EventHandler::HandleEvent(const Event &e)
 	{
-		Impl::EventSubscriberMap::iterator it = p->eventSubscribers.find(e.GetType());
-		if (it != p->eventSubscribers.end())
+		HandlerMap::iterator it = handlers.find(TypeInfo(typeid(e)));
+		if (it != handlers.end())
 		{
-			Impl::EventHandlerList &list = (*it).second;
-			for (Impl::EventHandlerList::iterator it = list.begin(); it != list.end(); ++it)
-			{
-				(*it)->HandleEvent(e);
-			}
+			(*it).second->Exec(e);
 		}
+	}
+
+	void EventHandler::EmitEvent(const Event &e) const
+	{
+		for (SubscriberList::const_iterator it = subscribers.cbegin(); it != subscribers.cend(); ++it)
+		{
+			(*it)->HandleEvent(e);
+		}
+	}
+
+	bool EventHandler::Subscribe(EventHandler *handler)
+	{
+		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), handler);
+		if (it == subscribers.end())
+		{
+			subscribers.push_back(handler);
+			return true;
+		}
+
+		return false;
+	}
+	bool EventHandler::Unsubscribe(EventHandler *handler)
+	{
+		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), handler);
+		if (it != subscribers.end())
+		{
+			subscribers.erase(it);
+			return true;
+		}
+
+		return false;
 	}
 }
