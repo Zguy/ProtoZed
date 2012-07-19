@@ -79,7 +79,7 @@ namespace PZ
 			}
 			else
 			{
-				Log::Info("ProtoZed", "State \""+stateName+"\" was not found");
+				Log::Error("ProtoZed", "State \""+stateName+"\" was not found");
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace PZ
 			}
 			else
 			{
-				Log::Info("ProtoZed", "State \""+stateName+"\" was not found");
+				Log::Error("ProtoZed", "State \""+stateName+"\" was not found");
 			}
 		}
 

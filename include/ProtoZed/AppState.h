@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_AppState_h__
 
 #include <ProtoZed/NonCopyable.h>
+#include <ProtoZed/EventHandler.h>
 
 #include <map>
 #include <string>
@@ -33,7 +34,7 @@ namespace PZ
 
 	class Application;
 
-	class AppState : NonCopyable
+	class AppState : public NonCopyable, public EventHandler
 	{
 	public:
 		AppState(Application &application) : started(false), application(application)
