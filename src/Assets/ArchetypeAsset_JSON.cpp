@@ -75,12 +75,8 @@ namespace PZ
 			for (Jzon::Object::const_iterator it = propertiesRoot.begin(); it != propertiesRoot.end(); ++it)
 			{
 				std::string name = (*it).first;
-				std::string value;
 				const Jzon::Node &valueNode = (*it).second;
-				if (valueNode.IsString())
-					value = valueNode.AsString();
-				else
-					return false;
+				std::string value = valueNode.AsString();
 
 				properties.push_back(std::make_pair(name, value));
 			}
