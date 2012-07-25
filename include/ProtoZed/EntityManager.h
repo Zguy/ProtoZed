@@ -88,6 +88,16 @@ namespace PZ
 		bool CreateEntity(const EntityID &id);
 
 		/**
+		 * \brief	Creates an entity.
+		 *
+		 * \param	id						The identifier.
+		 * \param [out]	entity	The created entity (will be unchanged if it fails).
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
+		bool CreateEntity(const EntityID &id, MetaEntity &entity);
+
+		/**
 		 * \brief	Creates an entity from an archetype.
 		 *
 		 * \param	name	The name of the archetype.
@@ -96,6 +106,17 @@ namespace PZ
 		 * \return	true if it succeeds, false if it fails.
 		 */
 		bool CreateFromArchetype(const std::string &name, const EntityID &id);
+
+		/**
+		 * \brief	Creates an entity from an archetype.
+		 *
+		 * \param	name					The name of the archetype.
+		 * \param	id						The identifier.
+		 * \param [out]	entity	The created entity (will be unchanged if it fails).
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
+		bool CreateFromArchetype(const std::string &name, const EntityID &id, MetaEntity &entity);
 
 		/**
 		 * \brief	Flags the entity for destruction.
@@ -168,6 +189,9 @@ namespace PZ
 		 */
 		bool UnregisterArchetype(const std::string &name);
 
+		/**
+		 * \brief	Unregisters all archetypes.
+		 */
 		void UnregisterAllArchetypes();
 
 		/**
@@ -362,6 +386,11 @@ namespace PZ
 			return GetEntitiesWithImpl(family);
 		}
 
+		/**
+		 * \brief	Updates all components.
+		 *
+		 * \param	deltaTime	Time since last frame.
+		 */
 		void UpdateAll(float deltaTime);
 
 	private:

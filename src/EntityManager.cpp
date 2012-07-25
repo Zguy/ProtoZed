@@ -107,10 +107,18 @@ namespace PZ
 
 			return true;
 		}
-		else
+
+		return false;
+	}
+	bool EntityManager::CreateEntity(const EntityID &id, MetaEntity &entity)
+	{
+		if (CreateEntity(id))
 		{
-			return false;
+			entity = GetEntity(id);
+			return true;
 		}
+
+		return false;
 	}
 
 	bool EntityManager::CreateFromArchetype(const std::string &name, const EntityID &id)
@@ -120,6 +128,16 @@ namespace PZ
 		{
 			const Archetype *archetype = (*it).second;
 			return archetype->Create(*this, id);
+		}
+
+		return false;
+	}
+	bool EntityManager::CreateFromArchetype(const std::string &name, const EntityID &id, MetaEntity &entity)
+	{
+		if (CreateFromArchetype(name, id))
+		{
+			entity = GetEntity(id);
+			return true;
 		}
 
 		return false;
