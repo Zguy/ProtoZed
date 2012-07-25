@@ -61,6 +61,14 @@ namespace PZ
 			LT_DEBUG
 		};
 
+		class MessageEvent : public Event
+		{
+		public:
+			MessageEvent(Type type, const std::string &message) : type(type), message(message) {};
+			Type type;
+			std::string message;
+		};
+
 	private:
 		Log(const std::string &file, bool consoleOutput = true, bool fileOutput = true, bool timestamp = true);
 		~Log();
@@ -91,14 +99,6 @@ namespace PZ
 	private:
 		class Impl;
 		Impl *p;
-	};
-
-	class LogEvent : public Event
-	{
-	public:
-		LogEvent(Log::Type type, const std::string &message) : type(type), message(message) {};
-		Log::Type type;
-		std::string message;
 	};
 }
 

@@ -191,6 +191,6 @@ namespace PZ
 		if (p->consoleOutput)
 			std::cout << line << std::endl;
 
-		EmitEvent(LogEvent(type, message));
+		EmitEvent(MessageEvent(type, message));
 	}
 }
