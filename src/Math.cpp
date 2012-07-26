@@ -63,6 +63,14 @@ namespace PZ
 		{
 			return std::pow(value, pow);
 		}
+		float Floor(float value)
+		{
+			return std::floor(value);
+		}
+		float Ceil(float value)
+		{
+			return std::ceil(value);
+		}
 
 		float Abs(float value)
 		{

@@ -38,6 +38,8 @@ namespace PZ
 		float ATan(float value);
 		float ATan2(float x, float y);
 		float Pow(float value, float pow);
+		float Floor(float value);
+		float Ceil(float value);
 
 		float Abs(float value);
 		double Abs(double value);
@@ -46,6 +48,8 @@ namespace PZ
 		template<typename T>
 		T Clamp(T value, T min, T max)
 		{
+			assert(min <= max);
+
 			if (value < min)
 				return min;
 			else if (value > max)
@@ -56,6 +60,8 @@ namespace PZ
 		template<typename T>
 		T Wrap(T value, T min, T max)
 		{
+			assert(min <= max);
+
 			T range_size = max - min + 1;
 
 			if (value < min)
