@@ -221,8 +221,8 @@ namespace PZ
 		SceneNode *node = GetManager().GetComponent<SceneNode>(GetOwnerID());
 		if (node != nullptr)
 		{
-			const EntityList &children = node->GetChildren();
-			for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
+			const EntitySet &children = node->GetChildren();
+			for (EntitySet::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 			{
 				Position2D *childPosition = GetManager().GetComponent<Position2D>(*it);
 				if (childPosition != nullptr)

@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace PZ
 {
@@ -40,8 +41,9 @@ namespace PZ
 
 	typedef HashString EntityID;
 	typedef std::vector<EntityID> EntityList;
-	typedef std::unordered_map<EntityID, Component*, std::hash<int>> EntityComponentMap;
 	typedef std::vector<HashString> ComponentList;
+	typedef std::unordered_set<EntityID, std::hash<int>> EntitySet;
+	typedef std::unordered_map<EntityID, Component*, std::hash<int>> EntityComponentMap;
 
 	class EntityEvent : public Event
 	{
@@ -160,7 +162,7 @@ namespace PZ
 		 *
 		 * \return	The list of entites.
 		 */
-		const EntityList &GetAllEntities() const;
+		void GetAllEntities(EntityList &list) const;
 
 		/**
 		 * \brief	Gets the number of entities.

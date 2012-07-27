@@ -54,7 +54,7 @@ namespace PZ
 		void AddChild(const EntityID &id);
 		void RemoveChild(const EntityID &id);
 		bool HasChild(const EntityID &id) const;
-		inline const EntityList &GetChildren() const
+		inline const EntitySet &GetChildren() const
 		{
 			return children;
 		}
@@ -65,7 +65,7 @@ namespace PZ
 		void _RemoveChild(const EntityID &id);
 
 		EntityID parent;
-		EntityList children;
+		EntitySet children;
 	};
 }
 

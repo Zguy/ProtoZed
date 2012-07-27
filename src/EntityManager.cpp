@@ -26,8 +26,6 @@ THE SOFTWARE.
 #include <ProtoZed/Archetype.h>
 #include <ProtoZed/Log.h>
 
-#include <vector>
-
 namespace PZ
 {
 	struct EntityData
@@ -68,11 +66,11 @@ namespace PZ
 
 		Application *application;
 
-		EntityList entities;
+		EntitySet entities;
 		EntityDataMap entityDataMap;
 
 		ComponentStore components;
-		static const EntityComponentMap emptyMap; //TODO: This solution sucks
+		static const EntityComponentMap emptyMap;
 
 		ArchetypeMap archetypes;
 	};
@@ -94,12 +92,15 @@ namespace PZ
 
 	bool EntityManager::CreateEntity(const EntityID &id)
 	{
+		if (id == EntityID())
+			return false;
+
 		if (!HasEntity(id))
 		{
 			EntityEvent e(EntityEvent::CREATED, id, false);
 			EmitEvent(e);
 
-			p->entities.push_back(id);
+			p->entities.insert(id);
 			p->entityDataMap.insert(std::make_pair(id, EntityData()));
 
 			e.post = true;
@@ -156,7 +157,7 @@ namespace PZ
 	}
 	void EntityManager::DestroyPendingEntities()
 	{
-		for (EntityList::iterator it = p->entities.begin(); it != p->entities.end();)
+		for (EntitySet::iterator it = p->entities.begin(); it != p->entities.end();)
 		{
 			if (p->getDataFor(*it).destroy)
 			{
@@ -197,17 +198,7 @@ namespace PZ
 
 	bool EntityManager::HasEntity(const EntityID &id) const
 	{
-		if (id == EntityID())
-			return false;
-
-		for (EntityList::const_iterator it = p->entities.begin(); it != p->entities.end(); ++it)
-		{
-			if (id == (*it))
-			{
-				return true;
-			}
-		}
-		return false;
+		return (p->entities.find(id) != p->entities.cend());
 	}
 
 	MetaEntity EntityManager::GetEntity(const EntityID &id) const
@@ -228,7 +219,7 @@ namespace PZ
 	{
 		EmitEvent(EntitiesClearedEvent(false));
 
-		for (EntityList::const_iterator it = p->entities.cbegin(); it != p->entities.cend(); ++it)
+		for (EntitySet::const_iterator it = p->entities.cbegin(); it != p->entities.cend(); ++it)
 		{
 			p->getDataFor(*it).destroy = true;
 		}
@@ -236,9 +227,14 @@ namespace PZ
 		EmitEvent(EntitiesClearedEvent(true));
 	}
 
-	const EntityList &EntityManager::GetAllEntities() const
+	void EntityManager::GetAllEntities(EntityList &list) const
 	{
-		return p->entities;
+		list.clear();
+
+		for (EntitySet::const_iterator it = p->entities.cbegin(); it != p->entities.cend(); ++it)
+		{
+			list.push_back(*it);
+		}
 	}
 
 	EntityList::size_type EntityManager::GetEntityCount() const
@@ -429,7 +425,6 @@ namespace PZ
 		ComponentStore::const_iterator it = p->components.find(name);
 		if (it == p->components.end())
 		{
-			// Help?
 			return p->emptyMap;
 		}
 		else

@@ -44,7 +44,7 @@ namespace PZ
 
 			parent = EntityID();
 		}
-		for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+		for (EntitySet::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			SceneNode *node = GetManager().GetComponent<SceneNode>(*it);
 			if (node != nullptr)
@@ -91,7 +91,7 @@ namespace PZ
 			}
 			else if (!HasChild(id))
 			{
-				children.push_back(id);
+				children.insert(id);
 				UpdateTimestamp();
 
 				SceneNode *node = GetManager().GetComponent<SceneNode>(id);
@@ -103,32 +103,20 @@ namespace PZ
 	{
 		if (id != EntityID() && id != GetOwnerID())
 		{
-			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+			EntitySet::iterator it = children.find(id);
+			if (it != children.end())
 			{
-				if ((*it) == id)
-				{
-					children.erase(it);
-					UpdateTimestamp();
+				children.erase(it);
+				UpdateTimestamp();
 
-					SceneNode *node = GetManager().GetComponent<SceneNode>(id);
-					node->_SetParent(EntityID(), false);
-
-					break;
-				}
+				SceneNode *node = GetManager().GetComponent<SceneNode>(id);
+				node->_SetParent(EntityID(), false);
 			}
 		}
 	}
 	bool SceneNode::HasChild(const EntityID &id) const
 	{
-		for (EntityList::const_iterator it = children.cbegin(); it != children.cend(); ++it)
-		{
-			if ((*it) == id)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return (children.find(id) != children.cend());
 	}
 
 	void SceneNode::_SetParent(const EntityID &id, bool removeFromOldParent)
@@ -148,7 +136,7 @@ namespace PZ
 		{
 			if (!HasChild(id))
 			{
-				children.push_back(id);
+				children.insert(id);
 				UpdateTimestamp();
 			}
 		}
@@ -157,15 +145,11 @@ namespace PZ
 	{
 		if (id != EntityID())
 		{
-			for (EntityList::iterator it = children.begin(); it != children.end(); ++it)
+			EntitySet::iterator it = children.find(id);
+			if (it != children.end())
 			{
-				if ((*it) == id)
-				{
-					children.erase(it);
-					UpdateTimestamp();
-
-					break;
-				}
+				children.erase(it);
+				UpdateTimestamp();
 			}
 		}
 	}
