@@ -30,7 +30,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	Input_SFML::Input_SFML(const SystemType &type, Application &application) : Input(type, application), myMouseX(0.f), myMouseY(0.f)
+	Input_SFML::Input_SFML(const SystemType &type, Application &application) : Input(type, application), myMousePos(0.f, 0.f)
 	{
 		ResetStates();
 	}
@@ -50,7 +50,15 @@ namespace PZ
 				myKeys[i] = input.IsKeyDown(static_cast<sf::Key::Code>(i));
 
 			for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
-				myMouseButtons[i] = input.IsMouseButtonDown(static_cast<sf::Mouse::Button>(i));
+			{
+				bool newDown = input.IsMouseButtonDown(static_cast<sf::Mouse::Button>(i));
+				if (newDown != myMouseButtons[i])
+				{
+					EmitEvent(MouseButtonEvent(newDown, static_cast<Mouse::Button>(i)));
+				}
+
+				myMouseButtons[i] = newDown;
+			}
 
 			for (unsigned int i = 0; i < sf::Joy::Count; ++i)
 			{
@@ -63,8 +71,13 @@ namespace PZ
 			}
 
 			const sf::Vector2f mouse = renderer->GetWindow().ConvertCoords(input.GetMouseX(), input.GetMouseY());
-			myMouseX = mouse.x;
-			myMouseY = mouse.y;
+			Vector2f newMouse(mouse.x, mouse.y);
+			if (myMousePos != newMouse)
+			{
+				EmitEvent(MouseMoveEvent(myMousePos - newMouse));
+			}
+
+			myMousePos = newMouse;
 		}
 	}
 
@@ -75,11 +88,11 @@ namespace PZ
 
 	float Input_SFML::GetMouseX() const
 	{
-		return myMouseX;
+		return myMousePos.x;
 	}
 	float Input_SFML::GetMouseY() const
 	{
-		return myMouseY;
+		return myMousePos.y;
 	}
 	bool Input_SFML::IsMouseButtonDown(Mouse::Button button) const
 	{

@@ -48,8 +48,7 @@ namespace PZ
 
 		bool  myKeys[Key::Count];
 		bool  myMouseButtons[Mouse::ButtonCount];
-		float myMouseX;
-		float myMouseY;
+		Vector2f myMousePos;
 		bool  myJoystickButtons[Joy::Count][Joy::ButtonCount];
 		float myJoystickAxis[Joy::Count][Joy::AxisCount];
 	};

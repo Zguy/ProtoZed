@@ -23,6 +23,7 @@ THE SOFTWARE.
 #define PZ_Input_h__
 
 #include <ProtoZed/System.h>
+#include <ProtoZed/Vector2.h>
 
 namespace PZ
 {
@@ -180,6 +181,20 @@ namespace PZ
 	class Input : public System
 	{
 	public:
+		class MouseMoveEvent : public Event
+		{
+		public:
+			MouseMoveEvent(const Vector2f &delta) : delta(delta) {};
+			Vector2f delta;
+		};
+		class MouseButtonEvent : public Event
+		{
+		public:
+			MouseButtonEvent(bool down, Mouse::Button button) : down(down), button(button) {};
+			bool down;
+			Mouse::Button button;
+		};
+
 		Input(const SystemType &type, Application &application) : System(type, application)
 		{}
 		virtual ~Input()
