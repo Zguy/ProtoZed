@@ -39,7 +39,8 @@ namespace PZ
 		static const UniqueID GetNextID(const std::string &category = "");
 
 	private:
-		static std::map<std::string, UniqueID> currentID;
+		typedef std::map<std::string, UniqueID> IDMap;
+		static IDMap currentID;
 	};
 }
 

@@ -25,13 +25,14 @@ namespace PZ
 {
 	const UniqueID UniqueIDGenerator::GetNextID(const std::string &category)
 	{
-		if (currentID.find(category) == currentID.end())
+		IDMap::iterator it = currentID.find(category);
+		if (it == currentID.end())
 		{
-			currentID[category] = 0;
+			currentID.insert(std::make_pair(category, 0));
 		}
 
-		return currentID[category]++;
+		return (*it).second++;
 	}
 
-	std::map<std::string, UniqueID> UniqueIDGenerator::currentID;
+	UniqueIDGenerator::IDMap UniqueIDGenerator::currentID = UniqueIDGenerator::IDMap();
 }
