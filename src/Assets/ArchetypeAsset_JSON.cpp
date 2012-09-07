@@ -35,9 +35,7 @@ namespace PZ
 
 	bool ArchetypeAsset_JSON::loadData(const DataChunk &data, Archetype *archetype)
 	{
-		std::string str;
-		str.resize(data.GetSize());
-		::memcpy(&str[0], data.GetData(), data.GetSize());
+		std::string str(data.GetData(), data.GetSize());
 
 		if (Jzon::Node::DetermineType(str) != Jzon::Node::T_OBJECT)
 			return false;
