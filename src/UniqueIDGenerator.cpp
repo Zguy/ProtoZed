@@ -28,7 +28,7 @@ namespace PZ
 		IDMap::iterator it = currentID.find(category);
 		if (it == currentID.end())
 		{
-			currentID.insert(std::make_pair(category, 0));
+			it = currentID.insert(std::make_pair(category, 0)).first;
 		}
 
 		return (*it).second++;
