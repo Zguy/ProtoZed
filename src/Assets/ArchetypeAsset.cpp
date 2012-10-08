@@ -23,6 +23,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Application.h>
 #include <ProtoZed/Archetype.h>
+#include <ProtoZed/Jzon.h>
 
 namespace PZ
 {
@@ -31,6 +32,58 @@ namespace PZ
 	}
 	ArchetypeAsset::~ArchetypeAsset()
 	{
+	}
+
+	bool ArchetypeAsset::loadData(const DataChunk &data, Archetype *archetype)
+	{
+		std::string str(data.GetData(), data.GetSize());
+
+		if (Jzon::Node::DetermineType(str) != Jzon::Node::T_OBJECT)
+			return false;
+
+		Jzon::Object root;
+		root.Read(str);
+
+		const Jzon::Node &nameNode = root.Get("Name", Jzon::Value(""));
+		if (nameNode.IsString())
+			archetype->name = nameNode.AsString();
+		else
+			return false;
+
+		const Jzon::Node &componentsNode = root.Get("Components", Jzon::Array());
+		if (!componentsNode.IsArray())
+			return false;
+
+		const Jzon::Array &componentsRoot = componentsNode.AsArray();
+		for (Jzon::Array::const_iterator it = componentsRoot.begin(); it != componentsRoot.end(); ++it)
+		{
+			std::string name;
+			const Jzon::Node &nameNode = (*it).Get("Name", Jzon::Value(""));
+			if (nameNode.IsString())
+				name = nameNode.AsString();
+			else
+				return false;
+
+			Archetype::PropertyValueList properties;
+
+			const Jzon::Node &propertiesNode = (*it).Get("Properties", Jzon::Object());
+			if (!propertiesNode.IsObject())
+				return false;
+
+			const Jzon::Object &propertiesRoot = propertiesNode.AsObject();
+			for (Jzon::Object::const_iterator it = propertiesRoot.begin(); it != propertiesRoot.end(); ++it)
+			{
+				std::string name = (*it).first;
+				const Jzon::Node &valueNode = (*it).second;
+				std::string value = valueNode.AsString();
+
+				properties.push_back(std::make_pair(name, value));
+			}
+
+			archetype->components.push_back(std::make_pair(name, properties));
+		}
+
+		return true;
 	}
 
 	bool ArchetypeAsset::load(const DataChunk &data)

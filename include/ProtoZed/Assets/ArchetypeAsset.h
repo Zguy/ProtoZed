@@ -35,7 +35,7 @@ namespace PZ
 		~ArchetypeAsset();
 
 	private:
-		virtual bool loadData(const DataChunk &data, Archetype *archetype) = 0;
+		bool loadData(const DataChunk &data, Archetype *archetype);
 
 		virtual bool load(const DataChunk &data);
 		virtual bool unload();
