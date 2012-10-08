@@ -40,11 +40,6 @@ namespace PZ
 		virtual ~Asset()
 		{}
 
-		const Path &GetFilename() const
-		{
-			return filename;
-		}
-
 	protected:
 		Application &GetApplication() const
 		{
@@ -54,8 +49,6 @@ namespace PZ
 	private:
 		virtual bool load(const DataChunk &data) = 0;
 		virtual bool unload() = 0;
-
-		Path filename;
 
 		Application *application;
 	};
