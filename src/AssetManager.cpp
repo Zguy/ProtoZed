@@ -32,6 +32,9 @@ namespace PZ
 	typedef std::map<Path, std::pair<Asset*, Archive*>> FileIndex;
 	typedef std::map<std::string, AssetType> TypeMap;
 
+	typedef std::map<std::string, AssetGroup> GroupMap;
+	typedef std::map<Path, bool> GroupQueue;
+
 	class AssetManager::Impl
 	{
 	public:
@@ -99,7 +102,6 @@ namespace PZ
 				{
 					DataChunk data = archive->Get(filename);
 
-					asset->filename = filename;
 					asset->application = application;
 					if (asset->load(data))
 					{
@@ -170,6 +172,9 @@ namespace PZ
 		FileIndex fileIndex;
 
 		TypeMap typeMap;
+
+		GroupMap groups;
+		GroupQueue groupQueue;
 
 		static const AssetType nullType;
 
@@ -263,6 +268,26 @@ namespace PZ
 		return false;
 	}
 
+	bool AssetManager::AddGroup(AssetGroup group)
+	{
+		return p->groups.insert(std::make_pair(group.name, group)).second;
+	}
+	bool AssetManager::HasGroup(const std::string &name)
+	{
+		return (p->groups.find(name) != p->groups.end());
+	}
+	bool AssetManager::RemoveGroup(const std::string &name)
+	{
+		GroupMap::iterator it = p->groups.find(name);
+		if (it != p->groups.end())
+		{
+			p->groups.erase(it);
+			return true;
+		}
+
+		return false;
+	}
+
 	void AssetManager::IndexAll(bool onlyIndexRegisteredTypes)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
@@ -348,6 +373,89 @@ namespace PZ
 		}
 
 		return false;
+	}
+
+	bool AssetManager::LoadGroupDirect(const std::string &name)
+	{
+		GroupMap::iterator it = p->groups.find(name);
+		if (it != p->groups.end())
+		{
+			AssetGroup &group = (*it).second;
+
+			for (FileList::iterator it = group.files.begin(); it != group.files.end(); ++it)
+			{
+				Load(*it);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	bool AssetManager::UnloadGroupDirect(const std::string &name)
+	{
+		GroupMap::iterator it = p->groups.find(name);
+		if (it != p->groups.end())
+		{
+			AssetGroup &group = (*it).second;
+
+			for (FileList::iterator it = group.files.begin(); it != group.files.end(); ++it)
+			{
+				Unload(*it);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	bool AssetManager::LoadGroup(const std::string &name)
+	{
+		GroupMap::iterator it = p->groups.find(name);
+		if (it != p->groups.end())
+		{
+			AssetGroup &group = (*it).second;
+			for (FileList::iterator it = group.files.begin(); it != group.files.end(); ++it)
+			{
+				p->groupQueue[(*it)] = true;
+			}
+			return true;
+		}
+
+		return false;
+	}
+	bool AssetManager::UnloadGroup(const std::string &name)
+	{
+		GroupMap::iterator it = p->groups.find(name);
+		if (it != p->groups.end())
+		{
+			AssetGroup &group = (*it).second;
+			for (FileList::iterator it = group.files.begin(); it != group.files.end(); ++it)
+			{
+				p->groupQueue[(*it)] = false;
+			}
+			return true;
+		}
+
+		return false;
+	}
+	void AssetManager::RunGroupQueue()
+	{
+		for (GroupQueue::const_iterator it = p->groupQueue.cbegin(); it != p->groupQueue.cend(); ++it)
+		{
+			const Path &file = (*it).first;
+			bool load = (*it).second;
+
+			if (load)
+			{
+				Load(file);
+			}
+			else
+			{
+				Unload(file);
+			}
+		}
+		p->groupQueue.clear();
 	}
 
 	const Asset *AssetManager::Get(const Path &filename, bool autoLoad)

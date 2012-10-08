@@ -36,6 +36,20 @@ namespace PZ
 
 	typedef std::string AssetType;
 
+	class AssetGroup
+	{
+	public:
+		AssetGroup()
+		{}
+		AssetGroup(const std::string &name) : name(name)
+		{}
+		~AssetGroup()
+		{}
+
+		std::string name;
+		FileList files;
+	};
+
 	class AssetManager : public NonCopyable
 	{
 	public:
@@ -67,6 +81,10 @@ namespace PZ
 		bool AddArchive(const Path &filename, const ArchiveType &type, bool indexAll = true, bool onlyIndexRegisteredTypes = true);
 		bool RemoveArchive(const Path &filename);
 
+		bool AddGroup(AssetGroup group);
+		bool HasGroup(const std::string &name);
+		bool RemoveGroup(const std::string &name);
+
 		void IndexAll(bool onlyIndexRegisteredTypes = true);
 		bool IndexFile(const Path &filename);
 
@@ -75,6 +93,38 @@ namespace PZ
 		bool Load(const Path &filename);
 		bool LoadAs(const Path &filename, const AssetType &type);
 		bool Unload(const Path &filename);
+
+		bool LoadGroupDirect(const std::string &name);
+		bool UnloadGroupDirect(const std::string &name);
+
+		/**
+		 * \brief	Places the files of a group in the load queue.
+		 *
+		 * If some files is already in the unload queue,
+		 * they will be removed.
+		 * 
+		 * \param	name	The name of the group.
+		 *
+		 * \return	true if the group exists.
+		 */
+		bool LoadGroup(const std::string &name);
+
+		/**
+		 * \brief	Places the files of a group in the unload queue.
+		 * 
+		 * If some files is already in the load queue,
+		 * they will be removed.
+		 *
+		 * \param	name	The name.
+		 *
+		 * \return	true if it succeeds, false if it fails.
+		 */
+		bool UnloadGroup(const std::string &name);
+
+		/**
+		 * \brief	Loads and unloads the files in the group queue.
+		 */
+		void RunGroupQueue();
 
 		template<class T>
 		const T *Get(const Path &filename, bool autoLoad = true)

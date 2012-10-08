@@ -148,14 +148,16 @@ namespace PZ
 			float deltaTime = deltaTimeNonScaled * p->timescale;
 			frameTimer.Reset();
 
-			Update(deltaTime);
-
-			p->systems.UpdateAll(deltaTime);
-
 			{
 				Profile profile("StateManager");
 				p->stateManager.Update();
 			}
+
+			p->assetManager.RunGroupQueue();
+
+			Update(deltaTime);
+
+			p->systems.UpdateAll(deltaTime);
 
 			{
 				Profile profile("CurrentState");
