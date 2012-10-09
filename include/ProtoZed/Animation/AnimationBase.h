@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Animation/Animable.h>
 
-#include <ProtoZed/FastDelegate/delegate.h>
+//#include <ProtoZed/FastDelegate/delegate.h>
 
 namespace PZ
 {
@@ -33,7 +33,7 @@ namespace PZ
 	};
 
 	class AnimationBase;
-	typedef fd::delegate1<void, AnimationBase*> AnimationCallback;
+	//typedef fd::delegate1<void, AnimationBase*> AnimationCallback;
 
 	class AnimationBase
 	{
@@ -64,8 +64,8 @@ namespace PZ
 
 		virtual AnimationBase *GetCopy() = 0;
 
-		inline void SetStartCallback(AnimationCallback &callback) { onStart = callback; }
-		inline void SetFinishedCallback(AnimationCallback &callback) { onFinished = callback; }
+		//inline void SetStartCallback(AnimationCallback &callback) { onStart = callback; }
+		//inline void SetFinishedCallback(AnimationCallback &callback) { onFinished = callback; }
 
 		inline Animable &GetAnimable() { return *object; }
 
@@ -85,8 +85,8 @@ namespace PZ
 
 		State state;
 
-		AnimationCallback onStart;
-		AnimationCallback onFinished;
+		//AnimationCallback onStart;
+		//AnimationCallback onFinished;
 
 	private:
 		AnimationBase &operator=(const AnimationBase&);

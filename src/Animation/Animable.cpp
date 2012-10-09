@@ -89,8 +89,8 @@ namespace PZ
 
 			if (animation->GetState() == AnimationBase::STARTED)
 			{
-				if (!animation->onStart.empty())
-					animation->onStart(animation);
+				/*if (!animation->onStart.empty())
+					animation->onStart(animation);*/
 
 				animation->state = AnimationBase::RUNNING;
 			}
@@ -100,8 +100,8 @@ namespace PZ
 
 			if (animation->GetState() == AnimationBase::FINISHED)
 			{
-				if (!animation->onFinished.empty())
-					animation->onFinished(animation);
+				/*if (!animation->onFinished.empty())
+					animation->onFinished(animation);*/
 
 				GetAnimationManager().DestroyAnimation(animation);
 				it = animations.erase(it);
