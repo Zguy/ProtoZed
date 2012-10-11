@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include <ProtoZed/Log.h>
 
 #include <ProtoZed/SystemList.h>
-#include <ProtoZed/AppStateManager.h>
+#include <ProtoZed/StateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetManager.h>
@@ -116,7 +116,7 @@ namespace PZ
 		float timescale;
 
 		SystemList       systems;
-		AppStateManager  stateManager;
+		StateManager     stateManager;
 		EntityManager    entityManager;
 		AnimationManager animationManager;
 		AssetManager     assetManager;
@@ -161,7 +161,7 @@ namespace PZ
 
 			{
 				Profile profile("CurrentState");
-				AppState *state = p->stateManager.GetCurrent();
+				State *state = p->stateManager.GetCurrent();
 				if (state != nullptr)
 				{
 					state->Update(deltaTime);
@@ -205,7 +205,7 @@ namespace PZ
 	{
 		return p->systems;
 	}
-	AppStateManager &Application::GetStateManager() const
+	StateManager &Application::GetStateManager() const
 	{
 		return p->stateManager;
 	}

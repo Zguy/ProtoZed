@@ -27,7 +27,7 @@ THE SOFTWARE.
 namespace PZ
 {
 	class SystemList;
-	class AppStateManager;
+	class StateManager;
 	class EntityManager;
 	class AnimationManager;
 	class AssetManager;
@@ -52,7 +52,7 @@ namespace PZ
 		void SetTimescale(float timescale);
 
 		SystemList       &GetSystemList() const;
-		AppStateManager  &GetStateManager() const;
+		StateManager     &GetStateManager() const;
 		EntityManager    &GetEntityManager() const;
 		AnimationManager &GetAnimationManager() const;
 		AssetManager     &GetAssetManager() const;

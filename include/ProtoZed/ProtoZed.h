@@ -37,7 +37,7 @@ THE SOFTWARE.
 #include <ProtoZed/Random.h>
 
 #include <ProtoZed/SystemList.h>
-#include <ProtoZed/AppStateManager.h>
+#include <ProtoZed/StateManager.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/AssetManager.h>
 
