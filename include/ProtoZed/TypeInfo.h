@@ -29,18 +29,25 @@ namespace PZ
 	class TypeInfo
 	{
 	public:
-		explicit TypeInfo(const std::type_info &info) : info(info)
+		explicit TypeInfo(const std::type_info &info) : info(&info)
 		{}
 
 		bool operator<(const TypeInfo &rhs) const
 		{
-			return (info.before(rhs.info) != 0);
+			return (info->before(*rhs.info) != 0);
+		}
+		
+		bool operator==(const TypeInfo &rhs) const
+		{
+			return (*info == *rhs.info);
+		}
+		bool operator!=(const TypeInfo &rhs) const
+		{
+			return (*info != *rhs.info);
 		}
 
 	private:
-		TypeInfo &operator=(const TypeInfo &rhs);
-
-		const std::type_info &info;
+		const std::type_info *info;
 	};
 }
 
