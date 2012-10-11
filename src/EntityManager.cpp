@@ -26,6 +26,9 @@ THE SOFTWARE.
 #include <ProtoZed/Archetype.h>
 #include <ProtoZed/Log.h>
 
+#include <ProtoZed/Events/EntityEvent.h>
+#include <ProtoZed/Events/ComponentEvent.h>
+
 namespace PZ
 {
 	struct EntityData

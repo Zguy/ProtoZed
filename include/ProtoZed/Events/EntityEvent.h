@@ -19,37 +19,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_Sound_SFML_h__
-#define PZ_Sound_SFML_h__
+#ifndef PZ_EntityEvent_h__
+#define PZ_EntityEvent_h__
 
-#include <ProtoZed/Systems/Sound.h>
-#include <ProtoZed/EntityManager.h>
-
-#include <ProtoZed/Events/EntityEvent.h>
-#include <ProtoZed/Events/ComponentEvent.h>
+#include <ProtoZed/Event.h>
 
 namespace PZ
 {
-	class Sound_SFML : public Sound
+	class EntityEvent : public Event
 	{
 	public:
-		Sound_SFML(const SystemType &type, Application &application);
-		~Sound_SFML();
+		enum Type
+		{
+			CREATED,
+			DESTROYED,
+			CLEARED
+		};
+		EntityEvent(Type type) : Event(type)
+		{}
 
-		virtual bool Start();
-		virtual bool Stop();
-
-		virtual void Update(float deltaTime);
-
-	private:
-		void OnEntityDestroyed(const EntityEvent &e);
-		void OnEntitiesCleared(const EntityEvent &e);
-		void OnComponentAdded(const ComponentEvent &e);
-		void OnComponentRemoved(const ComponentEvent &e);
-
-		class Impl;
-		Impl *p;
+		EntityID id;
 	};
 }
 
-#endif // PZ_Sound_SFML_h__
+#endif // PZ_EntityEvent_h__

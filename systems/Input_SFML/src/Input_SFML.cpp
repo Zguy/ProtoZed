@@ -24,6 +24,8 @@ THE SOFTWARE.
 #include <ProtoZed/Application.h>
 #include <ProtoZed/SystemList.h>
 
+#include <ProtoZed/Events/MouseEvent.h>
+
 #include <Renderer_SFML.h>
 
 #include <SFML/Graphics/RenderWindow.hpp>

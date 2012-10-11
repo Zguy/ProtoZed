@@ -173,22 +173,6 @@ namespace PZ
 		};
 	}
 
-	class MouseEvent : public Event
-	{
-	public:
-		enum Type
-		{
-			MOVE,
-			PRESS,
-			RELEASE
-		};
-		MouseEvent(Type type) : Event(type)
-		{}
-
-		Mouse::Button button;
-		Vector2f position;
-	};
-
 	namespace Systems
 	{
 		static const SystemType INPUT = "Input";

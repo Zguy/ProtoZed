@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Log.h>
 
+#include <ProtoZed/Events/LogEvent.h>
+
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -191,9 +193,7 @@ namespace PZ
 		if (p->consoleOutput)
 			std::cout << line << std::endl;
 
-		MessageEvent e(MessageEvent::MESSAGE);
-		e.type = type;
-		e.message = message;
+		LogEvent e(LogEvent::MESSAGE, type, message);
 		EmitEvent(e);
 	}
 }

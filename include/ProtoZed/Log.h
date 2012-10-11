@@ -61,20 +61,6 @@ namespace PZ
 			LT_DEBUG
 		};
 
-		class MessageEvent : public Event
-		{
-		public:
-			enum EType
-			{
-				MESSAGE
-			};
-			MessageEvent(EType type) : Event(type)
-			{}
-
-			Type type;
-			std::string message;
-		};
-
 	private:
 		Log(const std::string &file, bool consoleOutput = true, bool fileOutput = true, bool timestamp = true);
 		~Log();

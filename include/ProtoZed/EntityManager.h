@@ -45,35 +45,6 @@ namespace PZ
 	typedef std::unordered_set<EntityID, std::hash<int>> EntitySet;
 	typedef std::unordered_map<EntityID, Component*, std::hash<int>> EntityComponentMap;
 
-	class EntityEvent : public Event
-	{
-	public:
-		enum Type
-		{
-			CREATED,
-			DESTROYED,
-			CLEARED
-		};
-		EntityEvent(Type type) : Event(type)
-		{}
-
-		EntityID id;
-	};
-	class ComponentEvent : public Event
-	{
-	public:
-		enum Type
-		{
-			ADDED,
-			REMOVED
-		};
-		ComponentEvent(Type type) : Event(type)
-		{}
-
-		EntityID id;
-		HashString family;
-	};
-
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
 	 */

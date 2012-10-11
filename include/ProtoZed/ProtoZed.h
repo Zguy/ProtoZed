@@ -63,4 +63,9 @@ THE SOFTWARE.
 #include <ProtoZed/IncludeFilters/NoFilter.h>
 #include <ProtoZed/IncludeFilters/DistanceFilter.h>
 
+#include <ProtoZed/Events/ComponentEvent.h>
+#include <ProtoZed/Events/EntityEvent.h>
+#include <ProtoZed/Events/LogEvent.h>
+#include <ProtoZed/Events/MouseEvent.h>
+
 #endif // PZ_ProtoZed_h__
