@@ -253,11 +253,12 @@ namespace PZ
 					path += '/';
 				path += current->name;
 
-				float avgOfFrame = (current->GetAverage() / root->GetAverage()) * 100.f;
+				float totalOfFrame = (current->totalTime / root->totalTime) * 100.f;
 
 				log.precision(3);
-				log << "avg: " << current->GetAverage() * 1000.f << " ms";
-				log << " (" << avgOfFrame << "%)\t";
+				log << "total: " << current->totalTime * 1000.f << " ms";
+				log << " (" << totalOfFrame << "%)\t";
+				log << "avg: " << current->GetAverage() * 1000.f << " ms\t";
 				log << "best: " << current->bestTime * 1000.f << " ms";
 				log << " [" << current->bestCall << "]\t";
 				log << "worst: " << current->worstTime * 1000.f << " ms";
