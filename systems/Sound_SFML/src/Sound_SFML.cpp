@@ -93,10 +93,6 @@ namespace PZ
 	Sound_SFML::Sound_SFML(const SystemType &type, Application &application) : Sound(type, application)
 	{
 		p = new Impl(this);
-
-		RegisterEvent(this, &Sound_SFML::OnEntityEvent);
-		RegisterEvent(this, &Sound_SFML::OnEntitiesCleared);
-		RegisterEvent(this, &Sound_SFML::OnComponentEvent);
 	}
 	Sound_SFML::~Sound_SFML()
 	{
@@ -110,7 +106,11 @@ namespace PZ
 		if (!Sound::Start())
 			return false;
 
-		SubscribeTo(GetApplication().GetEntityManager());
+		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		entityManager.Subscribe(EntityEvent::DESTROYED, this, &Sound_SFML::OnEntityDestroyed);
+		entityManager.Subscribe(EntityEvent::CLEARED, this, &Sound_SFML::OnEntitiesCleared);
+		entityManager.Subscribe(ComponentEvent::ADDED, this, &Sound_SFML::OnComponentAdded);
+		entityManager.Subscribe(ComponentEvent::REMOVED, this, &Sound_SFML::OnComponentRemoved);
 
 		return true;
 	}
@@ -119,7 +119,11 @@ namespace PZ
 		if (!Sound::Stop())
 			return false;
 
-		UnsubscribeTo(GetApplication().GetEntityManager());
+		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		entityManager.Unsubscribe(EntityEvent::DESTROYED, this, &Sound_SFML::OnEntityDestroyed);
+		entityManager.Unsubscribe(EntityEvent::CLEARED, this, &Sound_SFML::OnEntitiesCleared);
+		entityManager.Unsubscribe(ComponentEvent::ADDED, this, &Sound_SFML::OnComponentAdded);
+		entityManager.Unsubscribe(ComponentEvent::REMOVED, this, &Sound_SFML::OnComponentRemoved);
 
 		return true;
 	}
@@ -170,52 +174,27 @@ namespace PZ
 		}
 	}
 
-	void Sound_SFML::OnEntityEvent(const EntityEvent &e)
+	void Sound_SFML::OnEntityDestroyed(const EntityEvent &e)
 	{
-		if (e.post)
+		p->deleteSound(e.id);
+	}
+	void Sound_SFML::OnEntitiesCleared(const EntityEvent &e)
+	{
+		p->clearSounds();
+	}
+	void Sound_SFML::OnComponentAdded(const ComponentEvent &e)
+	{
+		if (e.family == SoundEmitter::Family)
 		{
-			if (e.state == EntityEvent::DESTROYED)
-			{
-				EntityDestroyed(e.id);
-			}
+			const SoundEmitter *emitter = GetApplication().GetEntityManager().GetComponent<SoundEmitter>(e.id);
+			p->createSound(e.id, emitter);
 		}
 	}
-	void Sound_SFML::OnComponentEvent(const ComponentEvent &e)
+	void Sound_SFML::OnComponentRemoved(const ComponentEvent &e)
 	{
-		if (e.post)
+		if (e.family == SoundEmitter::Family)
 		{
-			switch (e.state)
-			{
-			case ComponentEvent::ADDED   : ComponentAdded(e.id, e.family);   break;
-			case ComponentEvent::REMOVED : ComponentRemoved(e.id, e.family); break;
-			}
-		}
-	}
-	void Sound_SFML::OnEntitiesCleared(const EntitiesClearedEvent &e)
-	{
-		if (e.post)
-		{
-			p->clearSounds();
-		}
-	}
-
-	void Sound_SFML::EntityDestroyed(const EntityID &id)
-	{
-		p->deleteSound(id);
-	}
-	void Sound_SFML::ComponentAdded(const EntityID &id, const HashString &family)
-	{
-		if (family == SoundEmitter::Family)
-		{
-			const SoundEmitter *emitter = GetApplication().GetEntityManager().GetComponent<SoundEmitter>(id);
-			p->createSound(id, emitter);
-		}
-	}
-	void Sound_SFML::ComponentRemoved(const EntityID &id, const HashString &family)
-	{
-		if (family == SoundEmitter::Family)
-		{
-			p->deleteSound(id);
+			p->deleteSound(e.id);
 		}
 	}
 }

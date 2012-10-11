@@ -39,13 +39,10 @@ namespace PZ
 		virtual void Update(float deltaTime);
 
 	private:
-		void OnEntityEvent(const EntityEvent &e);
-		void OnComponentEvent(const ComponentEvent &e);
-		void OnEntitiesCleared(const EntitiesClearedEvent &e);
-
-		void EntityDestroyed(const EntityID &id);
-		void ComponentAdded(const EntityID &id, const HashString &family);
-		void ComponentRemoved(const EntityID &id, const HashString &family);
+		void OnEntityDestroyed(const EntityEvent &e);
+		void OnEntitiesCleared(const EntityEvent &e);
+		void OnComponentAdded(const ComponentEvent &e);
+		void OnComponentRemoved(const ComponentEvent &e);
 
 		class Impl;
 		Impl *p;

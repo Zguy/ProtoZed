@@ -191,6 +191,9 @@ namespace PZ
 		if (p->consoleOutput)
 			std::cout << line << std::endl;
 
-		EmitEvent(MessageEvent(type, message));
+		MessageEvent e(MessageEvent::MESSAGE);
+		e.type = type;
+		e.message = message;
+		EmitEvent(e);
 	}
 }

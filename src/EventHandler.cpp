@@ -30,84 +30,84 @@ namespace PZ
 	}
 	EventHandler::~EventHandler()
 	{
-		while (!subscribers.empty())
-		{
-			EventHandler *handler = subscribers.front();
-			handler->UnsubscribeTo(*this);
-		}
-
 		while (!subscriptions.empty())
 		{
-			EventHandler *handler = subscriptions.front();
-			UnsubscribeTo(*handler);
+			Subscription &sub = subscriptions.front();
+			sub.first->Unsubscribe(sub.second.second, this, sub.second.first);
 		}
 
-		for (HandlerMap::iterator it = handlers.begin(); it != handlers.end(); ++it)
+		for (SubscriberMap::iterator it = subscribers.begin(); it != subscribers.end(); ++it)
 		{
-			delete (*it).second;
-			(*it).second = nullptr;
+			EventHandlerMap &handlerMap = (*it).second;
+			for (EventHandlerMap::iterator it2 = handlerMap.begin(); it2 != handlerMap.end(); ++it2)
+			{
+				HandlerFunctionList &list = (*it2).second;
+				for (HandlerFunctionList::iterator it3 = list.begin(); it3 != list.end(); ++it3)
+				{
+					(*it3).first->UnsubscribeTo(this, (*it).first, (*it2).first);
+					delete (*it3).second;
+					(*it3).second = nullptr;
+				}
+			}
 		}
-		handlers.clear();
-	}
-
-	bool EventHandler::SubscribeTo(EventHandler &handler)
-	{
-		if (handler.Subscribe(*this))
-		{
-			subscriptions.push_back(&handler);
-			return true;
-		}
-
-		return false;
-	}
-	bool EventHandler::UnsubscribeTo(EventHandler &handler)
-	{
-		if (handler.Unsubscribe(*this))
-		{
-			subscriptions.erase(std::find(subscriptions.begin(), subscriptions.end(), &handler));
-			return true;
-		}
-
-		return false;
-	}
-
-	void EventHandler::HandleEvent(const Event &e)
-	{
-		HandlerMap::iterator it = handlers.find(TypeInfo(typeid(e)));
-		if (it != handlers.end())
-		{
-			(*it).second->Exec(e);
-		}
+		subscribers.clear();
 	}
 
 	void EventHandler::EmitEvent(const Event &e) const
 	{
-		for (SubscriberList::const_iterator it = subscribers.cbegin(); it != subscribers.cend(); ++it)
+		SubscriberMap::const_iterator it1 = subscribers.find(TypeInfo(typeid(e)));
+		if (it1 == subscribers.cend())
+			return;
+
+		std::unordered_map<EventType, HandlerFunctionList>::const_iterator it2 = (*it1).second.find(e.GetType());
+		if (it2 == (*it1).second.cend())
+			return;
+
+		const HandlerFunctionList &list = (*it2).second;
+		for (HandlerFunctionList::const_iterator it = list.cbegin(); it != list.cend(); ++it)
 		{
-			(*it)->HandleEvent(e);
+			(*it).second->Call(e);
 		}
 	}
 
-	bool EventHandler::Subscribe(EventHandler &handler)
+	void EventHandler::SubscribeTo(EventHandler *handler, const TypeInfo &typeInfo, EventType type)
 	{
-		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), &handler);
-		if (it == subscribers.end())
-		{
-			subscribers.push_back(&handler);
-			return true;
-		}
-
-		return false;
+		subscriptions.push_back(std::make_pair(handler, std::make_pair(typeInfo, type)));
 	}
-	bool EventHandler::Unsubscribe(EventHandler &handler)
+	void EventHandler::UnsubscribeTo(EventHandler *handler, const TypeInfo &typeInfo, EventType type)
 	{
-		SubscriberList::iterator it = std::find(subscribers.begin(), subscribers.end(), &handler);
-		if (it != subscribers.end())
+		for (SubscriptionList::iterator it = subscriptions.begin(); it != subscriptions.end(); ++it)
 		{
-			subscribers.erase(it);
-			return true;
+			if ((*it).first == handler && (*it).second.first == typeInfo && (*it).second.second == type)
+			{
+				subscriptions.erase(it);
+				break;
+			}
 		}
+	}
 
+	void EventHandler::Unsubscribe(EventType type, EventHandler *handler, const TypeInfo &typeInfo)
+	{
+		HandlerFunctionList &list = subscribers[typeInfo][type];
+		for (HandlerFunctionList::iterator it = list.begin(); it != list.end(); ++it)
+		{
+			if ((*it).first == handler)
+			{
+				delete (*it).second;
+				list.erase(it);
+				handler->UnsubscribeTo(this, typeInfo, type);
+				return;
+			}
+		}
+	}
+
+	bool EventHandler::HasHandler(HandlerFunctionList &list, EventHandler *handler) const
+	{
+		for (HandlerFunctionList::const_iterator it = list.cbegin(); it != list.cend(); ++it)
+		{
+			if ((*it).first == handler)
+				return true;
+		}
 		return false;
 	}
 }

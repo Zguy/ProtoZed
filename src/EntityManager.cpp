@@ -97,13 +97,11 @@ namespace PZ
 
 		if (!HasEntity(id))
 		{
-			EntityEvent e(EntityEvent::CREATED, id, false);
-			EmitEvent(e);
-
 			p->entities.insert(id);
 			p->entityDataMap.insert(std::make_pair(id, EntityData()));
 
-			e.post = true;
+			EntityEvent e(EntityEvent::CREATED);
+			e.id = id;
 			EmitEvent(e);
 
 			return true;
@@ -163,9 +161,6 @@ namespace PZ
 			{
 				const EntityID id = (*it);
 
-				EntityEvent e(EntityEvent::DESTROYED, id, false);
-				EmitEvent(e);
-
 				// Remove all components associated with this entity
 				for (ComponentStore::iterator it2 = p->components.begin(); it2 != p->components.end();)
 				{
@@ -186,7 +181,8 @@ namespace PZ
 				p->entityDataMap.erase(id);
 				it = p->entities.erase(it);
 
-				e.post = true;
+				EntityEvent e(EntityEvent::DESTROYED);
+				e.id = id;
 				EmitEvent(e);
 			}
 			else
@@ -217,14 +213,13 @@ namespace PZ
 
 	void EntityManager::ClearEntities()
 	{
-		EmitEvent(EntitiesClearedEvent(false));
-
 		for (EntitySet::const_iterator it = p->entities.cbegin(); it != p->entities.cend(); ++it)
 		{
 			p->getDataFor(*it).destroy = true;
 		}
 
-		EmitEvent(EntitiesClearedEvent(true));
+		EntityEvent e(EntityEvent::CLEARED);
+		EmitEvent(e);
 	}
 
 	void EntityManager::GetAllEntities(EntityList &list) const
@@ -331,9 +326,6 @@ namespace PZ
 		if (!HasEntity(id) || HasComponentImpl(id, name))
 			return false;
 
-		ComponentEvent e(ComponentEvent::ADDED, id, name, false);
-		EmitEvent(e);
-
 		component->application = p->application;
 		component->owner = id;
 		component->manager = this;
@@ -342,7 +334,9 @@ namespace PZ
 
 		component->Init();
 
-		e.post = true;
+		ComponentEvent e(ComponentEvent::ADDED);
+		e.id = id;
+		e.family = name;
 		EmitEvent(e);
 
 		return success;
@@ -364,14 +358,13 @@ namespace PZ
 			}
 			else
 			{
-				ComponentEvent e(ComponentEvent::REMOVED, id, name, false);
-				EmitEvent(e);
-
 				(*it2).second->Destroy();
 
 				p->eraseComponent(it, it2);
 
-				e.post = true;
+				ComponentEvent e(ComponentEvent::REMOVED);
+				e.id = id;
+				e.family = name;
 				EmitEvent(e);
 
 				return true;

@@ -54,7 +54,10 @@ namespace PZ
 				bool newDown = input.IsMouseButtonDown(static_cast<sf::Mouse::Button>(i));
 				if (newDown != myMouseButtons[i])
 				{
-					EmitEvent(MouseButtonEvent(newDown, static_cast<Mouse::Button>(i)));
+					MouseEvent e(newDown ? MouseEvent::PRESS : MouseEvent::RELEASE);
+					e.button = static_cast<Mouse::Button>(i);
+					e.position = myMousePos;
+					EmitEvent(e);
 				}
 
 				myMouseButtons[i] = newDown;
@@ -74,7 +77,9 @@ namespace PZ
 			Vector2f newMouse(mouse.x, mouse.y);
 			if (myMousePos != newMouse)
 			{
-				EmitEvent(MouseMoveEvent(myMousePos - newMouse));
+				MouseEvent e(MouseEvent::MOVE);
+				e.position = myMousePos;
+				EmitEvent(e);
 			}
 
 			myMousePos = newMouse;

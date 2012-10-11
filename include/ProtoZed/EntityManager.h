@@ -48,27 +48,30 @@ namespace PZ
 	class EntityEvent : public Event
 	{
 	public:
-		enum State { CREATED, DESTROYED };
-		EntityEvent(State state, const EntityID &id, bool post = true) : state(state), id(id), post(post) {};
-		State state;
+		enum Type
+		{
+			CREATED,
+			DESTROYED,
+			CLEARED
+		};
+		EntityEvent(Type type) : Event(type)
+		{}
+
 		EntityID id;
-		bool post;
-	};
-	class EntitiesClearedEvent : public Event
-	{
-	public:
-		EntitiesClearedEvent(bool post = true) : post(post) {};
-		bool post;
 	};
 	class ComponentEvent : public Event
 	{
 	public:
-		enum State { ADDED, REMOVED };
-		ComponentEvent(State state, const EntityID &id, const HashString &family, bool post = true) : state(state), id(id), family(family), post(post) {};
-		State state;
+		enum Type
+		{
+			ADDED,
+			REMOVED
+		};
+		ComponentEvent(Type type) : Event(type)
+		{}
+
 		EntityID id;
 		HashString family;
-		bool post;
 	};
 
 	/**

@@ -24,14 +24,24 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	typedef int EventType;
+
 	class Event
 	{
 	protected:
-		Event()
+		Event(EventType type) : type(type)
 		{}
 	public:
 		virtual ~Event()
 		{}
+
+		inline EventType GetType() const
+		{
+			return type;
+		}
+
+	private:
+		EventType type;
 	};
 }
 

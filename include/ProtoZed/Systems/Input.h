@@ -173,6 +173,22 @@ namespace PZ
 		};
 	}
 
+	class MouseEvent : public Event
+	{
+	public:
+		enum Type
+		{
+			MOVE,
+			PRESS,
+			RELEASE
+		};
+		MouseEvent(Type type) : Event(type)
+		{}
+
+		Mouse::Button button;
+		Vector2f position;
+	};
+
 	namespace Systems
 	{
 		static const SystemType INPUT = "Input";
@@ -181,20 +197,6 @@ namespace PZ
 	class Input : public System
 	{
 	public:
-		class MouseMoveEvent : public Event
-		{
-		public:
-			MouseMoveEvent(const Vector2f &delta) : delta(delta) {};
-			Vector2f delta;
-		};
-		class MouseButtonEvent : public Event
-		{
-		public:
-			MouseButtonEvent(bool down, Mouse::Button button) : down(down), button(button) {};
-			bool down;
-			Mouse::Button button;
-		};
-
 		Input(const SystemType &type, Application &application) : System(type, application)
 		{}
 		virtual ~Input()

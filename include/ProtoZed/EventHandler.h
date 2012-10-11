@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include <ProtoZed/TypeInfo.h>
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace PZ
@@ -36,12 +37,6 @@ namespace PZ
 		virtual ~HandlerFunctionBase()
 		{}
 
-		void Exec(const Event &e)
-		{
-			Call(e);
-		}
-
-	private:
 		virtual void Call(const Event &e) = 0;
 	};
 	template<class T, class EventT>
@@ -55,7 +50,7 @@ namespace PZ
 
 		virtual void Call(const Event &e)
 		{
-			(instance->*fn)(static_cast<EventT&>(e));
+			(instance->*fn)(static_cast<const EventT&>(e));
 		}
 
 	private:
@@ -69,41 +64,68 @@ namespace PZ
 		EventHandler();
 		virtual ~EventHandler();
 
-		bool SubscribeTo(EventHandler &handler);
-		bool UnsubscribeTo(EventHandler &handler);
-
 		template<class T, class EventT>
-		bool RegisterEvent(T *obj, void (T::*memFn)(EventT&))
+		bool Subscribe(EventType type, EventHandler *handler, void (T::*memFn)(EventT&), T *obj = nullptr)
 		{
-			return handlers.insert(std::make_pair(TypeInfo(typeid(EventT)), new MemberFunctionHandler<T, EventT>(obj, memFn))).second;
-		}
-		template<class T, class EventT>
-		bool UnregisterEvent(T *obj, void (T::*memFn)(EventT&))
-		{
-			HandlerMap::iterator it = handlers.find(TypeInfo(typeid(EventT)));
-			if (it != handlers.end())
+			if (obj == nullptr)
 			{
-				delete (*it).second;
-				handlers.erase(it);
+				obj = dynamic_cast<T*>(handler);
+				if (obj == nullptr)
+					return false;
+			}
+
+			TypeInfo typeInfo(typeid(EventT));
+
+			HandlerFunctionList &list = subscribers[typeInfo][type];
+			if (!HasHandler(list, handler))
+			{
+				list.push_back(std::make_pair(handler, new MemberFunctionHandler<T, EventT>(obj, memFn)));
+
+				handler->SubscribeTo(this, typeInfo, type);
+
 				return true;
 			}
 
 			return false;
 		}
+		template<class T, class EventT>
+		bool Unsubscribe(EventType type, EventHandler *handler, void (T::*memFn)(EventT&))
+		{
+			TypeInfo typeInfo(typeid(EventT));
+			HandlerFunctionList &list = subscribers[typeInfo][type];
+			for (HandlerFunctionList::iterator it = list.begin(); it != list.end(); ++it)
+			{
+				if ((*it).first == handler)
+				{
+					delete (*it).second;
+					list.erase(it);
+					handler->UnsubscribeTo(this, typeInfo, type);
+					return true;
+				}
+			}
 
-		void HandleEvent(const Event &e);
+			return false;
+		}
+
 		void EmitEvent(const Event &e) const;
 
 	private:
-		bool Subscribe(EventHandler &handler);
-		bool Unsubscribe(EventHandler &handler);
+		void SubscribeTo(EventHandler *handler, const TypeInfo &typeInfo, EventType type);
+		void UnsubscribeTo(EventHandler *handler, const TypeInfo &typeInfo, EventType type);
 
-		typedef std::map<TypeInfo, HandlerFunctionBase*> HandlerMap;
-		HandlerMap handlers;
+		void Unsubscribe(EventType type, EventHandler *handler, const TypeInfo &typeInfo);
 
-		typedef std::vector<EventHandler*> SubscriberList;
-		SubscriberList subscribers;
-		SubscriberList subscriptions;
+		typedef std::vector<std::pair<EventHandler*, HandlerFunctionBase*>> HandlerFunctionList;
+		typedef std::unordered_map<EventType, HandlerFunctionList> EventHandlerMap;
+
+		bool HasHandler(HandlerFunctionList &list, EventHandler *handler) const;
+
+		typedef std::map<TypeInfo, EventHandlerMap> SubscriberMap;
+		SubscriberMap subscribers;
+
+		typedef std::pair<EventHandler*, std::pair<TypeInfo, EventType>> Subscription;
+		typedef std::vector<Subscription> SubscriptionList;
+		SubscriptionList subscriptions;
 	};
 }
 

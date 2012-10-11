@@ -64,7 +64,13 @@ namespace PZ
 		class MessageEvent : public Event
 		{
 		public:
-			MessageEvent(Type type, const std::string &message) : type(type), message(message) {};
+			enum EType
+			{
+				MESSAGE
+			};
+			MessageEvent(EType type) : Event(type)
+			{}
+
 			Type type;
 			std::string message;
 		};

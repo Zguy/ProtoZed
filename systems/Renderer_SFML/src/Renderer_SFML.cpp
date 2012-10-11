@@ -139,10 +139,6 @@ namespace PZ
 	Renderer_SFML::Renderer_SFML(const SystemType &type, Application &application) : Renderer(type, application)
 	{
 		p = new Impl(this);
-
-		RegisterEvent(this, &Renderer_SFML::OnEntityEvent);
-		RegisterEvent(this, &Renderer_SFML::OnEntitiesCleared);
-		RegisterEvent(this, &Renderer_SFML::OnComponentEvent);
 	}
 	Renderer_SFML::~Renderer_SFML()
 	{
@@ -171,7 +167,11 @@ namespace PZ
 		p->calculateView(videoMode);
 		p->window.SetView(p->view);
 
-		SubscribeTo(GetApplication().GetEntityManager());
+		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		entityManager.Subscribe(EntityEvent::DESTROYED, this, &Renderer_SFML::OnEntityDestroyed);
+		entityManager.Subscribe(EntityEvent::CLEARED, this, &Renderer_SFML::OnEntitiesCleared);
+		entityManager.Subscribe(ComponentEvent::ADDED, this, &Renderer_SFML::OnComponentAdded);
+		entityManager.Subscribe(ComponentEvent::REMOVED, this, &Renderer_SFML::OnComponentRemoved);
 
 		return true;
 	}
@@ -180,7 +180,11 @@ namespace PZ
 		if (!Renderer::Stop())
 			return false;
 
-		UnsubscribeTo(GetApplication().GetEntityManager());
+		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		entityManager.Unsubscribe(EntityEvent::DESTROYED, this, &Renderer_SFML::OnEntityDestroyed);
+		entityManager.Unsubscribe(EntityEvent::CLEARED, this, &Renderer_SFML::OnEntitiesCleared);
+		entityManager.Unsubscribe(ComponentEvent::ADDED, this, &Renderer_SFML::OnComponentAdded);
+		entityManager.Unsubscribe(ComponentEvent::REMOVED, this, &Renderer_SFML::OnComponentRemoved);
 
 		p->clearLayers();
 
@@ -300,52 +304,27 @@ namespace PZ
 		}
 	}
 
-	void Renderer_SFML::OnEntityEvent(const EntityEvent &e)
+	void Renderer_SFML::OnEntityDestroyed(const EntityEvent &e)
 	{
-		if (e.post)
+		p->deleteLayer(e.id);
+	}
+	void Renderer_SFML::OnEntitiesCleared(const EntityEvent &e)
+	{
+		p->clearLayers();
+	}
+	void Renderer_SFML::OnComponentAdded(const ComponentEvent &e)
+	{
+		if (e.family == Sprite::Family)
 		{
-			if (e.state == EntityEvent::DESTROYED)
-			{
-				EntityDestroyed(e.id);
-			}
+			const Sprite *sprite = GetApplication().GetEntityManager().GetComponent<Sprite>(e.id);
+			p->createLayer(e.id, sprite);
 		}
 	}
-	void Renderer_SFML::OnComponentEvent(const ComponentEvent &e)
+	void Renderer_SFML::OnComponentRemoved(const ComponentEvent &e)
 	{
-		if (e.post)
+		if (e.family == Sprite::Family)
 		{
-			switch (e.state)
-			{
-			case ComponentEvent::ADDED   : ComponentAdded(e.id, e.family);   break;
-			case ComponentEvent::REMOVED : ComponentRemoved(e.id, e.family); break;
-			}
-		}
-	}
-	void Renderer_SFML::OnEntitiesCleared(const EntitiesClearedEvent &e)
-	{
-		if (e.post)
-		{
-			p->clearLayers();
-		}
-	}
-
-	void Renderer_SFML::EntityDestroyed(const EntityID &id)
-	{
-		p->deleteLayer(id);
-	}
-	void Renderer_SFML::ComponentAdded(const EntityID &id, const HashString &family)
-	{
-		if (family == Sprite::Family)
-		{
-			const Sprite *sprite = GetApplication().GetEntityManager().GetComponent<Sprite>(id);
-			p->createLayer(id, sprite);
-		}
-	}
-	void Renderer_SFML::ComponentRemoved(const EntityID &id, const HashString &family)
-	{
-		if (family == Sprite::Family)
-		{
-			p->deleteLayer(id);
+			p->deleteLayer(e.id);
 		}
 	}
 }
