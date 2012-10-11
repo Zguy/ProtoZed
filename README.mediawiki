@@ -11,6 +11,7 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 '''Features:'''
 * A state system.
 * An entity/component system.
+* An event system.
 * An animation system.
 ** Tweens.
 ** Spritesheets.
@@ -25,4 +26,4 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 * Windows
 * Linux
 * Mac OS X*
-<nowiki>*</nowiki>These are not tested, but they should work. Every third party library I'm using has support for them and all of my own code should be platform independent.
+<nowiki>*</nowiki>These are not tested, but they should work.
