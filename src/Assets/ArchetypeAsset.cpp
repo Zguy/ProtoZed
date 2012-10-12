@@ -42,11 +42,12 @@ namespace PZ
 			return false;
 
 		Jzon::Object root;
-		root.Read(str);
+		Jzon::Parser parser(root, str);
+		parser.Parse();
 
 		const Jzon::Node &nameNode = root.Get("Name", Jzon::Value(""));
 		if (nameNode.IsString())
-			archetype->name = nameNode.AsString();
+			archetype->name = nameNode.ToString();
 		else
 			return false;
 
@@ -60,7 +61,7 @@ namespace PZ
 			std::string name;
 			const Jzon::Node &nameNode = (*it).Get("Name", Jzon::Value(""));
 			if (nameNode.IsString())
-				name = nameNode.AsString();
+				name = nameNode.ToString();
 			else
 				return false;
 
@@ -75,7 +76,7 @@ namespace PZ
 			{
 				std::string name = (*it).first;
 				const Jzon::Node &valueNode = (*it).second;
-				std::string value = valueNode.AsString();
+				std::string value = valueNode.ToString();
 
 				properties.push_back(std::make_pair(name, value));
 			}

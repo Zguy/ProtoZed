@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2011 Johannes Häggqvist
+Copyright (c) 2011 Johannes HÃ¤ggqvist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@ THE SOFTWARE.
 
 #include <sstream>
 #include <fstream>
+
+#include <stack>
 
 namespace Jzon
 {
@@ -215,49 +217,45 @@ namespace Jzon
 
 
 	Value::Value()
-		: valueStr(""), type(VT_NULL)
 	{
+		SetNull();
 	}
 	Value::Value(const Value &rhs)
 	{
-		valueStr = rhs.valueStr;
-		type = rhs.type;
+		Set(rhs);
 	}
 	Value::Value(const Node &rhs)
 	{
 		const Value &value = rhs.AsValue();
-		valueStr = value.valueStr;
-		type = value.type;
+		Set(value);
+	}
+	Value::Value(ValueType type, const std::string &value)
+	{
+		Set(type, value);
 	}
 	Value::Value(const std::string &value)
-		: valueStr(value), type(VT_STRING)
 	{
+		Set(value);
 	}
 	Value::Value(const char *value)
-		: valueStr(std::string(value)), type(VT_STRING)
 	{
+		Set(value);
 	}
 	Value::Value(const int value)
-		: type(VT_INT)
 	{
-		std::stringstream sstr;
-		sstr << value;
-		valueStr = sstr.str();
+		Set(value);
+	}
+	Value::Value(const float value)
+	{
+		Set(value);
 	}
 	Value::Value(const double value)
-		: type(VT_DOUBLE)
 	{
-		std::stringstream sstr;
-		sstr << value;
-		valueStr = sstr.str();
+		Set(value);
 	}
 	Value::Value(const bool value)
-		: type(VT_BOOL)
 	{
-		if (value)
-			valueStr = "true";
-		else
-			valueStr = "false";
+		Set(value);
 	}
 	Value::~Value()
 	{
@@ -272,20 +270,20 @@ namespace Jzon
 		return type;
 	}
 
-	std::string Value::AsString() const
+	std::string Value::ToString() const
 	{
 		if (IsNull())
 			return "null";
 		else
 			return valueStr;
 	}
-	int Value::AsInt() const
+	int Value::ToInt() const
 	{
 		if (IsNull())
 			return 0;
 		else
 		{
-			if (IsInt() || IsDouble())
+			if (IsNumber())
 			{
 				std::stringstream sstr(valueStr);
 				int val;
@@ -296,13 +294,30 @@ namespace Jzon
 				throw ValueException();
 		}
 	}
-	double Value::AsDouble() const
+	float Value::ToFloat() const
 	{
 		if (IsNull())
 			return 0.0;
 		else
 		{
-			if (IsDouble() || IsInt())
+			if (IsNumber())
+			{
+				std::stringstream sstr(valueStr);
+				float val;
+				sstr >> val;
+				return val;
+			}
+			else
+				throw ValueException();
+		}
+	}
+	double Value::ToDouble() const
+	{
+		if (IsNull())
+			return 0.0;
+		else
+		{
+			if (IsNumber())
 			{
 				std::stringstream sstr(valueStr);
 				double val;
@@ -313,7 +328,7 @@ namespace Jzon
 				throw ValueException();
 		}
 	}
-	bool Value::AsBool() const
+	bool Value::ToBool() const
 	{
 		if (IsNull())
 			return false;
@@ -327,39 +342,51 @@ namespace Jzon
 	void Value::SetNull()
 	{
 		valueStr = "";
-		type = VT_NULL;
+		type     = VT_NULL;
 	}
 	void Value::Set(const Value &value)
 	{
 		if (this != &value)
 		{
 			valueStr = value.valueStr;
-			type = value.type;
+			type     = value.type;
 		}
+	}
+	void Value::Set(ValueType type, const std::string &value)
+	{
+		valueStr   = value;
+		this->type = type;
 	}
 	void Value::Set(const std::string &value)
 	{
-		valueStr = value;
-		type = VT_STRING;
+		valueStr = UnescapeString(value);
+		type     = VT_STRING;
 	}
 	void Value::Set(const char *value)
 	{
-		valueStr = std::string(value);
-		type = VT_STRING;
+		valueStr = UnescapeString(std::string(value));
+		type     = VT_STRING;
 	}
 	void Value::Set(const int value)
 	{
 		std::stringstream sstr;
 		sstr << value;
 		valueStr = sstr.str();
-		type = VT_INT;
+		type     = VT_NUMBER;
+	}
+	void Value::Set(const float value)
+	{
+		std::stringstream sstr;
+		sstr << value;
+		valueStr = sstr.str();
+		type     = VT_NUMBER;
 	}
 	void Value::Set(const double value)
 	{
 		std::stringstream sstr;
 		sstr << value;
 		valueStr = sstr.str();
-		type = VT_DOUBLE;
+		type     = VT_NUMBER;
 	}
 	void Value::Set(const bool value)
 	{
@@ -397,6 +424,11 @@ namespace Jzon
 		Set(rhs);
 		return *this;
 	}
+	Value &Value::operator=(const float rhs)
+	{
+		Set(rhs);
+		return *this;
+	}
 	Value &Value::operator=(const double rhs)
 	{
 		Set(rhs);
@@ -427,60 +459,6 @@ namespace Jzon
 		else
 			value += valueStr;
 		return value;
-	}
-	void Value::Read(const std::string &_json)
-	{
-		std::string json;
-		RemoveWhitespace(_json, json);
-
-		if (json.at(0) == '"' && json.at(json.size()-1) == '"')
-		{
-			valueStr = UnescapeString(json.substr(1, json.size()-2));
-			type = VT_STRING;
-		}
-		else if (json == "true" || json == "false")
-		{
-			valueStr = json;
-			type = VT_BOOL;
-		}
-		else
-		{
-			bool onlyNumbers = true;
-			bool point = false;
-
-			for (std::string::const_iterator it = json.begin(); it != json.end(); ++it)
-			{
-				char c = (*it);
-
-				if (c != '0' && c != '1' && c != '2' && c != '3' && c != '4' && c != '5' && c != '6' && c != '7' && c != '8' && c != '9' && c != '.' && c != '-')
-				{
-					onlyNumbers = false;
-				}
-				else if (c == '.')
-				{
-					point = true;
-				}
-			}
-
-			if (onlyNumbers)
-			{
-				if (point)
-				{
-					valueStr = json;
-					type = VT_DOUBLE;
-				}
-				else
-				{
-					valueStr = json;
-					type = VT_INT;
-				}
-			}
-			else
-			{
-				valueStr = "";
-				type = VT_NULL;
-			}
-		}
 	}
 
 	Node *Value::GetCopy() const
@@ -633,6 +611,7 @@ namespace Jzon
 		for (ChildList::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			delete (*it).second;
+			(*it).second = NULL;
 		}
 		children.clear();
 	}
@@ -707,71 +686,6 @@ namespace Jzon
 		json += fi.GetNewline() + fi.GetIndentation(level) + "}";
 		return json;
 	}
-	void Object::Read(const std::string &_json)
-	{
-		std::string json;
-		RemoveWhitespace(_json, json);
-
-		std::string name;
-		std::string value;
-		bool atName = true;
-		int numOpen = 0;
-		bool inString = false;
-
-		for (std::string::const_iterator it = json.begin(); it != json.end(); ++it)
-		{
-			char c0 = '\0';
-			const char &c = (*it);
-			if (it != json.begin())
-				c0 = (*(it-1));
-
-			if ((c == '{' || c == '[') && !inString)
-			{
-				++numOpen;
-			}
-			else if ((c == '}' || c == ']') && !inString)
-			{
-				--numOpen;
-			}
-			else if (c0 != '\\' && c == '"')
-			{
-				inString = !inString;
-			}
-
-			if (atName)
-			{
-				if (!inString && c == ':')
-					atName = false;
-				else if (c != '"' && c != '{' && c != '}')
-					name += c;
-			}
-			else
-			{
-				if (((numOpen == 1 && !inString && c == ','))||(numOpen == 0))
-				{
-					if (!value.empty())
-					{
-						Node *node = NULL;
-						switch (Node::DetermineType(value))
-						{
-						case T_VALUE  : node = new Value;  break;
-						case T_OBJECT : node = new Object; break;
-						case T_ARRAY  : node = new Array;  break;
-						}
-						node->Read(value);
-						Add(name, *node);
-						delete node;
-					}
-
-					name.clear();
-					value.clear();
-					atName = true;
-				}
-				else
-					value += c;
-			}
-		}
-	}
 
 	Node *Object::GetCopy() const
 	{
@@ -834,6 +748,7 @@ namespace Jzon
 		for (ChildList::iterator it = children.begin(); it != children.end(); ++it)
 		{
 			delete (*it);
+			(*it) = NULL;
 		}
 		children.clear();
 	}
@@ -903,60 +818,6 @@ namespace Jzon
 		json += fi.GetNewline() + fi.GetIndentation(level) + "]";
 		return json;
 	}
-	void Array::Read(const std::string &_json)
-	{
-		std::string json;
-		RemoveWhitespace(_json, json);
-
-		std::string value;
-		int numOpen = 0;
-		bool inString = false;
-
-		for (std::string::const_iterator it = json.begin(); it != json.end(); ++it)
-		{
-			char c0 = '\0';
-			const char &c = (*it);
-			if (it != json.begin())
-				c0 = (*(it-1));
-
-			if ((c == '{' || c == '[') && !inString)
-			{
-				++numOpen;
-			}
-			else if ((c == '}' || c == ']') && !inString)
-			{
-				--numOpen;
-			}
-			else if (c0 != '\\' && c == '"')
-			{
-				inString = !inString;
-			}
-
-			if (((numOpen == 1 && !inString && c == ','))||(numOpen == 0))
-			{
-				if (!value.empty())
-				{
-					Node *node = NULL;
-					switch (Node::DetermineType(value))
-					{
-					case T_VALUE  : node = new Value;  break;
-					case T_OBJECT : node = new Object; break;
-					case T_ARRAY  : node = new Array;  break;
-					}
-					node->Read(value);
-					Add(*node);
-					delete node;
-				}
-
-				value.clear();
-			}
-			else
-			{
-				if (numOpen > 1 || (c != '[' && c != ']'))
-				value += c;
-			}
-		}
-	}
 
 	Node *Array::GetCopy() const
 	{
@@ -987,43 +848,416 @@ namespace Jzon
 
 	FileReader::FileReader(const std::string &filename)
 	{
-		std::fstream file(filename.c_str(), std::ios::in);
+		std::fstream file(filename.c_str(), std::ios::in | std::ios::binary);
 
-		std::string rawjson = "";
-
-		std::string line;
-		while (!file.eof())
-		{
-			std::getline(file, line);
-			rawjson += line + '\n';
-		}
-
-		RemoveWhitespace(rawjson, json);
+		file.seekg(0, std::ios::end);
+		std::ios::pos_type size = file.tellg();
+		file.seekg(0, std::ios::beg);
+		
+		json.resize(static_cast<std::string::size_type>(size), '\0');
+		file.read(&json[0], size);
 	}
 	FileReader::~FileReader()
 	{
 	}
 
-	void FileReader::ReadFile(const std::string &filename, Node &node)
+	bool FileReader::ReadFile(const std::string &filename, Node &node)
 	{
 		FileReader reader(filename);
-		reader.Read(node);
+		return reader.Read(node);
 	}
 
-	void FileReader::Read(Node &node)
+	bool FileReader::Read(Node &node)
 	{
-		if (DetermineType() == node.GetType())
+		Parser parser(node, json);
+		if (!parser.Parse())
 		{
-			node.Read(json);
+			error = parser.GetError();
+			return false;
 		}
 		else
 		{
-			throw TypeException();
+			return true;
 		}
 	}
 
 	Node::Type FileReader::DetermineType()
 	{
 		return Node::DetermineType(json);
+	}
+
+	const std::string &FileReader::GetError() const
+	{
+		return error;
+	}
+
+
+	Parser::Parser(Jzon::Node &root) : root(root)
+	{
+	}
+	Parser::Parser(Jzon::Node &root, const std::string &json) : root(root)
+	{
+		SetJson(json);
+	}
+	Parser::~Parser()
+	{
+	}
+
+	void Parser::SetJson(const std::string &json)
+	{
+		RemoveWhitespace(json, this->json);
+	}
+	bool Parser::Parse()
+	{
+		cursor = 0;
+
+		tokenize();
+		bool success = assemble();
+
+		return success;
+	}
+
+	const std::string &Parser::GetError() const
+	{
+		return error;
+	}
+
+	void Parser::tokenize()
+	{
+		Token token;
+		std::string valueBuffer;
+		bool saveBuffer;
+
+		for (; cursor < json.size(); ++cursor)
+		{
+			char c = json.at(cursor);
+
+			saveBuffer = true;
+
+			switch (c)
+			{
+			case '{' :
+				{
+					token = T_OBJ_BEGIN;
+					break;
+				}
+			case '}' :
+				{
+					token = T_OBJ_END;
+					break;
+				}
+			case '[' :
+				{
+					token = T_ARRAY_BEGIN;
+					break;
+				}
+			case ']' :
+				{
+					token = T_ARRAY_END;
+					break;
+				}
+			case ',' :
+				{
+					token = T_SEPARATOR_NODE;
+					break;
+				}
+			case ':' :
+				{
+					token = T_SEPARATOR_NAME;
+					break;
+				}
+			case '"' :
+				{
+					token = T_VALUE;
+					readString();
+					break;
+				}
+			default :
+				{
+					valueBuffer += c;
+					saveBuffer = false;
+					break;
+				}
+			}
+
+			if ((saveBuffer || cursor == json.size()-1) && (!valueBuffer.empty())) // Always save buffer on the last character
+			{
+				if (interpretValue(valueBuffer))
+				{
+					tokens.push(T_VALUE);
+				}
+				else
+				{
+					// Store the unknown token, so we can show it to the user
+					data.push(std::make_pair(Value::VT_STRING, valueBuffer));
+					tokens.push(T_UNKNOWN);
+				}
+
+				valueBuffer.clear();
+			}
+
+			// Push the token last so that any
+			// value token will get pushed first
+			// from above.
+			// If saveBuffer is false, it means that
+			// we are in the middle of a value, so we
+			// don't want to push any tokens now.
+			if (saveBuffer)
+			{
+				tokens.push(token);
+			}
+		}
+	}
+	bool Parser::assemble()
+	{
+		std::stack<std::pair<std::string, Node*> > nodeStack;
+
+		std::string name = "";
+
+		Token token;
+		while (!tokens.empty())
+		{
+			token = tokens.front();
+			tokens.pop();
+
+			switch (token)
+			{
+			case T_UNKNOWN :
+				{
+					const std::string &unknownToken = data.front().second;
+					error = "Unknown token: "+unknownToken;
+					data.pop();
+					return false;
+				}
+			case T_OBJ_BEGIN :
+				{
+					Node *node = NULL;
+					if (nodeStack.empty())
+					{
+						if (!root.IsObject())
+						{
+							error = "The given root node is not an object";
+							return false;
+						}
+
+						node = &root;
+					}
+					else
+					{
+						node = new Object;
+					}
+
+					nodeStack.push(std::make_pair(name, node));
+					name.clear();
+					break;
+				}
+			case T_ARRAY_BEGIN :
+				{
+					Node *node = NULL;
+					if (nodeStack.empty())
+					{
+						if (!root.IsArray())
+						{
+							error = "The given root node is not an array";
+							return false;
+						}
+
+						node = &root;
+					}
+					else
+					{
+						node = new Array;
+					}
+
+					nodeStack.push(std::make_pair(name, node));
+					name.clear();
+					break;
+				}
+			case T_OBJ_END :
+			case T_ARRAY_END :
+				{
+					if (nodeStack.empty())
+					{
+						error = "Found end of object or array without beginning";
+						return false;
+					}
+					if (token == T_OBJ_END && !nodeStack.top().second->IsObject())
+					{
+						error = "Mismatched end and beginning of object";
+						return false;
+					}
+					if (token == T_ARRAY_END && !nodeStack.top().second->IsArray())
+					{
+						error = "Mismatched end and beginning of array";
+						return false;
+					}
+
+					std::string name = nodeStack.top().first;
+					Node *node = nodeStack.top().second;
+					nodeStack.pop();
+
+					if (!nodeStack.empty())
+					{
+						if (nodeStack.top().second->IsObject())
+						{
+							nodeStack.top().second->AsObject().Add(name, *node);
+						}
+						else if (nodeStack.top().second->IsArray())
+						{
+							nodeStack.top().second->AsArray().Add(*node);
+						}
+						else
+						{
+							error = "Can only add elements to objects and arrays";
+							return false;
+						}
+
+						delete node;
+						node = NULL;
+					}
+					break;
+				}
+			case T_VALUE :
+				{
+					if (!tokens.empty() && tokens.front() == T_SEPARATOR_NAME)
+					{
+						tokens.pop();
+						if (data.front().first != Value::VT_STRING)
+						{
+							error = "A name has to be a string";
+							return false;
+						}
+						else
+						{
+							name = data.front().second;
+							data.pop();
+						}
+					}
+					else
+					{
+						Node *node = NULL;
+						if (nodeStack.empty())
+						{
+							if (!root.IsValue())
+							{
+								error = "The given root node is not a value";
+								return false;
+							}
+
+							node = &root;
+						}
+						else
+						{
+							node = new Value;
+						}
+
+						if (data.front().first == Value::VT_STRING)
+						{
+							static_cast<Value*>(node)->Set(data.front().second); // This method calls UnescapeString()
+						}
+						else
+						{
+							static_cast<Value*>(node)->Set(data.front().first, data.front().second);
+						}
+						data.pop();
+
+						if (!nodeStack.empty())
+						{
+							if (nodeStack.top().second->IsObject())
+								nodeStack.top().second->AsObject().Add(name, *node);
+							else if (nodeStack.top().second->IsArray())
+								nodeStack.top().second->AsArray().Add(*node);
+
+							delete node;
+							node = NULL;
+							name.clear();
+						}
+						else
+						{
+							nodeStack.push(std::make_pair(name, node));
+							name.clear();
+						}
+					}
+					break;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	void Parser::readString()
+	{
+		if (json.at(cursor) != '"')
+			return;
+
+		std::string str;
+
+		++cursor;
+
+		char c1 = '\0';
+		for (; cursor < json.size(); ++cursor)
+		{
+			char c2 = json.at(cursor);
+
+			if (c1 != '\\' && c2 == '"')
+			{
+				break;
+			}
+
+			str += c2;
+
+			c1 = c2;
+		}
+
+		data.push(std::make_pair(Value::VT_STRING, str));
+	}
+
+	bool Parser::interpretValue(const std::string &value)
+	{
+		std::string upperValue(value.size(), '\0');
+
+		std::transform(value.begin(), value.end(), upperValue.begin(), toupper);
+
+		if (upperValue == "NULL")
+		{
+			data.push(std::make_pair(Value::VT_NULL, ""));
+		}
+		else if (upperValue == "TRUE")
+		{
+			data.push(std::make_pair(Value::VT_BOOL, "true"));
+		}
+		else if (upperValue == "FALSE")
+		{
+			data.push(std::make_pair(Value::VT_BOOL, "false"));
+		}
+		else
+		{
+			bool number = true;
+			for (std::string::const_iterator it = value.begin(); it != value.end(); ++it)
+			{
+				if (!isNumber(*it))
+				{
+					number = false;
+					break;
+				}
+			}
+
+			if (number)
+			{
+				data.push(std::make_pair(Value::VT_NUMBER, value));
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool Parser::isNumber(char c) const
+	{
+		return ((c >= '0' && c <= '9') || c == '.' || c == '-');
 	}
 }

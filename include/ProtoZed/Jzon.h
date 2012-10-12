@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2011 Johannes Häggqvist
+Copyright (c) 2011 Johannes HÃ¤ggqvist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <string>
 #include <vector>
+#include <queue>
 #include <utility>
 #include <iterator>
 #include <exception>
@@ -95,14 +96,14 @@ namespace Jzon
 
 		virtual inline bool IsNull() const { return false; }
 		virtual inline bool IsString() const { return false; }
-		virtual inline bool IsInt() const { return false; }
-		virtual inline bool IsDouble() const { return false; }
+		virtual inline bool IsNumber() const { return false; }
 		virtual inline bool IsBool() const { return false; }
 
-		virtual std::string AsString() const { throw TypeException(); }
-		virtual int AsInt() const { throw TypeException(); }
-		virtual double AsDouble() const { throw TypeException(); }
-		virtual bool AsBool() const { throw TypeException(); }
+		virtual std::string ToString() const { throw TypeException(); }
+		virtual int ToInt() const { throw TypeException(); }
+		virtual float ToFloat() const { throw TypeException(); }
+		virtual double ToDouble() const { throw TypeException(); }
+		virtual bool ToBool() const { throw TypeException(); }
 
 		virtual size_t GetCount() const { return 0; }
 		virtual Node &Get(const std::string &name) const { throw TypeException(); }
@@ -111,7 +112,6 @@ namespace Jzon
 		virtual Node &Get(size_t index, Node &def) const { throw TypeException(); }
 
 		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const = 0;
-		virtual void Read(const std::string &json) = 0;
 
 		static Type DetermineType(const std::string &json);
 
@@ -126,17 +126,18 @@ namespace Jzon
 		{
 			VT_NULL,
 			VT_STRING,
-			VT_INT,
-			VT_DOUBLE,
+			VT_NUMBER,
 			VT_BOOL
 		};
 
 		Value();
 		Value(const Value &rhs);
 		Value(const Node &rhs);
+		Value(ValueType type, const std::string &value);
 		Value(const std::string &value);
 		Value(const char *value);
 		Value(const int value);
+		Value(const float value);
 		Value(const double value);
 		Value(const bool value);
 		virtual ~Value();
@@ -146,20 +147,22 @@ namespace Jzon
 
 		virtual inline bool IsNull() const { return (type == VT_NULL); }
 		virtual inline bool IsString() const { return (type == VT_STRING); }
-		virtual inline bool IsInt() const { return (type == VT_INT); }
-		virtual inline bool IsDouble() const { return (type == VT_DOUBLE); }
+		virtual inline bool IsNumber() const { return (type == VT_NUMBER); }
 		virtual inline bool IsBool() const { return (type == VT_BOOL); }
 
-		virtual std::string AsString() const;
-		virtual int AsInt() const;
-		virtual double AsDouble() const;
-		virtual bool AsBool() const;
+		virtual std::string ToString() const;
+		virtual int ToInt() const;
+		virtual float ToFloat() const;
+		virtual double ToDouble() const;
+		virtual bool ToBool() const;
 
 		void SetNull();
 		void Set(const Value &value);
+		void Set(ValueType type, const std::string &value);
 		void Set(const std::string &value);
 		void Set(const char *value);
 		void Set(const int value);
+		void Set(const float value);
 		void Set(const double value);
 		void Set(const bool value);
 
@@ -168,6 +171,7 @@ namespace Jzon
 		Value &operator=(const std::string &rhs);
 		Value &operator=(const char *rhs);
 		Value &operator=(const int rhs);
+		Value &operator=(const float rhs);
 		Value &operator=(const double rhs);
 		Value &operator=(const bool rhs);
 
@@ -175,7 +179,6 @@ namespace Jzon
 		bool operator!=(const Value &other) const;
 
 		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const;
-		virtual void Read(const std::string &json);
 
 	protected:
 		virtual Node *GetCopy() const;
@@ -250,7 +253,6 @@ namespace Jzon
 		virtual Node &Get(const std::string &name, Node &def) const;
 
 		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const;
-		virtual void Read(const std::string &json);
 
 	protected:
 		virtual Node *GetCopy() const;
@@ -320,7 +322,6 @@ namespace Jzon
 		virtual Node &Get(size_t index, Node &def) const;
 
 		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const;
-		virtual void Read(const std::string &json);
 
 	protected:
 		virtual Node *GetCopy() const;
@@ -347,14 +348,65 @@ namespace Jzon
 		FileReader(const std::string &filename);
 		~FileReader();
 
-		static void ReadFile(const std::string &filename, Node &node);
+		static bool ReadFile(const std::string &filename, Node &node);
 
-		void Read(Node &node);
+		bool Read(Node &node);
 
 		Node::Type DetermineType();
 
+		const std::string &GetError() const;
+
 	private:
 		std::string json;
+		std::string error;
+	};
+
+	class Parser
+	{
+	public:
+		Parser(Jzon::Node &root);
+		Parser(Jzon::Node &root, const std::string &json);
+		~Parser();
+
+		void SetJson(const std::string &json);
+		bool Parse();
+
+		const std::string &GetError() const;
+
+	private:
+		enum Token
+		{
+			T_UNKNOWN,
+			T_OBJ_BEGIN,
+			T_OBJ_END,
+			T_ARRAY_BEGIN,
+			T_ARRAY_END,
+			T_SEPARATOR_NODE,
+			T_SEPARATOR_NAME,
+			T_VALUE
+		};
+
+		void tokenize();
+		bool assemble();
+
+		void readString();
+
+		bool interpretValue(const std::string &value);
+
+		bool isNumber(char c) const;
+
+		std::string json;
+
+		std::queue<Token> tokens;
+		std::queue<std::pair<Value::ValueType, std::string> > data;
+
+		unsigned int cursor;
+
+		Node &root;
+
+		std::string error;
+
+		Parser &operator=(const Parser&);
 	};
 }
 

@@ -40,7 +40,7 @@ namespace PZ
 
 		const Jzon::Node &nameNode = groupObj.Get("Name", Jzon::Value(""));
 		if (nameNode.IsString())
-			group.name = nameNode.AsString();
+			group.name = nameNode.ToString();
 		else
 			return;
 
@@ -54,7 +54,7 @@ namespace PZ
 			if (!(*it).IsString())
 				return;
 
-			std::string file = (*it).AsString();
+			std::string file = (*it).ToString();
 			group.files.push_back(file);
 		}
 
@@ -71,7 +71,8 @@ namespace PZ
 		if (type == Jzon::Node::T_OBJECT)
 		{
 			Jzon::Object root;
-			root.Read(str);
+			Jzon::Parser parser(root, str);
+			parser.Parse();
 			loadGroup(root);
 
 			return true;
@@ -79,7 +80,8 @@ namespace PZ
 		else if (type == Jzon::Node::T_ARRAY)
 		{
 			Jzon::Array root;
-			root.Read(str);
+			Jzon::Parser parser(root, str);
+			parser.Parse();
 
 			for (Jzon::Array::iterator it = root.begin(); it != root.end(); ++it)
 			{
