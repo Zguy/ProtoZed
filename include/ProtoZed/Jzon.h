@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,21 +38,23 @@ namespace Jzon
 	typedef std::pair<std::string, Node&> NamedNode;
 	typedef std::pair<std::string, Node*> NamedNodePtr;
 	
-	class TypeException : public std::exception
+	class TypeException : public std::logic_error
 	{
 	public:
-		virtual const char *what() const throw()
-		{
-			return "A Node was used as the wrong type";
-		}
+		TypeException() : std::logic_error("A Node was used as the wrong type")
+		{}
 	};
-	class ValueException : public std::exception
+	class ValueException : public std::logic_error
 	{
 	public:
-		virtual const char *what() const throw()
-		{
-			return "A Value was used as the wrong type";
-		}
+		ValueException() : std::logic_error("A Value was used as the wrong type")
+		{}
+	};
+	class NotFoundException : public std::out_of_range
+	{
+	public:
+		NotFoundException() : std::out_of_range("The node could not be found")
+		{}
 	};
 
 	struct Format
@@ -62,7 +64,7 @@ namespace Jzon
 		bool useTabs;
 		unsigned int indentSize;
 	};
-	static const Format StandardFormat = { true, true, true, 0 };
+	static const Format StandardFormat = { true, true, true, 1 };
 	static const Format NoFormat = { false, false, false, 0 };
 
 	class Node
@@ -105,13 +107,10 @@ namespace Jzon
 		virtual double ToDouble() const { throw TypeException(); }
 		virtual bool ToBool() const { throw TypeException(); }
 
+		virtual bool Has(const std::string &name) const { name; throw TypeException(); }
 		virtual size_t GetCount() const { return 0; }
-		virtual Node &Get(const std::string &name) const { throw TypeException(); }
-		virtual Node &Get(const std::string &name, Node &def) const { throw TypeException(); }
-		virtual Node &Get(size_t index) const { throw TypeException(); }
-		virtual Node &Get(size_t index, Node &def) const { throw TypeException(); }
-
-		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const = 0;
+		virtual Node &Get(const std::string &name) const { name; throw TypeException(); }
+		virtual Node &Get(size_t index) const { index; throw TypeException(); }
 
 		static Type DetermineType(const std::string &json);
 
@@ -178,15 +177,13 @@ namespace Jzon
 		bool operator==(const Value &other) const;
 		bool operator!=(const Value &other) const;
 
-		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const;
+		static std::string EscapeString(const std::string &value);
+		static std::string UnescapeString(const std::string &value);
 
 	protected:
 		virtual Node *GetCopy() const;
 
 	private:
-		std::string EscapeString() const;
-		std::string UnescapeString(const std::string &value) const;
-
 		std::string valueStr;
 		ValueType type;
 	};
@@ -248,11 +245,9 @@ namespace Jzon
 		iterator end();
 		const_iterator end() const;
 
+		virtual bool Has(const std::string &name) const;
 		virtual size_t GetCount() const;
 		virtual Node &Get(const std::string &name) const;
-		virtual Node &Get(const std::string &name, Node &def) const;
-
-		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const;
 
 	protected:
 		virtual Node *GetCopy() const;
@@ -319,9 +314,6 @@ namespace Jzon
 
 		virtual size_t GetCount() const;
 		virtual Node &Get(size_t index) const;
-		virtual Node &Get(size_t index, Node &def) const;
-
-		virtual std::string Write(const Format &format = NoFormat, unsigned int level = 0) const;
 
 	protected:
 		virtual Node *GetCopy() const;
@@ -337,9 +329,9 @@ namespace Jzon
 		FileWriter();
 		~FileWriter();
 
-		static void WriteFile(const std::string &filename, Node &root, const Format &format = NoFormat);
+		static void WriteFile(const std::string &filename, const Node &root, const Format &format = NoFormat);
 
-		void Write(const std::string &filename, Node &root, const Format &format = NoFormat);
+		void Write(const std::string &filename, const Node &root, const Format &format = NoFormat);
 	};
 
 	class FileReader
@@ -361,11 +353,40 @@ namespace Jzon
 		std::string error;
 	};
 
+	class Writer
+	{
+	public:
+		Writer(const Node &root, const Format &format = NoFormat);
+		Writer(const Node &root, const std::string &filename, const Format &format = NoFormat);
+		~Writer();
+
+		void SetFilename(const std::string &filename);
+		void SetFormat(const Format &format);
+		void Write();
+
+		const std::string &GetResult() const;
+
+	private:
+		void writeNode(const Node &node, unsigned int level);
+		void writeObject(const Object &node, unsigned int level);
+		void writeArray(const Array &node, unsigned int level);
+		void writeValue(const Value &node);
+
+		std::string result;
+
+		std::string filename;
+		class FormatInterpreter *fi;
+
+		const Node &root;
+
+		Writer &operator=(const Writer&);
+	};
+
 	class Parser
 	{
 	public:
-		Parser(Jzon::Node &root);
-		Parser(Jzon::Node &root, const std::string &json);
+		Parser(Node &root);
+		Parser(Node &root, const std::string &json);
 		~Parser();
 
 		void SetJson(const std::string &json);

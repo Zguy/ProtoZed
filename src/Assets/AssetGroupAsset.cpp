@@ -38,13 +38,13 @@ namespace PZ
 	{
 		AssetGroup group;
 
-		const Jzon::Node &nameNode = groupObj.Get("Name", Jzon::Value(""));
+		const Jzon::Node &nameNode = groupObj.Get("Name");
 		if (nameNode.IsString())
 			group.name = nameNode.ToString();
 		else
 			return;
 
-		const Jzon::Node &assetsNode = groupObj.Get("Assets", Jzon::Array());
+		const Jzon::Node &assetsNode = groupObj.Get("Assets");
 		if (!assetsNode.IsArray())
 			return;
 

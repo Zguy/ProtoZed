@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2011 Johannes Häggqvist
+Copyright (c) 2012 Johannes Häggqvist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,20 +31,19 @@ namespace Jzon
 	class FormatInterpreter
 	{
 	public:
-		FormatInterpreter(const Format &format) : format(format)
+		FormatInterpreter()
 		{
-			if (format.useTabs)
-			{
-				indentationChar = '\t';
-			}
-			else
-			{
-				for (unsigned int i = 0; i < format.indentSize; ++i)
-				{
-					indentationChar += ' ';
-				}
-			}
+			SetFormat(NoFormat);
+		}
+		FormatInterpreter(const Format &format)
+		{
+			SetFormat(format);
+		}
 
+		void SetFormat(const Format &format)
+		{
+			this->format = format;
+			indentationChar = (format.useTabs ? '\t' : ' ');
 			spacing = (format.spacing ? " " : "");
 			newline = (format.newline ? "\n" : spacing);
 		}
@@ -52,32 +51,27 @@ namespace Jzon
 		std::string GetIndentation(unsigned int level) const
 		{
 			if (!format.newline)
+			{
 				return "";
+			}
 			else
 			{
-				std::string ind;
-				for (unsigned int i = 0; i < level; ++i)
-				{
-					ind += indentationChar;
-				}
-				return ind;
+				return std::string(format.indentSize * level, indentationChar);
 			}
 		}
 		
-		inline std::string GetNewline() const
+		inline const std::string &GetNewline() const
 		{
 			return newline;
 		}
-		inline std::string GetSpacing() const
+		inline const std::string &GetSpacing() const
 		{
 			return spacing;
 		}
 
 	private:
-		FormatInterpreter &operator=(const FormatInterpreter&);
-
-		const Format &format;
-		std::string indentationChar;
+		Format format;
+		char indentationChar;
 		std::string newline;
 		std::string spacing;
 	};
@@ -449,18 +443,6 @@ namespace Jzon
 		return !(*this == other);
 	}
 
-	std::string Value::Write(const Format &format, unsigned int level) const
-	{
-		std::string value;
-		if (type == VT_NULL)
-			value += "null";
-		else if (type == VT_STRING)
-			value += "\""+EscapeString()+"\"";
-		else
-			value += valueStr;
-		return value;
-	}
-
 	Node *Value::GetCopy() const
 	{
 		return new Value(*this);
@@ -501,11 +483,11 @@ namespace Jzon
 		return nullUnescaped;
 	}
 
-	std::string Value::EscapeString() const
+	std::string Value::EscapeString(const std::string &value)
 	{
 		std::string escaped;
 
-		for (std::string::const_iterator it = valueStr.begin(); it != valueStr.end(); ++it)
+		for (std::string::const_iterator it = value.begin(); it != value.end(); ++it)
 		{
 			const char &c = (*it);
 
@@ -523,7 +505,7 @@ namespace Jzon
 
 		return escaped;
 	}
-	std::string Value::UnescapeString(const std::string &value) const
+	std::string Value::UnescapeString(const std::string &value)
 	{
 		std::string unescaped;
 
@@ -645,16 +627,22 @@ namespace Jzon
 			return Object::const_iterator(NULL);
 	}
 
+	bool Object::Has(const std::string &name) const
+	{
+		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
+		{
+			if ((*it).first == name)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	size_t Object::GetCount() const
 	{
 		return children.size();
 	}
 	Node &Object::Get(const std::string &name) const
-	{
-		Value value;
-		return Get(name, value);
-	}
-	Node &Object::Get(const std::string &name, Node &def) const
 	{
 		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
 		{
@@ -663,28 +651,8 @@ namespace Jzon
 				return *(*it).second;
 			}
 		}
-		return def;
-	}
-
-	std::string Object::Write(const Format &format, unsigned int level) const
-	{
-		FormatInterpreter fi(format);
-
-		std::string json;
-		json += "{" + fi.GetNewline();
-
-		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
-		{
-			const std::string &name = (*it).first;
-			Node &value = *(*it).second;
-
-			if (it != children.begin())
-				json += "," + fi.GetNewline();
-			json += fi.GetIndentation(level+1) + "\""+name+"\"" + ":" + fi.GetSpacing() + value.Write(format, level+1);
-		}
-
-		json += fi.GetNewline() + fi.GetIndentation(level) + "}";
-		return json;
+		
+		throw NotFoundException();
 	}
 
 	Node *Object::GetCopy() const
@@ -788,35 +756,12 @@ namespace Jzon
 	}
 	Node &Array::Get(size_t index) const
 	{
-		Value value;
-		return Get(index, value);
-	}
-	Node &Array::Get(size_t index, Node &def) const
-	{
 		if (index < children.size())
-			return *children.at(index);
-		else
-			return def;
-	}
-
-	std::string Array::Write(const Format &format, unsigned int level) const
-	{
-		FormatInterpreter fi(format);
-
-		std::string json;
-		json += "[" + fi.GetNewline();
-
-		for (ChildList::const_iterator it = children.begin(); it != children.end(); ++it)
 		{
-			Node &value = *(*it);
-
-			if (it != children.begin())
-				json += "," + fi.GetNewline();
-			json += fi.GetIndentation(level+1) + value.Write(format, level+1);
+			return *children.at(index);
 		}
 
-		json += fi.GetNewline() + fi.GetIndentation(level) + "]";
-		return json;
+		throw NotFoundException();
 	}
 
 	Node *Array::GetCopy() const
@@ -832,16 +777,19 @@ namespace Jzon
 	{
 	}
 
-	void FileWriter::WriteFile(const std::string &filename, Node &root, const Format &format)
+	void FileWriter::WriteFile(const std::string &filename, const Node &root, const Format &format)
 	{
 		FileWriter writer;
 		writer.Write(filename, root, format);
 	}
 
-	void FileWriter::Write(const std::string &filename, Node &root, const Format &format)
+	void FileWriter::Write(const std::string &filename, const Node &root, const Format &format)
 	{
+		Writer writer(root, filename, format);
+		writer.Write();
+
 		std::fstream file(filename.c_str(), std::ios::out | std::ios::trunc);
-		file << root.Write(format);
+		file << writer.GetResult();
 		file.close();
 	}
 
@@ -892,10 +840,99 @@ namespace Jzon
 	}
 
 
-	Parser::Parser(Jzon::Node &root) : root(root)
+	Writer::Writer(const Node &root, const Format &format) : root(root), fi(new FormatInterpreter)
+	{
+		SetFormat(format);
+	}
+	Writer::Writer(const Node &root, const std::string &filename, const Format &format) : root(root), fi(new FormatInterpreter)
+	{
+		SetFilename(filename);
+		SetFormat(format);
+	}
+	Writer::~Writer()
+	{
+		delete fi;
+		fi = NULL;
+	}
+
+	void Writer::SetFilename(const std::string &filename)
+	{
+		this->filename = filename;
+	}
+	void Writer::SetFormat(const Format &format)
+	{
+		fi->SetFormat(format);
+	}
+	void Writer::Write()
+	{
+		result.clear();
+		writeNode(root, 0);
+	}
+
+	const std::string &Writer::GetResult() const
+	{
+		return result;
+	}
+
+	void Writer::writeNode(const Node &node, unsigned int level)
+	{
+		switch (node.GetType())
+		{
+		case Node::T_OBJECT : writeObject(node.AsObject(), level); break;
+		case Node::T_ARRAY  : writeArray(node.AsArray(), level);   break;
+		case Node::T_VALUE  : writeValue(node.AsValue());          break;
+		}
+	}
+	void Writer::writeObject(const Object &node, unsigned int level)
+	{
+		result += "{" + fi->GetNewline();
+
+		for (Object::const_iterator it = node.begin(); it != node.end(); ++it)
+		{
+			const std::string &name = (*it).first;
+			const Node &value = (*it).second;
+
+			if (it != node.begin())
+				result += "," + fi->GetNewline();
+			result += fi->GetIndentation(level+1) + "\""+name+"\"" + ":" + fi->GetSpacing();
+			writeNode(value, level+1);
+		}
+
+		result += fi->GetNewline() + fi->GetIndentation(level) + "}";
+	}
+	void Writer::writeArray(const Array &node, unsigned int level)
+	{
+		result += "[" + fi->GetNewline();
+
+		for (Array::const_iterator it = node.begin(); it != node.end(); ++it)
+		{
+			const Node &value = (*it);
+
+			if (it != node.begin())
+				result += "," + fi->GetNewline();
+			result += fi->GetIndentation(level+1);
+			writeNode(value, level+1);
+		}
+
+		result += fi->GetNewline() + fi->GetIndentation(level) + "]";
+	}
+	void Writer::writeValue(const Value &node)
+	{
+		if (node.IsString())
+		{
+			result += "\""+Value::EscapeString(node.ToString())+"\"";
+		}
+		else
+		{
+			result += node.ToString();
+		}
+	}
+
+
+	Parser::Parser(Node &root) : root(root)
 	{
 	}
-	Parser::Parser(Jzon::Node &root, const std::string &json) : root(root)
+	Parser::Parser(Node &root, const std::string &json) : root(root)
 	{
 		SetJson(json);
 	}

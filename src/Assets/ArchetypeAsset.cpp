@@ -45,13 +45,13 @@ namespace PZ
 		Jzon::Parser parser(root, str);
 		parser.Parse();
 
-		const Jzon::Node &nameNode = root.Get("Name", Jzon::Value(""));
+		const Jzon::Node &nameNode = root.Get("Name");
 		if (nameNode.IsString())
 			archetype->name = nameNode.ToString();
 		else
 			return false;
 
-		const Jzon::Node &componentsNode = root.Get("Components", Jzon::Array());
+		const Jzon::Node &componentsNode = root.Get("Components");
 		if (!componentsNode.IsArray())
 			return false;
 
@@ -59,7 +59,7 @@ namespace PZ
 		for (Jzon::Array::const_iterator it = componentsRoot.begin(); it != componentsRoot.end(); ++it)
 		{
 			std::string name;
-			const Jzon::Node &nameNode = (*it).Get("Name", Jzon::Value(""));
+			const Jzon::Node &nameNode = (*it).Get("Name");
 			if (nameNode.IsString())
 				name = nameNode.ToString();
 			else
@@ -67,7 +67,7 @@ namespace PZ
 
 			Archetype::PropertyValueList properties;
 
-			const Jzon::Node &propertiesNode = (*it).Get("Properties", Jzon::Object());
+			const Jzon::Node &propertiesNode = (*it).Get("Properties");
 			if (!propertiesNode.IsObject())
 				return false;
 
