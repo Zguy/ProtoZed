@@ -49,6 +49,12 @@ namespace PZ
 		const PropertyBase &GetProperty(const std::string &name) const;
 
 		template<typename T>
+		void SetProperty(const std::string &name, const T &value)
+		{
+			GetProperty<T>(name) = value;
+		}
+
+		template<typename T>
 		Property<T> &GetProperty(const std::string &name)
 		{
 			return dynamic_cast<Property<T>&>(GetProperty(name));
