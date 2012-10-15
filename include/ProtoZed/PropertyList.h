@@ -70,9 +70,6 @@ namespace PZ
 		{}
 
 	private:
-		bool _AddProperty(PropertyBase *prop);
-		bool _RemoveProperty(const std::string &name);
-
 		PropertyMap properties;
 	};
 }

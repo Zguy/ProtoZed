@@ -94,11 +94,11 @@ namespace PZ
 			return value;
 		}
 
-		std::string ToString() const
+		virtual std::string ToString() const
 		{
 			return Convert::ToString(value);
 		}
-		void FromString(const std::string &str)
+		virtual void FromString(const std::string &str)
 		{
 			(*this) = Convert::FromString<T>(str);
 		}

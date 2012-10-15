@@ -27,21 +27,18 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	PropertyBase::PropertyBase(const std::string &name, PropertyList *list) : name(name), list(list)
+	PropertyBase::PropertyBase(const std::string &name, PropertyList *list) : name(name), list(nullptr)
 	{
 		if (list != nullptr)
 		{
-			if (!list->_AddProperty(this))
-			{
-				list = nullptr;
-			}
+			list->AddProperty(*this);
 		}
 	}
 	PropertyBase::~PropertyBase()
 	{
 		if (list != nullptr)
 		{
-			list->_RemoveProperty(name);
+			list->RemoveProperty(name);
 		}
 	}
 

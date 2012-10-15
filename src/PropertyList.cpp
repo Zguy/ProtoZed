@@ -33,12 +33,12 @@ namespace PZ
 
 	bool PropertyList::AddProperty(PropertyBase &prop)
 	{
-		if (_AddProperty(&prop))
+		if (prop.IsValid() && !prop.IsInList() && properties.insert(std::make_pair(prop.GetName(), &prop)).second)
 		{
 			prop.list = this;
 			return true;
 		}
-		
+
 		return false;
 	}
 	bool PropertyList::RemoveProperty(const std::string &name)
@@ -98,25 +98,5 @@ namespace PZ
 
 		assert(prop != nullptr);
 		return *prop;
-	}
-
-	bool PropertyList::_AddProperty(PropertyBase *prop)
-	{
-		if (prop != nullptr && prop->IsValid() && !prop->IsInList())
-			return properties.insert(std::make_pair(prop->GetName(), prop)).second;
-		else
-			return false;
-	}
-	bool PropertyList::_RemoveProperty(const std::string &name)
-	{
-		PropertyMap::iterator it = properties.find(name);
-		if (it != properties.end())
-		{
-			properties.erase(it);
-
-			return true;
-		}
-
-		return false;
 	}
 }
