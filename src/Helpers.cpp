@@ -37,7 +37,7 @@ namespace PZ
 			float x = to.x - from.x;
 			float y = to.y - from.y;
 
-			return (Angle::Radians(Math::ATan2(x, y) + Math::PI));
+			return (Angle::Radians(Math::ATan2(y, x) + Math::PI));
 		}
 	}
 }

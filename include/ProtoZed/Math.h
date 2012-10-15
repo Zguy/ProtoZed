@@ -36,7 +36,7 @@ namespace PZ
 		float ASin(float value);
 		float ACos(float value);
 		float ATan(float value);
-		float ATan2(float x, float y);
+		float ATan2(float y, float x);
 		float Pow(float value, float pow);
 		float Floor(float value);
 		float Ceil(float value);

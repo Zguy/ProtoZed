@@ -55,9 +55,9 @@ namespace PZ
 		{
 			return std::atan(value);
 		}
-		float ATan2(float x, float y)
+		float ATan2(float y, float x)
 		{
-			return std::atan2(x, y);
+			return std::atan2(y, x);
 		}
 		float Pow(float value, float pow)
 		{
