@@ -66,18 +66,6 @@ namespace PZ
 		{}
 
 		/**
-		 * \brief	Destroys the component.
-		 * 
-		 * This is provided for consistency with Init().
-		 * It is okay to put destruction logic inside the destructor.
-		 * 
-		 * You should not call this method.
-		 * It will be called by EntityManager.
-		 */
-		virtual void Destroy()
-		{}
-
-		/**
 		 * \brief	Runs an update.
 		 *
 		 * \param	deltaTime	Time since the last frame.

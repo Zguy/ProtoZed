@@ -134,7 +134,7 @@ namespace PZ
 		/**
 		 * \brief	Gets a list of every entity.
 		 *
-		 * \return	The list of entites.
+		 * \return	The list of entities.
 		 */
 		void GetAllEntities(EntityList &list) const;
 
@@ -209,21 +209,7 @@ namespace PZ
 		template<class T>
 		T *AddComponent(const EntityID &id)
 		{
-			T *component = dynamic_cast<T*>(factory.Create(T::Family));
-
-			if (component != nullptr)
-			{
-				if (AddComponentImpl(id, T::Family, component))
-				{
-					return component;
-				}
-				else
-				{
-					deleteComponent(component);
-				}
-			}
-
-			return nullptr;
+			return dynamic_cast<T*>(AddComponent(id, T::Family));
 		}
 
 		/**
@@ -234,24 +220,7 @@ namespace PZ
 		 *
 		 * \return	null if it fails, else the component.
 		 */
-		Component *AddComponent(const EntityID &id, const HashString &family)
-		{
-			Component *component = factory.Create(family);
-
-			if (component != nullptr)
-			{
-				if (AddComponentImpl(id, family, component))
-				{
-					return component;
-				}
-				else
-				{
-					deleteComponent(component);
-				}
-			}
-			
-			return nullptr;
-		}
+		Component *AddComponent(const EntityID &id, const HashString &family);
 
 		/**
 		 * \brief	Removes the component.
@@ -263,7 +232,7 @@ namespace PZ
 		template<class T>
 		bool RemoveComponent(const EntityID &id)
 		{
-			return RemoveComponentImpl(id, T::Family);
+			return RemoveComponent(id, T::Family);
 		}
 
 		/**
@@ -274,10 +243,7 @@ namespace PZ
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		bool RemoveComponent(const EntityID &id, const HashString &family)
-		{
-			return RemoveComponentImpl(id, family);
-		}
+		bool RemoveComponent(const EntityID &id, const HashString &family);
 
 		/**
 		 * \brief	Query if 'id' has a component.
@@ -289,7 +255,7 @@ namespace PZ
 		template<class T>
 		bool HasComponent(const EntityID &id) const
 		{
-			return HasComponentImpl(id, T::Family);
+			return HasComponent(id, T::Family);
 		}
 
 		/**
@@ -300,10 +266,7 @@ namespace PZ
 		 *
 		 * \return	true if it has the component, false if not.
 		 */
-		bool HasComponent(const EntityID &id, const HashString &family) const
-		{
-			return HasComponentImpl(id, family);
-		}
+		bool HasComponent(const EntityID &id, const HashString &family) const;
 
 		/**
 		 * \brief	Gets a component.
@@ -315,7 +278,7 @@ namespace PZ
 		template<class T>
 		T *GetComponent(const EntityID &id) const
 		{
-			return dynamic_cast<T*>(GetComponentImpl(id, T::Family));
+			return dynamic_cast<T*>(GetComponent(id, T::Family));
 		}
 
 		/**
@@ -326,10 +289,7 @@ namespace PZ
 		 *
 		 * \return	null if it fails, else the component.
 		 */
-		Component *GetComponent(const EntityID &id, const HashString &family) const
-		{
-			return GetComponentImpl(id, family);
-		}
+		Component *GetComponent(const EntityID &id, const HashString &family) const;
 
 		/**
 		 * \brief	Gets all components for an entity.
@@ -347,7 +307,7 @@ namespace PZ
 		template<class T>
 		const EntityComponentMap &GetEntitiesWith() const
 		{
-			return GetEntitiesWithImpl(T::Family);
+			return GetEntitiesWith(T::Family);
 		}
 
 		/**
@@ -357,10 +317,7 @@ namespace PZ
 		 *
 		 * \return	The entities with the component.
 		 */
-		const EntityComponentMap &GetEntitiesWith(const HashString &family) const
-		{
-			return GetEntitiesWithImpl(family);
-		}
+		const EntityComponentMap &GetEntitiesWith(const HashString &family) const;
 
 		/**
 		 * \brief	Updates all components.
@@ -370,14 +327,6 @@ namespace PZ
 		void UpdateAll(float deltaTime);
 
 	private:
-		bool AddComponentImpl(const EntityID &id, const HashString &name, Component *component);
-		bool RemoveComponentImpl(const EntityID &id, const HashString &name);
-		bool HasComponentImpl(const EntityID &id, const HashString &name) const;
-		Component *GetComponentImpl(const EntityID &id, const HashString &name) const;
-		const EntityComponentMap &GetEntitiesWithImpl(const HashString &name) const;
-
-		static void deleteComponent(Component *component); // This is to avoid having to #include Component.h here
-
 		typedef ObjectFactory<Component*(), HashString> ComponentFactory;
 		ComponentFactory factory;
 

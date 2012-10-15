@@ -46,8 +46,32 @@ namespace PZ
 	class EntityManager::Impl
 	{
 	public:
-		Impl(Application *application) : application(application)
+		Impl(EntityManager *i, Application *application) : i(i), application(application)
 		{}
+
+		bool addComponent(const EntityID &id, const HashString &name, Component *component)
+		{
+			if (!i->HasEntity(id) || i->HasComponent(id, name))
+				return false;
+
+			component->application = application;
+			component->owner = id;
+			component->manager = i;
+
+			if (components[name].insert(std::make_pair(id, component)).second)
+			{
+				component->Init();
+
+				ComponentEvent e(ComponentEvent::ADDED);
+				e.id = id;
+				e.family = name;
+				i->EmitEvent(e);
+
+				return true;
+			}
+
+			return false;
+		}
 
 		void eraseComponent(ComponentStore::iterator &it, EntityComponentMap::iterator &it2)
 		{
@@ -67,6 +91,7 @@ namespace PZ
 			return (*entityDataMap.find(id)).second;
 		}
 
+		EntityManager *i;
 		Application *application;
 
 		EntitySet entities;
@@ -80,8 +105,9 @@ namespace PZ
 
 	const EntityComponentMap EntityManager::Impl::emptyMap;
 
-	EntityManager::EntityManager(Application &application) : p(new Impl(&application))
+	EntityManager::EntityManager(Application &application)
 	{
+		p = new Impl(this, &application);
 	}
 	EntityManager::~EntityManager()
 	{
@@ -289,6 +315,95 @@ namespace PZ
 		}
 	}
 
+	Component *EntityManager::AddComponent(const EntityID &id, const HashString &family)
+	{
+		Component *component = factory.Create(family);
+
+		if (component != nullptr)
+		{
+			if (p->addComponent(id, family, component))
+			{
+				return component;
+			}
+			else
+			{
+				delete component;
+			}
+		}
+
+		return nullptr;
+	}
+	bool EntityManager::RemoveComponent(const EntityID &id, const HashString &family)
+	{
+		ComponentStore::iterator it = p->components.find(family);
+		if (it == p->components.end())
+		{
+			return false;
+		}
+		else
+		{
+			EntityComponentMap &ecm = (*it).second;
+			EntityComponentMap::iterator it2 = ecm.find(id);
+			if (it2 == ecm.end())
+			{
+				return false;
+			}
+			else
+			{
+				p->eraseComponent(it, it2);
+
+				ComponentEvent e(ComponentEvent::REMOVED);
+				e.id = id;
+				e.family = family;
+				EmitEvent(e);
+
+				return true;
+			}
+		}
+	}
+	bool EntityManager::HasComponent(const EntityID &id, const HashString &family) const
+	{
+		ComponentStore::iterator it = p->components.find(family);
+		if (it == p->components.end())
+		{
+			return false;
+		}
+		else
+		{
+			EntityComponentMap &ecm = (*it).second;
+			EntityComponentMap::iterator it2 = ecm.find(id);
+			if (it2 == ecm.end())
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+	Component *EntityManager::GetComponent(const EntityID &id, const HashString &family) const
+	{
+		ComponentStore::iterator it = p->components.find(family);
+		if (it == p->components.end())
+		{
+			return nullptr;
+		}
+		else
+		{
+			EntityComponentMap &ecm = (*it).second;
+			EntityComponentMap::iterator it2 = ecm.find(id);
+			if (it2 == ecm.end())
+			{
+				return nullptr;
+			}
+			else
+			{
+				return (*it2).second;
+			}
+		}
+	}
+
 	void EntityManager::GetAllComponents(const EntityID &id, ComponentList &list) const
 	{
 		if (!HasEntity(id))
@@ -309,6 +424,19 @@ namespace PZ
 		}
 	}
 
+	const EntityComponentMap &EntityManager::GetEntitiesWith(const HashString &family) const
+	{
+		ComponentStore::const_iterator it = p->components.find(family);
+		if (it == p->components.end())
+		{
+			return p->emptyMap;
+		}
+		else
+		{
+			return (*it).second;
+		}
+	}
+
 	void EntityManager::UpdateAll(float deltaTime)
 	{
 		Profile profile("UpdateComponents");
@@ -322,115 +450,5 @@ namespace PZ
 				component->Update(deltaTime);
 			}
 		}
-	}
-
-	bool EntityManager::AddComponentImpl(const EntityID &id, const HashString &name, Component *component)
-	{
-		if (!HasEntity(id) || HasComponentImpl(id, name))
-			return false;
-
-		component->application = p->application;
-		component->owner = id;
-		component->manager = this;
-
-		bool success = p->components[name].insert(std::make_pair(id, component)).second;
-
-		component->Init();
-
-		ComponentEvent e(ComponentEvent::ADDED);
-		e.id = id;
-		e.family = name;
-		EmitEvent(e);
-
-		return success;
-	}
-	bool EntityManager::RemoveComponentImpl(const EntityID &id, const HashString &name)
-	{
-		ComponentStore::iterator it = p->components.find(name);
-		if (it == p->components.end())
-		{
-			return false;
-		}
-		else
-		{
-			EntityComponentMap &ecm = (*it).second;
-			EntityComponentMap::iterator it2 = ecm.find(id);
-			if (it2 == ecm.end())
-			{
-				return false;
-			}
-			else
-			{
-				(*it2).second->Destroy();
-
-				p->eraseComponent(it, it2);
-
-				ComponentEvent e(ComponentEvent::REMOVED);
-				e.id = id;
-				e.family = name;
-				EmitEvent(e);
-
-				return true;
-			}
-		}
-	}
-	bool EntityManager::HasComponentImpl(const EntityID &id, const HashString &name) const
-	{
-		ComponentStore::iterator it = p->components.find(name);
-		if (it == p->components.end())
-		{
-			return false;
-		}
-		else
-		{
-			EntityComponentMap &ecm = (*it).second;
-			EntityComponentMap::iterator it2 = ecm.find(id);
-			if (it2 == ecm.end())
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-	}
-	Component *EntityManager::GetComponentImpl(const EntityID &id, const HashString &name) const
-	{
-		ComponentStore::iterator it = p->components.find(name);
-		if (it == p->components.end())
-		{
-			return nullptr;
-		}
-		else
-		{
-			EntityComponentMap &ecm = (*it).second;
-			EntityComponentMap::iterator it2 = ecm.find(id);
-			if (it2 == ecm.end())
-			{
-				return nullptr;
-			}
-			else
-			{
-				return (*it2).second;
-			}
-		}
-	}
-	const EntityComponentMap &EntityManager::GetEntitiesWithImpl(const HashString &name) const
-	{
-		ComponentStore::const_iterator it = p->components.find(name);
-		if (it == p->components.end())
-		{
-			return p->emptyMap;
-		}
-		else
-		{
-			return (*it).second;
-		}
-	}
-
-	void EntityManager::deleteComponent(Component *component)
-	{
-		delete component;
 	}
 }
