@@ -23,6 +23,8 @@ THE SOFTWARE.
 #define PZ_MouseEvent_h__
 
 #include <ProtoZed/Event.h>
+#include <ProtoZed/Systems/Input.h>
+#include <ProtoZed/Vector2.h>
 
 namespace PZ
 {
