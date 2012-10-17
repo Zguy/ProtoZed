@@ -32,12 +32,16 @@ namespace PZ
 			return Vector2f(Math::Cos(rotation.ToFloat()) * length * -1, Math::Sin(rotation.ToFloat()) * length);
 		}
 
-		Angle::Radians GetRotationTo(const Vector2f &from, const Vector2f &to)
+		Angle::Radians GetAngleBetween(const Vector2f &from, const Vector2f &to)
 		{
-			float x = to.x - from.x;
-			float y = to.y - from.y;
+			float angle = Math::ATan2(from.y, from.x) - Math::ATan2(to.y, to.x);
 
-			return (Angle::Radians(Math::ATan2(y, x) + Math::PI));
+			if (angle > Math::PI)
+				angle -= Math::PI_2;
+			if (angle < Math::PI)
+				angle += Math::PI_2;
+
+			return Angle::Radians(angle);
 		}
 	}
 }

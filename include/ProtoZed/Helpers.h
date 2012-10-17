@@ -31,7 +31,7 @@ namespace PZ
 	{
 		Vector2f GetForwardVector(Angle::Radians rotation, float length);
 
-		Angle::Radians GetRotationTo(const Vector2f &from, const Vector2f &to);
+		Angle::Radians GetAngleBetween(const Vector2f &from, const Vector2f &to);
 	}
 }
 
