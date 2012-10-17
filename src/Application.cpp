@@ -90,6 +90,7 @@ namespace PZ
 			stateManager.Update();
 
 			entityManager.ClearEntities();
+			entityManager.DestroyPendingEntities();
 
 			assetManager.UnloadAll();
 
