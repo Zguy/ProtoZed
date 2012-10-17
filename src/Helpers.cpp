@@ -38,7 +38,7 @@ namespace PZ
 
 			if (angle > Math::PI)
 				angle -= Math::PI_2;
-			if (angle < Math::PI)
+			if (angle < -Math::PI)
 				angle += Math::PI_2;
 
 			return Angle::Radians(angle);
