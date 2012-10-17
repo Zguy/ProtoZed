@@ -22,12 +22,15 @@ THE SOFTWARE.
 #ifndef PZ_Math_h__
 #define PZ_Math_h__
 
+#include <cassert>
+
 namespace PZ
 {
 	namespace Math
 	{
-		static const float PI   = 3.14159265358979323846f;
-		static const float PI_2 = 1.57079632679489661923f;
+		static const float PI      = 3.14159265358979323846f;
+		static const float PI_2    = 6.28318530717958647693f;
+		static const float PI_HALF = 1.57079632679489661923f;
 
 		float Sqrt(float value);
 		float Sin(float value);

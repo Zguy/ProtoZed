@@ -48,11 +48,11 @@ namespace PZ
 		/**** SINE ****/
 		float Sine::easeIn(float t, float b, float c, float d) const
 		{
-			return -c * Math::Cos(t/d * (Math::PI_2)) + c + b;
+			return -c * Math::Cos(t/d * (Math::PI_HALF)) + c + b;
 		}
 		float Sine::easeOut(float t, float b, float c, float d) const
 		{
-			return c * Math::Sin(t/d * (Math::PI_2)) + b;
+			return c * Math::Sin(t/d * (Math::PI_HALF)) + b;
 		}
 
 		float Sine::easeInOut(float t, float b, float c, float d) const
@@ -130,7 +130,7 @@ namespace PZ
 			float a=c;
 			float s=p/4;
 			float postFix =a*Math::Pow(2,10*(t-=1));
-			return -(postFix * Math::Sin((t*d-s)*(2*Math::PI)/p )) + b;
+			return -(postFix * Math::Sin((t*d-s)*Math::PI_2/p)) + b;
 		}
 		float Elastic::easeOut(float t, float b, float c, float d) const
 		{
@@ -138,7 +138,7 @@ namespace PZ
 			float p=d*.3f;
 			float a=c;
 			float s=p/4;
-			return (a*Math::Pow(2,-10*t) * Math::Sin( (t*d-s)*(2*Math::PI)/p ) + c + b);
+			return (a*Math::Pow(2,-10*t) * Math::Sin( (t*d-s)*Math::PI_2/p ) + c + b);
 		}
 		float Elastic::easeInOut(float t, float b, float c, float d) const
 		{
@@ -150,10 +150,10 @@ namespace PZ
 			if (t < 1)
 			{
 				float postFix =a*Math::Pow(2,10*(t-=1));
-				return -.5f*(postFix* Math::Sin( (t*d-s)*(2*Math::PI)/p )) + b;
+				return -.5f*(postFix* Math::Sin( (t*d-s)*Math::PI_2/p )) + b;
 			}
 			float postFix =  a*Math::Pow(2,-10*(t-=1));
-			return postFix * Math::Sin( (t*d-s)*(2*Math::PI)/p )*.5f + c + b;
+			return postFix * Math::Sin( (t*d-s)*Math::PI_2/p )*.5f + c + b;
 		}
 
 		/****  CUBIC ****/
