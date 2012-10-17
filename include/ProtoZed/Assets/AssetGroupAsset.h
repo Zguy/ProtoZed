@@ -36,7 +36,7 @@ namespace PZ
 		~AssetGroupAsset();
 
 	private:
-		void loadGroup(const Jzon::Object &groupObj);
+		bool loadGroup(const Jzon::Object &groupObj);
 		virtual bool load(const DataChunk &data);
 
 		virtual bool unload();

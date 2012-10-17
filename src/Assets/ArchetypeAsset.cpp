@@ -23,7 +23,6 @@ THE SOFTWARE.
 
 #include <ProtoZed/Application.h>
 #include <ProtoZed/Archetype.h>
-#include <ProtoZed/Jzon.h>
 
 namespace PZ
 {
@@ -34,36 +33,28 @@ namespace PZ
 	{
 	}
 
-	bool ArchetypeAsset::loadData(const DataChunk &data, Archetype *archetype)
+	bool ArchetypeAsset::loadArchetype(const Jzon::Object &archetypeObj)
 	{
-		std::string str(data.GetData(), data.GetSize());
+		Archetype *archetype = new Archetype;
 
-		if (Jzon::Node::DetermineType(str) != Jzon::Node::T_OBJECT)
-			return false;
-
-		Jzon::Object root;
-		Jzon::Parser parser(root, str);
-		parser.Parse();
-
-		const Jzon::Node &nameNode = root.Get("Name");
+		const Jzon::Node &nameNode = archetypeObj.Get("Name");
 		if (nameNode.IsString())
 			archetype->name = nameNode.ToString();
 		else
 			return false;
 
-		const Jzon::Node &componentsNode = root.Get("Components");
+		const Jzon::Node &componentsNode = archetypeObj.Get("Components");
 		if (!componentsNode.IsArray())
 			return false;
 
 		const Jzon::Array &componentsRoot = componentsNode.AsArray();
 		for (Jzon::Array::const_iterator it = componentsRoot.begin(); it != componentsRoot.end(); ++it)
 		{
-			std::string name;
 			const Jzon::Node &nameNode = (*it).Get("Name");
-			if (nameNode.IsString())
-				name = nameNode.ToString();
-			else
+			if (!nameNode.IsString())
 				return false;
+
+			std::string name = nameNode.ToString();
 
 			Archetype::PropertyValueList properties;
 
@@ -84,25 +75,52 @@ namespace PZ
 			archetype->components.push_back(std::make_pair(name, properties));
 		}
 
+		if (GetApplication().GetEntityManager().RegisterArchetype(archetype))
+		{
+			loadedArchetypes.push_back(archetype->name);
+		}
+
 		return true;
 	}
-
 	bool ArchetypeAsset::load(const DataChunk &data)
 	{
-		Archetype *archetype = new Archetype;
+		std::string str(data.GetData(), data.GetSize());
 
-		if (loadData(data, archetype))
+		Jzon::Node::Type type = Jzon::Node::DetermineType(str);
+		if (type == Jzon::Node::T_OBJECT)
 		{
-			name = archetype->name;
-			return GetApplication().GetEntityManager().RegisterArchetype(archetype);
+			Jzon::Object root;
+			Jzon::Parser parser(root, str);
+			parser.Parse();
+			return loadArchetype(root);
+		}
+		else if (type == Jzon::Node::T_ARRAY)
+		{
+			Jzon::Array root;
+			Jzon::Parser parser(root, str);
+			parser.Parse();
+
+			for (Jzon::Array::iterator it = root.begin(); it != root.end(); ++it)
+			{
+				if ((*it).IsObject())
+				{
+					loadArchetype((*it).AsObject());
+				}
+			}
+
+			return true;
 		}
 
 		return false;
 	}
+
 	bool ArchetypeAsset::unload()
 	{
-		bool success = GetApplication().GetEntityManager().UnregisterArchetype(name);
-		name.clear();
-		return success;
+		for (std::vector<std::string>::const_iterator it = loadedArchetypes.cbegin(); it != loadedArchetypes.cend(); ++it)
+		{
+			GetApplication().GetEntityManager().UnregisterArchetype(*it);
+		}
+		loadedArchetypes.clear();
+		return true;
 	}
 }

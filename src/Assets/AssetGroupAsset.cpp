@@ -34,7 +34,7 @@ namespace PZ
 	}
 
 
-	void AssetGroupAsset::loadGroup(const Jzon::Object &groupObj)
+	bool AssetGroupAsset::loadGroup(const Jzon::Object &groupObj)
 	{
 		AssetGroup group;
 
@@ -42,17 +42,17 @@ namespace PZ
 		if (nameNode.IsString())
 			group.name = nameNode.ToString();
 		else
-			return;
+			return false;
 
 		const Jzon::Node &assetsNode = groupObj.Get("Assets");
 		if (!assetsNode.IsArray())
-			return;
+			return false;
 
 		const Jzon::Array &assets = assetsNode.AsArray();
 		for (Jzon::Array::const_iterator it = assets.begin(); it != assets.end(); ++it)
 		{
 			if (!(*it).IsString())
-				return;
+				return false;
 
 			std::string file = (*it).ToString();
 			group.files.push_back(file);
@@ -62,6 +62,8 @@ namespace PZ
 		{
 			loadedGroups.push_back(group.name);
 		}
+
+		return true;
 	}
 	bool AssetGroupAsset::load(const DataChunk &data)
 	{
@@ -73,9 +75,7 @@ namespace PZ
 			Jzon::Object root;
 			Jzon::Parser parser(root, str);
 			parser.Parse();
-			loadGroup(root);
-
-			return true;
+			return loadGroup(root);
 		}
 		else if (type == Jzon::Node::T_ARRAY)
 		{

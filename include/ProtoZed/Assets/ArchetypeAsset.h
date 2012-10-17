@@ -23,6 +23,9 @@ THE SOFTWARE.
 #define PZ_ArchetypeAsset_h__
 
 #include <ProtoZed/Asset.h>
+#include <ProtoZed/Jzon.h>
+
+#include <vector>
 
 namespace PZ
 {
@@ -35,12 +38,12 @@ namespace PZ
 		~ArchetypeAsset();
 
 	private:
-		bool loadData(const DataChunk &data, Archetype *archetype);
-
+		bool loadArchetype(const Jzon::Object &archetypeObj);
 		virtual bool load(const DataChunk &data);
+
 		virtual bool unload();
 
-		std::string name;
+		std::vector<std::string> loadedArchetypes;
 	};
 }
 
