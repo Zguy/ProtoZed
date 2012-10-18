@@ -23,8 +23,8 @@ THE SOFTWARE.
 
 #include <sstream>
 #include <fstream>
-
 #include <stack>
+#include <algorithm>
 
 namespace Jzon
 {
@@ -840,11 +840,11 @@ namespace Jzon
 	}
 
 
-	Writer::Writer(const Node &root, const Format &format) : root(root), fi(new FormatInterpreter)
+	Writer::Writer(const Node &root, const Format &format) : fi(new FormatInterpreter), root(root)
 	{
 		SetFormat(format);
 	}
-	Writer::Writer(const Node &root, const std::string &filename, const Format &format) : root(root), fi(new FormatInterpreter)
+	Writer::Writer(const Node &root, const std::string &filename, const Format &format) : fi(new FormatInterpreter), root(root)
 	{
 		SetFilename(filename);
 		SetFormat(format);
@@ -1217,6 +1217,8 @@ namespace Jzon
 					}
 					break;
 				}
+			case T_SEPARATOR_NAME :
+			case T_SEPARATOR_NODE : break;
 			}
 		}
 
