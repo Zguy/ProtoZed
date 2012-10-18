@@ -71,6 +71,10 @@ namespace PZ
 		{
 			return std::ceil(value);
 		}
+		float Round(float value)
+		{
+			return Floor(value + 0.5f);
+		}
 
 		float Abs(float value)
 		{

@@ -43,6 +43,7 @@ namespace PZ
 		float Pow(float value, float pow);
 		float Floor(float value);
 		float Ceil(float value);
+		float Round(float value);
 
 		float Abs(float value);
 		double Abs(double value);
