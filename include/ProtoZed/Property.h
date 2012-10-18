@@ -89,6 +89,11 @@ namespace PZ
 			return *this;
 		}
 
+		const T &Get() const
+		{
+			return value;
+		}
+
 		operator const T&() const
 		{
 			return value;
