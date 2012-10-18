@@ -62,6 +62,7 @@ namespace PZ
 		float Cross(const Vector2 &other) const;
 
 		void Normalize();
+		const Vector2 GetNormalized() const;
 
 		float GetLength() const;
 		T GetLengthSquared() const;
@@ -71,6 +72,7 @@ namespace PZ
 	};
 
 	typedef Vector2<int> Vector2i;
+	typedef Vector2<unsigned int> Vector2ui;
 	typedef Vector2<float> Vector2f;
 
 	template<typename T>
@@ -207,6 +209,13 @@ namespace PZ
 			float factor = 1.f / len;
 			(*this) *= factor;
 		}
+	}
+	template<typename T>
+	const Vector2<T> PZ::Vector2<T>::GetNormalized() const
+	{
+		Vector2<T> v(*this);
+		v.Normalize();
+		return v;
 	}
 
 	template<typename T>
