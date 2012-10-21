@@ -52,9 +52,9 @@ namespace PZ
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		virtual bool Start()
+		bool Start()
 		{
-			if (!started)
+			if (!started && OnStart())
 			{
 				started = true;
 				return true;
@@ -70,9 +70,9 @@ namespace PZ
 		 *
 		 * \return	true if it succeeds, false if it fails.
 		 */
-		virtual bool Stop()
+		bool Stop()
 		{
-			if (started)
+			if (started && OnStop())
 			{
 				started = false;
 				return true;
@@ -81,6 +81,15 @@ namespace PZ
 			{
 				return false;
 			}
+		}
+
+		virtual bool OnStart()
+		{
+			return true;
+		}
+		virtual bool OnStop()
+		{
+			return true;
 		}
 
 		/**

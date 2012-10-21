@@ -30,15 +30,6 @@ namespace PZ
 	Renderer::~Renderer()
 	{}
 
-	bool Renderer::Start()
-	{
-		return System::Start();
-	}
-	bool Renderer::Stop()
-	{
-		return System::Stop();
-	}
-
 	void Renderer::SetVideoMode(const VideoMode &newVideoMode)
 	{
 		videoMode = newVideoMode;

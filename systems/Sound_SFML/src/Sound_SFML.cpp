@@ -101,11 +101,8 @@ namespace PZ
 		delete p;
 	}
 
-	bool Sound_SFML::Start()
+	bool Sound_SFML::OnStart()
 	{
-		if (!Sound::Start())
-			return false;
-
 		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Subscribe(EntityEvent::DESTROYED, this, &Sound_SFML::OnEntityDestroyed);
 		entityManager.Subscribe(EntityEvent::CLEARED, this, &Sound_SFML::OnEntitiesCleared);
@@ -114,11 +111,8 @@ namespace PZ
 
 		return true;
 	}
-	bool Sound_SFML::Stop()
+	bool Sound_SFML::OnStop()
 	{
-		if (!Sound::Stop())
-			return false;
-
 		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Unsubscribe(EntityEvent::DESTROYED, this, &Sound_SFML::OnEntityDestroyed);
 		entityManager.Unsubscribe(EntityEvent::CLEARED, this, &Sound_SFML::OnEntitiesCleared);

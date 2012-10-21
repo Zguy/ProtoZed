@@ -36,8 +36,8 @@ namespace PZ
 		Sound_SFML(const SystemType &type, Application &application);
 		~Sound_SFML();
 
-		virtual bool Start();
-		virtual bool Stop();
+		virtual bool OnStart();
+		virtual bool OnStop();
 
 		virtual void Update(float deltaTime);
 

@@ -39,11 +39,6 @@ namespace PZ
 		Renderer(const SystemType &type, Application &application);
 		virtual ~Renderer();
 
-		virtual bool Start();
-		virtual bool Stop();
-
-		virtual void Update(float deltaTime) = 0;
-
 		void SetVideoMode(const VideoMode &newVideoMode);
 		inline const VideoMode &GetVideMode() const { return videoMode; }
 

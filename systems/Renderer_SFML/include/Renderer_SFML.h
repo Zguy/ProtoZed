@@ -41,8 +41,8 @@ namespace PZ
 		Renderer_SFML(const SystemType &type, Application &application);
 		~Renderer_SFML();
 
-		virtual bool Start();
-		virtual bool Stop();
+		virtual bool OnStart();
+		virtual bool OnStop();
 
 		virtual void Update(float deltaTime);
 

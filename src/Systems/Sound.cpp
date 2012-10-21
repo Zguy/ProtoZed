@@ -29,13 +29,4 @@ namespace PZ
 	Sound::~Sound()
 	{
 	}
-
-	bool Sound::Start()
-	{
-		return System::Start();
-	}
-	bool Sound::Stop()
-	{
-		return System::Stop();
-	}
 }

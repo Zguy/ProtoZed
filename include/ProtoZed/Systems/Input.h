@@ -185,8 +185,6 @@ namespace PZ
 		{}
 		virtual ~Input()
 		{}
-	
-		virtual void Update(float deltaTime) = 0;
 
 		virtual bool IsKeyDown(Key::Code keyCode) const = 0;
 	

@@ -147,11 +147,8 @@ namespace PZ
 		delete p;
 	}
 
-	bool Renderer_SFML::Start()
+	bool Renderer_SFML::OnStart()
 	{
-		if (!Renderer::Start())
-			return false;
-
 		unsigned long windowStyle = (sf::Style::Close | sf::Style::Resize);
 
 		sf::VideoMode sfVideoMode(videoMode.GetWindowResolution().x, videoMode.GetWindowResolution().y);
@@ -175,11 +172,8 @@ namespace PZ
 
 		return true;
 	}
-	bool Renderer_SFML::Stop()
+	bool Renderer_SFML::OnStop()
 	{
-		if (!Renderer::Stop())
-			return false;
-
 		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Unsubscribe(EntityEvent::DESTROYED, this, &Renderer_SFML::OnEntityDestroyed);
 		entityManager.Unsubscribe(EntityEvent::CLEARED, this, &Renderer_SFML::OnEntitiesCleared);

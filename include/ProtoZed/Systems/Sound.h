@@ -23,7 +23,6 @@ THE SOFTWARE.
 #define PZ_Sound_h__
 
 #include <ProtoZed/System.h>
-#include <ProtoZed/Vector3.h>
 
 namespace PZ
 {
@@ -37,11 +36,6 @@ namespace PZ
 	public:
 		Sound(const SystemType &type, Application &application);
 		virtual ~Sound();
-
-		virtual bool Start();
-		virtual bool Stop();
-
-		virtual void Update(float deltaTime) = 0;
 	};
 }
 
