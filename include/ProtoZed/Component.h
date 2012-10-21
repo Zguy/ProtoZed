@@ -46,7 +46,7 @@ namespace PZ
 		 * \brief	Default constructor.
 		 * 
 		 * Don't put any initialization logic inside
-		 * the constructor (anything that will call GetManager() or GetOwnerID()).
+		 * the constructor.
 		 * Use Init() instead.
 		 */
 		Component() : manager(nullptr)
@@ -58,9 +58,6 @@ namespace PZ
 
 		/**
 		 * \brief	Initializes the component.
-		 * 
-		 * You should not call this method.
-		 * It will be called by EntityManager.
 		 */
 		virtual void Init()
 		{}

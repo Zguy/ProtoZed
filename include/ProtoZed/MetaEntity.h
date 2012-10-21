@@ -87,6 +87,19 @@ namespace PZ
 		}
 
 		/**
+		 * \brief	Initialises this entity.
+		 *
+		 * \return	true if it succeeds, false if it is already initialised.
+		 */
+		bool Init()
+		{
+			if (IsValid())
+				return manager->InitEntity(id);
+			else
+				return false;
+		}
+
+		/**
 		 * \brief	Destroys this entity.
 		 *
 		 * \return	true if it succeeds, false if it fails.

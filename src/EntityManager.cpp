@@ -33,9 +33,10 @@ namespace PZ
 {
 	struct EntityData
 	{
-		EntityData() : destroy(false)
+		EntityData() : initialised(false), destroy(false)
 		{}
 
+		bool initialised;
 		bool destroy;
 	};
 	typedef std::unordered_map<EntityID, EntityData, std::hash<int>> EntityDataMap;
@@ -60,8 +61,6 @@ namespace PZ
 
 			if (components[name].insert(std::make_pair(id, component)).second)
 			{
-				component->Init();
-
 				ComponentEvent e(ComponentEvent::ADDED);
 				e.id = id;
 				e.family = name;
@@ -264,6 +263,31 @@ namespace PZ
 	EntityList::size_type EntityManager::GetEntityCount() const
 	{
 		return p->entities.size();
+	}
+
+	bool EntityManager::InitEntity(const EntityID &id)
+	{
+		EntityData &data = p->getDataFor(id);
+
+		if (!data.initialised)
+		{
+			for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
+			{
+				EntityComponentMap &ecm = (*it).second;
+				for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+				{
+					if ((*it2).first == id)
+					{
+						(*it2).second->Init();
+					}
+				}
+			}
+
+			data.initialised = true;
+			return true;
+		}
+
+		return false;
 	}
 
 	bool EntityManager::RegisterArchetype(Archetype *archetype)

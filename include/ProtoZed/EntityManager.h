@@ -146,6 +146,18 @@ namespace PZ
 		EntityList::size_type GetEntityCount() const;
 
 		/**
+		 * \brief	Initialises the entity by calling Init()
+		 * 				on all components.
+		 * 				
+		 * Safe to call multiple times. Will only work the first time.
+		 *
+		 * \param	id	The entity.
+		 *
+		 * \return	true if it succeeds, false if already called once.
+		 */
+		bool InitEntity(const EntityID &id);
+
+		/**
 		 * \brief	Registers an archetype.
 		 *
 		 * EntityManager takes ownership of the Archetype instance.
