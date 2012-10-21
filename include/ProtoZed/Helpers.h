@@ -29,7 +29,7 @@ namespace PZ
 {
 	namespace Helpers
 	{
-		Vector2f GetForwardVector(Angle::Radians rotation, float length);
+		Vector2f GetVectorFromAngle(Angle::Radians angle);
 
 		Angle::Radians GetAngleBetween(const Vector2f &from, const Vector2f &to);
 	}

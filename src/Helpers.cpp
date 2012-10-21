@@ -27,9 +27,9 @@ namespace PZ
 {
 	namespace Helpers
 	{
-		Vector2f GetForwardVector(Angle::Radians rotation, float length)
+		Vector2f GetVectorFromAngle(Angle::Radians rotation)
 		{
-			return Vector2f(Math::Cos(rotation.ToFloat()) * length * -1, Math::Sin(rotation.ToFloat()) * length);
+			return Vector2f(Math::Cos(rotation.ToFloat()) * -1, Math::Sin(rotation.ToFloat()));
 		}
 
 		Angle::Radians GetAngleBetween(const Vector2f &from, const Vector2f &to)
