@@ -55,11 +55,15 @@ namespace PZ
 
 		void LockNotify()
 		{
-			locked = true;
+			++locked;
 		}
 		void UnlockNotify()
 		{
-			locked = false;
+			--locked;
+		}
+		bool IsNotifyLocked()
+		{
+			return (locked != 0);
 		}
 
 		// Is this the best way?
@@ -83,7 +87,7 @@ namespace PZ
 
 		PropertyList *list;
 
-		bool locked;
+		int locked;
 	};
 
 	template<typename T>
