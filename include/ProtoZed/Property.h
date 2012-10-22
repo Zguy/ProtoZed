@@ -73,6 +73,8 @@ namespace PZ
 		std::string name;
 
 		PropertyList *list;
+
+		bool locked;
 	};
 
 	template<typename T>

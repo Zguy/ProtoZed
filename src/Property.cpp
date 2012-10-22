@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	PropertyBase::PropertyBase(const std::string &name, PropertyList *list) : name(name), list(nullptr)
+	PropertyBase::PropertyBase(const std::string &name, PropertyList *list) : name(name), list(nullptr), locked(false)
 	{
 		if (list != nullptr)
 		{
@@ -44,9 +44,11 @@ namespace PZ
 
 	void PropertyBase::NotifyList()
 	{
-		if (list != nullptr)
+		if (list != nullptr && !locked)
 		{
+			locked = true;
 			list->PropertyUpdated(*this);
+			locked = false;
 		}
 	}
 }

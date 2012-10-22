@@ -71,7 +71,6 @@ namespace PZ
 		}
 
 	protected:
-		// We pass a const PropertyBase because if it is changed within this method we might get infinite recursion
 		virtual void PropertyUpdated(const PropertyBase &prop)
 		{}
 
