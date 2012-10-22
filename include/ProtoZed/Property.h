@@ -57,6 +57,15 @@ namespace PZ
 		virtual std::string ToString() const = 0;
 		virtual void FromString(const std::string &str) = 0;
 
+		bool operator==(const PropertyBase &other) const
+		{
+			return (name == other.name && list == other.list);
+		}
+		bool operator!=(const PropertyBase &other) const
+		{
+			return !((*this) == other);
+		}
+
 	protected:
 		void NotifyList();
 
