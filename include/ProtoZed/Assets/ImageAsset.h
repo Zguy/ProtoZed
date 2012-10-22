@@ -19,60 +19,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_sfImageAsset_h__
-#define PZ_sfImageAsset_h__
+#ifndef PZ_ImageAsset_h__
+#define PZ_ImageAsset_h__
 
-#include <ProtoZed/Assets/ImageAsset.h>
-
-#include <SFML/Graphics/Image.hpp>
+#include <ProtoZed/Asset.h>
 
 namespace PZ
 {
-	class sfImageAsset : public ImageAsset
+	class ImageAsset : public Asset
 	{
 	public:
-		sfImageAsset() : image(nullptr)
-		{
-		}
-		~sfImageAsset()
-		{
-			delete image;
-			image = nullptr;
-		}
+		ImageAsset()
+		{}
+		virtual ~ImageAsset()
+		{}
 
-		virtual unsigned int GetWidth() const
-		{
-			assert(image != nullptr);
-			return image->GetWidth();
-		}
-		virtual unsigned int GetHeight() const
-		{
-			assert(image != nullptr);
-			return image->GetHeight();
-		}
-
-		const sf::Image &GetImage() const
-		{
-			assert(image != nullptr);
-			return *image;
-		}
-
-	private:
-		virtual bool load(const DataChunk &data)
-		{
-			image = new sf::Image();
-			return image->LoadFromMemory(data.GetData(), data.GetSize());
-		}
-		virtual bool unload()
-		{
-			delete image;
-			image = nullptr;
-
-			return true;
-		}
-
-		sf::Image *image;
+		virtual unsigned int GetWidth() const  = 0;
+		virtual unsigned int GetHeight() const = 0;
 	};
 }
 
-#endif // PZ_sfImageAsset_h__
+#endif // PZ_ImageAsset_h__
