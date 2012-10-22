@@ -172,7 +172,7 @@ namespace PZ
 		p->calculateView(videoMode);
 		p->window.SetView(p->view);
 
-		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Subscribe(EntityEvent::DESTROYED, this, &Renderer_SFML::OnEntityDestroyed);
 		entityManager.Subscribe(EntityEvent::CLEARED, this, &Renderer_SFML::OnEntitiesCleared);
 		entityManager.Subscribe(ComponentEvent::ADDED, this, &Renderer_SFML::OnComponentAdded);
@@ -182,7 +182,7 @@ namespace PZ
 	}
 	bool Renderer_SFML::OnStop()
 	{
-		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Unsubscribe(EntityEvent::DESTROYED, this, &Renderer_SFML::OnEntityDestroyed);
 		entityManager.Unsubscribe(EntityEvent::CLEARED, this, &Renderer_SFML::OnEntitiesCleared);
 		entityManager.Unsubscribe(ComponentEvent::ADDED, this, &Renderer_SFML::OnComponentAdded);

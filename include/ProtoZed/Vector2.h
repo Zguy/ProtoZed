@@ -211,7 +211,7 @@ namespace PZ
 		}
 	}
 	template<typename T>
-	const Vector2<T> PZ::Vector2<T>::GetNormalized() const
+	const Vector2<T> Vector2<T>::GetNormalized() const
 	{
 		Vector2<T> v(*this);
 		v.Normalize();

@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 namespace PZ
 {
-	class AssetGroupAsset : public PZ::Asset
+	class AssetGroupAsset : public Asset
 	{
 	public:
 		AssetGroupAsset();

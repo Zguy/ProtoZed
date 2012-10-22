@@ -103,7 +103,7 @@ namespace PZ
 
 	bool Sound_SFML::OnStart()
 	{
-		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Subscribe(EntityEvent::DESTROYED, this, &Sound_SFML::OnEntityDestroyed);
 		entityManager.Subscribe(EntityEvent::CLEARED, this, &Sound_SFML::OnEntitiesCleared);
 		entityManager.Subscribe(ComponentEvent::ADDED, this, &Sound_SFML::OnComponentAdded);
@@ -113,7 +113,7 @@ namespace PZ
 	}
 	bool Sound_SFML::OnStop()
 	{
-		PZ::EntityManager &entityManager = GetApplication().GetEntityManager();
+		EntityManager &entityManager = GetApplication().GetEntityManager();
 		entityManager.Unsubscribe(EntityEvent::DESTROYED, this, &Sound_SFML::OnEntityDestroyed);
 		entityManager.Unsubscribe(EntityEvent::CLEARED, this, &Sound_SFML::OnEntitiesCleared);
 		entityManager.Unsubscribe(ComponentEvent::ADDED, this, &Sound_SFML::OnComponentAdded);
