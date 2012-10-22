@@ -23,8 +23,6 @@ THE SOFTWARE.
 
 #include <ProtoZed/PropertyList.h>
 
-#include <cassert>
-
 namespace PZ
 {
 	PropertyBase::PropertyBase(const std::string &name, PropertyList *list) : name(name), list(nullptr), locked(false)
@@ -46,9 +44,9 @@ namespace PZ
 	{
 		if (list != nullptr && !locked)
 		{
-			locked = true;
+			LockNotify();
 			list->PropertyUpdated(*this);
-			locked = false;
+			UnlockNotify();
 		}
 	}
 }

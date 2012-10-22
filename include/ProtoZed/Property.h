@@ -53,6 +53,15 @@ namespace PZ
 			return (list != nullptr);
 		}
 
+		void LockNotify()
+		{
+			locked = true;
+		}
+		void UnlockNotify()
+		{
+			locked = false;
+		}
+
 		// Is this the best way?
 		virtual std::string ToString() const = 0;
 		virtual void FromString(const std::string &str) = 0;
