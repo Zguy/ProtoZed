@@ -93,6 +93,14 @@ namespace PZ
 			}
 
 			drawable->SetCenter(sprite->GetCenter().x, sprite->GetCenter().y);
+			if (sprite->GetRegionSize().GetLengthSquared() > 0.f)
+			{
+				int x = sprite->GetRegionOffset().x;
+				int y = sprite->GetRegionOffset().y;
+				int w = sprite->GetRegionSize().x;
+				int h = sprite->GetRegionSize().y;
+				drawable->SetSubRect(sf::IntRect(x, y, x+w, y+h));
+			}
 
 			delete layer.drawable;
 			layer.drawable = drawable;

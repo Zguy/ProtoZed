@@ -25,10 +25,12 @@ namespace PZ
 {
 	const HashString Sprite::Family = "Sprite";
 
-	Sprite::Sprite() : image("Image"), center("Center")
+	Sprite::Sprite() : image("Image"), center("Center"), regionOffset("RegionOffset"), regionSize("RegionSize")
 	{
 		AddProperty(image);
 		AddProperty(center);
+		AddProperty(regionOffset);
+		AddProperty(regionSize);
 	}
 	Sprite::~Sprite()
 	{

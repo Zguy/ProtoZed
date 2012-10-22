@@ -53,9 +53,26 @@ namespace PZ
 			center = newCenter;
 		}
 
+		inline const Vector2f &GetRegionOffset() const
+		{
+			return regionOffset;
+		}
+		inline const Vector2f &GetRegionSize() const
+		{
+			return regionSize;
+		}
+		inline void SetRegion(const Vector2f &offset, const Vector2f &size)
+		{
+			regionOffset = offset;
+			regionSize   = size;
+		}
+
 	private:
 		Property<std::string> image;
 		Property<Vector2f> center;
+
+		Property<Vector2f> regionOffset;
+		Property<Vector2f> regionSize;
 	};
 }
 
