@@ -37,6 +37,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Position2D.h>
 #include <ProtoZed/Components/Sprite.h>
 #include <ProtoZed/Components/SoundEmitter.h>
+#include <ProtoZed/Components/Spritesheet.h>
 
 #include <ProtoZed/Animation/AnimationGroup.h>
 #include <ProtoZed/Animation/Tween.h>
@@ -67,6 +68,7 @@ namespace PZ
 			entityManager.RegisterComponent<Position2D>();
 			entityManager.RegisterComponent<Sprite>();
 			entityManager.RegisterComponent<SoundEmitter>();
+			entityManager.RegisterComponent<Spritesheet>();
 
 			i.SetTimescale(1.f);
 

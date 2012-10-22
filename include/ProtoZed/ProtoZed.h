@@ -49,6 +49,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Position2D.h>
 #include <ProtoZed/Components/Sprite.h>
 #include <ProtoZed/Components/SoundEmitter.h>
+#include <ProtoZed/Components/Spritesheet.h>
 
 #include <ProtoZed/System.h>
 #include <ProtoZed/Systems/Renderer.h>
@@ -60,6 +61,8 @@ THE SOFTWARE.
 
 #include <ProtoZed/Assets/ArchetypeAsset.h>
 #include <ProtoZed/Assets/AssetGroupAsset.h>
+#include <ProtoZed/Assets/ImageAsset.h>
+#include <ProtoZed/Assets/SpritesheetAsset.h>
 
 #include <ProtoZed/IncludeFilter.h>
 #include <ProtoZed/IncludeFilters/NoFilter.h>
