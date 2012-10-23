@@ -274,12 +274,10 @@ namespace PZ
 			for (ComponentStore::iterator it = p->components.begin(); it != p->components.end(); ++it)
 			{
 				EntityComponentMap &ecm = (*it).second;
-				for (EntityComponentMap::iterator it2 = ecm.begin(); it2 != ecm.end(); ++it2)
+				EntityComponentMap::iterator it2 = ecm.find(id);
+				if (it2 != ecm.end())
 				{
-					if ((*it2).first == id)
-					{
-						(*it2).second->Init();
-					}
+					(*it2).second->Init();
 				}
 			}
 
@@ -438,12 +436,10 @@ namespace PZ
 		for (ComponentStore::const_iterator it = p->components.cbegin(); it != p->components.cend(); ++it)
 		{
 			const EntityComponentMap &ecm = (*it).second;
-			for (EntityComponentMap::const_iterator it2 = ecm.cbegin(); it2 != ecm.cend(); ++it2)
+			EntityComponentMap::const_iterator it2 = ecm.find(id);
+			if (it2 != ecm.cend())
 			{
-				if ((*it2).first == id)
-				{
-					list.push_back((*it).first);
-				}
+				list.push_back((*it).first);
 			}
 		}
 	}
