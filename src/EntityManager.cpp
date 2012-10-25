@@ -220,6 +220,15 @@ namespace PZ
 		}
 	}
 
+	bool EntityManager::IsAlive(const EntityID &id) const
+	{
+		if (HasEntity(id))
+		{
+			return !p->getDataFor(id).destroy;
+		}
+		return false;
+	}
+
 	bool EntityManager::HasEntity(const EntityID &id) const
 	{
 		return (p->entities.find(id) != p->entities.cend());

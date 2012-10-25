@@ -109,6 +109,15 @@ namespace PZ
 		void DestroyPendingEntities();
 
 		/**
+		 * \brief	Query if 'id' is about to be destroyed.
+		 *
+		 * \param	id	The identifier.
+		 *
+		 * \return	true if alive, false if not.
+		 */
+		bool IsAlive(const EntityID &id) const;
+
+		/**
 		 * \brief	Query if the entity 'id' exists.
 		 *
 		 * \param	id	The identifier.
