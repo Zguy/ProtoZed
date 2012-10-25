@@ -77,13 +77,29 @@ namespace PZ
 		}
 
 		/**
+		 * \brief	Query if this entity is about to be destroyed.
+		 *
+		 * \return	true if alive, false if not.
+		 */
+		bool IsAlive() const
+		{
+			if (IsValid())
+				return manager->IsAlive(id);
+			else
+				return false;
+		}
+
+		/**
 		 * \brief	Queries if this entity still exists.
 		 *
 		 * \return	true if it does, false if it does not.
 		 */
 		bool StillExists() const
 		{
-			return manager->HasEntity(id);
+			if (IsValid())
+				return manager->HasEntity(id);
+			else
+				return false;
 		}
 
 		/**
