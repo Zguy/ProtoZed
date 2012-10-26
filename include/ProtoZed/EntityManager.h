@@ -192,6 +192,15 @@ namespace PZ
 		void UnregisterAllArchetypes();
 
 		/**
+		 * \brief	Gets an archetype.
+		 *
+		 * \param	name	The name.
+		 *
+		 * \return	null if it fails, else the archetype.
+		 */
+		const Archetype *GetArchetype(const std::string &name) const;
+
+		/**
 		 * \brief	Registers a component.
 		 *
 		 * \return	true if it succeeds, false if it fails.
@@ -223,25 +232,31 @@ namespace PZ
 		/**
 		 * \brief	Adds a component to 'id'.
 		 *
-		 * \param	id	The identifier.
+		 * \param	id				 	The identifier.
+		 * \param	getExisting	(optional) If true, and if the
+		 * 										component is already added this will
+		 * 										return the existing component.
 		 *
-		 * \return	null if it fails, else the component.
+		 * \return	null or existing component if it fails, else the component.
 		 */
 		template<class T>
-		T *AddComponent(const EntityID &id)
+		T *AddComponent(const EntityID &id, bool getExisting = true)
 		{
-			return dynamic_cast<T*>(AddComponent(id, T::Family));
+			return dynamic_cast<T*>(AddComponent(id, T::Family, getExisting));
 		}
 
 		/**
 		 * \brief	Adds a component to 'id'.
 		 *
-		 * \param	id			The identifier.
-		 * \param	family	The family of the component.
+		 * \param	id				 	The identifier.
+		 * \param	family		 	The family of the component.
+		 * \param	getExisting	(optional) If true, and if the
+		 * 										component is already added this will
+		 * 										return the existing component.
 		 *
-		 * \return	null if it fails, else the component.
+		 * \return	null or existing component if it fails, else the component.
 		 */
-		Component *AddComponent(const EntityID &id, const HashString &family);
+		Component *AddComponent(const EntityID &id, const HashString &family, bool getExisting = true);
 
 		/**
 		 * \brief	Removes the component.

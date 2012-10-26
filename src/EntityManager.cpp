@@ -336,6 +336,16 @@ namespace PZ
 		p->archetypes.clear();
 	}
 
+	const Archetype *EntityManager::GetArchetype(const std::string &name) const
+	{
+		ArchetypeMap::const_iterator it = p->archetypes.find(name);
+		if (it != p->archetypes.cend())
+		{
+			return (*it).second;
+		}
+		return nullptr;
+	}
+
 	void EntityManager::GetAllRegisteredComponents(std::vector<HashString> &list) const
 	{
 		list.clear();
@@ -346,7 +356,7 @@ namespace PZ
 		}
 	}
 
-	Component *EntityManager::AddComponent(const EntityID &id, const HashString &family)
+	Component *EntityManager::AddComponent(const EntityID &id, const HashString &family, bool getExisting)
 	{
 		Component *component = factory.Create(family);
 
@@ -362,7 +372,7 @@ namespace PZ
 			}
 		}
 
-		return nullptr;
+		return GetComponent(id, family);
 	}
 	bool EntityManager::RemoveComponent(const EntityID &id, const HashString &family)
 	{
