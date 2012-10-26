@@ -42,7 +42,11 @@ namespace PZ
 		typedef std::vector<ComponentPropertyPair> ComponentList;
 
 		std::string name;
+		std::string parent;
 		ComponentList components;
+
+	private:
+		void imp_create(EntityManager &manager, const EntityID &id) const;
 	};
 }
 

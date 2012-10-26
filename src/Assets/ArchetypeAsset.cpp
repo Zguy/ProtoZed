@@ -43,6 +43,15 @@ namespace PZ
 		else
 			return false;
 
+		if (archetypeObj.Has("Parent"))
+		{
+			const Jzon::Node &parentNode = archetypeObj.Get("Parent");
+			if (parentNode.IsString())
+				archetype->parent = parentNode.ToString();
+			else
+				archetype->parent = "";
+		}
+
 		const Jzon::Node &componentsNode = archetypeObj.Get("Components");
 		if (!componentsNode.IsArray())
 			return false;
@@ -58,18 +67,21 @@ namespace PZ
 
 			Archetype::PropertyValueList properties;
 
-			const Jzon::Node &propertiesNode = (*it).Get("Properties");
-			if (!propertiesNode.IsObject())
-				return false;
-
-			const Jzon::Object &propertiesRoot = propertiesNode.AsObject();
-			for (Jzon::Object::const_iterator it = propertiesRoot.begin(); it != propertiesRoot.end(); ++it)
+			if ((*it).Has("Properties"))
 			{
-				std::string name = (*it).first;
-				const Jzon::Node &valueNode = (*it).second;
-				std::string value = valueNode.ToString();
+				const Jzon::Node &propertiesNode = (*it).Get("Properties");
+				if (!propertiesNode.IsObject())
+					return false;
 
-				properties.push_back(std::make_pair(name, value));
+				const Jzon::Object &propertiesRoot = propertiesNode.AsObject();
+				for (Jzon::Object::const_iterator it = propertiesRoot.begin(); it != propertiesRoot.end(); ++it)
+				{
+					std::string name = (*it).first;
+					const Jzon::Node &valueNode = (*it).second;
+					std::string value = valueNode.ToString();
+
+					properties.push_back(std::make_pair(name, value));
+				}
 			}
 
 			archetype->components.push_back(std::make_pair(name, properties));

@@ -37,27 +37,39 @@ namespace PZ
 	{
 		if (manager.CreateEntity(id))
 		{
-			for (ComponentList::const_iterator component_it = components.cbegin(); component_it != components.cend(); ++component_it)
-			{
-				const ComponentPropertyPair &cpp = (*component_it);
-
-				Component *component = manager.AddComponent(id, cpp.first);
-				if (component == nullptr)
-				{
-					Log::Error("ProtoZed", "Creating archetype \""+name+"\" - Component \""+cpp.first+"\" could not be added");
-				}
-
-				for (PropertyValueList::const_iterator property_it = cpp.second.cbegin(); property_it != cpp.second.cend(); ++property_it)
-				{
-					const PropertyValuePair &pvp = (*property_it);
-
-					component->GetProperty(pvp.first).FromString(pvp.second);
-				}
-			}
-
+			imp_create(manager, id);
 			return true;
 		}
-
 		return false;
+	}
+
+	void Archetype::imp_create(EntityManager &manager, const EntityID &id) const
+	{
+		if (!parent.empty())
+		{
+			const Archetype *parentArch = manager.GetArchetype(parent);
+			if (parentArch != nullptr)
+			{
+				parentArch->imp_create(manager, id);
+			}
+		}
+
+		for (ComponentList::const_iterator component_it = components.cbegin(); component_it != components.cend(); ++component_it)
+		{
+			const ComponentPropertyPair &cpp = (*component_it);
+
+			Component *component = manager.AddComponent(id, cpp.first);
+			if (component == nullptr)
+			{
+				Log::Error("ProtoZed", "Creating archetype \""+name+"\" - Component \""+cpp.first+"\" could not be added");
+			}
+
+			for (PropertyValueList::const_iterator property_it = cpp.second.cbegin(); property_it != cpp.second.cend(); ++property_it)
+			{
+				const PropertyValuePair &pvp = (*property_it);
+
+				component->GetProperty(pvp.first).FromString(pvp.second);
+			}
+		}
 	}
 }
