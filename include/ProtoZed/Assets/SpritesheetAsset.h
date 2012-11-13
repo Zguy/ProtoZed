@@ -46,7 +46,7 @@ namespace PZ
 
 		std::string image;
 		Vector2i size;
-		typedef std::unordered_map<HashString, Animation> AnimationMap;
+		typedef std::unordered_map<HashString, Animation, std::hash<int>> AnimationMap;
 		AnimationMap animations;
 
 	private:
