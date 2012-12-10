@@ -47,13 +47,14 @@ THE SOFTWARE.
 
 #include <ProtoZed/Component.h>
 #include <ProtoZed/Components/Position2D.h>
-#include <ProtoZed/Components/Sprite.h>
+#include <ProtoZed/Components/SceneNode.h>
 #include <ProtoZed/Components/SoundEmitter.h>
+#include <ProtoZed/Components/Sprite.h>
 #include <ProtoZed/Components/Spritesheet.h>
 
 #include <ProtoZed/System.h>
-#include <ProtoZed/Systems/Renderer.h>
 #include <ProtoZed/Systems/Input.h>
+#include <ProtoZed/Systems/Renderer.h>
 #include <ProtoZed/Systems/Sound.h>
 
 #include <ProtoZed/Archive.h>
@@ -70,6 +71,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Events/ComponentEvent.h>
 #include <ProtoZed/Events/EntityEvent.h>
+#include <ProtoZed/Events/KeyboardEvent.h>
 #include <ProtoZed/Events/LogEvent.h>
 #include <ProtoZed/Events/MouseEvent.h>
 

@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include <ProtoZed/SystemList.h>
 
 #include <ProtoZed/Events/MouseEvent.h>
+#include <ProtoZed/Events/KeyboardEvent.h>
 
 #include <Renderer_SFML.h>
 
@@ -49,7 +50,17 @@ namespace PZ
 			const sf::Input &input = renderer->GetWindow().GetInput();
 
 			for (int i = 0; i < sf::Key::Count; ++i)
-				myKeys[i] = input.IsKeyDown(static_cast<sf::Key::Code>(i));
+			{
+				bool newDown = input.IsKeyDown(static_cast<sf::Key::Code>(i));
+				if (newDown != myKeys[i])
+				{
+					KeyboardEvent e(newDown ? KeyboardEvent::PRESS : KeyboardEvent::RELEASE);
+					e.keyCode = static_cast<Key::Code>(i);
+					EmitEvent(e);
+				}
+
+				myKeys[i] = newDown;
+			}
 
 			for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
 			{
