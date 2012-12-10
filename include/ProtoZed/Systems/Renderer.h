@@ -40,7 +40,7 @@ namespace PZ
 		virtual ~Renderer();
 
 		void SetVideoMode(const VideoMode &newVideoMode);
-		inline const VideoMode &GetVideMode() const { return videoMode; }
+		inline const VideoMode &GetVideoMode() const { return videoMode; }
 
 		void SetTitle(const std::string &newTitle);
 		inline const std::string &GetTitle() const { return title; }
