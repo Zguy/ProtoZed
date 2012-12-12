@@ -770,7 +770,7 @@ namespace Jzon
 	}
 
 
-	FileWriter::FileWriter()
+	FileWriter::FileWriter(const std::string &filename) : filename(filename)
 	{
 	}
 	FileWriter::~FileWriter()
@@ -779,13 +779,13 @@ namespace Jzon
 
 	void FileWriter::WriteFile(const std::string &filename, const Node &root, const Format &format)
 	{
-		FileWriter writer;
-		writer.Write(filename, root, format);
+		FileWriter writer(filename);
+		writer.Write(root, format);
 	}
 
-	void FileWriter::Write(const std::string &filename, const Node &root, const Format &format)
+	void FileWriter::Write(const Node &root, const Format &format)
 	{
-		Writer writer(root, filename, format);
+		Writer writer(root, format);
 		writer.Write();
 
 		std::fstream file(filename.c_str(), std::ios::out | std::ios::trunc);
@@ -796,14 +796,10 @@ namespace Jzon
 
 	FileReader::FileReader(const std::string &filename)
 	{
-		std::fstream file(filename.c_str(), std::ios::in | std::ios::binary);
-
-		file.seekg(0, std::ios::end);
-		std::ios::pos_type size = file.tellg();
-		file.seekg(0, std::ios::beg);
-		
-		json.resize(static_cast<std::string::size_type>(size), '\0');
-		file.read(&json[0], size);
+		if (!loadFile(filename, json))
+		{
+			error = "Failed to load file";
+		}
 	}
 	FileReader::~FileReader()
 	{
@@ -817,6 +813,9 @@ namespace Jzon
 
 	bool FileReader::Read(Node &node)
 	{
+		if (!error.empty())
+			return false;
+
 		Parser parser(node, json);
 		if (!parser.Parse())
 		{
@@ -839,14 +838,28 @@ namespace Jzon
 		return error;
 	}
 
+	bool FileReader::loadFile(const std::string &filename, std::string &json)
+	{
+		std::fstream file(filename.c_str(), std::ios::in | std::ios::binary);
+
+		if (!file.is_open())
+		{
+			return false;
+		}
+
+		file.seekg(0, std::ios::end);
+		std::ios::pos_type size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		json.resize(static_cast<std::string::size_type>(size), '\0');
+		file.read(&json[0], size);
+
+		return true;
+	}
+
 
 	Writer::Writer(const Node &root, const Format &format) : fi(new FormatInterpreter), root(root)
 	{
-		SetFormat(format);
-	}
-	Writer::Writer(const Node &root, const std::string &filename, const Format &format) : fi(new FormatInterpreter), root(root)
-	{
-		SetFilename(filename);
 		SetFormat(format);
 	}
 	Writer::~Writer()
@@ -855,10 +868,6 @@ namespace Jzon
 		fi = NULL;
 	}
 
-	void Writer::SetFilename(const std::string &filename)
-	{
-		this->filename = filename;
-	}
 	void Writer::SetFormat(const Format &format)
 	{
 		fi->SetFormat(format);

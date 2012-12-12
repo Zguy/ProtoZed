@@ -325,12 +325,15 @@ namespace Jzon
 	class FileWriter
 	{
 	public:
-		FileWriter();
+		FileWriter(const std::string &filename);
 		~FileWriter();
 
 		static void WriteFile(const std::string &filename, const Node &root, const Format &format = NoFormat);
 
-		void Write(const std::string &filename, const Node &root, const Format &format = NoFormat);
+		void Write(const Node &root, const Format &format = NoFormat);
+
+	private:
+		std::string filename;
 	};
 
 	class FileReader
@@ -348,6 +351,7 @@ namespace Jzon
 		const std::string &GetError() const;
 
 	private:
+		bool loadFile(const std::string &filename, std::string &json);
 		std::string json;
 		std::string error;
 	};
@@ -356,10 +360,8 @@ namespace Jzon
 	{
 	public:
 		Writer(const Node &root, const Format &format = NoFormat);
-		Writer(const Node &root, const std::string &filename, const Format &format = NoFormat);
 		~Writer();
 
-		void SetFilename(const std::string &filename);
 		void SetFormat(const Format &format);
 		void Write();
 
@@ -373,7 +375,6 @@ namespace Jzon
 
 		std::string result;
 
-		std::string filename;
 		class FormatInterpreter *fi;
 
 		const Node &root;
