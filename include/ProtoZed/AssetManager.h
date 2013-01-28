@@ -81,7 +81,7 @@ namespace PZ
 		bool AddArchive(const Path &filename, const ArchiveType &type, bool indexAll = true, bool onlyIndexRegisteredTypes = true);
 		bool RemoveArchive(const Path &filename);
 
-		bool AddGroup(AssetGroup group);
+		bool AddGroup(const AssetGroup &group);
 		bool HasGroup(const std::string &name);
 		bool RemoveGroup(const std::string &name);
 

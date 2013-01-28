@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 #include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/DataChunk.h>
-#include <ProtoZed/Path.h>
 
 namespace PZ
 {

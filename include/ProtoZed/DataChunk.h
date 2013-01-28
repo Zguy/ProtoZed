@@ -31,7 +31,7 @@ namespace PZ
 	public:
 		DataChunk() : data(nullptr), size(0), references(new unsigned int(1))
 		{}
-		DataChunk(const char *data, size_t size) : data(data), size(size), references(new unsigned int(1))
+		DataChunk(const char *data, std::size_t size) : data(data), size(size), references(new unsigned int(1))
 		{}
 		DataChunk(const DataChunk &other) : data(other.data), size(other.size), references(other.references)
 		{
@@ -63,14 +63,14 @@ namespace PZ
 			return data;
 		}
 
-		size_t GetSize() const
+		std::size_t GetSize() const
 		{
 			return size;
 		}
 
 	private:
 		const char *data;
-		size_t size;
+		std::size_t size;
 
 		void addReference()
 		{

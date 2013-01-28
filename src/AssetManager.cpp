@@ -268,7 +268,7 @@ namespace PZ
 		return false;
 	}
 
-	bool AssetManager::AddGroup(AssetGroup group)
+	bool AssetManager::AddGroup(const AssetGroup &group)
 	{
 		return p->groups.insert(std::make_pair(group.name, group)).second;
 	}

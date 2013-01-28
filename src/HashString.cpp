@@ -21,7 +21,6 @@ THE SOFTWARE.
 */
 #include <ProtoZed/HashString.h>
 
-#include <ProtoZed/Profiler.h>
 #include <ProtoZed/Convert.h>
 
 #include <boost/crc.hpp>
