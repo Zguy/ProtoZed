@@ -42,7 +42,7 @@ namespace PZ
 		virtual ~State()
 		{}
 
-		virtual void Update(float deltaTime) = 0;
+		virtual void Update(float deltaTime) {}
 
 		virtual void Start(StringMap &options) { started = true; }
 		virtual void Stop() { started = false; }
