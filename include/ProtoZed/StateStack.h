@@ -19,8 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_StateManager_h__
-#define PZ_StateManager_h__
+#ifndef PZ_StateStack_h__
+#define PZ_StateStack_h__
 
 #include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/State.h>
@@ -33,11 +33,11 @@ namespace PZ
 {
 	class Application;
 
-	class StateManager : public NonCopyable
+	class StateStack : public NonCopyable
 	{
 	public:
-		StateManager(Application &application);
-		~StateManager();
+		StateStack(Application &application);
+		~StateStack();
 
 		void Update();
 
@@ -71,4 +71,4 @@ namespace PZ
 	};
 }
 
-#endif // PZ_StateManager_h__
+#endif // PZ_StateStack_h__

@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include <ProtoZed/Log.h>
 
 #include <ProtoZed/SystemList.h>
-#include <ProtoZed/StateManager.h>
+#include <ProtoZed/StateStack.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetManager.h>
@@ -47,7 +47,7 @@ namespace PZ
 	class Application::Impl
 	{
 	public:
-		Impl(Application &i) : i(i), running(false), systems(i), stateManager(i), entityManager(i), assetManager(i)
+		Impl(Application &i) : i(i), running(false), systems(i), stateStack(i), entityManager(i), assetManager(i)
 		{
 		}
 
@@ -88,8 +88,8 @@ namespace PZ
 		{
 			Log::Info("ProtoZed", "Shutting down ProtoZed");
 
-			stateManager.PopAll();
-			stateManager.Update();
+			stateStack.PopAll();
+			stateStack.Update();
 
 			entityManager.ClearEntities();
 			entityManager.DestroyPendingEntities();
@@ -119,7 +119,7 @@ namespace PZ
 		float timescale;
 
 		SystemList       systems;
-		StateManager     stateManager;
+		StateStack       stateStack;
 		EntityManager    entityManager;
 		AnimationManager animationManager;
 		AssetManager     assetManager;
@@ -152,8 +152,8 @@ namespace PZ
 			frameTimer.Reset();
 
 			{
-				Profile profile("StateManager");
-				p->stateManager.Update();
+				Profile profile("StateStack");
+				p->stateStack.Update();
 			}
 
 			p->assetManager.RunGroupQueue();
@@ -164,7 +164,7 @@ namespace PZ
 
 			{
 				Profile profile("CurrentState");
-				State *state = p->stateManager.GetCurrent();
+				State *state = p->stateStack.GetCurrent();
 				if (state != nullptr)
 				{
 					state->Update(deltaTime);
@@ -175,7 +175,7 @@ namespace PZ
 
 			p->entityManager.DestroyPendingEntities();
 
-			if (p->stateManager.IsEmpty())
+			if (p->stateStack.IsEmpty())
 			{
 				RequestShutdown();
 			}
@@ -208,9 +208,9 @@ namespace PZ
 	{
 		return p->systems;
 	}
-	StateManager &Application::GetStateManager() const
+	StateStack &Application::GetStateStack() const
 	{
-		return p->stateManager;
+		return p->stateStack;
 	}
 	EntityManager &Application::GetEntityManager() const
 	{

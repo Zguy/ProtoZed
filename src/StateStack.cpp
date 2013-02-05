@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <ProtoZed/StateManager.h>
+#include <ProtoZed/StateStack.h>
 
 #include <ProtoZed/Log.h>
 
@@ -46,13 +46,13 @@ namespace PZ
 		};
 	}
 
-	typedef std::stack<State*> StateStack;
-	typedef std::map<std::string, State*> StateMap;
-	typedef std::queue<Todo::Entry> TodoQueue;
-
-	class StateManager::Impl
+	class StateStack::Impl
 	{
 	public:
+		typedef std::stack<State*> StateStack;
+		typedef std::map<std::string, State*> StateMap;
+		typedef std::queue<Todo::Entry> TodoQueue;
+
 		Impl(Application *application) : application(application)
 		{}
 
@@ -146,20 +146,20 @@ namespace PZ
 
 		StateStack stateStack;
 		TodoQueue  todoQueue;
-		StateManager::AppStateFactory appStateFactory;
+		PZ::StateStack::AppStateFactory appStateFactory;
 	};
 
-	StateManager::StateManager(Application &application) : p(new Impl(&application))
+	StateStack::StateStack(Application &application) : p(new Impl(&application))
 	{
 	}
-	StateManager::~StateManager()
+	StateStack::~StateStack()
 	{
 		p->popAll();
 
 		delete p;
 	}
 
-	void StateManager::Update()
+	void StateStack::Update()
 	{
 		while (!p->todoQueue.empty())
 		{
@@ -175,14 +175,14 @@ namespace PZ
 		}
 	}
 
-	void StateManager::Change(const std::string &stateName)
+	void StateStack::Change(const std::string &stateName)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::CHANGE;
 		todo.stateName = stateName;
 		p->todoQueue.push(todo);
 	}
-	void StateManager::Change(const std::string &stateName, StringMap &options)
+	void StateStack::Change(const std::string &stateName, StringMap &options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::CHANGE;
@@ -191,14 +191,14 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void StateManager::Push(const std::string &stateName)
+	void StateStack::Push(const std::string &stateName)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::PUSH;
 		todo.stateName = stateName;
 		p->todoQueue.push(todo);
 	}
-	void StateManager::Push(const std::string &stateName, StringMap &options)
+	void StateStack::Push(const std::string &stateName, StringMap &options)
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::PUSH;
@@ -207,7 +207,7 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void StateManager::Pop()
+	void StateStack::Pop()
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::POP;
@@ -215,7 +215,7 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	void StateManager::PopAll()
+	void StateStack::PopAll()
 	{
 		Todo::Entry todo;
 		todo.type      = Todo::POP_ALL;
@@ -223,12 +223,12 @@ namespace PZ
 		p->todoQueue.push(todo);
 	}
 
-	bool StateManager::IsEmpty()
+	bool StateStack::IsEmpty()
 	{
 		return p->stateStack.empty();
 	}
 
-	State *StateManager::GetCurrent() const
+	State *StateStack::GetCurrent() const
 	{
 		if (!p->stateStack.empty())
 			return p->stateStack.top();
@@ -236,7 +236,7 @@ namespace PZ
 			return nullptr;
 	}
 
-	StateManager::AppStateFactory &StateManager::getAppStateFactory() const
+	StateStack::AppStateFactory &StateStack::getAppStateFactory() const
 	{
 		return p->appStateFactory;
 	}
