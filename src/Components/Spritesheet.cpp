@@ -118,7 +118,7 @@ namespace PZ
 					Sprite *sprite = GetManager().GetComponent<Sprite>(GetOwnerID());
 					if (sprite != nullptr)
 					{
-						sprite->SetRegion(PZ::Vector2f(x, y), PZ::Vector2f(frameWidth, frameHeight));
+						sprite->SetRegion(PZ::Vector2f(static_cast<float>(x), static_cast<float>(y)), PZ::Vector2f(static_cast<float>(frameWidth), static_cast<float>(frameHeight)));
 					}
 
 					this->frame.LockNotify();

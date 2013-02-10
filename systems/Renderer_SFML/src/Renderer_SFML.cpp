@@ -95,10 +95,10 @@ namespace PZ
 			drawable->SetCenter(sprite->GetCenter().x, sprite->GetCenter().y);
 			if (sprite->GetRegionSize().GetLengthSquared() > 0.f)
 			{
-				int x = sprite->GetRegionOffset().x;
-				int y = sprite->GetRegionOffset().y;
-				int w = sprite->GetRegionSize().x;
-				int h = sprite->GetRegionSize().y;
+				int x = static_cast<int>(sprite->GetRegionOffset().x);
+				int y = static_cast<int>(sprite->GetRegionOffset().y);
+				int w = static_cast<int>(sprite->GetRegionSize().x);
+				int h = static_cast<int>(sprite->GetRegionSize().y);
 				drawable->SetSubRect(sf::IntRect(x, y, x+w, y+h));
 			}
 

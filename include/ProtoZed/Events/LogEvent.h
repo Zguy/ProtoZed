@@ -38,7 +38,7 @@ namespace PZ
 		{}
 
 		Log::Type type;
-		const std::string &message;
+		std::string message;
 	};
 }
 
