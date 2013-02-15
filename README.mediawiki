@@ -2,7 +2,7 @@
 
 A simple but powerful game framework.
 It is abstracted and can be used with any graphic/input/physic/etc API.
-It does use some C++0x features, such as nullptr and unordered_map.
+It does use some C++11 features, such as nullptr and unordered_map.
 
 Please note that this framework is still under heavy development and might undergo major changes.
 
@@ -20,7 +20,7 @@ It is lacking in documentation, but there is a doxygen of the awesome branch ava
 * A profiler.
 
 '''Dependencies:'''
-* [http://www.boost.org/ boost 1.48.0]
+* [http://www.sfml-dev.org/ SFML 1.6] (optional)
 
 '''Platform Support:'''
 * Windows

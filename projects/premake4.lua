@@ -25,7 +25,7 @@ configuration "Debug"
 project "ProtoZed"
 	defines { "PROFILER" }
 	files { "../src/**.*", "../include/ProtoZed/**.*" }
-	includedirs { "../include/", "C:/SDK/boost_1_48_0" }
+	includedirs { "../include/" }
 	kind "StaticLib"
 	
 	configuration "Release"
@@ -42,7 +42,7 @@ function DefineSystem(name, includes)
 	project ("System_"..name)
 	defines { "PROFILER" }
 	files { "../systems/"..name.."/**.*" }
-	includedirs { "../systems/"..name.."/include/", "../include/", "C:/SDK/boost_1_48_0", includes }
+	includedirs { "../systems/"..name.."/include/", "../include/", includes }
 	kind "StaticLib"
 	
 	configuration "Release"
