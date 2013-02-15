@@ -30,7 +30,7 @@ namespace PZ
 	class StateStack;
 	class EntityManager;
 	class AnimationManager;
-	class AssetManager;
+	class AssetLibrary;
 	class RandomManager;
 
 	class Application : public boost::noncopyable
@@ -55,7 +55,7 @@ namespace PZ
 		StateStack       &GetStateStack() const;
 		EntityManager    &GetEntityManager() const;
 		AnimationManager &GetAnimationManager() const;
-		AssetManager     &GetAssetManager() const;
+		AssetLibrary     &GetAssetLibrary() const;
 		RandomManager    &GetRandomManager() const;
 
 	private:

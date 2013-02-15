@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Position2D.h>
 
 #include <ProtoZed/Application.h>
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 
 #include <SFML/Audio.hpp>
 
@@ -48,11 +48,11 @@ namespace PZ
 
 		void updateSound(sf::Sound &sound, const SoundEmitter *emitter)
 		{
-			AssetManager &assetManager = i->GetApplication().GetAssetManager();
+			AssetLibrary &assetLibrary = i->GetApplication().GetAssetLibrary();
 
 			if (!emitter->GetSound().empty())
 			{
-				const sfSoundAsset *soundAsset = assetManager.Get<sfSoundAsset>(emitter->GetSound());
+				const sfSoundAsset *soundAsset = assetLibrary.Get<sfSoundAsset>(emitter->GetSound());
 				if (soundAsset != nullptr)
 				{
 					sound.SetBuffer(soundAsset->GetSound());

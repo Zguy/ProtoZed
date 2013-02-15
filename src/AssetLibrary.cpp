@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/Log.h>
@@ -35,7 +35,7 @@ namespace PZ
 	typedef std::map<std::string, AssetGroup> GroupMap;
 	typedef std::map<Path, bool> GroupQueue;
 
-	class AssetManager::Impl
+	class AssetLibrary::Impl
 	{
 	public:
 		Impl(Application *application) : application(application)
@@ -178,16 +178,16 @@ namespace PZ
 
 		static const AssetType nullType;
 
-		AssetManager::ArchiveFactory archiveFactory;
-		AssetManager::AssetFactory assetFactory;
+		AssetLibrary::ArchiveFactory archiveFactory;
+		AssetLibrary::AssetFactory assetFactory;
 	};
 
-	const AssetType AssetManager::Impl::nullType = "";
+	const AssetType AssetLibrary::Impl::nullType = "";
 
-	AssetManager::AssetManager(Application &application) : p(new Impl(&application))
+	AssetLibrary::AssetLibrary(Application &application) : p(new Impl(&application))
 	{
 	}
-	AssetManager::~AssetManager()
+	AssetLibrary::~AssetLibrary()
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
@@ -207,12 +207,12 @@ namespace PZ
 		delete p;
 	}
 
-	void AssetManager::SetType(const std::string &extension, const AssetType &type)
+	void AssetLibrary::SetType(const std::string &extension, const AssetType &type)
 	{
 		p->typeMap[extension] = type;
 	}
 
-	bool AssetManager::AddArchive(const Path &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
+	bool AssetLibrary::AddArchive(const Path &filename, const ArchiveType &type, bool indexAll, bool onlyIndexRegisteredTypes)
 	{
 		Archive *archive = p->archiveFactory.Create(type);
 		if (archive == nullptr)
@@ -238,7 +238,7 @@ namespace PZ
 
 		return false;
 	}
-	bool AssetManager::RemoveArchive(const Path &filename)
+	bool AssetLibrary::RemoveArchive(const Path &filename)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
@@ -268,15 +268,15 @@ namespace PZ
 		return false;
 	}
 
-	bool AssetManager::AddGroup(const AssetGroup &group)
+	bool AssetLibrary::AddGroup(const AssetGroup &group)
 	{
 		return p->groups.insert(std::make_pair(group.name, group)).second;
 	}
-	bool AssetManager::HasGroup(const std::string &name)
+	bool AssetLibrary::HasGroup(const std::string &name)
 	{
 		return (p->groups.find(name) != p->groups.end());
 	}
-	bool AssetManager::RemoveGroup(const std::string &name)
+	bool AssetLibrary::RemoveGroup(const std::string &name)
 	{
 		GroupMap::iterator it = p->groups.find(name);
 		if (it != p->groups.end())
@@ -288,14 +288,14 @@ namespace PZ
 		return false;
 	}
 
-	void AssetManager::IndexAll(bool onlyIndexRegisteredTypes)
+	void AssetLibrary::IndexAll(bool onlyIndexRegisteredTypes)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
 			p->indexArchive((*it).second, onlyIndexRegisteredTypes);
 		}
 	}
-	bool AssetManager::IndexFile(const Path &filename)
+	bool AssetLibrary::IndexFile(const Path &filename)
 	{
 		for (ArchiveList::iterator it = p->archives.begin(); it != p->archives.end(); ++it)
 		{
@@ -318,21 +318,21 @@ namespace PZ
 		return false;
 	}
 
-	void AssetManager::LoadAll()
+	void AssetLibrary::LoadAll()
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
 			p->loadFile(it, p->getType(it));
 		}
 	}
-	void AssetManager::UnloadAll()
+	void AssetLibrary::UnloadAll()
 	{
 		for (FileIndex::iterator it = p->fileIndex.begin(); it != p->fileIndex.end(); ++it)
 		{
 			p->unloadFile(it);
 		}
 	}
-	bool AssetManager::Load(const Path &filename)
+	bool AssetLibrary::Load(const Path &filename)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
@@ -346,7 +346,7 @@ namespace PZ
 
 		return false;
 	}
-	bool AssetManager::LoadAs(const Path &filename, const AssetType &type)
+	bool AssetLibrary::LoadAs(const Path &filename, const AssetType &type)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
@@ -360,7 +360,7 @@ namespace PZ
 
 		return false;
 	}
-	bool AssetManager::Unload(const Path &filename)
+	bool AssetLibrary::Unload(const Path &filename)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
@@ -375,7 +375,7 @@ namespace PZ
 		return false;
 	}
 
-	bool AssetManager::LoadGroupDirect(const std::string &name)
+	bool AssetLibrary::LoadGroupDirect(const std::string &name)
 	{
 		GroupMap::iterator it = p->groups.find(name);
 		if (it != p->groups.end())
@@ -392,7 +392,7 @@ namespace PZ
 
 		return false;
 	}
-	bool AssetManager::UnloadGroupDirect(const std::string &name)
+	bool AssetLibrary::UnloadGroupDirect(const std::string &name)
 	{
 		GroupMap::iterator it = p->groups.find(name);
 		if (it != p->groups.end())
@@ -409,7 +409,7 @@ namespace PZ
 
 		return false;
 	}
-	bool AssetManager::LoadGroup(const std::string &name)
+	bool AssetLibrary::LoadGroup(const std::string &name)
 	{
 		GroupMap::iterator it = p->groups.find(name);
 		if (it != p->groups.end())
@@ -424,7 +424,7 @@ namespace PZ
 
 		return false;
 	}
-	bool AssetManager::UnloadGroup(const std::string &name)
+	bool AssetLibrary::UnloadGroup(const std::string &name)
 	{
 		GroupMap::iterator it = p->groups.find(name);
 		if (it != p->groups.end())
@@ -439,7 +439,7 @@ namespace PZ
 
 		return false;
 	}
-	void AssetManager::RunGroupQueue()
+	void AssetLibrary::RunGroupQueue()
 	{
 		for (GroupQueue::const_iterator it = p->groupQueue.cbegin(); it != p->groupQueue.cend(); ++it)
 		{
@@ -458,7 +458,7 @@ namespace PZ
 		p->groupQueue.clear();
 	}
 
-	const Asset *AssetManager::Get(const Path &filename, bool autoLoad)
+	const Asset *AssetLibrary::Get(const Path &filename, bool autoLoad)
 	{
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
@@ -482,11 +482,11 @@ namespace PZ
 		}
 	}
 
-	AssetManager::ArchiveFactory &AssetManager::getArchiveFactory() const
+	AssetLibrary::ArchiveFactory &AssetLibrary::getArchiveFactory() const
 	{
 		return p->archiveFactory;
 	}
-	AssetManager::AssetFactory &AssetManager::getAssetFactory() const
+	AssetLibrary::AssetFactory &AssetLibrary::getAssetFactory() const
 	{
 		return p->assetFactory;
 	}

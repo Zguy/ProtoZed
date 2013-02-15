@@ -32,7 +32,7 @@ namespace PZ
 
 	class Asset : public boost::noncopyable
 	{
-		friend class AssetManager;
+		friend class AssetLibrary;
 
 	public:
 		Asset()

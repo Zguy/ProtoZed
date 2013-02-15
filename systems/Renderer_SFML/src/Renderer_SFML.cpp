@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Position2D.h>
 
 #include <ProtoZed/Application.h>
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -79,13 +79,13 @@ namespace PZ
 
 		void updateLayer(Layer &layer, const Sprite *sprite)
 		{
-			AssetManager &assetManager = i->GetApplication().GetAssetManager();
+			AssetLibrary &assetLibrary = i->GetApplication().GetAssetLibrary();
 
 			sf::Sprite *drawable = new sf::Sprite;
 
 			if (!sprite->GetImage().empty())
 			{
-				const sfImageAsset *image = assetManager.Get<sfImageAsset>(sprite->GetImage());
+				const sfImageAsset *image = assetLibrary.Get<sfImageAsset>(sprite->GetImage());
 				if (image != nullptr)
 				{
 					drawable->SetImage(image->GetImage());

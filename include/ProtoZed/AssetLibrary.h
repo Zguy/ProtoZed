@@ -19,8 +19,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef PZ_AssetManager_h__
-#define PZ_AssetManager_h__
+#ifndef PZ_AssetLibrary_h__
+#define PZ_AssetLibrary_h__
 
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
 #include <ProtoZed/Path.h>
@@ -51,11 +51,11 @@ namespace PZ
 		FileList files;
 	};
 
-	class AssetManager : public boost::noncopyable
+	class AssetLibrary : public boost::noncopyable
 	{
 	public:
-		AssetManager(Application &application);
-		~AssetManager();
+		AssetLibrary(Application &application);
+		~AssetLibrary();
 
 		template<class T>
 		bool RegisterArchiveHandler(const ArchiveType &type)
@@ -146,4 +146,4 @@ namespace PZ
 	};
 }
 
-#endif // PZ_AssetManager_h__
+#endif // PZ_AssetLibrary_h__

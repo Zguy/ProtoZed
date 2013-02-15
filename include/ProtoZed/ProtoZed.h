@@ -39,7 +39,7 @@ THE SOFTWARE.
 #include <ProtoZed/SystemList.h>
 #include <ProtoZed/StateStack.h>
 #include <ProtoZed/EntityManager.h>
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 
 #include <ProtoZed/Animation/Animation.h>
 

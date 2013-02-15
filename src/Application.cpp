@@ -30,7 +30,7 @@ THE SOFTWARE.
 #include <ProtoZed/StateStack.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 #include <ProtoZed/Random.h>
 
 #include <ProtoZed/Components/SceneNode.h>
@@ -47,7 +47,7 @@ namespace PZ
 	class Application::Impl
 	{
 	public:
-		Impl(Application &i) : i(i), running(false), systems(i), stateStack(i), entityManager(i), assetManager(i)
+		Impl(Application &i) : i(i), running(false), systems(i), stateStack(i), entityManager(i), assetLibrary(i)
 		{
 		}
 
@@ -94,7 +94,7 @@ namespace PZ
 			entityManager.ClearEntities();
 			entityManager.DestroyPendingEntities();
 
-			assetManager.UnloadAll();
+			assetLibrary.UnloadAll();
 
 			// Shutdown systems
 			systems.StopAll();
@@ -122,7 +122,7 @@ namespace PZ
 		StateStack       stateStack;
 		EntityManager    entityManager;
 		AnimationManager animationManager;
-		AssetManager     assetManager;
+		AssetLibrary     assetLibrary;
 		RandomManager    randomManager;
 	};
 
@@ -156,7 +156,7 @@ namespace PZ
 				p->stateStack.Update();
 			}
 
-			p->assetManager.RunGroupQueue();
+			p->assetLibrary.RunGroupQueue();
 
 			Update(deltaTime);
 
@@ -220,9 +220,9 @@ namespace PZ
 	{
 		return p->animationManager;
 	}
-	AssetManager &Application::GetAssetManager() const
+	AssetLibrary &Application::GetAssetLibrary() const
 	{
-		return p->assetManager;
+		return p->assetLibrary;
 	}
 	RandomManager &Application::GetRandomManager() const
 	{

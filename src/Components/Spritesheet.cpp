@@ -22,7 +22,7 @@ THE SOFTWARE.
 #include <ProtoZed/Components/Spritesheet.h>
 
 #include <ProtoZed/Application.h>
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 #include <ProtoZed/Assets/ImageAsset.h>
 #include <ProtoZed/Components/Sprite.h>
 
@@ -43,7 +43,7 @@ namespace PZ
 
 	bool Spritesheet::SetSpritesheet(const std::string &spritesheet)
 	{
-		sheet = GetApplication().GetAssetManager().Get<SpritesheetAsset>(spritesheet);
+		sheet = GetApplication().GetAssetLibrary().Get<SpritesheetAsset>(spritesheet);
 		this->spritesheet.LockNotify();
 		this->spritesheet = spritesheet;
 		this->spritesheet.UnlockNotify();
@@ -99,7 +99,7 @@ namespace PZ
 	{
 		if (sheet != nullptr)
 		{
-			const ImageAsset *image = GetApplication().GetAssetManager().Get<ImageAsset>(sheet->image);
+			const ImageAsset *image = GetApplication().GetAssetLibrary().Get<ImageAsset>(sheet->image);
 			if (image != nullptr)
 			{
 				const unsigned int imageWidth = image->GetWidth();

@@ -22,7 +22,7 @@ THE SOFTWARE.
 #include <ProtoZed/Assets/AssetGroupAsset.h>
 
 #include <ProtoZed/Application.h>
-#include <ProtoZed/AssetManager.h>
+#include <ProtoZed/AssetLibrary.h>
 
 namespace PZ
 {
@@ -58,7 +58,7 @@ namespace PZ
 			group.files.push_back(file);
 		}
 
-		if (GetApplication().GetAssetManager().AddGroup(group))
+		if (GetApplication().GetAssetLibrary().AddGroup(group))
 		{
 			loadedGroups.push_back(group.name);
 		}
@@ -101,7 +101,7 @@ namespace PZ
 	{
 		for (std::vector<std::string>::const_iterator it = loadedGroups.cbegin(); it != loadedGroups.cend(); ++it)
 		{
-			GetApplication().GetAssetManager().RemoveGroup(*it);
+			GetApplication().GetAssetLibrary().RemoveGroup(*it);
 		}
 		loadedGroups.clear();
 		return true;
