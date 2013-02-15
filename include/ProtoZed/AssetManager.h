@@ -23,10 +23,11 @@ THE SOFTWARE.
 #define PZ_AssetManager_h__
 
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Archive.h>
 #include <ProtoZed/Asset.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -50,7 +51,7 @@ namespace PZ
 		FileList files;
 	};
 
-	class AssetManager : public NonCopyable
+	class AssetManager : public boost::noncopyable
 	{
 	public:
 		AssetManager(Application &application);

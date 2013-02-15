@@ -22,8 +22,9 @@ THE SOFTWARE.
 #ifndef PZ_State_h__
 #define PZ_State_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/EventHandler.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <map>
 #include <string>
@@ -34,7 +35,7 @@ namespace PZ
 
 	class Application;
 
-	class State : public NonCopyable, public EventHandler
+	class State : public boost::noncopyable, public EventHandler
 	{
 	public:
 		State(Application &application) : started(false), application(application)

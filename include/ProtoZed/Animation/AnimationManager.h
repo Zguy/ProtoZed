@@ -22,9 +22,10 @@ THE SOFTWARE.
 #ifndef PZ_AnimationManager_h__
 #define PZ_AnimationManager_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Animation/Animable.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -33,7 +34,7 @@ namespace PZ
 	class AnimationBase;
 	struct AnimationProperties;
 
-	class AnimationManager : public NonCopyable
+	class AnimationManager : public boost::noncopyable
 	{
 	public:
 		AnimationManager();

@@ -23,8 +23,9 @@ THE SOFTWARE.
 #define PZ_Log_h__
 
 #include <ProtoZed/Singleton.h>
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/EventHandler.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -48,7 +49,7 @@ namespace PZ
 		Impl *p;
 	};
 
-	class Log : public NonCopyable, public EventHandler
+	class Log : public boost::noncopyable, public EventHandler
 	{
 		friend class LogManager;
 

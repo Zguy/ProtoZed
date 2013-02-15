@@ -22,14 +22,15 @@ THE SOFTWARE.
 #ifndef PZ_Asset_h__
 #define PZ_Asset_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/DataChunk.h>
+
+#include <boost/noncopyable.hpp>
 
 namespace PZ
 {
 	class Application;
 
-	class Asset : public NonCopyable
+	class Asset : public boost::noncopyable
 	{
 		friend class AssetManager;
 

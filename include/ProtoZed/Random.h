@@ -22,7 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_Random_h__
 #define PZ_Random_h__
 
-#include <ProtoZed/NonCopyable.h>
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -30,7 +30,7 @@ namespace PZ
 {
 	class Random;
 
-	class RandomManager : public NonCopyable
+	class RandomManager : public boost::noncopyable
 	{
 	public:
 		RandomManager();
@@ -54,7 +54,7 @@ namespace PZ
 		static Random *global;
 	};
 
-	class Random : public NonCopyable
+	class Random : public boost::noncopyable
 	{
 	public:
 		Random();

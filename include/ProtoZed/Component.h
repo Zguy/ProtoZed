@@ -22,12 +22,13 @@ THE SOFTWARE.
 #ifndef PZ_Component_h__
 #define PZ_Component_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/PropertyList.h>
 #include <ProtoZed/EventHandler.h>
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Timestamp.h>
 #include <ProtoZed/MetaEntity.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -36,7 +37,7 @@ namespace PZ
 	/**
 	 * \brief	Small reusable block of behavior.
 	 */
-	class Component : public NonCopyable, public PropertyList, public EventHandler
+	class Component : public boost::noncopyable, public PropertyList, public EventHandler
 	{
 		friend class EntityManager;
 

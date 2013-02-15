@@ -23,7 +23,8 @@ THE SOFTWARE.
 #define PZ_Profiler_h__
 
 #include <ProtoZed/Singleton.h>
-#include <ProtoZed/NonCopyable.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -69,7 +70,7 @@ namespace PZ
 		Impl *p;
 	};
 
-	class Profile : public NonCopyable
+	class Profile : public boost::noncopyable
 	{
 	public:
 		Profile(const std::string &name);

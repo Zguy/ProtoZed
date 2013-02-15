@@ -22,7 +22,7 @@ THE SOFTWARE.
 #ifndef PZ_Application_h__
 #define PZ_Application_h__
 
-#include <ProtoZed/NonCopyable.h>
+#include <boost/noncopyable.hpp>
 
 namespace PZ
 {
@@ -33,7 +33,7 @@ namespace PZ
 	class AssetManager;
 	class RandomManager;
 
-	class Application : public NonCopyable
+	class Application : public boost::noncopyable
 	{
 	public:
 		Application();

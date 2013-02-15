@@ -22,8 +22,9 @@ THE SOFTWARE.
 #ifndef PZ_Property_h__
 #define PZ_Property_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/Convert.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 
@@ -31,7 +32,7 @@ namespace PZ
 {
 	class PropertyList;
 
-	class PropertyBase : public NonCopyable
+	class PropertyBase : public boost::noncopyable
 	{
 		friend class PropertyList;
 

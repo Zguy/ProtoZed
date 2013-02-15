@@ -22,15 +22,16 @@ THE SOFTWARE.
 #ifndef PZ_SystemList_h__
 #define PZ_SystemList_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/System.h>
+
+#include <boost/noncopyable.hpp>
 
 namespace PZ
 {
 	/**
 	 * \brief	List of systems.
 	 */
-	class SystemList : public NonCopyable
+	class SystemList : public boost::noncopyable
 	{
 	public:
 		SystemList(Application &application);

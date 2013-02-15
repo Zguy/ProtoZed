@@ -22,9 +22,10 @@ THE SOFTWARE.
 #ifndef PZ_StateStack_h__
 #define PZ_StateStack_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/State.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <vector>
 #include <string>
@@ -33,7 +34,7 @@ namespace PZ
 {
 	class Application;
 
-	class StateStack : public NonCopyable
+	class StateStack : public boost::noncopyable
 	{
 	public:
 		StateStack(Application &application);

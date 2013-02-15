@@ -22,9 +22,10 @@ THE SOFTWARE.
 #ifndef PZ_Archive_h__
 #define PZ_Archive_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/DataChunk.h>
 #include <ProtoZed/Path.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <string>
 #include <vector>
@@ -35,7 +36,7 @@ namespace PZ
 
 	typedef std::vector<Path> FileList;
 
-	class Archive : public NonCopyable
+	class Archive : public boost::noncopyable
 	{
 	public:
 		Archive()

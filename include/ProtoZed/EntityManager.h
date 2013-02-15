@@ -22,11 +22,12 @@ THE SOFTWARE.
 #ifndef PZ_EntityManager_h__
 #define PZ_EntityManager_h__
 
-#include <ProtoZed/NonCopyable.h>
 #include <ProtoZed/EventHandler.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/HashString.h>
 #include <ProtoZed/ObjectFactory/ObjectFactory.h>
+
+#include <boost/noncopyable.hpp>
 
 #include <vector>
 #include <unordered_map>
@@ -48,7 +49,7 @@ namespace PZ
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
 	 */
-	class EntityManager : public NonCopyable, public EventHandler
+	class EntityManager : public boost::noncopyable, public EventHandler
 	{
 	public:
 		EntityManager(Application &application);
