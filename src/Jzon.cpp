@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012 Johannes Häggqvist
+Copyright (c) 2013 Johannes Häggqvist
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -198,12 +198,14 @@ namespace Jzon
 		std::string json;
 		RemoveWhitespace(_json, json);
 
-		Node::Type type;
-		switch (json.at(0))
+		Node::Type type = T_VALUE;
+		if (!json.empty())
 		{
-		case '{' : type = T_OBJECT; break;
-		case '[' : type = T_ARRAY; break;
-		default : type = T_VALUE; break;
+			switch (json.at(0))
+			{
+			case '{' : type = T_OBJECT; break;
+			case '[' : type = T_ARRAY; break;
+			}
 		}
 
 		return type;
@@ -449,9 +451,9 @@ namespace Jzon
 	}
 
 	// This is not the most beautiful place for these, but it'll do
-	static const char charsUnescaped[] = { '\\'  , '\"'  , '\n' , '\t' , '\b' , '\f' , '\r' };
-	static const char *charsEscaped[]  = { "\\\\", "\\\"", "\\n", "\\t", "\\b", "\\f", "\\r" };
-	static const unsigned int numEscapeChars = 7;
+	static const char charsUnescaped[] = { '\\'  , '/'  , '\"'  , '\n' , '\t' , '\b' , '\f' , '\r' };
+	static const char *charsEscaped[]  = { "\\\\", "\\/", "\\\"", "\\n", "\\t", "\\b", "\\f", "\\r" };
+	static const unsigned int numEscapeChars = 8;
 	static const char nullUnescaped = '\0';
 	static const char *nullEscaped  = "\0\0";
 	const char *&getEscaped(const char &c)
