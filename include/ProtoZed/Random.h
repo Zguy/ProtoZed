@@ -22,55 +22,17 @@ THE SOFTWARE.
 #ifndef PZ_Random_h__
 #define PZ_Random_h__
 
-#include <boost/noncopyable.hpp>
-
-#include <string>
-
 namespace PZ
 {
-	class Random;
-
-	class RandomManager : public boost::noncopyable
+	namespace Random
 	{
-	public:
-		RandomManager();
-		~RandomManager();
+		unsigned int GetSeed();
+		void SetSeed(unsigned int seed);
+		void SetSeedFromTime();
 
-		bool Add(const std::string &name);
-		bool Add(const std::string &name, unsigned int seed);
-		bool Remove(const std::string &name);
-
-		const Random &Get(const std::string &name) const;
-
-		static const Random &GetGlobal()
-		{
-			return *global;
-		}
-
-	private:
-		class Impl;
-		Impl *p;
-
-		static Random *global;
-	};
-
-	class Random : public boost::noncopyable
-	{
-	public:
-		Random();
-		Random(unsigned int seed);
-		~Random();
-
-		int NextInt(int min, int max) const;
-		float NextFloat(float min, float max) const;
-
-		static inline int GlobalNextInt(int min, int max) { return RandomManager::GetGlobal().NextInt(min, max); }
-		static inline float GlobalNextFloat(float min, float max) { return RandomManager::GetGlobal().NextFloat(min, max); }
-
-	private:
-		class Impl;
-		Impl *p;
-	};
+		int NextInt(int min, int max);
+		float NextFloat(float min, float max);
+	}
 }
 
 #endif // PZ_Random_h__

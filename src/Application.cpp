@@ -31,7 +31,6 @@ THE SOFTWARE.
 #include <ProtoZed/EntityManager.h>
 #include <ProtoZed/Animation/AnimationManager.h>
 #include <ProtoZed/AssetLibrary.h>
-#include <ProtoZed/Random.h>
 
 #include <ProtoZed/Components/SceneNode.h>
 #include <ProtoZed/Components/Position2D.h>
@@ -123,7 +122,6 @@ namespace PZ
 		EntityManager    entityManager;
 		AnimationManager animationManager;
 		AssetLibrary     assetLibrary;
-		RandomManager    randomManager;
 	};
 
 	Application::Application()
@@ -223,9 +221,5 @@ namespace PZ
 	AssetLibrary &Application::GetAssetLibrary() const
 	{
 		return p->assetLibrary;
-	}
-	RandomManager &Application::GetRandomManager() const
-	{
-		return p->randomManager;
 	}
 }

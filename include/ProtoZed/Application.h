@@ -31,7 +31,6 @@ namespace PZ
 	class EntityManager;
 	class AnimationManager;
 	class AssetLibrary;
-	class RandomManager;
 
 	class Application : public boost::noncopyable
 	{
@@ -56,7 +55,6 @@ namespace PZ
 		EntityManager    &GetEntityManager() const;
 		AnimationManager &GetAnimationManager() const;
 		AssetLibrary     &GetAssetLibrary() const;
-		RandomManager    &GetRandomManager() const;
 
 	private:
 		class Impl;
