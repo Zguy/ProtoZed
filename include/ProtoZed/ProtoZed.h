@@ -27,7 +27,6 @@ THE SOFTWARE.
 #include <ProtoZed/Log.h>
 #include <ProtoZed/Profiler.h>
 #include <ProtoZed/Convert.h>
-#include <ProtoZed/Helpers.h>
 #include <ProtoZed/Vector2.h>
 #include <ProtoZed/Vector3.h>
 #include <ProtoZed/Angle.h>

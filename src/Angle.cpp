@@ -125,5 +125,21 @@ namespace PZ
 			angle = -angle;
 			return *this;
 		}
+
+		Vector2f GetVector(Radians angle)
+		{
+			return Vector2f(Math::Cos(angle.ToFloat()) * -1, Math::Sin(angle.ToFloat()));
+		}
+		Radians GetBetween(const Vector2f &from, const Vector2f &to)
+		{
+			float angle = Math::ATan2(from.y, from.x) - Math::ATan2(to.y, to.x);
+
+			if (angle > Math::PI)
+				angle -= Math::PI_2;
+			if (angle < -Math::PI)
+				angle += Math::PI_2;
+
+			return Radians(angle);
+		}
 	}
 }

@@ -22,6 +22,8 @@ THE SOFTWARE.
 #ifndef PZ_Angle_h__
 #define PZ_Angle_h__
 
+#include <ProtoZed/Vector2.h>
+
 namespace PZ
 {
 	namespace Angle
@@ -82,6 +84,9 @@ namespace PZ
 		private:
 			float angle;
 		};
+
+		Vector2f GetVector(Radians angle);
+		Radians GetBetween(const Vector2f &from, const Vector2f &to);
 	}
 }
 
