@@ -33,16 +33,16 @@ namespace PZ
 {
 	typedef std::map<std::string, Log*> LogMap;
 
-	class LogManager::Impl
+	class LogList::Impl
 	{
 	public:
 		LogMap logs;
 	};
 
-	LogManager::LogManager() : p(new Impl)
+	LogList::LogList() : p(new Impl)
 	{
 	}
-	LogManager::~LogManager()
+	LogList::~LogList()
 	{
 		for (LogMap::iterator it = p->logs.begin(); it != p->logs.end(); ++it)
 		{
@@ -54,14 +54,14 @@ namespace PZ
 		delete p;
 	}
 
-	void LogManager::Open(const std::string &name, bool consoleOutput, bool fileOutput, bool timestamp)
+	void LogList::Open(const std::string &name, bool consoleOutput, bool fileOutput, bool timestamp)
 	{
 		if (p->logs.find(name) == p->logs.end())
 		{
 			p->logs.insert(std::make_pair(name, new Log(name+".log", consoleOutput, fileOutput, timestamp)));
 		}
 	}
-	void LogManager::Close(const std::string &name)
+	void LogList::Close(const std::string &name)
 	{
 		LogMap::iterator it = p->logs.find(name);
 		if (it != p->logs.end())
@@ -71,7 +71,7 @@ namespace PZ
 		}
 	}
 
-	Log &LogManager::Get(const std::string &name)
+	Log &LogList::Get(const std::string &name)
 	{
 		Open(name);
 

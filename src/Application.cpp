@@ -55,12 +55,12 @@ namespace PZ
 			if (running)
 				return true;
 
-			if (LogManager::GetSingletonPtr() == nullptr)
-				new LogManager;
+			if (LogList::GetSingletonPtr() == nullptr)
+				new LogList;
 			if (Profiler::GetSingletonPtr() == nullptr)
 				new Profiler;
 
-			LogManager::GetSingleton().Open("ProtoZed");
+			LogList::GetSingleton().Open("ProtoZed");
 			Log::Info("ProtoZed", std::string("Initializing ProtoZed ")+Version::VERSION_STRING);
 
 			entityManager.RegisterComponent<SceneNode>();
@@ -107,7 +107,7 @@ namespace PZ
 
 			Profiler::GetSingleton().WriteLog("Profile");
 
-			delete LogManager::GetSingletonPtr();
+			delete LogList::GetSingletonPtr();
 			delete Profiler::GetSingletonPtr();
 		}
 

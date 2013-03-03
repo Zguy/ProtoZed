@@ -33,11 +33,11 @@ namespace PZ
 {
 	class Log;
 
-	class LogManager : public Singleton<LogManager>
+	class LogList : public Singleton<LogList>
 	{
 	public:
-		LogManager();
-		~LogManager();
+		LogList();
+		~LogList();
 
 		void Open(const std::string &name, bool consoleOutput = true, bool fileOutput = true, bool timestamp = true);
 		void Close(const std::string &name);
@@ -51,7 +51,7 @@ namespace PZ
 
 	class Log : public boost::noncopyable, public EventHandler
 	{
-		friend class LogManager;
+		friend class LogList;
 
 	public:
 		enum Type
@@ -82,7 +82,7 @@ namespace PZ
 		inline void Warning(const std::string &message) { Message(LT_WARNING, message); }
 		inline void Debug(const std::string &message) { Message(LT_DEBUG, message); }
 
-		static inline void Message(const std::string &name, Type type, const std::string &message) { LogManager::GetSingleton().Get(name).Message(type, message); }
+		static inline void Message(const std::string &name, Type type, const std::string &message) { LogList::GetSingleton().Get(name).Message(type, message); }
 
 		static inline void Info(const std::string &name, const std::string &message) { Message(name, LT_INFO, message); }
 		static inline void Error(const std::string &name, const std::string &message) { Message(name, LT_ERROR, message); }
