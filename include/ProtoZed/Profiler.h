@@ -36,7 +36,6 @@ namespace PZ
 		Profiler();
 		~Profiler();
 
-#ifdef PROFILER
 		void Begin(const std::string &name);
 		void End();
 
@@ -48,23 +47,7 @@ namespace PZ
 		void SetTargetFrameTime(float target);
 
 		void WriteLog(const std::string &filename) const;
-#else
-		inline void Begin(const std::string &name)
-		{}
-		inline void End()
-		{}
 
-		inline void Start()
-		{}
-		inline void Stop()
-		{}
-
-		inline void NextFrame()
-		{}
-
-		void WriteLog(const std::string &filename) const
-		{}
-#endif
 	private:
 		class Impl;
 		Impl *p;
@@ -75,9 +58,6 @@ namespace PZ
 	public:
 		Profile(const std::string &name);
 		~Profile();
-
-	private:
-		Profiler &profiler;
 	};
 }
 

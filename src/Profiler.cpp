@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include <fstream>
 #include <limits>
 
-namespace PZ
+namespace
 {
 	struct ProfileBlock
 	{
@@ -72,7 +72,10 @@ namespace PZ
 		ProfileBlock *firstChild;
 		ProfileBlock *lastChild;
 	};
+}
 
+namespace PZ
+{
 	class Profiler::Impl
 	{
 	public:
@@ -168,7 +171,6 @@ namespace PZ
 		delete p;
 	}
 
-#ifdef PROFILER
 	void Profiler::Begin(const std::string &name)
 	{
 		if (p->rootBlock == nullptr)
@@ -297,14 +299,13 @@ namespace PZ
 
 		log.close();
 	}
-#endif
 
-	Profile::Profile(const std::string &name) : profiler(Profiler::GetSingleton())
+	Profile::Profile(const std::string &name)
 	{
-		profiler.Begin(name);
+		Profiler::GetSingleton().Begin(name);
 	}
 	Profile::~Profile()
 	{
-		profiler.End();
+		Profiler::GetSingleton().End();
 	}
 }
