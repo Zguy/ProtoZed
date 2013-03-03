@@ -302,6 +302,8 @@ namespace PZ
 
 	Profile::Profile(const std::string &name)
 	{
+		if (Profiler::GetSingletonPtr() == nullptr)
+			new Profiler;
 		Profiler::GetSingleton().Begin(name);
 	}
 	Profile::~Profile()
