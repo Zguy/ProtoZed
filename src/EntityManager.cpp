@@ -372,7 +372,14 @@ namespace PZ
 			}
 		}
 
-		return GetComponent(id, family);
+		if (getExisting)
+		{
+			return GetComponent(id, family);
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 	bool EntityManager::RemoveComponent(const EntityID &id, const HashString &family)
 	{
