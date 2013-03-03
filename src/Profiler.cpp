@@ -23,6 +23,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Clock.h>
 #include <ProtoZed/Convert.h>
+#include <ProtoZed/Log.h>
 
 #include <vector>
 #include <fstream>
@@ -79,7 +80,7 @@ namespace PZ
 	class Profiler::Impl
 	{
 	public:
-		Impl() : rootBlock(nullptr), currentBlock(nullptr)
+		Impl() : capturing(false), rootBlock(nullptr), currentBlock(nullptr)
 		{}
 
 		ProfileBlock *getNewBlock(ProfileBlock *parent, const std::string &name)
@@ -140,6 +141,8 @@ namespace PZ
 			}
 		}
 
+		bool capturing;
+
 		Clock frameClock;
 
 		float targetFrameTime;
@@ -155,6 +158,10 @@ namespace PZ
 	}
 	Profiler::~Profiler()
 	{
+		// Run EndFrame just in case we haven't ended
+		// the last frame yet.
+		EndFrame();
+
 		// Clear blocks
 		std::vector<ProfileBlock*> allBlocks;
 		for (std::vector<ProfileBlock*>::const_iterator it = p->frames.begin(); it != p->frames.end(); ++it)
@@ -171,8 +178,31 @@ namespace PZ
 		delete p;
 	}
 
+	void Profiler::StartCapture()
+	{
+		if (!p->capturing)
+		{
+			p->capturing = true;
+			PZ::Log::Info("ProtoZed", "Profiler capture started");
+		}
+	}
+	void Profiler::StopCapture()
+	{
+		if (p->capturing)
+		{
+			p->capturing = false;
+			PZ::Log::Info("ProtoZed", "Profiler capture stopped");
+		}
+	}
+	bool Profiler::IsCapturing() const
+	{
+		return p->capturing;
+	}
+
 	void Profiler::Begin(const std::string &name)
 	{
+		if (!p->capturing)
+			return;
 		if (p->rootBlock == nullptr)
 			return;
 
@@ -187,21 +217,26 @@ namespace PZ
 	}
 	void Profiler::End()
 	{
-		ProfileBlock *block = p->currentBlock;
+		if (p->currentBlock != p->rootBlock)
+		{
+			ProfileBlock *block = p->currentBlock;
 
-		// Assert that we aren't removing the last block (this probably means an End() call without a Begin() call)
-		assert(block != p->rootBlock);
-		assert(block->parent != nullptr);
+			// Assert that we aren't removing the last block (this probably means an End() call without a Begin() call)
+			assert(block != p->rootBlock);
+			assert(block->parent != nullptr);
 
-		float endTime  = p->frameClock.GetElapsedTime();
-		float callTime = endTime - block->beginTime;
-		block->AddTime(callTime);
+			float endTime  = p->frameClock.GetElapsedTime();
+			float callTime = endTime - block->beginTime;
+			block->AddTime(callTime);
 
-		p->currentBlock = block->parent;
+			p->currentBlock = block->parent;
+		}
 	}
 
-	void Profiler::Start()
+	void Profiler::BeginFrame()
 	{
+		if (!p->capturing)
+			return;
 		if (p->rootBlock != nullptr)
 			return;
 
@@ -212,23 +247,25 @@ namespace PZ
 
 		p->currentBlock = p->rootBlock;
 	}
-	void Profiler::Stop()
+	void Profiler::EndFrame()
 	{
-		float endTime  = p->frameClock.GetElapsedTime();
-		float callTime = endTime - p->rootBlock->beginTime;
-		p->rootBlock->AddTime(callTime);
+		if (p->rootBlock != nullptr)
+		{
+			float endTime  = p->frameClock.GetElapsedTime();
+			float callTime = endTime - p->rootBlock->beginTime;
+			p->rootBlock->AddTime(callTime);
 
-		p->frames.push_back(p->rootBlock);
-		p->rootBlock = nullptr;
-		p->currentBlock = nullptr;
+			p->frames.push_back(p->rootBlock);
+			p->rootBlock = nullptr;
+			p->currentBlock = nullptr;
+		}
 	}
-
 	void Profiler::NextFrame()
 	{
 		assert(p->currentBlock == p->rootBlock); // Assert that there aren't any currently active blocks when we're switching to the next frame (this probably means a Begin() call without an End() call)
 
-		Stop();
-		Start();
+		EndFrame();
+		BeginFrame();
 	}
 
 	void Profiler::SetTargetFrameTime(float target)

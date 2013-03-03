@@ -36,12 +36,15 @@ namespace PZ
 		Profiler();
 		~Profiler();
 
+		void StartCapture();
+		void StopCapture();
+		bool IsCapturing() const;
+
 		void Begin(const std::string &name);
 		void End();
 
-		void Start();
-		void Stop();
-
+		void BeginFrame();
+		void EndFrame();
 		void NextFrame();
 
 		void SetTargetFrameTime(float target);

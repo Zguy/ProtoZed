@@ -140,8 +140,6 @@ namespace PZ
 			return 1;
 		}
 
-		Profiler::GetSingleton().Start();
-
 		Clock frameTimer;
 		while (p->running)
 		{
@@ -180,8 +178,6 @@ namespace PZ
 
 			Profiler::GetSingleton().NextFrame();
 		}
-
-		Profiler::GetSingleton().Stop();
 
 		p->shutdown();
 
