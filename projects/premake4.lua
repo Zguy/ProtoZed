@@ -22,11 +22,31 @@ configuration "Debug"
 	defines { "_DEBUG" }
 	flags { "Symbols" }
 
+function SetPlatform(name)
+
+	local platforms = os.matchfiles("../src/Platforms/*.cpp")
+	
+	for i, file in ipairs(platforms) do
+		local filename = path.getbasename(file)
+		if filename == name then
+			files { file }
+		else
+			excludes { file }
+		end
+	end
+	
+end
+	
 project "ProtoZed"
-	defines { "PROFILER" }
-	files { "../src/**.*", "../include/ProtoZed/**.*" }
-	includedirs { "../include/" }
 	kind "StaticLib"
+	includedirs { "../include/" }
+
+	files { "../src/**.*", "../include/ProtoZed/**.*" }
+	
+	configuration "windows"
+		SetPlatform "Windows"
+	configuration "linux"
+		SetPlatform "POSIX"
 	
 	configuration "Release"
 		targetname "ProtoZed"
@@ -40,16 +60,16 @@ project "ProtoZed"
 function DefineSystem(name, includes)
 
 	project ("System_"..name)
-	defines { "PROFILER" }
-	files { "../systems/"..name.."/**.*" }
-	includedirs { "../systems/"..name.."/include/", "../include/", includes }
-	kind "StaticLib"
-	
-	configuration "Release"
-		targetname (name)
+		kind "StaticLib"
+		includedirs { "../systems/"..name.."/include/", "../include/", includes }
 		
-	configuration "Debug"
-		targetname (name.."_d")
+		files { "../systems/"..name.."/**.*" }
+		
+		configuration "Release"
+			targetname (name)
+			
+		configuration "Debug"
+			targetname (name.."_d")
 
 end
 
