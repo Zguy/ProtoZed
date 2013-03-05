@@ -58,7 +58,7 @@ namespace PZ
 
 		if (sheet != nullptr)
 		{
-			Sprite *sprite = GetManager().GetComponent<PZ::Sprite>(GetOwnerID());
+			Sprite *sprite = GetManager().GetComponent<Sprite>(GetOwnerID());
 			if (sprite != nullptr)
 			{
 				sprite->SetImage(sheet->image);
@@ -118,7 +118,7 @@ namespace PZ
 					Sprite *sprite = GetManager().GetComponent<Sprite>(GetOwnerID());
 					if (sprite != nullptr)
 					{
-						sprite->SetRegion(PZ::Vector2f(static_cast<float>(x), static_cast<float>(y)), PZ::Vector2f(static_cast<float>(frameWidth), static_cast<float>(frameHeight)));
+						sprite->SetRegion(Vector2f(static_cast<float>(x), static_cast<float>(y)), Vector2f(static_cast<float>(frameWidth), static_cast<float>(frameHeight)));
 					}
 
 					this->frame.LockNotify();

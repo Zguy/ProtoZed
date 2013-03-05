@@ -183,7 +183,7 @@ namespace PZ
 		if (!p->capturing)
 		{
 			p->capturing = true;
-			PZ::Log::Info("ProtoZed", "Profiler capture started");
+			Log::Info("ProtoZed", "Profiler capture started");
 		}
 	}
 	void Profiler::StopCapture()
@@ -191,7 +191,7 @@ namespace PZ
 		if (p->capturing)
 		{
 			p->capturing = false;
-			PZ::Log::Info("ProtoZed", "Profiler capture stopped");
+			Log::Info("ProtoZed", "Profiler capture stopped");
 		}
 	}
 	bool Profiler::IsCapturing() const
