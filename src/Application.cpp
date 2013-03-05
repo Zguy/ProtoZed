@@ -103,9 +103,9 @@ namespace PZ
 
 			running = false;
 
-			Log::Info("ProtoZed", "ProtoZed has stopped");
-
 			Profiler::GetSingleton().WriteLog("Profile");
+
+			Log::Info("ProtoZed", "ProtoZed has stopped");
 
 			delete LogList::GetSingletonPtr();
 			delete Profiler::GetSingletonPtr();

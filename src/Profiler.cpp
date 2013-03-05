@@ -275,6 +275,9 @@ namespace PZ
 
 	void Profiler::WriteLog(const std::string &filename) const
 	{
+		if (p->frames.empty())
+			return;
+
 		//TODO: Maybe output as json instead?
 		std::fstream log(filename+".log", std::ios::out | std::ios::trunc);
 
@@ -335,6 +338,8 @@ namespace PZ
 		}
 
 		log.close();
+
+		Log::Info("ProtoZed", "Profile data saved to file");
 	}
 
 	Profile::Profile(const std::string &name)
