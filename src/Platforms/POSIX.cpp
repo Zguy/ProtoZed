@@ -34,7 +34,7 @@ namespace PZ
 		{
 			timeval time;
 			gettimeofday(&time, 0);
-			return time.tv_sec;
+			return (time.tv_sec + (time.tv_usec * 0.000001));
 		}
 
 		Path::Attributes GetAttributes(const std::string &file)
