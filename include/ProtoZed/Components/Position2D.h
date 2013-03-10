@@ -91,6 +91,10 @@ namespace PZ
 		{
 			SetScale(Vector2f(scaleX, scaleY), scope);
 		}
+		inline void SetScale(float scale, Scope::Level scope = Scope::LOCAL)
+		{
+			SetScale(Vector2f(scale, scale), scope);
+		}
 		inline void SetScaleX(float scaleX, Scope::Level scope = Scope::LOCAL)
 		{
 			SetScale(Vector2f(scaleX, GetScale(scope).y), scope);
@@ -106,6 +110,10 @@ namespace PZ
 		inline void Scale(float dX, float dY, Scope::Level scope = Scope::LOCAL)
 		{
 			Scale(Vector2f(dX,dY), scope);
+		}
+		inline void Scale(float dScale, Scope::Level scope = Scope::LOCAL)
+		{
+			Scale(Vector2f(dScale, dScale), scope);
 		}
 
 		bool GetInheritAxes() const
