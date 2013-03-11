@@ -150,7 +150,7 @@ namespace PZ
 		}
 		else if (scope == Scope::GLOBAL)
 		{
-			if (inheritRotation)
+			if (inheritScale)
 				scale = newScale / parentScaleCache;
 			else
 				scale = newScale;
