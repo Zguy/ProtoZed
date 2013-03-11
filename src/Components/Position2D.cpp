@@ -194,7 +194,7 @@ namespace PZ
 
 		Vector2f _pos = position.x * _axes.x * _scale.x + position.y * _axes.y * _scale.y;
 		if (inheritPosition)
-			_pos += parentPosCache;
+			_pos += parentGlobalPosCache;
 
 		return _pos;
 	}
@@ -203,7 +203,14 @@ namespace PZ
 	{
 		Component::PropertyUpdated(prop);
 
-		updateAxes();
+		if (prop == rotation)
+		{
+			updateAxes();
+		}
+		else
+		{
+			updateChildren();
+		}
 	}
 
 	void Position2D::updateAxes()
@@ -214,13 +221,15 @@ namespace PZ
 		axes.y.x = -axes.x.y;
 		axes.y.y = axes.x.x;
 
-		updateChildren();
+		updateChildren(true);
 	}
-	void Position2D::updateChildren()
+	void Position2D::updateChildren(bool childAxes)
 	{
 		SceneNode *node = GetManager().GetComponent<SceneNode>(GetOwnerID());
 		if (node != nullptr)
 		{
+			Vector2f globPos = ConvertLocalToGlobal(pos);
+
 			const EntitySet &children = node->GetChildren();
 			for (EntitySet::const_iterator it = children.cbegin(); it != children.cend(); ++it)
 			{
@@ -229,10 +238,14 @@ namespace PZ
 				{
 					childPosition->parentAxesCache = axes;
 					childPosition->parentPosCache = parentPosCache+pos;
+					childPosition->parentGlobalPosCache = globPos;
 					childPosition->parentRotationCache = parentRotationCache+rotation;
 					childPosition->parentScaleCache = parentScaleCache*scale;
 
-					childPosition->updateChildren();
+					if (childAxes)
+						childPosition->updateAxes();
+					else
+						childPosition->updateChildren();
 				}
 			}
 		}

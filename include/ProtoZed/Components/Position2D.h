@@ -157,7 +157,7 @@ namespace PZ
 
 	private:
 		void updateAxes();
-		void updateChildren();
+		void updateChildren(bool childAxes = false);
 
 		Property<Vector2f> pos;
 		Property<float> depth;
@@ -168,6 +168,7 @@ namespace PZ
 
 		Axes parentAxesCache;
 		Vector2f parentPosCache;
+		Vector2f parentGlobalPosCache;
 		Angle::Degrees parentRotationCache;
 		Vector2f parentScaleCache;
 
