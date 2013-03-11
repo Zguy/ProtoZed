@@ -76,6 +76,11 @@ namespace PZ
 			return *this;
 		}
 
+		Radians Degrees::ToRadians() const
+		{
+			return *this;
+		}
+
 
 		Radians::Radians() : angle(0.f)
 		{
@@ -126,9 +131,15 @@ namespace PZ
 			return *this;
 		}
 
+		Degrees Radians::ToDegrees() const
+		{
+			return *this;
+		}
+
+
 		Vector2f GetVector(Radians angle)
 		{
-			return Vector2f(Math::Cos(angle.ToFloat()) * -1, Math::Sin(angle.ToFloat()));
+			return Vector2f(Math::Cos(angle.ToFloat()) * -1.f, Math::Sin(angle.ToFloat()));
 		}
 		Radians GetBetween(const Vector2f &from, const Vector2f &to)
 		{

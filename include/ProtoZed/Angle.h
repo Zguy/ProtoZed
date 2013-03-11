@@ -49,6 +49,8 @@ namespace PZ
 
 			Degrees &operator-();
 
+			Radians ToRadians() const;
+
 			inline float ToFloat() const
 			{
 				return angle;
@@ -75,6 +77,8 @@ namespace PZ
 			const Radians operator-(const Radians &other) const;
 
 			Radians &operator-();
+
+			Degrees ToDegrees() const;
 
 			inline float ToFloat() const
 			{
