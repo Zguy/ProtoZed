@@ -70,10 +70,11 @@ namespace PZ
 			return Degrees(*this) -= other;
 		}
 
-		Degrees &Degrees::operator-()
+		Degrees Degrees::operator-()
 		{
-			angle = -angle;
-			return *this;
+			Degrees neg(*this);
+			neg.angle = -neg.angle;
+			return neg;
 		}
 
 		Radians Degrees::ToRadians() const
@@ -125,10 +126,11 @@ namespace PZ
 			return Radians(*this) -= other;
 		}
 
-		Radians &Radians::operator-()
+		Radians Radians::operator-()
 		{
-			angle = -angle;
-			return *this;
+			Radians neg(*this);
+			neg.angle = -neg.angle;
+			return neg;
 		}
 
 		Degrees Radians::ToDegrees() const

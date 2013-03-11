@@ -47,7 +47,7 @@ namespace PZ
 			const Degrees operator+(const Degrees &other) const;
 			const Degrees operator-(const Degrees &other) const;
 
-			Degrees &operator-();
+			Degrees operator-();
 
 			Radians ToRadians() const;
 
@@ -76,7 +76,7 @@ namespace PZ
 			const Radians operator+(const Radians &other) const;
 			const Radians operator-(const Radians &other) const;
 
-			Radians &operator-();
+			Radians operator-();
 
 			Degrees ToDegrees() const;
 
