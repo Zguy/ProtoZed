@@ -85,6 +85,7 @@ namespace PZ
 		virtual void OnResume() {}
 
 		inline bool IsStarted() const { return started; }
+		inline bool IsPaused() const { return paused; }
 
 	protected:
 		inline Application &GetApplication() const
