@@ -21,6 +21,10 @@ THE SOFTWARE.
 */
 #include <ProtoZed/Components/Sprite.h>
 
+#include <ProtoZed/Application.h>
+#include <ProtoZed/AssetLibrary.h>
+#include <ProtoZed/Assets/ImageAsset.h>
+
 namespace PZ
 {
 	const HashString Sprite::Family = "Sprite";
@@ -34,5 +38,12 @@ namespace PZ
 	}
 	Sprite::~Sprite()
 	{
+	}
+
+	const ImageAsset *Sprite::GetImageAsset() const
+	{
+		AssetLibrary &assetLibrary = GetApplication().GetAssetLibrary();
+		const ImageAsset *asset = assetLibrary.Get<ImageAsset>(GetImage());
+		return asset;
 	}
 }

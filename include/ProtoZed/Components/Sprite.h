@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 namespace PZ
 {
+	class ImageAsset;
+
 	class Sprite : public Component
 	{
 	public:
@@ -43,6 +45,8 @@ namespace PZ
 		{
 			image = newImage;
 		}
+
+		const ImageAsset *GetImageAsset() const;
 
 		inline const Vector2f GetCenter() const
 		{
