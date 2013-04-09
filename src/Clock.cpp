@@ -52,13 +52,13 @@ namespace PZ
 		startTime = Platform::GetHighResolutionClock();
 	}
 
-	float Clock::GetElapsedTime()
+	float Clock::GetElapsedTime() const
 	{
 		double time = Platform::GetHighResolutionClock();
 
 		return static_cast<float>(time - startTime);
 	}
-	double Clock::GetElapsedTimeDouble()
+	double Clock::GetElapsedTimeDouble() const
 	{
 		double time = Platform::GetHighResolutionClock();
 

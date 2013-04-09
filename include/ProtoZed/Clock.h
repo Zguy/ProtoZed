@@ -35,8 +35,8 @@ namespace PZ
 
 		void Reset();
 
-		float GetElapsedTime();
-		double GetElapsedTimeDouble();
+		float GetElapsedTime() const;
+		double GetElapsedTimeDouble() const;
 
 	private:
 		double startTime;
