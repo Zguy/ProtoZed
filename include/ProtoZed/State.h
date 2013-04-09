@@ -38,18 +38,45 @@ namespace PZ
 	class State : public boost::noncopyable, public EventHandler
 	{
 	public:
-		State(Application &application) : started(false), application(application)
+		State(Application &application) : started(false), paused(false), application(application)
 		{}
 		virtual ~State()
 		{}
 
 		virtual void Update(float deltaTime) {}
 
-		virtual void Start(StringMap &options) { started = true; }
-		virtual void Stop() { started = false; }
+		void Start(StringMap &options)
+		{
+			OnStart(options);
+			started = true;
+		}
+		void Stop()
+		{
+			OnStop();
+			started = false;
+		}
+		void Pause()
+		{
+			if (!paused)
+			{
+				OnPause();
+				paused = true;
+			}
+		}
+		void Resume()
+		{
+			if (paused)
+			{
+				OnResume();
+				paused = false;
+			}
+		}
 
-		virtual void Pause() {}
-		virtual void Resume() {}
+		virtual void OnStart(StringMap &options) {}
+		virtual void OnStop() {}
+
+		virtual void OnPause() {}
+		virtual void OnResume() {}
 
 		inline bool IsStarted() const { return started; }
 
@@ -61,6 +88,7 @@ namespace PZ
 
 	private:
 		bool started;
+		bool paused;
 
 		Application &application;
 	};
