@@ -47,13 +47,19 @@ namespace PZ
 
 		void Start(StringMap &options)
 		{
-			OnStart(options);
-			started = true;
+			if (!started)
+			{
+				OnStart(options);
+				started = true;
+			}
 		}
 		void Stop()
 		{
-			OnStop();
-			started = false;
+			if (started)
+			{
+				OnStop();
+				started = false;
+			}
 		}
 		void Pause()
 		{
