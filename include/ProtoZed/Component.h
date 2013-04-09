@@ -30,8 +30,6 @@ THE SOFTWARE.
 
 #include <boost/noncopyable.hpp>
 
-#include <string>
-
 namespace PZ
 {
 	/**
@@ -102,6 +100,30 @@ namespace PZ
 		const Timestamp &GetTimestamp() const
 		{
 			return stamp;
+		}
+
+		/**
+		 * \brief	Gets another component from the owner entity.
+		 *
+		 * \param	Family	The family of the component.
+		 *
+		 * \return	null if it fails, else the component.
+		 */
+		Component *GetComponent(const HashString &family) const
+		{
+			Component *component = GetManager().GetComponent(GetOwnerID(), family);
+			return component;
+		}
+		
+		/**
+		 * \brief	Gets another component from the owner entity.
+		 *
+		 * \return	null if it fails, else the component.
+		 */
+		template<class T>
+		T *GetComponent() const
+		{
+			return dynamic_cast<T*>(GetComponent(T::Family));
 		}
 
 	protected:
