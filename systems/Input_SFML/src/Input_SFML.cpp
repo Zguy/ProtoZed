@@ -55,7 +55,7 @@ namespace PZ
 				if (newDown != myKeys[i])
 				{
 					KeyboardEvent e(newDown ? KeyboardEvent::PRESS : KeyboardEvent::RELEASE);
-					e.keyCode = static_cast<Key::Code>(i);
+					e.KeyCode = static_cast<Key::Code>(i);
 					EmitEvent(e);
 				}
 
@@ -68,8 +68,8 @@ namespace PZ
 				if (newDown != myMouseButtons[i])
 				{
 					MouseEvent e(newDown ? MouseEvent::PRESS : MouseEvent::RELEASE);
-					e.button = static_cast<Mouse::Button>(i);
-					e.position = myMousePos;
+					e.Button = static_cast<Mouse::Button>(i);
+					e.Position = myMousePos;
 					EmitEvent(e);
 				}
 
@@ -91,7 +91,7 @@ namespace PZ
 			if (myMousePos != newMouse)
 			{
 				MouseEvent e(MouseEvent::MOVE);
-				e.position = myMousePos;
+				e.Position = myMousePos;
 				EmitEvent(e);
 			}
 

@@ -38,7 +38,7 @@ namespace PZ
 		KeyboardEvent(Type type) : Event(type)
 		{}
 
-		Key::Code keyCode;
+		Key::Code KeyCode;
 	};
 }
 

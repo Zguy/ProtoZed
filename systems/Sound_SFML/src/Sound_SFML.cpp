@@ -170,7 +170,7 @@ namespace PZ
 
 	void Sound_SFML::OnEntityDestroyed(const EntityEvent &e)
 	{
-		p->deleteSound(e.id);
+		p->deleteSound(e.Id);
 	}
 	void Sound_SFML::OnEntitiesCleared(const EntityEvent &e)
 	{
@@ -178,17 +178,17 @@ namespace PZ
 	}
 	void Sound_SFML::OnComponentAdded(const ComponentEvent &e)
 	{
-		if (e.family == SoundEmitter::Family)
+		if (e.Family == SoundEmitter::Family)
 		{
-			const SoundEmitter *emitter = GetApplication().GetEntityManager().GetComponent<SoundEmitter>(e.id);
-			p->createSound(e.id, emitter);
+			const SoundEmitter *emitter = GetApplication().GetEntityManager().GetComponent<SoundEmitter>(e.Id);
+			p->createSound(e.Id, emitter);
 		}
 	}
 	void Sound_SFML::OnComponentRemoved(const ComponentEvent &e)
 	{
-		if (e.family == SoundEmitter::Family)
+		if (e.Family == SoundEmitter::Family)
 		{
-			p->deleteSound(e.id);
+			p->deleteSound(e.Id);
 		}
 	}
 }

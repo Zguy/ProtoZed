@@ -37,8 +37,8 @@ namespace PZ
 		ComponentEvent(Type type) : Event(type)
 		{}
 
-		EntityID id;
-		HashString family;
+		EntityID Id;
+		HashString Family;
 	};
 }
 

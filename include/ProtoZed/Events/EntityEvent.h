@@ -38,7 +38,7 @@ namespace PZ
 		EntityEvent(Type type) : Event(type)
 		{}
 
-		EntityID id;
+		EntityID Id;
 	};
 }
 

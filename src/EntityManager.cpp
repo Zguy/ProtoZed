@@ -62,8 +62,8 @@ namespace PZ
 			if (components[name].insert(std::make_pair(id, component)).second)
 			{
 				ComponentEvent e(ComponentEvent::ADDED);
-				e.id = id;
-				e.family = name;
+				e.Id = id;
+				e.Family = name;
 				i->EmitEvent(e);
 
 				return true;
@@ -129,7 +129,7 @@ namespace PZ
 			p->entityDataMap.insert(std::make_pair(id, EntityData()));
 
 			EntityEvent e(EntityEvent::CREATED);
-			e.id = id;
+			e.Id = id;
 			EmitEvent(e);
 
 			return true;
@@ -210,7 +210,7 @@ namespace PZ
 				it = p->entities.erase(it);
 
 				EntityEvent e(EntityEvent::DESTROYED);
-				e.id = id;
+				e.Id = id;
 				EmitEvent(e);
 			}
 			else
@@ -401,8 +401,8 @@ namespace PZ
 				p->eraseComponent(it, it2);
 
 				ComponentEvent e(ComponentEvent::REMOVED);
-				e.id = id;
-				e.family = family;
+				e.Id = id;
+				e.Family = family;
 				EmitEvent(e);
 
 				return true;

@@ -34,11 +34,11 @@ namespace PZ
 		{
 			MESSAGE
 		};
-		LogEvent(EType etype, Log::Type type, const std::string &message) : Event(etype), type(type), message(message)
+		LogEvent(EType etype, Log::Type type, const std::string &message) : Event(etype), Type(type), Message(message)
 		{}
 
-		Log::Type type;
-		std::string message;
+		Log::Type Type;
+		std::string Message;
 	};
 }
 

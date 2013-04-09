@@ -40,8 +40,8 @@ namespace PZ
 		MouseEvent(Type type) : Event(type)
 		{}
 
-		Mouse::Button button;
-		Vector2f position;
+		Mouse::Button Button;
+		Vector2f Position;
 	};
 }
 

@@ -308,7 +308,7 @@ namespace PZ
 
 	void Renderer_SFML::OnEntityDestroyed(const EntityEvent &e)
 	{
-		p->deleteLayer(e.id);
+		p->deleteLayer(e.Id);
 	}
 	void Renderer_SFML::OnEntitiesCleared(const EntityEvent &e)
 	{
@@ -316,17 +316,17 @@ namespace PZ
 	}
 	void Renderer_SFML::OnComponentAdded(const ComponentEvent &e)
 	{
-		if (e.family == Sprite::Family)
+		if (e.Family == Sprite::Family)
 		{
-			const Sprite *sprite = GetApplication().GetEntityManager().GetComponent<Sprite>(e.id);
-			p->createLayer(e.id, sprite);
+			const Sprite *sprite = GetApplication().GetEntityManager().GetComponent<Sprite>(e.Id);
+			p->createLayer(e.Id, sprite);
 		}
 	}
 	void Renderer_SFML::OnComponentRemoved(const ComponentEvent &e)
 	{
-		if (e.family == Sprite::Family)
+		if (e.Family == Sprite::Family)
 		{
-			p->deleteLayer(e.id);
+			p->deleteLayer(e.Id);
 		}
 	}
 }
