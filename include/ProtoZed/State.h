@@ -78,16 +78,16 @@ namespace PZ
 			}
 		}
 
+		inline bool IsStarted() const { return started; }
+		inline bool IsPaused() const { return paused; }
+
+	protected:
 		virtual void OnStart(StringMap &options) {}
 		virtual void OnStop() {}
 
 		virtual void OnPause() {}
 		virtual void OnResume() {}
 
-		inline bool IsStarted() const { return started; }
-		inline bool IsPaused() const { return paused; }
-
-	protected:
 		inline Application &GetApplication() const
 		{
 			return application;
