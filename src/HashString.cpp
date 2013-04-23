@@ -22,8 +22,9 @@ THE SOFTWARE.
 #include <ProtoZed/HashString.h>
 
 #include <ProtoZed/Convert.h>
+#include <ProtoZed/xxhash.h>
 
-#include <boost/crc.hpp>
+static const unsigned int XXHASH_SEED = 0;
 
 namespace PZ
 {
@@ -106,10 +107,6 @@ namespace PZ
 
 	unsigned int HashString::hashString(const std::string &str) const
 	{
-		boost::crc_32_type result;
-		result.process_bytes(str.c_str(), str.size());
-		unsigned int checksum = result.checksum();
-
-		return checksum;
+		return XXH32(str.c_str(), str.size(), XXHASH_SEED);
 	}
 }
