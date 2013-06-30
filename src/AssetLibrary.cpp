@@ -463,7 +463,7 @@ namespace PZ
 		FileIndex::iterator fileIt = p->getFile(filename);
 		if (fileIt == p->fileIndex.end())
 		{
-			Log::Warning("ProtoZed", "The file \""+filename.ToString()+"\" is not indexed, returning null asset");
+			Log::Error("ProtoZed", "The file \""+filename.ToString()+"\" is not indexed, returning null asset");
 			return nullptr;
 		}
 		else
@@ -471,9 +471,13 @@ namespace PZ
 			Asset *&asset = (*fileIt).second.first;
 			if (asset == nullptr)
 			{
-				if (!(autoLoad && p->loadFile(fileIt, p->getType(fileIt))))
+				if (autoLoad && p->loadFile(fileIt, p->getType(fileIt)))
 				{
-					Log::Warning("ProtoZed", "\""+filename.ToString()+"\" is not loaded, returning null asset");
+					Log::Warning("ProtoZed", "\""+filename.ToString()+"\" was loaded on the fly");
+				}
+				else
+				{
+					Log::Error("ProtoZed", "\""+filename.ToString()+"\" is not loaded, returning null asset");
 					return nullptr;
 				}
 			}
