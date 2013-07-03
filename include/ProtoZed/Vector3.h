@@ -62,6 +62,7 @@ namespace PZ
 		Vector3 Cross(const Vector3 &other) const;
 
 		void Normalize();
+		const Vector3 GetNormalized() const;
 
 		float GetLength() const;
 		T GetLengthSquared() const;
@@ -219,6 +220,13 @@ namespace PZ
 			float factor = 1.f / len;
 			(*this) *= factor;
 		}
+	}
+	template<typename T>
+	const Vector3<T> Vector3<T>::GetNormalized() const
+	{
+		Vector3<T> v(*this);
+		v.Normalize();
+		return v;
 	}
 
 	template<typename T>
