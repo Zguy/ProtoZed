@@ -28,7 +28,8 @@ namespace PZ
 	{
 		static const unsigned int MAJOR = 0;
 		static const unsigned int MINOR = 1;
-		static const char VERSION_STRING[] = "0.1 Awesome Edition";
+		static const unsigned int PATCH = 0;
+		static const char VERSION_STRING[] = "0.1.0";
 	}
 }
 
