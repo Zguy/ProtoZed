@@ -31,7 +31,7 @@ THE SOFTWARE.
 #include <ProtoZed/Vector3.h>
 #include <ProtoZed/Angle.h>
 #include <ProtoZed/Math.h>
-#include <ProtoZed/UniqueIDGenerator.h>
+#include <ProtoZed/Counter.h>
 #include <ProtoZed/Path.h>
 #include <ProtoZed/Random.h>
 
