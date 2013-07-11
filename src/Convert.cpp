@@ -40,22 +40,18 @@ namespace PZ
 		// Vector2
 		template<> std::string ToString<Vector2f>(const Vector2f &value)
 		{
-			return "("+Convert::ToString(value.x)+", "+Convert::ToString(value.y)+")";
+			return ToString(value.x)+", "+ToString(value.y);
 		}
 		template<> Vector2f FromString<Vector2f>(const std::string &str)
 		{
-			std::string left  = str.substr(0, str.find(','));
-			std::string right = str.substr(str.find(',')+1);
-
-			if (left.find('(') != std::string::npos)
-				left = left.substr(left.find('(')+1);
-			if (right.find(')') != std::string::npos)
-				right = right.substr(0, right.find(')'));
+			std::string::size_type split = str.find(',');
+			std::string left  = str.substr(0, split);
+			std::string right = str.substr(split+1);
 
 			boost::trim(left);
 			boost::trim(right);
 
-			return Vector2f(Convert::FromString<float>(left), Convert::FromString<float>(right));
+			return Vector2f(FromString<float>(left), FromString<float>(right));
 		}
 
 		// Angle
