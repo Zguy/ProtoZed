@@ -53,7 +53,6 @@ namespace PZ
 		T Clamp(T value, T min, T max)
 		{
 			assert(min <= max);
-
 			if (value < min)
 				return min;
 			else if (value > max)
@@ -65,13 +64,12 @@ namespace PZ
 		T Wrap(T value, T min, T max)
 		{
 			assert(min <= max);
-
-			T range_size = max - min + 1;
-
-			if (value < min)
-				value += range_size * ((min - value) / range_size + 1);
-
-			return min + (value - min) % range_size;
+			T range = max - min + 1;
+			while (value < min)
+				value += range;
+			while (value > max)
+				value -= range;
+			return value;
 		}
 
 		template<typename T>
