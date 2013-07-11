@@ -81,7 +81,13 @@ namespace PZ
 		{
 			AssetLibrary &assetLibrary = i->GetApplication().GetAssetLibrary();
 
-			sf::Sprite *drawable = new sf::Sprite;
+			sf::Sprite *drawable = dynamic_cast<sf::Sprite*>(layer.drawable);
+			if (drawable == nullptr)
+			{
+				delete layer.drawable;
+				drawable = new sf::Sprite;
+				layer.drawable = drawable;
+			}
 
 			if (!sprite->GetImage().empty())
 			{
@@ -101,9 +107,6 @@ namespace PZ
 				int h = static_cast<int>(sprite->GetRegionSize().y);
 				drawable->SetSubRect(sf::IntRect(x, y, x+w, y+h));
 			}
-
-			delete layer.drawable;
-			layer.drawable = drawable;
 		}
 		LayerList::iterator createLayer(const EntityID &id, const Sprite *sprite)
 		{
