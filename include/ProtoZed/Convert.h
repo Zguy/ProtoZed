@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Vector2.h>
 #include <ProtoZed/Angle.h>
+#include <ProtoZed/Color.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -57,6 +58,10 @@ namespace PZ
 		template<> Angle::Degrees FromString<Angle::Degrees>(const std::string &str);
 		template<> std::string ToString<Angle::Radians>(const Angle::Radians &value);
 		template<> Angle::Radians FromString<Angle::Radians>(const std::string &str);
+
+		// Color
+		template<> std::string ToString<Color>(const Color &value);
+		template<> Color FromString<Color>(const std::string &str);
 	}
 }
 

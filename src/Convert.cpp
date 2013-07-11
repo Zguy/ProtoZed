@@ -23,6 +23,8 @@ THE SOFTWARE.
 
 #include <boost/algorithm/string.hpp>
 
+#include <vector>
+
 namespace PZ
 {
 	namespace Convert
@@ -70,6 +72,39 @@ namespace PZ
 		template<> Angle::Radians FromString<Angle::Radians>(const std::string &str)
 		{
 			return Angle::Radians(FromString<float>(str));
+		}
+
+		// Color
+		namespace
+		{
+			bool is_comma(const char &c)
+			{
+				return (c == ',');
+			}
+			void trim(std::string &s)
+			{
+				boost::trim(s);
+			}
+		}
+		template<> std::string ToString(const Color &value)
+		{
+			return ToString(value.GetRed())+", "+ToString(value.GetGreen())+", "+ToString(value.GetBlue())+", "+ToString(value.GetAlpha());
+		}
+		template<> Color FromString(const std::string &str)
+		{
+			std::vector<std::string> parts;
+			boost::split(parts, str, is_comma);
+			std::for_each(parts.begin(), parts.end(), trim);
+			Color color;
+			if (parts.size() > 0)
+				color.SetRed(FromString<float>(parts[0]));
+			if (parts.size() > 1)
+				color.SetGreen(FromString<float>(parts[1]));
+			if (parts.size() > 2)
+				color.SetBlue(FromString<float>(parts[2]));
+			if (parts.size() > 3)
+				color.SetAlpha(FromString<float>(parts[3]));
+			return color;
 		}
 	}
 }

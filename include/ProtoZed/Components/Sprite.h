@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <ProtoZed/Component.h>
 #include <ProtoZed/Vector2.h>
+#include <ProtoZed/Color.h>
 
 namespace PZ
 {
@@ -74,6 +75,7 @@ namespace PZ
 	private:
 		Property<std::string> image;
 		Property<Vector2f> center;
+		Property<Color> color;
 
 		Property<Vector2f> regionOffset;
 		Property<Vector2f> regionSize;
