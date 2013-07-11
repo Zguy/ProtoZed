@@ -98,6 +98,9 @@ namespace PZ
 				}
 			}
 
+			const Color &color = sprite->GetColor();
+			drawable->SetColor(sf::Color(color.GetRed() * 255.f, color.GetGreen() * 255.f, color.GetBlue() * 255.f, color.GetAlpha() * 255.f));
+
 			drawable->SetCenter(sprite->GetCenter().x, sprite->GetCenter().y);
 			if (sprite->GetRegionSize().GetLengthSquared() > 0.f)
 			{
