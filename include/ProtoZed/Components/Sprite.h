@@ -49,13 +49,22 @@ namespace PZ
 
 		const ImageAsset *GetImageAsset() const;
 
-		inline const Vector2f GetCenter() const
+		inline const Vector2f &GetCenter() const
 		{
 			return center;
 		}
 		inline void SetCenter(const Vector2f &newCenter)
 		{
 			center = newCenter;
+		}
+		
+		inline const Color &GetColor() const
+		{
+			return color;
+		}
+		inline void SetColor(const Color &newColor)
+		{
+			color = newColor;
 		}
 
 		inline const Vector2f &GetRegionOffset() const

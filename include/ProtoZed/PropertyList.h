@@ -33,7 +33,7 @@ namespace PZ
 
 	class PropertyList
 	{
-		friend class PropertyBase;
+		friend class PropertyBase; // For access to PropertyUpdated()
 
 	public:
 		PropertyList();
