@@ -32,7 +32,7 @@ namespace PZ
 		static const float PI_2    = 6.28318530717958647693f;
 		static const float PI_HALF = 1.57079632679489661923f;
 
-		float Sqrt(float value);
+		// All trig functions expect values in radians
 		float Sin(float value);
 		float Cos(float value);
 		float Tan(float value);
@@ -40,11 +40,12 @@ namespace PZ
 		float ACos(float value);
 		float ATan(float value);
 		float ATan2(float y, float x);
-		float Pow(float value, float pow);
+
+		float Sqrt(float value);
+		float Pow(float base, float exponent);
 		float Floor(float value);
 		float Ceil(float value);
 		float Round(float value);
-
 		float Abs(float value);
 		double Abs(double value);
 		int Abs(int value);

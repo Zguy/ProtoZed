@@ -27,10 +27,6 @@ namespace PZ
 {
 	namespace Math
 	{
-		float Sqrt(float value)
-		{
-			return std::sqrt(value);
-		}
 		float Sin(float value)
 		{
 			return std::sin(value);
@@ -59,9 +55,14 @@ namespace PZ
 		{
 			return std::atan2(y, x);
 		}
-		float Pow(float value, float pow)
+
+		float Sqrt(float value)
 		{
-			return std::pow(value, pow);
+			return std::sqrt(value);
+		}
+		float Pow(float base, float exponent)
+		{
+			return std::pow(base, exponent);
 		}
 		float Floor(float value)
 		{
@@ -75,7 +76,6 @@ namespace PZ
 		{
 			return Floor(value + 0.5f);
 		}
-
 		float Abs(float value)
 		{
 			return std::abs(value);
