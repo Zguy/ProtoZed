@@ -31,6 +31,19 @@ namespace PZ
 	public:
 		explicit TypeInfo(const std::type_info &info) : info(&info)
 		{}
+		TypeInfo(const TypeInfo &other) : info(other.info)
+		{}
+		~TypeInfo()
+		{}
+
+		TypeInfo &operator=(const TypeInfo &rhs)
+		{
+			if (&rhs != this)
+			{
+				info = rhs.info;
+			}
+			return *this;
+		}
 
 		bool operator<(const TypeInfo &rhs) const
 		{
