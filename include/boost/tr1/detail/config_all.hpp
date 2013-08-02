@@ -128,7 +128,7 @@
 #  define BOOST_HAS_CPP_0X
 #endif
 #if defined(_MSC_VER) && (_MSC_VER >= 1600) && !defined(BOOST_HAS_CPP_0X)
-//#   define BOOST_HAS_CPP_0X
+#   define BOOST_HAS_CPP_0X
 #endif
 //
 // We may be in the middle of parsing boost/config.hpp
