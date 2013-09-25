@@ -41,9 +41,7 @@ namespace PZ
 		{
 			Path::Attributes a;
 
-			std::wstring wfile(file.size(), TEXT(' '));
-			std::copy(file.begin(), file.end(), wfile.begin());
-			HANDLE hFile = CreateFile(wfile.c_str(), 0, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
+			HANDLE hFile = CreateFileA(file.c_str(), 0, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 			if (hFile == INVALID_HANDLE_VALUE)
 			{
 				a.type = Path::T_NONEXISTANT;
