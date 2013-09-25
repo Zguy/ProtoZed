@@ -23,27 +23,31 @@ THE SOFTWARE.
 #ifndef PZ_Singleton_h__
 #define PZ_Singleton_h__
 
+#include <boost/noncopyable.hpp>
+
 #include <cassert>
 
 namespace PZ
 {
 	template<typename T>
-	class Singleton
+	class Singleton : boost::noncopyable
 	{
-	public:
+	protected:
 		Singleton()
 		{
-			assert(!singleton);
+			assert(singleton == nullptr);
 			singleton = static_cast<T*>(this);
 		}
-		~Singleton()
+		virtual ~Singleton()
 		{
-			assert(singleton);
+			assert(singleton != nullptr);
 			singleton = nullptr;
 		}
+
+	public:
 		static T &GetSingleton()
 		{
-			assert(singleton);
+			assert(singleton != nullptr);
 			return *singleton;
 		}
 		static T *GetSingletonPtr()
