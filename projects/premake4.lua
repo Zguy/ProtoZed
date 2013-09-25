@@ -4,6 +4,7 @@ solution "ProtoZed"
 	location ( os.get() .. "/" .. _ACTION )
 	flags { "ExtraWarnings", "Unicode", "NoPCH" }
 	targetdir ( "../lib/" .. os.get() )
+	defines ( "BOOST_ALL_NO_LIB" )
 
 	configurations
 	{ 
