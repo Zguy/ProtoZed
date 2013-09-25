@@ -40,7 +40,7 @@ namespace PZ
 	 * This is something that will run
 	 * every frame and do some work.
 	 */
-	class System : public boost::noncopyable, public EventHandler
+	class System : boost::noncopyable, public EventHandler
 	{
 	public:
 		System(const SystemType &type, Application &application) : type(type), started(false), application(application)

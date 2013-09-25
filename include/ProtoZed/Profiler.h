@@ -56,7 +56,7 @@ namespace PZ
 		Impl *p;
 	};
 
-	class Profile : public boost::noncopyable
+	class Profile : boost::noncopyable
 	{
 	public:
 		Profile(const std::string &name);

@@ -36,7 +36,7 @@ namespace PZ
 
 	typedef std::vector<Path> FileList;
 
-	class Archive : public boost::noncopyable
+	class Archive : boost::noncopyable
 	{
 	public:
 		Archive()

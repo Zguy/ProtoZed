@@ -49,7 +49,7 @@ namespace PZ
 	/**
 	 * \brief	Manager for entities, components and the relationship between them.
 	 */
-	class EntityManager : public boost::noncopyable, public EventHandler
+	class EntityManager : boost::noncopyable, public EventHandler
 	{
 	public:
 		EntityManager(Application &application);

@@ -31,7 +31,7 @@ namespace PZ
 	/**
 	 * \brief	List of systems.
 	 */
-	class SystemList : public boost::noncopyable
+	class SystemList : boost::noncopyable
 	{
 	public:
 		SystemList(Application &application);

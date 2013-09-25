@@ -32,7 +32,7 @@ namespace PZ
 {
 	class PropertyList;
 
-	class PropertyBase : public boost::noncopyable
+	class PropertyBase : boost::noncopyable
 	{
 		friend class PropertyList;
 

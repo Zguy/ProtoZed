@@ -49,7 +49,7 @@ namespace PZ
 		Impl *p;
 	};
 
-	class Log : public boost::noncopyable, public EventHandler
+	class Log : boost::noncopyable, public EventHandler
 	{
 		friend class LogList;
 

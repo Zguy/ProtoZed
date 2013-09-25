@@ -30,7 +30,7 @@ namespace PZ
 {
 	class Application;
 
-	class Asset : public boost::noncopyable
+	class Asset : boost::noncopyable
 	{
 		friend class AssetLibrary;
 

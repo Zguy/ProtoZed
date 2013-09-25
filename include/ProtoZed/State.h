@@ -35,7 +35,7 @@ namespace PZ
 
 	class Application;
 
-	class State : public boost::noncopyable, public EventHandler
+	class State : boost::noncopyable, public EventHandler
 	{
 	public:
 		State(Application &application) : started(false), paused(false), application(application)

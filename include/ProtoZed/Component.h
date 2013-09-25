@@ -35,7 +35,7 @@ namespace PZ
 	/**
 	 * \brief	Small reusable block of behavior.
 	 */
-	class Component : public boost::noncopyable, public PropertyList, public EventHandler
+	class Component : boost::noncopyable, public PropertyList, public EventHandler
 	{
 		friend class EntityManager;
 

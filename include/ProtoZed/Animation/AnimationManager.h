@@ -34,7 +34,7 @@ namespace PZ
 	class AnimationBase;
 	struct AnimationProperties;
 
-	class AnimationManager : public boost::noncopyable
+	class AnimationManager : boost::noncopyable
 	{
 	public:
 		AnimationManager();

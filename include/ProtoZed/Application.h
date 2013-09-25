@@ -32,7 +32,7 @@ namespace PZ
 	class AnimationManager;
 	class AssetLibrary;
 
-	class Application : public boost::noncopyable
+	class Application : boost::noncopyable
 	{
 	public:
 		Application();

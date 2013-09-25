@@ -51,7 +51,7 @@ namespace PZ
 		FileList files;
 	};
 
-	class AssetLibrary : public boost::noncopyable
+	class AssetLibrary : boost::noncopyable
 	{
 	public:
 		AssetLibrary(Application &application);

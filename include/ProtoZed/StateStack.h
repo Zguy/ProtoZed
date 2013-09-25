@@ -34,7 +34,7 @@ namespace PZ
 {
 	class Application;
 
-	class StateStack : public boost::noncopyable
+	class StateStack : boost::noncopyable
 	{
 	public:
 		StateStack(Application &application);
