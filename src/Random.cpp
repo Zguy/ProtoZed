@@ -44,12 +44,12 @@ namespace PZ
 	}
 	void Random::SetSeedFromTime()
 	{
-		SetSeed(static_cast<unsigned int>(time(nullptr)));
+		SetSeed(static_cast<unsigned int>(std::time(nullptr)));
 	}
 
 	int Random::NextInt(int min, int max)
 	{
-		boost::random::uniform_int_distribution<> dist(min, max);
+		boost::random::uniform_int_distribution<int> dist(min, max);
 		return dist(_gen);
 	}
 	float Random::NextFloat(float min, float max)
